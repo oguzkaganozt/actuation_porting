@@ -1,0 +1,20 @@
+{
+    "name": "autoware",
+    "image": "ghcr.io/autowarefoundation/autoware:20240823-devel",
+    "remoteUser": "autoware",
+    "runArgs": [
+      "--cap-add=SYS_PTRACE",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--net=host",
+      "--volume=/etc/localtime:/etc/localtime:ro"
+    ],
+    "customizations": {
+      "vscode": {
+        "settings.json": {
+          "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } }
+        }
+      }
+    }
+  }
+  
