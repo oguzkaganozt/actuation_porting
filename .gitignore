@@ -1,0 +1,11 @@
+.egg-info/
+__pycache__
+build/
+install/
+log/
+.west/
+bootloader/
+modules/
+tools/
+public/
+.vscode/

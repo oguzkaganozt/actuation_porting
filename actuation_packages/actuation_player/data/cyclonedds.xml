@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    # Copyright (c) 2023, Arm Limited.
+    # SPDX-License-Identifier: Apache-2.0
+-->
+<!-- inclusivity-exception -->
+<CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+
+    <!--Safety Island-->
+    <Domain id="2"> <!--Should be aligned with the value of DDS_DOMAIN_ACTUATION in the code-->
+        <General>
+            <AllowMulticast>spdp</AllowMulticast>
+            <Interfaces>
+                <NetworkInterface address="192.168.2.2" /> <!--IP address of the interface to use-->
+            </Interfaces>
+            <MaxMessageSize>1456B</MaxMessageSize> <!--Accommodate for Zephyr's MTU-->
+        </General>
+    </Domain>
+
+</CycloneDDS>

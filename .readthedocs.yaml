@@ -1,0 +1,17 @@
+# Copyright (c) 2022-2024, Arm Limited.
+#
+# SPDX-License-Identifier: MIT
+
+---
+version: 2
+sphinx:
+  configuration: documentation/conf.py
+formats:
+  - pdf
+build:
+  os: "ubuntu-20.04"
+  tools:
+    python: "3.8"
+python:
+  install:
+    - requirements: documentation/requirements.txt

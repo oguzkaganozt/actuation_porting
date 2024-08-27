@@ -1,0 +1,20 @@
+// This file was generated with Autoware.Auto
+
+#include "TrajectoryPoint.idl"
+#include "Transform.idl"
+#include "Header.idl"
+
+module autoware_auto_vehicle_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      " VehicleKinematicState.msg" "\n"
+      " Representation of a trajectory point with timestamp for the controller")
+    struct VehicleKinematicState {
+      std_msgs::msg::Header header;
+
+      autoware_auto_planning_msgs::msg::TrajectoryPoint state;
+
+      geometry_msgs::msg::Transform delta;
+    };
+  };
+};

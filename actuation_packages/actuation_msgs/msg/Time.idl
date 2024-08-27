@@ -1,0 +1,22 @@
+// This file was generated with the ROS2 software stack
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from builtin_interfaces/msg/Time.msg
+// generated code does not contain a copyright notice
+
+
+module builtin_interfaces {
+  module msg {
+    @verbatim (language="comment", text=
+      " Time indicates a specific point in time, relative to a clock's 0 point.")
+    struct Time {
+      @verbatim (language="comment", text=
+        " The seconds component, valid over all int32 values.")
+      int32 sec;
+
+      @verbatim (language="comment", text=
+        " The nanoseconds component, valid in the range [0, 10e9).")
+      uint32 nanosec;
+    };
+  };
+};

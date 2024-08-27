@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+    # Based on: https://gitlab.com/autowarefoundation/autoware.auto/AutowareAuto/-/blob/e3e26be1ab4b822996df60f261d031d7924f20ac/src/common/state_vector/package.xml
+    # In open-source project: Autoware.Auto
+    # Original file: Copyright (c) 2021-2022, Apex.AI, Inc.
+    # Modifications: Copyright (c) 2022-2023, Arm Limited.
+    # SPDX-License-Identifier: Apache-2.0
+-->
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+    <name>state_vector</name>
+    <version>1.0.0</version>
+    <description>State vector and its variables as a library.</description>
+    <maintainer email="opensource@apex.ai">Apex.AI, Inc.</maintainer>
+    <license>Apache 2.0</license>
+
+    <buildtool_depend>ament_cmake</buildtool_depend>
+    <buildtool_depend>autoware_cmake</buildtool_depend>
+
+    <build_depend>eigen</build_depend>
+    <build_depend>autoware_auto_common</build_depend>
+
+    <build_export_depend>eigen</build_export_depend>
+
+    <export><build_type>ament_cmake</build_type></export>
+</package>

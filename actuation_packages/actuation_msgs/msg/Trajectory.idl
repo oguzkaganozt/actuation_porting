@@ -1,0 +1,19 @@
+// This file was generated with Autoware.Auto
+
+#include "TrajectoryPoint.idl"
+#include "Header.idl"
+
+module autoware_auto_planning_msgs {
+  module msg {
+    module Trajectory_Constants {
+      const uint32 CAPACITY = 100;
+    };
+    @verbatim (language="comment", text=
+      " A set of trajectory points for the controller")
+    struct Trajectory {
+      std_msgs::msg::Header header;
+
+      sequence<autoware_auto_planning_msgs::msg::TrajectoryPoint, 100> points;
+    };
+  };
+};
