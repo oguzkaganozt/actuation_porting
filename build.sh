@@ -106,7 +106,7 @@ if [ "${PARTIAL_BUILD}" = "0" ] || [ "${ZEPHYR_ONLY}" = "1" ]; then
   build_zephyr
 fi
 
-if [ "${PARTIAL_BUILD}" = "0" ] || [ "${AUTOWARE_ONLY}" = "1" ]; then
-  # Build packages for the Autoware demo
-  colcon build --packages-select actuation_demos actuation_message_converter actuation_msgs --build-base build/autoware --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON --base-paths actuation_packages
-fi
+# if [ "${PARTIAL_BUILD}" = "0" ] || [ "${AUTOWARE_ONLY}" = "1" ]; then
+#   # Build packages for the Autoware demo
+#   colcon build --packages-select actuation_demos actuation_message_converter actuation_msgs --build-base build/autoware --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON --base-paths actuation_packages
+# fi

@@ -13,11 +13,11 @@ project(zephyr_app)
 
 include(GNUInstallDirs)
 
-find_package(Eigen3 REQUIRED)
+# find_package(Eigen3 REQUIRED)
 
-# Build CycloneDDS
-include(cyclonedds_config.cmake)
-create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
+# # Build CycloneDDS
+# include(cyclonedds_config.cmake)
+# create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
 # Get compile options from Zephyr to be passed to the Autoware packages.
 zephyr_get_include_directories_for_lang_as_string(C Cincludes)
@@ -45,94 +45,94 @@ set(external_project_cxxflags "${CXXincludes} ${CXXsystem_includes} ${CXXoptions
 # cmake derives the C++ compiler from the path to the C compiler.
 set(CMAKE_ARGS -DROS_DISTRO=humble -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install -DBUILD_TESTING=OFF -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_FLAGS=${external_project_cflags} -DCMAKE_CXX_FLAGS=${external_project_cxxflags})
 
-include(ExternalProject)
-externalproject_add(autoware_cmake_pkg
-  DEPENDS zephyr_interface
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_cmake
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(actuation_msgs_pkg
-  DEPENDS autoware_cmake_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(autoware_auto_common_pkg
-  DEPENDS actuation_msgs_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_auto_common
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(time_utils_pkg
-  DEPENDS actuation_msgs_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/time_utils
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(autoware_auto_geometry_pkg
-  DEPENDS autoware_auto_common_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_auto_geometry
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(state_vector_pkg
-  DEPENDS autoware_auto_common_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/state_vector
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(motion_common_pkg
-  DEPENDS time_utils_pkg autoware_auto_geometry_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/motion_common
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(motion_model_pkg
-  DEPENDS state_vector_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/motion_model
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(controller_common_pkg
-  DEPENDS motion_common_pkg motion_model_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/controller_common
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(controller_common_nodes_pkg
-  DEPENDS controller_common_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/controller_common_nodes
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(pure_pursuit_pkg
-  DEPENDS controller_common_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/pure_pursuit
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-externalproject_add(pure_pursuit_nodes_pkg
-  DEPENDS controller_common_nodes_pkg pure_pursuit_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/pure_pursuit_nodes
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
+# include(ExternalProject)
+# externalproject_add(autoware_cmake_pkg
+#   DEPENDS zephyr_interface
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_cmake
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(actuation_msgs_pkg
+#   DEPENDS autoware_cmake_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(autoware_auto_common_pkg
+#   DEPENDS actuation_msgs_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_auto_common
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(time_utils_pkg
+#   DEPENDS actuation_msgs_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/time_utils
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(autoware_auto_geometry_pkg
+#   DEPENDS autoware_auto_common_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_auto_geometry
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(state_vector_pkg
+#   DEPENDS autoware_auto_common_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/state_vector
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(motion_common_pkg
+#   DEPENDS time_utils_pkg autoware_auto_geometry_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/motion_common
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(motion_model_pkg
+#   DEPENDS state_vector_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/motion_model
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(controller_common_pkg
+#   DEPENDS motion_common_pkg motion_model_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/controller_common
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(controller_common_nodes_pkg
+#   DEPENDS controller_common_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/controller_common_nodes
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(pure_pursuit_pkg
+#   DEPENDS controller_common_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/pure_pursuit
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
+# externalproject_add(pure_pursuit_nodes_pkg
+#   DEPENDS controller_common_nodes_pkg pure_pursuit_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/pure_pursuit_nodes
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
 
-add_dependencies(app pure_pursuit_nodes_pkg)
+# add_dependencies(app pure_pursuit_nodes_pkg)
 
 target_sources(app PRIVATE
-  src/file.c
-  src/pure_pursuit_node_main.cpp
+  src/main.c
+  # src/pure_pursuit_node_main.cpp
   include/zephyr_app.hpp
 )
 
 target_include_directories(app PRIVATE
   include
   ${CMAKE_CURRENT_BINARY_DIR}/install/include
-  ${CycloneDDS_INCLUDE_DIR}
+  # ${CycloneDDS_INCLUDE_DIR}
 )
-target_include_directories(app PRIVATE SYSTEM ${EIGEN3_INCLUDE_DIR})
+# target_include_directories(app PRIVATE SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
 # Libraries must be listed in dependency order for correct static linking.
-target_link_libraries(app PRIVATE
-  pure_pursuit_nodes
-  pure_pursuit
-  controller_common_nodes
-  controller_common
-  motion_common
-  motion_model
-  time_utils
-  state_vector
-  actuation_msgs
-  cdds_lib
-)
+# target_link_libraries(app PRIVATE
+#   pure_pursuit_nodes
+#   pure_pursuit
+#   controller_common_nodes
+#   controller_common
+#   motion_common
+#   motion_model
+#   time_utils
+#   state_vector
+#   actuation_msgs
+#   cdds_lib
+# )
