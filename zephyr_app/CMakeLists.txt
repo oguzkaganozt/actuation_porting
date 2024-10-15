@@ -13,11 +13,11 @@ project(zephyr_app)
 
 include(GNUInstallDirs)
 
-# find_package(Eigen3 REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 # # Build CycloneDDS
-# include(cyclonedds_config.cmake)
-# create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
+include(cyclonedds_config.cmake)
+create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
 # Get compile options from Zephyr to be passed to the Autoware packages.
 zephyr_get_include_directories_for_lang_as_string(C Cincludes)
@@ -111,28 +111,18 @@ set(CMAKE_ARGS -DROS_DISTRO=humble -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY
 
 target_sources(app PRIVATE
   src/main.c
-  # src/pure_pursuit_node_main.cpp
   include/zephyr_app.hpp
 )
 
 target_include_directories(app PRIVATE
   include
   ${CMAKE_CURRENT_BINARY_DIR}/install/include
-  # ${CycloneDDS_INCLUDE_DIR}
+  ${CycloneDDS_INCLUDE_DIR}
 )
-# target_include_directories(app PRIVATE SYSTEM ${EIGEN3_INCLUDE_DIR})
+target_include_directories(app PRIVATE SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
 # Libraries must be listed in dependency order for correct static linking.
-# target_link_libraries(app PRIVATE
-#   pure_pursuit_nodes
-#   pure_pursuit
-#   controller_common_nodes
-#   controller_common
-#   motion_common
-#   motion_model
-#   time_utils
-#   state_vector
-#   actuation_msgs
-#   cdds_lib
-# )
+target_link_libraries(app PRIVATE
+  cdds_lib
+)

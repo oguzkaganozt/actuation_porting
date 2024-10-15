@@ -36,7 +36,7 @@ using geometry_msgs::msg::Pose;
 class VelocityFactorInterface
 {
 public:
-  [[nodiscard]] VelocityFactor get() const { return velocity_factor_; }
+  VelocityFactor get() const { return velocity_factor_; }
   void init(const VelocityFactorBehavior & behavior) { behavior_ = behavior; }
   void reset() { velocity_factor_.behavior = PlanningBehavior::UNKNOWN; }
 

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <autoware/motion_utils/factor/velocity_factor_interface.hpp>
-#include <autoware/motion_utils/trajectory/trajectory.hpp>
+#include "autoware/motion_utils/factor/velocity_factor_interface.hpp"
+#include "autoware/motion_utils/trajectory/trajectory.hpp"
 
 // TODO: uncomment the following includes when the corresponding messages are available
 // #include <autoware_planning_msgs/msg/path_point.hpp>
