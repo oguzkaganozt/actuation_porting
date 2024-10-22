@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: WAITING FOR MESSAGE CONVERSION
+
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 
-#include <geometry_msgs/msg/point.hpp>
-#include <geometry_msgs/msg/pose.hpp>
+// TODO: uncomment the following includes when the corresponding messages are available
+// #include <geometry_msgs/msg/point.hpp>
+// #include <geometry_msgs/msg/pose.hpp>
 
 namespace autoware::universe_utils
 {

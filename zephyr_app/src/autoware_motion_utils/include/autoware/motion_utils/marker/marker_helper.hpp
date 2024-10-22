@@ -15,7 +15,9 @@
 #ifndef AUTOWARE__MOTION_UTILS__MARKER__MARKER_HELPER_HPP_
 #define AUTOWARE__MOTION_UTILS__MARKER__MARKER_HELPER_HPP_
 
-#include <rclcpp/time.hpp>
+// PORTING: WAITING FOR VALIDATION OF ZEPHYR TIME FUNCTIONS
+
+#include <zephyr/kernel.h>  // For Zephyr time functions
 
 #include <visualization_msgs/msg/marker_array.hpp>
 
@@ -26,28 +28,28 @@ namespace autoware::motion_utils
 using geometry_msgs::msg::Pose;
 
 visualization_msgs::msg::MarkerArray createStopVirtualWallMarker(
-  const Pose & pose, const std::string & module_name, const rclcpp::Time & now, const int32_t id,
+  const Pose & pose, const std::string & module_name, const int64_t now, const int32_t id,
   const double longitudinal_offset = 0.0, const std::string & ns_prefix = "",
   const bool is_driving_forward = true);
 
 visualization_msgs::msg::MarkerArray createSlowDownVirtualWallMarker(
-  const Pose & pose, const std::string & module_name, const rclcpp::Time & now, const int32_t id,
+  const Pose & pose, const std::string & module_name, const int64_t now, const int32_t id,
   const double longitudinal_offset = 0.0, const std::string & ns_prefix = "",
   const bool is_driving_forward = true);
 
 visualization_msgs::msg::MarkerArray createDeadLineVirtualWallMarker(
-  const Pose & pose, const std::string & module_name, const rclcpp::Time & now, const int32_t id,
+  const Pose & pose, const std::string & module_name, const int64_t now, const int32_t id,
   const double longitudinal_offset = 0.0, const std::string & ns_prefix = "",
   const bool is_driving_forward = true);
 
 visualization_msgs::msg::MarkerArray createDeletedStopVirtualWallMarker(
-  const rclcpp::Time & now, const int32_t id);
+  const int64_t now, const int32_t id);
 
 visualization_msgs::msg::MarkerArray createDeletedSlowDownVirtualWallMarker(
-  const rclcpp::Time & now, const int32_t id);
+  const int64_t now, const int32_t id);
 
 visualization_msgs::msg::MarkerArray createDeletedDeadLineVirtualWallMarker(
-  const rclcpp::Time & now, const int32_t id);
+  const int64_t now, const int32_t id);
 }  // namespace autoware::motion_utils
 
 #endif  // AUTOWARE__MOTION_UTILS__MARKER__MARKER_HELPER_HPP_

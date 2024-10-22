@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: WAITING FOR MESSAGE CONVERSION
+
 #ifndef AUTOWARE__MOTION_UTILS__FACTOR__VELOCITY_FACTOR_INTERFACE_HPP_
 #define AUTOWARE__MOTION_UTILS__FACTOR__VELOCITY_FACTOR_INTERFACE_HPP_
 

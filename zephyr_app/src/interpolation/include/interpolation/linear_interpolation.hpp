@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: PASS
+
 #ifndef INTERPOLATION__LINEAR_INTERPOLATION_HPP_
 #define INTERPOLATION__LINEAR_INTERPOLATION_HPP_
 

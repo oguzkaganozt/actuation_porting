@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+// PORTING: WAITING FOR MESSAGE CONVERSION
+
 #ifndef AUTOWARE__MOTION_UTILS__RESAMPLE__RESAMPLE_HPP_
 #define AUTOWARE__MOTION_UTILS__RESAMPLE__RESAMPLE_HPP_
 
-#include "autoware_planning_msgs/msg/path.hpp"
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "tier4_planning_msgs/msg/path_with_lane_id.hpp"
+// TODO: uncomment the following includes when the corresponding messages are available
+// #include "autoware_planning_msgs/msg/path.hpp"
+// #include "autoware_planning_msgs/msg/trajectory.hpp"
+// #include "tier4_planning_msgs/msg/path_with_lane_id.hpp"
 
 #include <vector>
 
