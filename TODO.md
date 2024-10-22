@@ -16,7 +16,7 @@
     - [+] osqp_interface (PARTIAL PORTING DONE)
     - [+] autoware_trajectory_follower_base (PARTIAL PORTING DONE)
     - [ ] autoware_mpc_lateral_controller
-    - [ ] autoware_universe_utils (NEEDS TO BE INVESTIGATED FOR SELECTIVE PORTING)
+    - [ ] autoware_universe_utils (NEEDS TO BE INVESTIGATED FOR SELECTIVE PORTING: autoware_helper_utils can be used instead)
 
 ## Message Handling
 - [ ] Implement **message conversion** or compilation into idlc
