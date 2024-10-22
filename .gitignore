@@ -11,11 +11,14 @@ public/
 .vscode/
 *.log
 
+/zephyr
+/cyclonedds
+
 # Porting of the Nodes will be done in the following order
-# zephyr_app/src/autoware_vehicle_info_utils
-# zephyr_app/src/autoware_motion_utils
-# zephyr_app/src/autoware_universe_utils
-# zephyr_app/src/autoware_cmake
+zephyr_app/src/autoware_vehicle_info_utils
+zephyr_app/src/autoware_motion_utils
+zephyr_app/src/autoware_universe_utils
+zephyr_app/src/autoware_cmake
 zephyr_app/src/interpolation
 zephyr_app/src/osqp_interface
 zephyr_app/src/autoware_trajectory_follower_base
