@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: PASSED
+
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__SYNC_DATA_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__SYNC_DATA_HPP_
 

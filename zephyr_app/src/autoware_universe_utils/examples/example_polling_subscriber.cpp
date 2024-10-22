@@ -16,7 +16,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <std_msgs/msg/string.hpp>
+// TODO: uncomment the following includes when the corresponding messages are available
+// #include <std_msgs/msg/string.hpp>
 
 // PublisherNode class definition
 class PublisherNode : public rclcpp::Node

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: OSQP and EIGEN3 INTERFACE NEEDS TO BE VALIDATED
+
 #ifndef OSQP_INTERFACE__CSC_MATRIX_CONV_HPP_
 #define OSQP_INTERFACE__CSC_MATRIX_CONV_HPP_
 

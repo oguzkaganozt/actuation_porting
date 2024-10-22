@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/trajectory_follower_base/lateral_controller_base.hpp"
+// PORTING: WAITING FOR lateral_controller_base.hpp to be ported (MESSAGE CONVERSION)
+
+// #include "autoware/trajectory_follower_base/lateral_controller_base.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {

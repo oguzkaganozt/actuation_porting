@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "interpolation/spherical_linear_interpolation.hpp"
+// PORTING: WAITING FOR MESSAGE CONVERSION, WAITING FOR spherical_linear_interpolation.hpp to be ported
+
+// #include "interpolation/spherical_linear_interpolation.hpp"
 
 namespace interpolation
 {

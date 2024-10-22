@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: PASSED
+
 #ifndef OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
 #define OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
 

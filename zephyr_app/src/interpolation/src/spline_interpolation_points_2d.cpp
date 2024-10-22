@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "interpolation/spline_interpolation_points_2d.hpp"
+// PORTING: WAITING FOR spline_interpolation_points_2d.hpp(geometry.hpp) to be ported
+
+// #include "interpolation/spline_interpolation_points_2d.hpp"
 
 #include <vector>
 

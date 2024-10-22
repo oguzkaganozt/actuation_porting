@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: OSQP INTERFACE NEEDS TO BE VALIDATED
+
+#define LOG_MODULE_NAME osqp_interface
+#define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
+#include <zephyr/logging/log.h>
+
 #include "osqp_interface/osqp_interface.hpp"
 
 #include "osqp/osqp.h"
@@ -433,8 +439,8 @@ void OSQPInterface::logUnsolvedStatus(const std::string & prefix_message) const
   const auto status_message = getStatusMessage();
   output_message += "Optimization failed due to " + status_message;
 
-  // log with warning
-  RCLCPP_WARN(rclcpp::get_logger("osqp_interface"), output_message.c_str());
+  // log with warning using Zephyr's logging mechanism
+  LOG_WRN("%s", output_message.c_str());
 }
 }  // namespace osqp
 }  // namespace common

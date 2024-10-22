@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: WAITING FOR MESSAGE CONVERSION, WAITING FOR new tf2 library integration
+
 #ifndef INTERPOLATION__SPHERICAL_LINEAR_INTERPOLATION_HPP_
 #define INTERPOLATION__SPHERICAL_LINEAR_INTERPOLATION_HPP_
 
 #include "interpolation/interpolation_utils.hpp"
 
-#include <geometry_msgs/msg/quaternion.hpp>
+// TODO: uncomment the following includes when the corresponding messages are available
+// #include <geometry_msgs/msg/quaternion.hpp>
 
-#include <tf2/utils.h>
+// #include <tf2/utils.h>
 
-#ifdef ROS_DISTRO_GALACTIC
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#else
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
-#endif
+// #ifdef ROS_DISTRO_GALACTIC
+// #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+// #else
+// #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+// #endif
 
 #include <vector>
 

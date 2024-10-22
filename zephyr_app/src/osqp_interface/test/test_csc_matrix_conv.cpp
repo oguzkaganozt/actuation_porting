@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: PASSED
+
 #include "gtest/gtest.h"
 #include "osqp_interface/csc_matrix_conv.hpp"
 

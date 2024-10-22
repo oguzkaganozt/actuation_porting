@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: WAITING FOR geometry.hpp to be ported
+
 #ifndef INTERPOLATION__SPLINE_INTERPOLATION_HPP_
 #define INTERPOLATION__SPLINE_INTERPOLATION_HPP_
 
-#include "autoware/universe_utils/geometry/geometry.hpp"
+// #include "autoware/universe_utils/geometry/geometry.hpp"
 #include "interpolation/interpolation_utils.hpp"
 
 #include <algorithm>

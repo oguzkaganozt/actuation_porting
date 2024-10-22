@@ -28,20 +28,21 @@
 #define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
 
-#include <autoware_planning_msgs/msg/path.hpp>
-#include <autoware_planning_msgs/msg/trajectory.hpp>
-#include <geometry_msgs/msg/point32.hpp>
-#include <geometry_msgs/msg/pose_stamped.hpp>
-#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
-#include <geometry_msgs/msg/quaternion.hpp>
-#include <geometry_msgs/msg/transform_stamped.hpp>
-#include <geometry_msgs/msg/twist.hpp>
-#include <geometry_msgs/msg/twist_with_covariance.hpp>
-#include <geometry_msgs/msg/vector3.hpp>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
-#include <tier4_planning_msgs/msg/path_with_lane_id.hpp>
+// TODO: uncomment the following includes when the corresponding messages are available
+// #include <autoware_planning_msgs/msg/path.hpp>
+// #include <autoware_planning_msgs/msg/trajectory.hpp>
+// #include <geometry_msgs/msg/point32.hpp>
+// #include <geometry_msgs/msg/pose_stamped.hpp>
+// #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
+// #include <geometry_msgs/msg/quaternion.hpp>
+// #include <geometry_msgs/msg/transform_stamped.hpp>
+// #include <geometry_msgs/msg/twist.hpp>
+// #include <geometry_msgs/msg/twist_with_covariance.hpp>
+// #include <geometry_msgs/msg/vector3.hpp>
+// #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+// #include <tier4_planning_msgs/msg/path_with_lane_id.hpp>
 
-#include <tf2/utils.h>
+// #include <tf2/utils.h>
 
 // TODO(wep21): Remove these apis
 //              after they are implemented in ros2 geometry2.

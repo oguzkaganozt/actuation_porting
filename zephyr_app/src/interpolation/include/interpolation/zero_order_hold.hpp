@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: PASSED
+
 #ifndef INTERPOLATION__ZERO_ORDER_HOLD_HPP_
 #define INTERPOLATION__ZERO_ORDER_HOLD_HPP_
 

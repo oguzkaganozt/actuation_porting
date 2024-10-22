@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: OSQP and EIGEN3 INTERFACE NEEDS TO BE VALIDATED
+
 #ifndef OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 #define OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 
@@ -20,7 +22,7 @@
 #include "osqp_interface/visibility_control.hpp"
 
 #include <Eigen/Core>
-#include <rclcpp/rclcpp.hpp>
+// #include <rclcpp/rclcpp.hpp>
 
 #include <limits>
 #include <memory>
