@@ -1,5 +1,6 @@
 {
     "name": "zephyr",
-    "image": "ghcr.io/zephyrproject-rtos/ci:latest"
+    "build": {
+      "dockerfile": "../Dockerfile"
+    }
   }
-  

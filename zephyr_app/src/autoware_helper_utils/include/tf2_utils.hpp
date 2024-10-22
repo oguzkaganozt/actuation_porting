@@ -4,6 +4,12 @@ namespace tf2
 
 class Quaternion
 {
+//TODO: define
+  // tf2::Transform tf_pose;"
+  // tf2::Transform tf_offset;
+  // tf2::fromMsg(transform, tf_offset);
+  // tf2::fromMsg(p, tf_pose);
+  // tf2::toMsg(tf_pose * tf_offset, pose);"
 public:
   Quaternion() : m_x(0), m_y(0), m_z(0), m_w(1) {}
   Quaternion(double x, double y, double z, double w) : m_x(x), m_y(y), m_z(z), m_w(w) {}

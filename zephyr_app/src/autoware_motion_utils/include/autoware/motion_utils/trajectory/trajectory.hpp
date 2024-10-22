@@ -19,6 +19,7 @@
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/system/backtrace.hpp"
+#include "autoware_helper_utils/tf2_utils.hpp"
 
 #include <Eigen/Geometry>
 
