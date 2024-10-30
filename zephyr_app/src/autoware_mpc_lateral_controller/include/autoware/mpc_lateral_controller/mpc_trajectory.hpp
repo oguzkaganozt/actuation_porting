@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// PORTING: WAITING for msg conversion, WAITING for geometry.hpp 
+
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_TRAJECTORY_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_TRAJECTORY_HPP_
 
-#include "autoware/universe_utils/geometry/geometry.hpp"
+// #include "autoware/universe_utils/geometry/geometry.hpp"
 
-#include "geometry_msgs/msg/point.hpp"
+// TODO: uncomment when msg conversion is done
+// #include "geometry_msgs/msg/point.hpp"
 
 #include <iostream>
 #include <vector>
