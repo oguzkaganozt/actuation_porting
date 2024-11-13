@@ -51,9 +51,14 @@ externalproject_add(autoware_cmake_pkg
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_cmake
   CMAKE_ARGS ${CMAKE_ARGS}
 )
-# externalproject_add(actuation_msgs_pkg
+externalproject_add(actuation_msgs_pkg
+  DEPENDS autoware_cmake_pkg
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
+  CMAKE_ARGS ${CMAKE_ARGS}
+)
+# externalproject_add(autoware_vehicle_info_utils_pkg
 #   DEPENDS autoware_cmake_pkg
-#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_vehicle_info_utils
 #   CMAKE_ARGS ${CMAKE_ARGS}
 # )
 # externalproject_add(autoware_auto_common_pkg

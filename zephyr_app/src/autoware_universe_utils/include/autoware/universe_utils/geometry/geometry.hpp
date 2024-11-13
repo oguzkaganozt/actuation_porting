@@ -31,7 +31,7 @@
 // TODO: uncomment the following includes when the corresponding messages are available
 // #include <autoware_planning_msgs/msg/path.hpp>
 // #include <autoware_planning_msgs/msg/trajectory.hpp>
-// #include <geometry_msgs/msg/point32.hpp>
+#include <geometry_msgs/msg/point32.hpp>
 // #include <geometry_msgs/msg/pose_stamped.hpp>
 // #include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
 // #include <geometry_msgs/msg/quaternion.hpp>

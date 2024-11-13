@@ -1,25 +1,27 @@
-// This file was generated with the ROS2 software stack
-
 // generated from rosidl_adapter/resource/msg.idl.em
 // with input from std_msgs/msg/Header.msg
 // generated code does not contain a copyright notice
+
+#ifndef BUILTIN_INTERFACES__MSG__HEADER_IDL_
+#define BUILTIN_INTERFACES__MSG__HEADER_IDL_
 
 #include "Time.idl"
 
 module std_msgs {
   module msg {
     @verbatim (language="comment", text=
-      " Standard metadata for higher-level stamped data types." "\n"
-      " This is generally used to communicate timestamped data" "\n"
-      " in a particular coordinate frame.")
+      "Standard metadata for higher-level stamped data types." "\n"
+      "This is generally used to communicate timestamped data" "\n"
+      "in a particular coordinate frame.")
     struct Header {
       @verbatim (language="comment", text=
-        " Two-integer timestamp that is expressed as seconds and nanoseconds.")
+        "Two-integer timestamp that is expressed as seconds and nanoseconds.")
       builtin_interfaces::msg::Time stamp;
 
       @verbatim (language="comment", text=
-        " Transform frame with which this data is associated.")
+        "Transform frame with which this data is associated.")
       string frame_id;
     };
   };
 };
+#endif

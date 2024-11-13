@@ -1,0 +1,27 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/Shape.msg
+// generated code does not contain a copyright notice
+
+#ifndef AUTOWARE_PERCEPTION_MSGS__MSG__SHAPE_IDL_
+#define AUTOWARE_PERCEPTION_MSGS__MSG__SHAPE_IDL_
+
+#include "Polygon.idl"
+#include "Vector3.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    module Shape_Constants {
+      const uint8 BOUNDING_BOX = 0;
+      const uint8 CYLINDER = 1;
+      const uint8 POLYGON = 2;
+    };
+    struct Shape {
+      uint8 type;
+
+      geometry_msgs::msg::Polygon footprint;
+
+      geometry_msgs::msg::Vector3 dimensions;
+    };
+  };
+};
+#endif

@@ -1,0 +1,40 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/TrackedObjectKinematics.msg
+// generated code does not contain a copyright notice
+
+#ifndef AUTOWARE_PERCEPTION_MSGS__MSG__TRACKED_OBJECT_KINEMATICS_IDL_
+#define AUTOWARE_PERCEPTION_MSGS__MSG__TRACKED_OBJECT_KINEMATICS_IDL_
+
+#include "AccelWithCovariance.idl"
+#include "PoseWithCovariance.idl"
+#include "TwistWithCovariance.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    module TrackedObjectKinematics_Constants {
+      const uint8 UNAVAILABLE = 0;
+      @verbatim (language="comment", text=
+        "The orientation is determined only up to a sign flip. For instance, assume that cars are" "\n"        "longer than they are wide, and the perception pipeline can accurately estimate the" "\n"        "dimensions of a car. It should set the orientation to coincide with the major axis, with" "\n"        "the sign chosen arbitrarily, and use this tag to signify that the orientation could" "\n"        "point to the front or the back.")
+      const uint8 SIGN_UNKNOWN = 1;
+      @verbatim (language="comment", text=
+        "The full orientation is available. Use e.g. for machine-learning models that can" "\n"        "differentiate between the front and back of a vehicle.")
+      const uint8 AVAILABLE = 2;
+    };
+    @verbatim (language="comment", text=
+      "Only position is available, orientation is empty. Note that the shape can be an oriented" "\n"
+      "bounding box but the direction the object is facing is unknown, in which case" "\n"
+      "orientation should be empty.")
+    struct TrackedObjectKinematics {
+      geometry_msgs::msg::PoseWithCovariance pose_with_covariance;
+
+      geometry_msgs::msg::TwistWithCovariance twist_with_covariance;
+
+      geometry_msgs::msg::AccelWithCovariance acceleration_with_covariance;
+
+      uint8 orientation_availability;
+
+      boolean is_stationary;
+    };
+  };
+};
+#endif

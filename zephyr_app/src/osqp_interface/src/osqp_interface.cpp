@@ -37,6 +37,8 @@ namespace common
 {
 namespace osqp
 {
+
+LOG_MODULE_DECLARE(LOG_MODULE_NAME, LOG_LEVEL);
 OSQPInterface::OSQPInterface(const c_float eps_abs, const bool polish)
 : m_work{nullptr, OSQPWorkspaceDeleter}
 {
