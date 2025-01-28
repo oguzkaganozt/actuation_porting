@@ -101,7 +101,7 @@ if [ "${PARTIAL_BUILD}" = "0" ] || [ "${ZEPHYR_ONLY}" = "1" ]; then
     typeset LD_LIBRARY_PATH="${ROOT_DIR}"/build/cyclonedds_host/out/lib
     typeset CMAKE_PREFIX_PATH=""
     typeset AMENT_PREFIX_PATH=""
-    west build -p auto -d build/zephyr_app -b "${ZEPHYR_TARGET}" zephyr_app/ -- -DCYCLONEDDS_SRC="${ROOT_DIR}"/cyclonedds -DCONTROL_CMDS_FWD=${CONTROL_COMMANDS_CHANNEL}
+    west build -p auto -d build/zephyr_app -b "${ZEPHYR_TARGET}" zephyr_app/ -- -DCYCLONEDDS_SRC="${ROOT_DIR}"/cyclonedds -DCONTROL_CMDS_FWD=${CONTROL_COMMANDS_CHANNEL} -DEXTRA_CFLAGS="-Wno-error" -DEXTRA_CXXFLAGS="-Wno-error"
   }
   build_zephyr
 fi

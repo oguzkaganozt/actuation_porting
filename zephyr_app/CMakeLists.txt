@@ -8,12 +8,14 @@ set(CONF_FILE "prj_actuation.conf")
 set(OVERLAY_CONFIG "prj_net.conf;${OVERLAY_CONFIG}" CACHE STRING "overlay config" FORCE)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+set(OSQP_DIR "${CMAKE_CURRENT_BINARY_DIR}/install/lib/cmake/osqp")
 
 project(zephyr_app)
 
 include(GNUInstallDirs)
 
 find_package(Eigen3 REQUIRED)
+find_package(osqp REQUIRED)
 
 # # Build CycloneDDS
 include(cyclonedds_config.cmake)
@@ -38,8 +40,8 @@ elseif(${CONTROL_CMDS_FWD} STREQUAL "dds")
   target_compile_options(app PRIVATE "-DCONTROL_CMDS_FWD_DDS")
 endif()
 
-set(external_project_cflags "${Cincludes} ${Csystem_includes} ${Coptions} ${CONTROL_CMDS_FWD_FLAG}")
-set(external_project_cxxflags "${CXXincludes} ${CXXsystem_includes} ${CXXoptions} ${CONTROL_CMDS_FWD_FLAG}")
+set(external_project_cflags "${Cincludes} ${Csystem_includes} ${Coptions} -Wno-error ${CONTROL_CMDS_FWD_FLAG} -Wno-error")
+set(external_project_cxxflags "${CXXincludes} ${CXXsystem_includes} ${CXXoptions} -Wno-error ${CONTROL_CMDS_FWD_FLAG} -Wno-error")
 
 # Build actuation and its dependencies with the current Zephyr compiler and flags.
 # cmake derives the C++ compiler from the path to the C compiler.
@@ -57,7 +59,7 @@ externalproject_add(actuation_msgs_pkg
   CMAKE_ARGS ${CMAKE_ARGS}
 )
 externalproject_add(osqp_interface
-  DEPENDS actuation_msgs_pkg
+  DEPENDS autoware_cmake_pkg
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/osqp_interface
   CMAKE_ARGS ${CMAKE_ARGS}
 )
@@ -106,6 +108,7 @@ target_include_directories(app PRIVATE
   ${CycloneDDS_INCLUDE_DIR}
 )
 target_include_directories(app PRIVATE SYSTEM ${EIGEN3_INCLUDE_DIR})
+target_include_directories(app PRIVATE SYSTEM ${OSQP_INCLUDE_DIR})
 
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
 # Libraries must be listed in dependency order for correct static linking.

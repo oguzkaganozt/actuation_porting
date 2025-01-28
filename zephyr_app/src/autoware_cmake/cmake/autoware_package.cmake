@@ -51,6 +51,7 @@ macro(autoware_package)
   # Set common system includes
   include_directories(SYSTEM
     ${EIGEN3_INCLUDE_DIR}
+    ${OSQP_INCLUDE_DIR}
   )
 
   # Workaround for lanelet2-core@1.2.1

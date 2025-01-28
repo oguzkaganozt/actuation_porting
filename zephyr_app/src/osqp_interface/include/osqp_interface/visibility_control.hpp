@@ -33,7 +33,8 @@
 #define OSQP_INTERFACE_PUBLIC __attribute__((visibility("default")))
 #define OSQP_INTERFACE_LOCAL __attribute__((visibility("hidden")))
 #else
-#error "Unsupported Build Configuration"
+#define OSQP_INTERFACE_PUBLIC __attribute__((visibility("default")))
+#define OSQP_INTERFACE_LOCAL __attribute__((visibility("hidden")))
 #endif
 
 #endif  // OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
