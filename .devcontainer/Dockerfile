@@ -1,7 +1,7 @@
 # Copyright (c) 2022-2024, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
 
-ARG BASE_IMAGE=ghcr.io/autowarefoundation/autoware:20240816-devel
+ARG BASE_IMAGE=ghcr.io/autowarefoundation/autoware:20240823-devel
 
 FROM $BASE_IMAGE as autoware
 
