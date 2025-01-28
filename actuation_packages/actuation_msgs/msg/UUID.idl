@@ -14,7 +14,7 @@ module unique_identifier_msgs {
       " http://en.wikipedia.org/wiki/Universally_unique_identifier" "\n"
       " http://tools.ietf.org/html/rfc4122.html")
     struct UUID {
-      uint8__16 uuid;
+      uint8__16 data;
     };
   };
 };
