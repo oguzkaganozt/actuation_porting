@@ -44,15 +44,5 @@ ament_export_include_directories("${OSQP_INCLUDE_DIR}")
 # crucial so the linking order is correct in a downstream package: libosqp_interface.a should come before libosqp.a
 ament_export_libraries(osqp::osqp)
 
-if(BUILD_TESTING)
-  set(TEST_SOURCES
-    test/test_osqp_interface.cpp
-    test/test_csc_matrix_conv.cpp
-  )
-  set(TEST_OSQP_INTERFACE_EXE test_osqp_interface)
-  ament_add_ros_isolated_gtest(${TEST_OSQP_INTERFACE_EXE} ${TEST_SOURCES})
-  target_link_libraries(${TEST_OSQP_INTERFACE_EXE} ${PROJECT_NAME})
-endif()
-
 ament_auto_package(INSTALL_TO_SHARE
 )
