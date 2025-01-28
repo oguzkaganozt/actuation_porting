@@ -1,0 +1,46 @@
+NODES -> Build
+Finished <<< osqp_interface [34.5s]                                                
+Finished <<< autoware_universe_utils [25.7s]                              
+Finished <<< autoware_vehicle_info_utils [8.71s]                                                     
+Finished <<< interpolation [22.8s]                                                              
+Finished <<< autoware_motion_utils [45.5s]                                                                    
+Finished <<< autoware_trajectory_follower_base [1min 14s]                                                                  
+Finished <<< autoware_mpc_lateral_controller [53.1s]  
+
+MESSAGES -> Convert to IDL
+Finished <<< autoware_common_msgs [11.7s]                                          
+Finished <<< autoware_internal_msgs [14.7s]                                         
+Finished <<< autoware_control_msgs [16.0s]                                          
+Finished <<< autoware_planning_msgs [19.2s]                                      
+Finished <<< tier4_debug_msgs [27.7s]  
+Finished <<< autoware_perception_msgs [35.4s]                                      
+Finished <<< autoware_vehicle_msgs [23.1s]                                         
+Finished <<< autoware_adapi_v1_msgs [1min 4s]                                             
+Finished <<< tier4_planning_msgs [48.5s]  
+
+CMAKE -> Do not build
+Finished <<< ament_cmake_core [1.03s]                                                                                 
+Finished <<< ament_cmake_include_directories [0.74s]                      
+Finished <<< ament_cmake_export_definitions [0.73s]
+Finished <<< ament_cmake_libraries [0.78s]
+Finished <<< ament_cmake_version [0.75s]
+Finished <<< ament_cmake_export_link_flags [0.77s]
+Finished <<< ament_cmake_python [0.83s]
+Finished <<< ament_cmake_export_libraries [0.83s]
+Finished <<< ament_cmake_export_include_directories [0.80s]                                              
+Finished <<< ament_cmake_target_dependencies [0.54s]                                   
+Finished <<< ament_cmake_export_dependencies [0.56s]
+Finished <<< ament_cmake_export_interfaces [0.51s]                     
+Finished <<< ament_cmake_export_targets [0.51s]
+Finished <<< ament_cmake_test [0.93s]  
+Finished <<< ament_cmake_gtest [0.51s]                    
+Finished <<< ament_cmake_gmock [0.50s]                                          
+Finished <<< ament_cmake_gen_version_h [6.06s]                        
+Finished <<< ament_cmake [0.49s]                     
+Finished <<< ament_cmake_auto [0.59s]                                                                                 
+Finished <<< autoware_cmake [0.65s]  
+
+UTILS -> Do not build
+Finished <<< autoware_lint_common [0.47s]  
+
+Summary: 37 packages finished [5min 0s]
