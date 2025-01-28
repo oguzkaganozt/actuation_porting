@@ -29,32 +29,4 @@ target_link_libraries(autoware_universe_utils
   fmt::fmt
 )
 
-if(BUILD_TESTING)
-  find_package(ament_cmake_ros REQUIRED)
-
-  file(GLOB_RECURSE test_files test/**/*.cpp)
-
-  ament_add_ros_isolated_gtest(test_autoware_universe_utils ${test_files})
-
-  target_link_libraries(test_autoware_universe_utils
-    autoware_universe_utils
-  )
-endif()
-
-if(BUILD_EXAMPLES)
-  message(STATUS "Building examples")
-  file(GLOB_RECURSE example_files examples/*.cpp)
-
-  foreach(example_file ${example_files})
-    get_filename_component(example_name ${example_file} NAME_WE)
-    add_executable(${example_name} ${example_file})
-    target_link_libraries(${example_name}
-      autoware_universe_utils
-    )
-    install(TARGETS ${example_name}
-      DESTINATION lib/${PROJECT_NAME}
-    )
-  endforeach()
-endif()
-
 ament_auto_package()
