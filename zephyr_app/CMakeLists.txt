@@ -44,11 +44,11 @@ set(CMAKE_ARGS -DROS_DISTRO=humble -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY
 
 # Build actuation_msgs
 include(ExternalProject)
-externalproject_add(actuation_msgs_pkg
-  DEPENDS autoware_cmake_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
+# externalproject_add(actuation_msgs_pkg
+#   DEPENDS autoware_cmake_pkg
+#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
+#   CMAKE_ARGS ${CMAKE_ARGS}
+# )
 
 # Set default sources and headers
 set(app_sources
@@ -64,6 +64,9 @@ set(app_headers
 # Add actuation modules
 include(src/osqp_interface/osqp_interface.cmake)
 add_osqp_interface(app_sources app_headers)
+
+# include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
+# add_autoware_vehicle_info_utils(app_sources app_headers)
 
 # Build actuation_autoware
 message(STATUS "app_sources: ${app_sources}")
