@@ -23,7 +23,7 @@
 #define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
 
-// #include <geometry_msgs/msg/point.hpp>
+#include <geometry_msgs/msg/point.hpp>
 #include "Point.h"
 
 namespace autoware::universe_utils
