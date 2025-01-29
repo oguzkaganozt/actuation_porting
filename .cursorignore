@@ -1,9 +1,14 @@
 # Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
 build/
 log/
-logs/
 zephyr/
 cyclonedds/
+rosidl_adapter/
+actuation_packages/
+Dockerfiles/
+documentation/
+packet_analyzer/
+modules/
 *.obj
 *.o
 *.a
@@ -13,3 +18,6 @@ cyclonedds/
 *.dylib
 *.exe
 *.out
+*.gitignore
+*.log
+*.txt

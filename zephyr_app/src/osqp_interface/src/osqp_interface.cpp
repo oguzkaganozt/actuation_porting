@@ -17,6 +17,9 @@
 #define LOG_MODULE_NAME osqp_interface
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(osqp_interface, LOG_LEVEL_DBG);
+
+#include <zephyr/kernel.h>
 
 #include "osqp_interface/osqp_interface.hpp"
 
