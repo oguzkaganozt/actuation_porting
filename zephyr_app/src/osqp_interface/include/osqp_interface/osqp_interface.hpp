@@ -22,7 +22,6 @@
 #include "osqp_interface/visibility_control.hpp"
 
 #include <Eigen/Core>
-// #include <rclcpp/rclcpp.hpp>
 
 #include <limits>
 #include <memory>
