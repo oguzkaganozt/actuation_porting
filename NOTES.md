@@ -1,0 +1,36 @@
+# Autoware Universe Utils Port Tasks
+
+## Geometry
+
+- [ ] geometry/geometry.hpp
+  - [ ] sub-dependencies...
+- [ ] geometry/boost_geometry.hpp
+  - [ ] sub-dependencies...
+- [ ] geometry/boost_polygon_utils.hpp
+  - [ ] sub-dependencies...
+- [ ] geometry/gjk_2d.hpp
+  - [ ] sub-dependencies...
+- [ ] geometry/pose_deviation.hpp
+  - [ ] sub-dependencies...
+
+## Math
+
+- [ ] math/constants.hpp
+  - [ ] sub-dependencies...
+- [ ] math/normalization.hpp
+  - [ ] sub-dependencies...
+- [ ] math/unit_conversion.hpp
+  - [ ] sub-dependencies...
+
+## ROS
+
+- [ ] ros/marker_helper.hpp
+  - [ ] sub-dependencies...
+
+
+# Autoware Motion Utils Port Tasks
+
+- [ ] motion_utils/trajectory/trajectory.hpp
+  - [ ] sub-dependencies...
+- [ ] motion_utils/trajectory/trajectory.cpp
+  - [ ] sub-dependencies...
