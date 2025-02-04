@@ -12,19 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: OSQP INTERFACE NEEDS TO BE VALIDATED
+#include "autoware/osqp_interface/osqp_interface.hpp"
 
-#define LOG_MODULE_NAME osqp_interface
-#define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
-#include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(osqp_interface, LOG_LEVEL_DBG);
-
-#include <zephyr/kernel.h>
-
-#include "osqp_interface/osqp_interface.hpp"
-
+#include "autoware/osqp_interface/csc_matrix_conv.hpp"
 #include "osqp/osqp.h"
-#include "osqp_interface/csc_matrix_conv.hpp"
 
 #include <chrono>
 #include <iostream>
@@ -34,14 +25,8 @@ LOG_MODULE_REGISTER(osqp_interface, LOG_LEVEL_DBG);
 #include <tuple>
 #include <vector>
 
-namespace autoware
+namespace autoware::osqp_interface
 {
-namespace common
-{
-namespace osqp
-{
-
-LOG_MODULE_DECLARE(LOG_MODULE_NAME, LOG_LEVEL);
 OSQPInterface::OSQPInterface(const c_float eps_abs, const bool polish)
 : m_work{nullptr, OSQPWorkspaceDeleter}
 {
@@ -444,9 +429,7 @@ void OSQPInterface::logUnsolvedStatus(const std::string & prefix_message) const
   const auto status_message = getStatusMessage();
   output_message += "Optimization failed due to " + status_message;
 
-  // log with warning using Zephyr's logging mechanism
-  LOG_WRN("%s", output_message.c_str());
+  // log with warning
+  // RCLCPP_WARN(rclcpp::get_logger("osqp_interface"), "%s", output_message.c_str());
 }
-}  // namespace osqp
-}  // namespace common
-}  // namespace autoware
+}  // namespace autoware::osqp_interface

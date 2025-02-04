@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: OSQP and EIGEN3 INTERFACE NEEDS TO BE VALIDATED
+#ifndef AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_
+#define AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 
-#ifndef OSQP_INTERFACE__OSQP_INTERFACE_HPP_
-#define OSQP_INTERFACE__OSQP_INTERFACE_HPP_
-
+#include "autoware/osqp_interface/csc_matrix_conv.hpp"
+#include "autoware/osqp_interface/visibility_control.hpp"
 #include "osqp/osqp.h"
-#include "osqp_interface/csc_matrix_conv.hpp"
-#include "osqp_interface/visibility_control.hpp"
 
 #include <Eigen/Core>
 
@@ -29,11 +27,7 @@
 #include <tuple>
 #include <vector>
 
-namespace autoware
-{
-namespace common
-{
-namespace osqp
+namespace autoware::osqp_interface
 {
 constexpr c_float INF = 1e30;
 
@@ -194,8 +188,6 @@ public:
   void logUnsolvedStatus(const std::string & prefix_message = "") const;
 };
 
-}  // namespace osqp
-}  // namespace common
-}  // namespace autoware
+}  // namespace autoware::osqp_interface
 
-#endif  // OSQP_INTERFACE__OSQP_INTERFACE_HPP_
+#endif  // AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_

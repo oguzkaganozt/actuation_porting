@@ -86,7 +86,7 @@ set(app_headers
 )
 
 # Include actuation modules
-include(src/osqp_interface/osqp_interface.cmake)
+include(src/autoware_osqp_interface/osqp_interface.cmake)
 # include(src/autoware_universe_utils/autoware_universe_utils.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
 # include(src/interpolation/interpolation.cmake)

@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: PASSED
-
-#ifndef OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
-#define OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
+#ifndef AUTOWARE__OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
+#define AUTOWARE__OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
 
 ////////////////////////////////////////////////////////////////////////////////
 #if defined(__WIN32)
@@ -37,4 +35,4 @@
 #define OSQP_INTERFACE_LOCAL __attribute__((visibility("hidden")))
 #endif
 
-#endif  // OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
+#endif  // AUTOWARE__OSQP_INTERFACE__VISIBILITY_CONTROL_HPP_
