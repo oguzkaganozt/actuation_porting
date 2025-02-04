@@ -13,16 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: WAITING FOR MESSAGE CONVERSION
-
 #ifndef AUTOWARE__MOTION_UTILS__FACTOR__VELOCITY_FACTOR_INTERFACE_HPP_
 #define AUTOWARE__MOTION_UTILS__FACTOR__VELOCITY_FACTOR_INTERFACE_HPP_
 
-// TODO: uncomment the following includes when the corresponding messages are available
-// #include <autoware_adapi_v1_msgs/msg/planning_behavior.hpp>
-// #include <autoware_adapi_v1_msgs/msg/velocity_factor.hpp>
-// #include <autoware_adapi_v1_msgs/msg/velocity_factor_array.hpp>
-// #include <geometry_msgs/msg/pose.hpp>
+#include <autoware_adapi_v1_msgs/msg/planning_behavior.hpp>
+#include <autoware_adapi_v1_msgs/msg/velocity_factor.hpp>
+#include <autoware_adapi_v1_msgs/msg/velocity_factor_array.hpp>
+#include <geometry_msgs/msg/pose.hpp>
 
 #include <string>
 #include <vector>
@@ -38,7 +35,7 @@ using geometry_msgs::msg::Pose;
 class VelocityFactorInterface
 {
 public:
-  VelocityFactor get() const { return velocity_factor_; }
+  [[nodiscard]] VelocityFactor get() const { return velocity_factor_; }
   void init(const VelocityFactorBehavior & behavior) { behavior_ = behavior; }
   void reset() { velocity_factor_.behavior = PlanningBehavior::UNKNOWN; }
 
@@ -46,6 +43,9 @@ public:
   void set(
     const std::vector<PointType> & points, const Pose & curr_pose, const Pose & stop_pose,
     const VelocityFactorStatus status, const std::string & detail = "");
+
+  void set(
+    const double & distance, const VelocityFactorStatus & status, const std::string & detail = "");
 
 private:
   VelocityFactorBehavior behavior_{VelocityFactor::UNKNOWN};

@@ -12,24 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: WAITING FOR THE MESSAGE CONVERSION
-
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LATERAL_CONTROLLER_BASE_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LATERAL_CONTROLLER_BASE_HPP_
 
+#include "autoware/trajectory_follower_base/control_horizon.hpp"
 #include "autoware/trajectory_follower_base/input_data.hpp"
 #include "autoware/trajectory_follower_base/sync_data.hpp"
-// #include "rclcpp/rclcpp.hpp"
+#include "rclcpp/rclcpp.hpp"
 
-//TODO: uncomment when message conversion is done
-// #include "autoware_control_msgs/msg/lateral.hpp"
+#include "autoware_control_msgs/msg/lateral.hpp"
 
 #include <boost/optional.hpp>
 namespace autoware::motion::control::trajectory_follower
 {
+using autoware_control_msgs::msg::Lateral;
 struct LateralOutput
 {
-  autoware_control_msgs::msg::Lateral control_cmd;
+  Lateral control_cmd;
+  LateralHorizon control_cmd_horizon;
   LateralSyncData sync_data;
 };
 

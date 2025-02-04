@@ -12,12 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/helper_utils/system/backtrace.hpp"
+#include "autoware/universe_utils/system/backtrace.hpp"
 
-// #include "rclcpp/rclcpp.hpp"
-#define LOG_MODULE_NAME backtrace
-#define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
-#include <zephyr/logging/log.h>
+#include "rclcpp/rclcpp.hpp"
 
 #include <execinfo.h>
 
@@ -26,11 +23,10 @@
 #include <sstream>
 #include <vector>
 
-namespace autoware::helper_utils
+namespace autoware::universe_utils
 {
 
-LOG_MODULE_DECLARE(LOG_MODULE_NAME, LOG_LEVEL);
-
+// cppcheck-suppress unusedFunction
 void print_backtrace()
 {
   constexpr size_t max_frames = 100;
@@ -49,9 +45,9 @@ void print_backtrace()
   for (int i = 1; i < addrlen; i++) {
     ss << "   @   " << symbol_list[i] << std::endl;
   }
-  LOG_INF("%s", ss.str().c_str());
+  RCLCPP_DEBUG_STREAM(rclcpp::get_logger("autoware_universe_utils"), ss.str());
 
   free(symbol_list);
 }
 
-}  // namespace autoware::helper_utils
+}  // namespace autoware::universe_utils

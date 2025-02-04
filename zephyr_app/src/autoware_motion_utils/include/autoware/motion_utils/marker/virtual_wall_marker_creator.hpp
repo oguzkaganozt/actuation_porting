@@ -12,17 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: WAITING FOR VALIDATION OF ZEPHYR TIME FUNCTIONS, WAITING FOR MESSAGE CONVERSION
-
 #ifndef AUTOWARE__MOTION_UTILS__MARKER__VIRTUAL_WALL_MARKER_CREATOR_HPP_
 #define AUTOWARE__MOTION_UTILS__MARKER__VIRTUAL_WALL_MARKER_CREATOR_HPP_
 
-#include <zephyr/kernel.h>
-#include <zephyr/sys/timeutil.h>
+#include <rclcpp/time.hpp>
 
-// TODO: uncomment the following includes when the corresponding messages are available
-// #include <geometry_msgs/msg/pose.hpp>
-// #include <visualization_msgs/msg/marker_array.hpp>
+#include <geometry_msgs/msg/pose.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
 #include <functional>
 #include <string>
@@ -58,7 +54,7 @@ class VirtualWallMarkerCreator
 
   using create_wall_function = std::function<visualization_msgs::msg::MarkerArray(
     const geometry_msgs::msg::Pose & pose, const std::string & module_name,
-    const int64_t now, const int32_t id, const double longitudinal_offset,
+    const rclcpp::Time & now, const int32_t id, const double longitudinal_offset,
     const std::string & ns_prefix, const bool is_driving_forward)>;
 
   VirtualWalls virtual_walls_;
@@ -77,8 +73,8 @@ public:
 
   /// @brief create markers for the stored virtual walls
   /// @details also create DELETE markers for the namespace+ids that are no longer used
-  /// @param now current time to be used for displaying the markers (in milliseconds)
-  visualization_msgs::msg::MarkerArray create_markers(const int64_t now = k_uptime_get());
+  /// @param now current time to be used for displaying the markers
+  visualization_msgs::msg::MarkerArray create_markers(const rclcpp::Time & now = rclcpp::Time());
 };
 }  // namespace autoware::motion_utils
 

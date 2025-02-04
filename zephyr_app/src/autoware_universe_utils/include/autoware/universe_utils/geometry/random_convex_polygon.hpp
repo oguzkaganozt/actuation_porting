@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: WAITING FOR geometry.hpp to be ported
-
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__RANDOM_CONVEX_POLYGON_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__RANDOM_CONVEX_POLYGON_HPP_
 

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: PASS
-
 #ifndef AUTOWARE__MOTION_UTILS__DISTANCE__DISTANCE_HPP_
 #define AUTOWARE__MOTION_UTILS__DISTANCE__DISTANCE_HPP_
 

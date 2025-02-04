@@ -13,8 +13,12 @@
 // limitations under the License.
 
 #include "autoware/universe_utils/geometry/boost_polygon_utils.hpp"
+
 #include "autoware/universe_utils/geometry/geometry.hpp"
+
 #include <boost/geometry/geometry.hpp>
+
+#include <tf2/utils.h>
 
 namespace
 {
@@ -154,7 +158,7 @@ Polygon2d toPolygon2d(
       appendPointToPolygon(polygon, point);
     }
   } else if (shape.type == autoware_perception_msgs::msg::Shape::POLYGON) {
-    const double poly_yaw = getYaw(pose.orientation);
+    const double poly_yaw = tf2::getYaw(pose.orientation);
     const auto rotated_footprint = rotatePolygon(shape.footprint, poly_yaw);
     for (const auto rel_point : rotated_footprint.points) {
       geometry_msgs::msg::Point abs_point;

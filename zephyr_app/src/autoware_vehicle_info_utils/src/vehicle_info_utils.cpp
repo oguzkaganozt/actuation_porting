@@ -13,31 +13,49 @@
 // limitations under the License.
 
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
+
 #include <string>
+
+namespace
+{
+template <class T>
+T getParameter(rclcpp::Node & node, const std::string & name)
+{
+  if (node.has_parameter(name)) {
+    return node.get_parameter(name).get_value<T>();
+  }
+
+  try {
+    return node.declare_parameter<T>(name);
+  } catch (const rclcpp::ParameterTypeException & ex) {
+    RCLCPP_ERROR(
+      node.get_logger(), "Failed to get parameter `%s`, please set it when you launch the node.",
+      name.c_str());
+    throw(ex);
+  }
+}
+}  // namespace
 
 namespace autoware::vehicle_info_utils
 {
-VehicleInfoUtils::VehicleInfoUtils(
-  double wheel_radius_m, double wheel_width_m, double wheel_base_m, double wheel_tread_m,
-  double front_overhang_m, double rear_overhang_m, double left_overhang_m, double right_overhang_m,
-  double vehicle_height_m, double max_steer_angle_rad
-)
-  : vehicle_info_{
-      wheel_radius_m,
-      wheel_width_m,
-      wheel_base_m,
-      wheel_tread_m,
-      front_overhang_m,
-      rear_overhang_m,
-      left_overhang_m,
-      right_overhang_m,
-      vehicle_height_m,
-      max_steer_angle_rad
-    }
+VehicleInfoUtils::VehicleInfoUtils(rclcpp::Node & node)
 {
+  const auto wheel_radius_m = getParameter<double>(node, "wheel_radius");
+  const auto wheel_width_m = getParameter<double>(node, "wheel_width");
+  const auto wheel_base_m = getParameter<double>(node, "wheel_base");
+  const auto wheel_tread_m = getParameter<double>(node, "wheel_tread");
+  const auto front_overhang_m = getParameter<double>(node, "front_overhang");
+  const auto rear_overhang_m = getParameter<double>(node, "rear_overhang");
+  const auto left_overhang_m = getParameter<double>(node, "left_overhang");
+  const auto right_overhang_m = getParameter<double>(node, "right_overhang");
+  const auto vehicle_height_m = getParameter<double>(node, "vehicle_height");
+  const auto max_steer_angle_rad = getParameter<double>(node, "max_steer_angle");
+  vehicle_info_ = createVehicleInfo(
+    wheel_radius_m, wheel_width_m, wheel_base_m, wheel_tread_m, front_overhang_m, rear_overhang_m,
+    left_overhang_m, right_overhang_m, vehicle_height_m, max_steer_angle_rad);
 }
 
-VehicleInfo VehicleInfoUtils::getVehicleInfo()
+VehicleInfo VehicleInfoUtils::getVehicleInfo() const
 {
   return vehicle_info_;
 }

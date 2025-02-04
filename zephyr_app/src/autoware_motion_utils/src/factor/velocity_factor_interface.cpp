@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/motion_utils/factor/velocity_factor_interface.hpp"
-#include "autoware/motion_utils/trajectory/trajectory.hpp"
+#include <autoware/motion_utils/factor/velocity_factor_interface.hpp>
+#include <autoware/motion_utils/trajectory/trajectory.hpp>
 
-// TODO: uncomment the following includes when the corresponding messages are available
-// #include <autoware_planning_msgs/msg/path_point.hpp>
-// #include <autoware_planning_msgs/msg/trajectory_point.hpp>
-// #include <tier4_planning_msgs/msg/path_point_with_lane_id.hpp>
+#include <autoware_planning_msgs/msg/path_point.hpp>
+#include <autoware_planning_msgs/msg/trajectory_point.hpp>
+#include <tier4_planning_msgs/msg/path_point_with_lane_id.hpp>
+
+#include <string>
+#include <vector>
 
 namespace autoware::motion_utils
 {
@@ -33,6 +35,15 @@ void VelocityFactorInterface::set(
   velocity_factor_.pose = stop_pose;
   velocity_factor_.distance =
     static_cast<float>(autoware::motion_utils::calcSignedArcLength(points, curr_point, stop_point));
+  velocity_factor_.status = status;
+  velocity_factor_.detail = detail;
+}
+
+void VelocityFactorInterface::set(
+  const double & distance, const VelocityFactorStatus & status, const std::string & detail)
+{
+  velocity_factor_.behavior = behavior_;
+  velocity_factor_.distance = static_cast<float>(distance);
   velocity_factor_.status = status;
   velocity_factor_.detail = detail;
 }

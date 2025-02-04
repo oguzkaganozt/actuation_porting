@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: WAITING FOR MESSAGE CONVERSION, WAITING FOR geometry.hpp to be ported
-
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 
@@ -21,14 +19,13 @@
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/system/backtrace.hpp"
-#include "autoware_helper_utils/tf2_utils.hpp"
 
 #include <Eigen/Geometry>
+#include <rclcpp/logging.hpp>
 
-// TODO: uncomment the following includes when the corresponding messages are available
-// #include <autoware_planning_msgs/msg/path_point.hpp>
-// #include <autoware_planning_msgs/msg/trajectory_point.hpp>
-// #include <tier4_planning_msgs/msg/path_point_with_lane_id.hpp>
+#include <autoware_planning_msgs/msg/path_point.hpp>
+#include <autoware_planning_msgs/msg/trajectory_point.hpp>
+#include <tier4_planning_msgs/msg/path_point_with_lane_id.hpp>
 
 #include <algorithm>
 #include <limits>
@@ -40,6 +37,12 @@
 
 namespace autoware::motion_utils
 {
+static inline rclcpp::Logger get_logger()
+{
+  constexpr const char * logger{"autoware_motion_utils.trajectory"};
+  return rclcpp::get_logger(logger);
+}
+
 /**
  * @brief validate if points container is empty or not
  * @param points points of trajectory, path, ...
@@ -217,7 +220,7 @@ std::optional<size_t> searchZeroVelocityIndex(
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -249,7 +252,7 @@ std::optional<size_t> searchZeroVelocityIndex(const T & points_with_twist, const
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -337,7 +340,7 @@ std::optional<size_t> findNearestIndex(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -410,7 +413,8 @@ double calcLongitudinalOffsetToSegment(
     if (throw_exception) {
       throw std::out_of_range(error_message);
     }
-    printf(
+    RCLCPP_DEBUG(
+      get_logger(),
       "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
       error_message.c_str());
     return std::nan("");
@@ -424,7 +428,7 @@ double calcLongitudinalOffsetToSegment(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      printf( "%s", e.what());
+      RCLCPP_DEBUG(get_logger(), "%s", e.what());
       return std::nan("");
     }
   }
@@ -437,7 +441,8 @@ double calcLongitudinalOffsetToSegment(
     if (throw_exception) {
       throw std::runtime_error(error_message);
     }
-    printf(
+    RCLCPP_DEBUG(
+      get_logger(),
       "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
       error_message.c_str());
     return std::nan("");
@@ -582,7 +587,8 @@ double calcLateralOffset(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      printf(
+      RCLCPP_DEBUG(
+        get_logger(),
         "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
         e.what());
       return std::nan("");
@@ -597,7 +603,8 @@ double calcLateralOffset(
     if (throw_exception) {
       throw std::runtime_error(error_message);
     }
-    printf(
+    RCLCPP_DEBUG(
+      get_logger(),
       "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
       error_message.c_str());
     return std::nan("");
@@ -653,7 +660,8 @@ double calcLateralOffset(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      printf(
+      RCLCPP_DEBUG(
+        get_logger(),
         "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
         e.what());
       return std::nan("");
@@ -668,7 +676,8 @@ double calcLateralOffset(
     if (throw_exception) {
       throw std::runtime_error(error_message);
     }
-    printf(
+    RCLCPP_DEBUG(
+      get_logger(),
       "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
       error_message.c_str());
     return std::nan("");
@@ -705,7 +714,7 @@ double calcSignedArcLength(const T & points, const size_t src_idx, const size_t 
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return 0.0;
   }
 
@@ -747,7 +756,7 @@ std::vector<double> calcSignedArcLengthPartialSum(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -799,7 +808,7 @@ double calcSignedArcLength(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return 0.0;
   }
 
@@ -841,7 +850,7 @@ double calcSignedArcLength(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return 0.0;
   }
 
@@ -879,7 +888,7 @@ double calcSignedArcLength(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return 0.0;
   }
 
@@ -918,7 +927,7 @@ double calcArcLength(const T & points)
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return 0.0;
   }
 
@@ -1043,7 +1052,7 @@ std::optional<double> calcDistanceToForwardStopPoint(
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -1077,7 +1086,7 @@ std::optional<geometry_msgs::msg::Point> calcLongitudinalOffsetPoint(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -1090,7 +1099,8 @@ std::optional<geometry_msgs::msg::Point> calcLongitudinalOffsetPoint(
     if (throw_exception) {
       throw std::out_of_range(error_message);
     }
-    printf(
+    RCLCPP_DEBUG(
+      get_logger(),
       "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
       error_message.c_str());
     return {};
@@ -1159,7 +1169,7 @@ std::optional<geometry_msgs::msg::Point> calcLongitudinalOffsetPoint(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "Failed to calculate longitudinal offset: %s", e.what());
+    RCLCPP_DEBUG(get_logger(), "Failed to calculate longitudinal offset: %s", e.what());
     return {};
   }
 
@@ -1207,7 +1217,7 @@ std::optional<geometry_msgs::msg::Pose> calcLongitudinalOffsetPose(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "Failed to calculate longitudinal offset: %s", e.what());
+    RCLCPP_DEBUG(get_logger(), "Failed to calculate longitudinal offset: %s", e.what());
     return {};
   }
 
@@ -1220,12 +1230,12 @@ std::optional<geometry_msgs::msg::Pose> calcLongitudinalOffsetPose(
     if (throw_exception) {
       throw std::out_of_range(error_message);
     }
-    printf( "%s", error_message.c_str());
+    RCLCPP_DEBUG(get_logger(), "%s", error_message.c_str());
     return {};
   }
 
   if (points.size() == 1) {
-    printf( "Failed to calculate longitudinal offset: points size is one.");
+    RCLCPP_DEBUG(get_logger(), "Failed to calculate longitudinal offset: points size is one.");
     return {};
   }
 
@@ -1310,7 +1320,7 @@ std::optional<geometry_msgs::msg::Pose> calcLongitudinalOffsetPose(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -1356,7 +1366,7 @@ std::optional<size_t> insertTargetPoint(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    printf("%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -1371,7 +1381,7 @@ std::optional<size_t> insertTargetPoint(
   try {
     validateNonSharpAngle(p_front, p_target, p_back);
   } catch (const std::exception & e) {
-    printf( "%s", e.what());
+    RCLCPP_DEBUG(get_logger(), "%s", e.what());
     return {};
   }
 
@@ -2233,7 +2243,7 @@ std::optional<double> calcDistanceToForwardStopPoint(
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
-    printf( "Failed to calculate stop distance %s", e.what());
+    RCLCPP_DEBUG(get_logger(), "Failed to calculate stop distance %s", e.what());
     return {};
   }
 
@@ -2372,7 +2382,7 @@ T cropPoints(
     cropped_forward_points, target_pos, modified_target_seg_idx, backward_length);
 
   if (cropped_points.size() < 2) {
-    printf( "Return original points since cropped_points size is less than 2.");
+    RCLCPP_DEBUG(get_logger(), "Return original points since cropped_points size is less than 2.");
     return points;
   }
 
@@ -2417,7 +2427,7 @@ double calcYawDeviation(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      printf( "%s", e.what());
+      RCLCPP_DEBUG(get_logger(), "%s", e.what());
       return 0.0;
     }
   }
@@ -2430,7 +2440,8 @@ double calcYawDeviation(
     if (throw_exception) {
       throw std::runtime_error(error_message);
     }
-    printf(
+    RCLCPP_DEBUG(
+      get_logger(),
       "%s Return 0 since no_throw option is enabled. The maintainer must check the code.",
       error_message.c_str());
     return 0.0;
@@ -2492,6 +2503,15 @@ extern template bool isTargetPointFront<std::vector<autoware_planning_msgs::msg:
   const std::vector<autoware_planning_msgs::msg::TrajectoryPoint> & points,
   const geometry_msgs::msg::Point & base_point, const geometry_msgs::msg::Point & target_point,
   const double threshold = 0.0);
+
+/// @brief calculate the time_from_start fields of the given trajectory points
+/// @details this function assumes constant longitudinal velocity between points
+/// @param trajectory trajectory for which to calculate the time_from_start
+/// @param current_ego_point current ego position
+/// @param min_velocity minimum velocity used for a trajectory point
+void calculate_time_from_start(
+  std::vector<autoware_planning_msgs::msg::TrajectoryPoint> & trajectory,
+  const geometry_msgs::msg::Point & current_ego_point, const float min_velocity = 1.0f);
 
 }  // namespace autoware::motion_utils
 

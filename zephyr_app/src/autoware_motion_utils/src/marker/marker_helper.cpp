@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <chrono>
-
 #include "autoware/motion_utils/marker/marker_helper.hpp"
+
 #include "autoware/universe_utils/ros/marker_helper.hpp"
+
 #include <autoware/universe_utils/geometry/geometry.hpp>
 
-// TODO: uncomment the following includes when the corresponding messages are available
-// #include <visualization_msgs/msg/marker_array.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
+
+#include <string>
 
 using autoware::universe_utils::createDefaultMarker;
 using autoware::universe_utils::createDeletedDefaultMarker;
@@ -32,7 +33,7 @@ namespace
 
 inline visualization_msgs::msg::MarkerArray createVirtualWallMarkerArray(
   const geometry_msgs::msg::Pose & vehicle_front_pose, const std::string & module_name,
-  const std::string & ns_prefix, const int32_t id,
+  const std::string & ns_prefix, const rclcpp::Time & now, const int32_t id,
   const std_msgs::msg::ColorRGBA & color)
 {
   visualization_msgs::msg::MarkerArray marker_array;
@@ -40,7 +41,7 @@ inline visualization_msgs::msg::MarkerArray createVirtualWallMarkerArray(
   // Virtual Wall
   {
     auto marker = createDefaultMarker(
-      "map", std::chrono::system_clock::now(), ns_prefix + "virtual_wall", id, visualization_msgs::msg::Marker::CUBE,
+      "map", now, ns_prefix + "virtual_wall", id, visualization_msgs::msg::Marker::CUBE,
       createMarkerScale(0.1, 5.0, 2.0), color);
 
     marker.pose = vehicle_front_pose;
@@ -52,7 +53,7 @@ inline visualization_msgs::msg::MarkerArray createVirtualWallMarkerArray(
   // Factor Text
   {
     auto marker = createDefaultMarker(
-      "map", std::chrono::system_clock::now(), ns_prefix + "factor_text", id, visualization_msgs::msg::Marker::TEXT_VIEW_FACING,
+      "map", now, ns_prefix + "factor_text", id, visualization_msgs::msg::Marker::TEXT_VIEW_FACING,
       createMarkerScale(0.0, 0.0, 1.0), createMarkerColor(1.0, 1.0, 1.0, 1.0));
 
     marker.pose = vehicle_front_pose;
@@ -66,19 +67,19 @@ inline visualization_msgs::msg::MarkerArray createVirtualWallMarkerArray(
 }
 
 inline visualization_msgs::msg::MarkerArray createDeletedVirtualWallMarkerArray(
-  const std::string & ns_prefix, const int32_t id)
+  const std::string & ns_prefix, const rclcpp::Time & now, const int32_t id)
 {
   visualization_msgs::msg::MarkerArray marker_array;
 
   // Virtual Wall
   {
-    auto marker = createDeletedDefaultMarker(std::chrono::system_clock::now(), ns_prefix + "virtual_wall", id);
+    auto marker = createDeletedDefaultMarker(now, ns_prefix + "virtual_wall", id);
     marker_array.markers.push_back(marker);
   }
 
   // Factor Text
   {
-    auto marker = createDeletedDefaultMarker(std::chrono::system_clock::now(), ns_prefix + "factor_text", id);
+    auto marker = createDeletedDefaultMarker(now, ns_prefix + "factor_text", id);
     marker_array.markers.push_back(marker);
   }
 
@@ -89,56 +90,50 @@ inline visualization_msgs::msg::MarkerArray createDeletedVirtualWallMarkerArray(
 namespace autoware::motion_utils
 {
 visualization_msgs::msg::MarkerArray createStopVirtualWallMarker(
-  const geometry_msgs::msg::Pose & pose, const std::string & module_name,
+  const geometry_msgs::msg::Pose & pose, const std::string & module_name, const rclcpp::Time & now,
   const int32_t id, const double longitudinal_offset, const std::string & ns_prefix,
   const bool is_driving_forward)
 {
   const auto pose_with_offset = autoware::universe_utils::calcOffsetPose(
     pose, longitudinal_offset * (is_driving_forward ? 1.0 : -1.0), 0.0, 0.0);
   return createVirtualWallMarkerArray(
-    pose_with_offset, module_name, ns_prefix + "stop_", std::chrono::system_clock::now(), id,
+    pose_with_offset, module_name, ns_prefix + "stop_", now, id,
     createMarkerColor(1.0, 0.0, 0.0, 0.5));
 }
 
 visualization_msgs::msg::MarkerArray createSlowDownVirtualWallMarker(
-  const geometry_msgs::msg::Pose & pose, const std::string & module_name,
+  const geometry_msgs::msg::Pose & pose, const std::string & module_name, const rclcpp::Time & now,
   const int32_t id, const double longitudinal_offset, const std::string & ns_prefix,
   const bool is_driving_forward)
 {
   const auto pose_with_offset = autoware::universe_utils::calcOffsetPose(
     pose, longitudinal_offset * (is_driving_forward ? 1.0 : -1.0), 0.0, 0.0);
   return createVirtualWallMarkerArray(
-    pose_with_offset, module_name, ns_prefix + "slow_down_", std::chrono::system_clock::now(), id,
+    pose_with_offset, module_name, ns_prefix + "slow_down_", now, id,
     createMarkerColor(1.0, 1.0, 0.0, 0.5));
 }
 
 visualization_msgs::msg::MarkerArray createDeadLineVirtualWallMarker(
-  const geometry_msgs::msg::Pose & pose, const std::string & module_name,
+  const geometry_msgs::msg::Pose & pose, const std::string & module_name, const rclcpp::Time & now,
   const int32_t id, const double longitudinal_offset, const std::string & ns_prefix,
   const bool is_driving_forward)
 {
   const auto pose_with_offset = autoware::universe_utils::calcOffsetPose(
     pose, longitudinal_offset * (is_driving_forward ? 1.0 : -1.0), 0.0, 0.0);
   return createVirtualWallMarkerArray(
-    pose_with_offset, module_name, ns_prefix + "dead_line_", std::chrono::system_clock::now(), id,
+    pose_with_offset, module_name, ns_prefix + "dead_line_", now, id,
     createMarkerColor(0.0, 1.0, 0.0, 0.5));
 }
 
 visualization_msgs::msg::MarkerArray createDeletedStopVirtualWallMarker(
-  const int32_t id)
+  const rclcpp::Time & now, const int32_t id)
 {
-  return createDeletedVirtualWallMarkerArray("stop_", std::chrono::system_clock::now(), id);
+  return createDeletedVirtualWallMarkerArray("stop_", now, id);
 }
 
 visualization_msgs::msg::MarkerArray createDeletedSlowDownVirtualWallMarker(
-  const int32_t id)
+  const rclcpp::Time & now, const int32_t id)
 {
-  return createDeletedVirtualWallMarkerArray("slow_down_", std::chrono::system_clock::now(), id);
-}
-
-visualization_msgs::msg::MarkerArray createDeletedDeadLineVirtualWallMarker(
-  const int32_t id)
-{
-  return createDeletedVirtualWallMarkerArray("dead_line_", std::chrono::system_clock::now(), id);
+  return createDeletedVirtualWallMarkerArray("slow_down_", now, id);
 }
 }  // namespace autoware::motion_utils

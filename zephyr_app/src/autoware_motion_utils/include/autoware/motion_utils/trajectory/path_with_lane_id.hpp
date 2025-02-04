@@ -12,14 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: WAITING FOR MESSAGE CONVERSION
-
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__PATH_WITH_LANE_ID_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__PATH_WITH_LANE_ID_HPP_
 
-// TODO: uncomment the following includes when the corresponding messages are available
-// #include "tier4_planning_msgs/msg/path_with_lane_id.hpp"
-// #include <geometry_msgs/msg/point.hpp>
+#include "tier4_planning_msgs/msg/path_with_lane_id.hpp"
+#include <geometry_msgs/msg/point.hpp>
 
 #include <optional>
 #include <utility>

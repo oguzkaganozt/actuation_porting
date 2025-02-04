@@ -16,6 +16,9 @@
 #define AUTOWARE_VEHICLE_INFO_UTILS__VEHICLE_INFO_UTILS_HPP_
 
 #include "autoware_vehicle_info_utils/vehicle_info.hpp"
+
+#include <rclcpp/node.hpp>
+
 namespace autoware::vehicle_info_utils
 {
 /// This is a convenience class for saving you from declaring all parameters
@@ -25,13 +28,11 @@ class VehicleInfoUtils
 {
 public:
   /// Constructor
-  explicit VehicleInfoUtils(double wheel_radius_m, double wheel_width_m, double wheel_base_m,
-                            double wheel_tread_m, double front_overhang_m, double rear_overhang_m,
-                            double left_overhang_m, double right_overhang_m, double vehicle_height_m,
-                            double max_steer_angle_rad);
+  // NOTE(soblin): this throws which should be replaced with a factory
+  explicit VehicleInfoUtils(rclcpp::Node & node);
 
   /// Get vehicle info
-  VehicleInfo getVehicleInfo();
+  VehicleInfo getVehicleInfo() const;
 
 private:
   /// Buffer for base parameters

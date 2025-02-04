@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: PASSED
-
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__LOWPASS_FILTER_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__LOWPASS_FILTER_HPP_
 

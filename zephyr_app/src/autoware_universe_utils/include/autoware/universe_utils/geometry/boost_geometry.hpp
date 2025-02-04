@@ -24,13 +24,9 @@
 #include <Eigen/Core>
 
 #include <geometry_msgs/msg/point.hpp>
-#include "Point.h"
 
 namespace autoware::universe_utils
 {
-//msg conversion
-using Point = geometry_msgs_msg_Point;
-
 // 2D
 struct Point2d;
 using Segment2d = boost::geometry::model::segment<Point2d>;
@@ -80,16 +76,16 @@ inline Point2d Point3d::to_2d() const
   return Point2d{x(), y()};
 }
 
-inline Point toMsg(const Point3d & point)
+inline geometry_msgs::msg::Point toMsg(const Point3d & point)
 {
-  Point msg;
+  geometry_msgs::msg::Point msg;
   msg.x = point.x();
   msg.y = point.y();
   msg.z = point.z();
   return msg;
 }
 
-inline Point3d fromMsg(const Point & msg)
+inline Point3d fromMsg(const geometry_msgs::msg::Point & msg)
 {
   Point3d point;
   point.x() = msg.x;

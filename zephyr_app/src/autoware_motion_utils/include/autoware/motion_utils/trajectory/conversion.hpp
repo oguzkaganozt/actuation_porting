@@ -12,17 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// PORTING: WAITING FOR MESSAGE CONVERSION
-
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__CONVERSION_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__CONVERSION_HPP_
 
-// TODO: uncomment the following includes when the corresponding messages are available
-// #include "autoware_planning_msgs/msg/detail/path__struct.hpp"
-// #include "autoware_planning_msgs/msg/detail/trajectory__struct.hpp"
-// #include "autoware_planning_msgs/msg/detail/trajectory_point__struct.hpp"
-// #include "std_msgs/msg/header.hpp"
-// #include "tier4_planning_msgs/msg/detail/path_with_lane_id__struct.hpp"
+#include "autoware_planning_msgs/msg/detail/path__struct.hpp"
+#include "autoware_planning_msgs/msg/detail/trajectory__struct.hpp"
+#include "autoware_planning_msgs/msg/detail/trajectory_point__struct.hpp"
+#include "std_msgs/msg/header.hpp"
+#include "tier4_planning_msgs/msg/detail/path_with_lane_id__struct.hpp"
 
 #include <vector>
 
