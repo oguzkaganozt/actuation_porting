@@ -1,6 +1,8 @@
-# Autoware Universe Utils Port Tasks
+# Autoware Port Tasks
 
-## Geometry
+## Autoware Universe Utils
+
+### Geometry
 
 - [ ] geometry/geometry.hpp
   - [ ] sub-dependencies...
@@ -13,7 +15,7 @@
 - [ ] geometry/pose_deviation.hpp
   - [ ] sub-dependencies...
 
-## Math
+### Math
 
 - [ ] math/constants.hpp
   - [ ] sub-dependencies...
@@ -22,13 +24,14 @@
 - [ ] math/unit_conversion.hpp
   - [ ] sub-dependencies...
 
-## ROS
+### ROS
 
 - [ ] ros/marker_helper.hpp
   - [ ] sub-dependencies...
 
+## Autoware Motion Utils
 
-# Autoware Motion Utils Port Tasks
+### Trajectory
 
 - [ ] motion_utils/trajectory/trajectory.hpp
   - [ ] sub-dependencies...
