@@ -61,7 +61,7 @@ message(STATUS "Building actuation_msgs")
 
 include(ExternalProject)
 externalproject_add(autoware_cmake_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_cmake
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/autoware_cmake/autoware_cmake
   CMAKE_ARGS ${CMAKE_ARGS}
 )
 externalproject_add(actuation_msgs_pkg
@@ -86,7 +86,7 @@ set(app_headers
 )
 
 # Include actuation modules
-include(src/autoware_osqp_interface/osqp_interface.cmake)
+# include(src/autoware_osqp_interface/osqp_interface.cmake)
 # include(src/autoware_universe_utils/autoware_universe_utils.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
 # include(src/interpolation/interpolation.cmake)
@@ -95,7 +95,7 @@ include(src/autoware_osqp_interface/osqp_interface.cmake)
 # include(src/autoware_motion_utils/autoware_motion_utils.cmake)
 
 # Add actuation modules
-add_osqp_interface(app_sources app_headers)
+# add_osqp_interface(app_sources app_headers)
 # add_autoware_universe_utils(app_sources app_headers)
 # add_autoware_vehicle_info_utils(app_sources app_headers)
 # add_interpolation(app_sources app_headers)
