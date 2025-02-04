@@ -35,5 +35,19 @@
 
 - [ ] motion_utils/trajectory/trajectory.hpp
   - [ ] sub-dependencies...
-- [ ] motion_utils/trajectory/trajectory.cpp
+
+## Autoware Interpolation
+
+- [ ] interpolation/linear_interpolation.hpp
+  - [ ] sub-dependencies...
+- [ ] interpolation/spline_interpolation.hpp
+  - [ ] sub-dependencies...
+- [ ] interpolation/zero_order_hold.hpp
+  - [ ] sub-dependencies...
+
+## Autoware Trajectory Follower Base
+
+- [ ] trajectory_follower_base/lateral_controller_base.hpp
+  - [ ] sub-dependencies...
+- [ ] trajectory_follower_base/control_horizon.hpp
   - [ ] sub-dependencies...
