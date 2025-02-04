@@ -12,9 +12,14 @@ project(actuation_autoware)
 
 include(GNUInstallDirs)
 
-# Build CycloneDDS
+### BUILD CYCLONEDDS ###
+message(STATUS "Building CycloneDDS")
+
 include(cyclonedds_config.cmake)
 create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
+
+### SET ZEPHYR COMPILER AND FLAGS ###
+message(STATUS "Setting Zephyr compiler and flags")
 
 # Get compile options from Zephyr to be passed to the Autoware packages.
 zephyr_get_include_directories_for_lang_as_string(C Cincludes)
@@ -38,7 +43,7 @@ endif()
 set(external_project_cflags "${Cincludes} ${Csystem_includes} ${Coptions} -Wno-error ${CONTROL_CMDS_FWD_FLAG} -Wno-error")
 set(external_project_cxxflags "${CXXincludes} ${CXXsystem_includes} ${CXXoptions} -Wno-error ${CONTROL_CMDS_FWD_FLAG} -Wno-error")
 
-# Build actuation and its dependencies with the current Zephyr compiler and flags.
+# Set current Zephyr compiler and flags.
 # cmake derives the C++ compiler from the path to the C compiler.
 set(CMAKE_ARGS
     "-DROS_DISTRO=humble"
@@ -51,7 +56,9 @@ set(CMAKE_ARGS
     "-DCMAKE_CXX_FLAGS=${external_project_cxxflags}"
     "-DCMAKE_CXX_FLAGS=-Wno-error")
 
-# Build actuation_msgs
+### BUILD ACTUATION MSGS ###
+message(STATUS "Building actuation_msgs")
+
 include(ExternalProject)
 externalproject_add(autoware_cmake_pkg
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/autoware_cmake
@@ -62,10 +69,12 @@ externalproject_add(actuation_msgs_pkg
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
   CMAKE_ARGS ${CMAKE_ARGS}
 )
-
 add_dependencies(app actuation_msgs_pkg)
 
-# Set default sources and headers
+### BUILD ACTUATION MODULES ###
+message(STATUS "Building actuation modules")
+
+# Set main sources and headers
 set(app_sources
   src/file.c
   src/main.c
@@ -76,14 +85,25 @@ set(app_headers
   ${CycloneDDS_INCLUDE_DIR}
 )
 
-# Add actuation modules
+# Include actuation modules
 include(src/osqp_interface/osqp_interface.cmake)
-add_osqp_interface(app_sources app_headers)
-
+# include(src/autoware_universe_utils/autoware_universe_utils.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-# add_autoware_vehicle_info_utils(app_sources app_headers)
+# include(src/interpolation/interpolation.cmake)
+# include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
+# include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
+# include(src/autoware_motion_utils/autoware_motion_utils.cmake)
 
-# Build actuation_autoware
+# Add actuation modules
+add_osqp_interface(app_sources app_headers)
+# add_autoware_universe_utils(app_sources app_headers)
+# add_autoware_vehicle_info_utils(app_sources app_headers)
+# add_interpolation(app_sources app_headers)
+# add_autoware_trajectory_follower_base(app_sources app_headers)
+# add_autoware_mpc_lateral_controller(app_sources app_headers)
+# add_autoware_motion_utils(app_sources app_headers)
+
+# Build
 message(STATUS "app_sources: ${app_sources}")
 message(STATUS "app_headers: ${app_headers}")
 target_sources(app PRIVATE

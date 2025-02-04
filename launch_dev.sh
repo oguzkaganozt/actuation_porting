@@ -1,14 +1,14 @@
 #! /bin/bash
 
-# Create user and group
-docker run --rm zephyr-dev useradd -m -u "$(id -u)" -g "$(id -g)" -d "/home/$(id -un)" "$(id -un)" || true
-
-# Run docker
-docker run --rm -it -u "$(id -un)" \
+# Run docker with user mapping
+docker run --rm -it \
     -v "$HOME:/home/$(id -un)" \
     -v "$(pwd):/actuation" \
+    -v /etc/passwd:/etc/passwd:ro \
+    -v /etc/group:/etc/group:ro \
+    --name zephyr-dev \
+    --user "$(id -u):$(id -g)" \
     -w "/actuation" \
     -e CCACHE_DIR=/home/"$(id -un)"/.ccache \
     --net=host \
-    --name zephyr-dev \
     zephyr-dev

@@ -1,9 +1,9 @@
 # Copyright (c) 2022-2024, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
 
-ARG BASE_IMAGE=ghcr.io/autowarefoundation/autoware:20240823-devel
+ARG BASE_IMAGE=ghcr.io/autowarefoundation/autoware:universe-devel-20250204-amd64
 
-FROM $BASE_IMAGE as autoware
+FROM $BASE_IMAGE AS autoware
 
 ARG USER=root
 ARG UID=0
@@ -32,11 +32,11 @@ RUN if [[ "$USER" != "root" ]]; then \
 
 USER $UID
 
-FROM autoware as zephyr
+FROM autoware AS zephyr
 
 USER root
 
-ARG ZSDK_VERSION=0.16.3
+ARG ZSDK_VERSION=0.16.8
 ARG BUILD_ARCH=aarch64
 
 # Install dependencies
