@@ -36,8 +36,8 @@ FROM autoware AS zephyr
 
 USER root
 
-ARG ZSDK_VERSION=0.16.8
-ARG BUILD_ARCH=aarch64
+ARG ZSDK_VERSION=0.16.3
+ARG BUILD_ARCH=x86_64
 
 # Install dependencies
 RUN apt-get update && \
