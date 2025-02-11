@@ -11,8 +11,8 @@ public/
 .vscode/
 *.log
 
-/zephyr
-/cyclonedds
+zephyr
+cyclonedds
 
 # Porting of the Nodes will be done in the following order
 # zephyr_app/src/autoware_vehicle_info_utils
