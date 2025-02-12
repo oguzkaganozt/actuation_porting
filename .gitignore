@@ -10,6 +10,7 @@ tools/
 public/
 .vscode/
 *.log
+*.cursorignore
 
 zephyr
 cyclonedds
