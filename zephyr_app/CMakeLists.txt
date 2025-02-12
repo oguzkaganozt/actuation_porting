@@ -14,7 +14,6 @@ include(GNUInstallDirs)
 
 ### BUILD CYCLONEDDS ###
 message(STATUS "Building CycloneDDS")
-
 include(cyclonedds_config.cmake)
 create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
@@ -73,20 +72,11 @@ add_dependencies(app actuation_msgs_pkg)
 
 ### BUILD ACTUATION MODULES ###
 message(STATUS "Building actuation modules")
-
-# Set main sources and headers
-set(app_sources
-  src/file.c
-  src/main.c
-  include/zephyr_app.hpp
-)
-set(app_headers
-  ${CMAKE_CURRENT_BINARY_DIR}/install/include
-  ${CycloneDDS_INCLUDE_DIR}
-)
+set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
+set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Include actuation modules
-# include(src/autoware_osqp_interface/osqp_interface.cmake)
+include(src/autoware_osqp_interface/osqp_interface.cmake)
 # include(src/autoware_universe_utils/autoware_universe_utils.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
 # include(src/interpolation/interpolation.cmake)
@@ -94,8 +84,19 @@ set(app_headers
 # include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
 # include(src/autoware_motion_utils/autoware_motion_utils.cmake)
 
+# Add main sources and headers
+list(APPEND APP_SOURCES
+  src/file.c
+  src/main.c
+  include/zephyr_app.hpp
+)
+list(APPEND APP_INCLUDE_DIRS
+  ${CMAKE_CURRENT_BINARY_DIR}/install/include
+  ${CycloneDDS_INCLUDE_DIR}
+)
+
 # Add actuation modules
-# add_osqp_interface(app_sources app_headers)
+add_osqp_interface()
 # add_autoware_universe_utils(app_sources app_headers)
 # add_autoware_vehicle_info_utils(app_sources app_headers)
 # add_interpolation(app_sources app_headers)
@@ -104,15 +105,15 @@ set(app_headers
 # add_autoware_motion_utils(app_sources app_headers)
 
 # Build
-message(STATUS "app_sources: ${app_sources}")
-message(STATUS "app_headers: ${app_headers}")
+message(STATUS "app_sources: ${APP_SOURCES}")
+message(STATUS "app_headers: ${APP_INCLUDE_DIRS}")
 target_sources(app PRIVATE
-  ${app_sources}
+  ${APP_SOURCES}
 )
 
 target_include_directories(app PRIVATE
   include
-  ${app_headers}
+  ${APP_INCLUDE_DIRS}
 )
 
 # target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)

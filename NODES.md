@@ -18,29 +18,4 @@ autoware_vehicle_msgs
 autoware_adapi_v1_msgs
 tier4_planning_msgs
 
-CMAKE -> DO NOT BUILD
-ament_cmake_core
-ament_cmake_include_directories
-ament_cmake_export_definitions
-ament_cmake_libraries
-ament_cmake_version
-ament_cmake_export_link_flags
-ament_cmake_python
-ament_cmake_export_libraries
-ament_cmake_export_include_directories
-ament_cmake_target_dependencies
-ament_cmake_export_dependencies
-ament_cmake_export_interfaces
-ament_cmake_export_targets
-ament_cmake_test
-ament_cmake_gtest
-ament_cmake_gmock
-ament_cmake_gen_version_h
-ament_cmake
-ament_cmake_auto
-autoware_cmake
-
-UTILS -> DO NOT BUILD
-autoware_lint_common
-
 TOTAL -> 37 packages
