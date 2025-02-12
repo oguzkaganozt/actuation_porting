@@ -55,8 +55,8 @@ set(CMAKE_ARGS
     "-DCMAKE_CXX_FLAGS=${external_project_cxxflags}"
     "-DCMAKE_CXX_FLAGS=-Wno-error")
 
-### BUILD ACTUATION MSGS ###
-message(STATUS "Building actuation_msgs")
+### BUILD MESSAGES ###
+message(STATUS "Building messages")
 
 include(ExternalProject)
 externalproject_add(autoware_cmake_pkg
@@ -116,4 +116,5 @@ target_include_directories(app PRIVATE
   ${APP_INCLUDE_DIRS}
 )
 
-# target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
+target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
+target_link_libraries(app PRIVATE actuation_msgs cdds_lib)
