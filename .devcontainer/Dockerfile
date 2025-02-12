@@ -29,7 +29,7 @@ RUN apt-get update && \
     apt install --no-install-recommends -y \ 
     ninja-build ccache dfu-util device-tree-compiler wget \
     python3-dev python3-pip python3-setuptools python3-tk \ 
-    python3-wheel xz-utils file make gcc libsdl2-dev libmagic1  \
+    python3-wheel xz-utils file make gcc libsdl2-dev libmagic1 pixz \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install west
@@ -38,7 +38,7 @@ RUN pip3 install -U west pyelftools
 # Install Zephyr SDK
 RUN wget -q --show-progress --progress=bar:force:noscroll \
     https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz && \
-    tar xf zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz -C /opt -T4 \
+    tar --use-compress-program="pixz" -xf zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz -C /opt \
         zephyr-sdk-${ZSDK_VERSION}/arm-zephyr-eabi/ \
         zephyr-sdk-${ZSDK_VERSION}/setup.sh \
         zephyr-sdk-${ZSDK_VERSION}/cmake \
