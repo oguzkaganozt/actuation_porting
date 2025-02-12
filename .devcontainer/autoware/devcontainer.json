@@ -1,6 +1,6 @@
 {
     "name": "autoware",
-    "image": "ghcr.io/autowarefoundation/autoware:universe-devel-20250204-amd64",
+    "image": "ghcr.io/autowarefoundation/autoware:universe-devel-20250207-amd64",
     "remoteUser": "autoware",
     "runArgs": [
       "--cap-add=SYS_PTRACE",

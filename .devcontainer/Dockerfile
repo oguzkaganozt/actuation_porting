@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
 
-FROM ghcr.io/autowarefoundation/autoware:universe-devel-20250204-amd64 AS autoware
+FROM ghcr.io/autowarefoundation/autoware:universe-devel-20250207-amd64 AS autoware
 SHELL ["/bin/bash", "-c"]
 
 # Install dependencies
