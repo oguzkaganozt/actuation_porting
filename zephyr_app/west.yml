@@ -25,12 +25,12 @@ manifest:
       groups:
         - hal
     - name: hal_nxp
-      revision: ad142f5612d927e29b1f9606e8edade871b8a526
+      revision: d45b14c198d778658b7853b48378d2e132a6c4be
       path: modules/hal/hal_nxp
       groups:
         - hal
     - name: zephyr
-      revision: 339cd5a45fd2ebba064ef462b71c657336ca0dfe
+      revision: 6aeb7a2b96c2b212a34f00c0ad3862ac19e826e8
       west-commands: scripts/west-commands.yml
 
   group-filter:
