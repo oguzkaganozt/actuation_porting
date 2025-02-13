@@ -3,23 +3,29 @@
 
 cmake_minimum_required(VERSION 3.22.1)
 
+# PROJECT SETUP
 # Do not overwrite the OVERLAY_CONFIG value provided by the user.
 set(CONF_FILE "prj_actuation.conf")
-set(OVERLAY_CONFIG "prj_net.conf;${OVERLAY_CONFIG}" CACHE STRING "overlay config" FORCE)
+set(OVERLAY_CONFIG "prj_net.conf;${OVERLAY_CONFIG}" CACHE STRING "overlay config" FORCE)  # Do not overwrite the OVERLAY_CONFIG value provided by the user.
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-
 project(actuation_autoware)
 
+# INCLUDES
 include(GNUInstallDirs)
+include(ExternalProject)
+include(cyclonedds_config.cmake)
+include(src/autoware_osqp_interface/osqp_interface.cmake)
+# include(src/autoware_universe_utils/autoware_universe_utils.cmake)
+# include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
+# include(src/interpolation/interpolation.cmake)
+# include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
+# include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
+# include(src/autoware_motion_utils/autoware_motion_utils.cmake)
 
 ### BUILD CYCLONEDDS ###
-message(STATUS "Building CycloneDDS")
-include(cyclonedds_config.cmake)
 create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
 ### SET ZEPHYR COMPILER AND FLAGS ###
-message(STATUS "Setting Zephyr compiler and flags")
-
 # Get compile options from Zephyr to be passed to the Autoware packages.
 zephyr_get_include_directories_for_lang_as_string(C Cincludes)
 zephyr_get_include_directories_for_lang_as_string(CXX CXXincludes)
@@ -55,10 +61,7 @@ set(CMAKE_ARGS
     "-DCMAKE_CXX_FLAGS=${external_project_cxxflags}"
     "-DCMAKE_CXX_FLAGS=-Wno-error")
 
-### BUILD MESSAGES ###
-message(STATUS "Building messages")
-
-include(ExternalProject)
+### ADD ACTUATION MESSAGES ###
 externalproject_add(autoware_cmake_pkg
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/autoware_cmake
   CMAKE_ARGS ${CMAKE_ARGS}
@@ -70,24 +73,14 @@ externalproject_add(actuation_msgs_pkg
 )
 add_dependencies(app actuation_msgs_pkg)
 
-### BUILD ACTUATION MODULES ###
-message(STATUS "Building actuation modules")
+### ADD ACTUATION APPLICATION ###
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
-# Include actuation modules
-include(src/autoware_osqp_interface/osqp_interface.cmake)
-# include(src/autoware_universe_utils/autoware_universe_utils.cmake)
-# include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-# include(src/interpolation/interpolation.cmake)
-# include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
-# include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
-# include(src/autoware_motion_utils/autoware_motion_utils.cmake)
-
-# Add main sources and headers
+# Add main
 list(APPEND APP_SOURCES
-  src/file.c
   src/main.c
+  src/file.c
   include/zephyr_app.hpp
 )
 list(APPEND APP_INCLUDE_DIRS
@@ -104,9 +97,7 @@ add_osqp_interface()
 # add_autoware_mpc_lateral_controller(app_sources app_headers)
 # add_autoware_motion_utils(app_sources app_headers)
 
-# Build
-message(STATUS "app_sources: ${APP_SOURCES}")
-message(STATUS "app_headers: ${APP_INCLUDE_DIRS}")
+# Build actuation modules
 target_sources(app PRIVATE
   ${APP_SOURCES}
 )
@@ -116,5 +107,10 @@ target_include_directories(app PRIVATE
   ${APP_INCLUDE_DIRS}
 )
 
+message("=== Build Summary ===")
+message("App sources: ${APP_SOURCES}")
+message("App headers: ${APP_INCLUDE_DIRS}")
+
+# Link actuation messages and CycloneDDS library
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
 target_link_libraries(app PRIVATE actuation_msgs cdds_lib)
