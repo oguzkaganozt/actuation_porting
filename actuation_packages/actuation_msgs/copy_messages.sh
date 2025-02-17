@@ -2,7 +2,7 @@
 ROS2_MSG_PATH="/opt/ros/humble/share"
 AWF_MSG_PATH="/opt/autoware/share"
 MESSAGE_MODULES="autoware_planning_msgs autoware_control_msgs autoware_vehicle_msgs autoware_perception_msgs tier4_debug_msgs builtin_interfaces visualization_msgs tier4_planning_msgs autoware_adapi_v1_msgs geometry_msgs std_msgs"
-DEST_PATH="$PWD/actuation_packages/actuation_msgs/msg"
+DEST_PATH="$PWD/msg"
 
 determine_msg_paths() {
     local msg_paths=""
@@ -32,12 +32,3 @@ copy_messages() {
 mkdir -p $DEST_PATH
 msg_paths=$(copy_messages)
 echo -e "Copied messages to $DEST_PATH: $msg_paths"
-
-pip3 install -r zephyr/scripts/requirements-base.txt
-pip3 install -r zephyr/scripts/requirements-build-test.txt
-
-west init -l zephyr_app > /dev/null 2>&1
-west update
-west zephyr-export
-
-exec "/bin/bash"

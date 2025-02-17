@@ -3,7 +3,6 @@ build/
 log/
 zephyr/
 cyclonedds/
-rosidl_adapter/
 actuation_packages/
 Dockerfiles/
 documentation/
