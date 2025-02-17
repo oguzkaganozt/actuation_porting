@@ -61,7 +61,7 @@ set(CMAKE_ARGS
     "-DCMAKE_CXX_FLAGS=${external_project_cxxflags}"
     "-DCMAKE_CXX_FLAGS=-Wno-error")
 
-### ADD ACTUATION MESSAGES ###
+### BUILD ACTUATION MESSAGES ###
 externalproject_add(autoware_cmake_pkg
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/autoware_cmake
   CMAKE_ARGS ${CMAKE_ARGS}
@@ -73,7 +73,7 @@ externalproject_add(actuation_msgs_pkg
 )
 add_dependencies(app actuation_msgs_pkg)
 
-### ADD ACTUATION APPLICATION ###
+### BUILD ACTUATION APPLICATION ###
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
