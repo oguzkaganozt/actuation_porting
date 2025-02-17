@@ -2,13 +2,10 @@
 // with input from autoware_perception_msgs/msg/TrackedObject.msg
 // generated code does not contain a copyright notice
 
-#ifndef AUTOWARE_PERCEPTION_MSGS__MSG__TRACKED_OBJECT_IDL_
-#define AUTOWARE_PERCEPTION_MSGS__MSG__TRACKED_OBJECT_IDL_
-
-#include "ObjectClassification.idl"
-#include "Shape.idl"
-#include "TrackedObjectKinematics.idl"
-#include "UUID.idl"
+#include "autoware_perception_msgs/msg/ObjectClassification.idl"
+#include "autoware_perception_msgs/msg/Shape.idl"
+#include "autoware_perception_msgs/msg/TrackedObjectKinematics.idl"
+#include "unique_identifier_msgs/msg/UUID.idl"
 
 module autoware_perception_msgs {
   module msg {
@@ -25,4 +22,3 @@ module autoware_perception_msgs {
     };
   };
 };
-#endif

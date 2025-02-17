@@ -2,11 +2,8 @@
 // with input from autoware_perception_msgs/msg/DetectedObjectKinematics.msg
 // generated code does not contain a copyright notice
 
-#ifndef AUTOWARE_PERCEPTION_MSGS__MSG__DETECTED_OBJECT_KINEMATICS_IDL_
-#define AUTOWARE_PERCEPTION_MSGS__MSG__DETECTED_OBJECT_KINEMATICS_IDL_
-
-#include "PoseWithCovariance.idl"
-#include "TwistWithCovariance.idl"
+#include "geometry_msgs/msg/PoseWithCovariance.idl"
+#include "geometry_msgs/msg/TwistWithCovariance.idl"
 
 module autoware_perception_msgs {
   module msg {
@@ -38,4 +35,3 @@ module autoware_perception_msgs {
     };
   };
 };
-#endif

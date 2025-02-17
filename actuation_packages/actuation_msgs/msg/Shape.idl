@@ -2,11 +2,8 @@
 // with input from autoware_perception_msgs/msg/Shape.msg
 // generated code does not contain a copyright notice
 
-#ifndef AUTOWARE_PERCEPTION_MSGS__MSG__SHAPE_IDL_
-#define AUTOWARE_PERCEPTION_MSGS__MSG__SHAPE_IDL_
-
-#include "Polygon.idl"
-#include "Vector3.idl"
+#include "geometry_msgs/msg/Polygon.idl"
+#include "geometry_msgs/msg/Vector3.idl"
 
 module autoware_perception_msgs {
   module msg {
@@ -24,4 +21,3 @@ module autoware_perception_msgs {
     };
   };
 };
-#endif

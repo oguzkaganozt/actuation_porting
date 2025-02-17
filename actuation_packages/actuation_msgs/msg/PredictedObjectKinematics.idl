@@ -2,13 +2,10 @@
 // with input from autoware_perception_msgs/msg/PredictedObjectKinematics.msg
 // generated code does not contain a copyright notice
 
-#ifndef AUTOWARE_PERCEPTION_MSGS__MSG__PREDICTED_OBJECT_KINEMATICS_IDL_
-#define AUTOWARE_PERCEPTION_MSGS__MSG__PREDICTED_OBJECT_KINEMATICS_IDL_
-
-#include "PredictedPath.idl"
-#include "AccelWithCovariance.idl"
-#include "PoseWithCovariance.idl"
-#include "TwistWithCovariance.idl"
+#include "autoware_perception_msgs/msg/PredictedPath.idl"
+#include "geometry_msgs/msg/AccelWithCovariance.idl"
+#include "geometry_msgs/msg/PoseWithCovariance.idl"
+#include "geometry_msgs/msg/TwistWithCovariance.idl"
 
 module autoware_perception_msgs {
   module msg {
@@ -23,4 +20,3 @@ module autoware_perception_msgs {
     };
   };
 };
-#endif

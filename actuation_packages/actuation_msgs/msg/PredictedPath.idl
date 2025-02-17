@@ -2,11 +2,8 @@
 // with input from autoware_perception_msgs/msg/PredictedPath.msg
 // generated code does not contain a copyright notice
 
-#ifndef AUTOWARE_PERCEPTION_MSGS__MSG__PREDICTED_PATH_IDL_
-#define AUTOWARE_PERCEPTION_MSGS__MSG__PREDICTED_PATH_IDL_
-
-#include "Duration.idl"
-#include "Pose.idl"
+#include "builtin_interfaces/msg/Duration.idl"
+#include "geometry_msgs/msg/Pose.idl"
 
 module autoware_perception_msgs {
   module msg {
@@ -19,4 +16,3 @@ module autoware_perception_msgs {
     };
   };
 };
-#endif
