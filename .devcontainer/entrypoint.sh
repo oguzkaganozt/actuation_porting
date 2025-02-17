@@ -54,7 +54,7 @@ rm -rf $DEST_PATH
 mkdir -p $DEST_PATH
 msg_paths=$(copy_messages)
 echo -e "Copied messages to $DEST_PATH: $msg_paths"
-add_include_guard_to_files
+add_include_guard_to_messages
 
 pip3 install -r zephyr/scripts/requirements-base.txt
 pip3 install -r zephyr/scripts/requirements-build-test.txt
