@@ -1,6 +1,12 @@
-# Autoware Port Tasks
+# Autoware MPC Lateral Controller Porting
 
-## Autoware Universe Utils
+## Autoware Version
+
+- Autoware: [2025.02](https://github.com/autowarefoundation/autoware/tree/2025.02)
+- Autoware.Universe: [0.40.0](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0)
+- Autoware.msgs: [1.3.0](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0)
+
+## PORTING: Autoware Universe Utils
 
 ### Geometry
 
@@ -29,14 +35,14 @@
 - [ ] ros/marker_helper.hpp
   - [ ] sub-dependencies...
 
-## Autoware Motion Utils
+## PORTING: Autoware Motion Utils
 
 ### Trajectory
 
 - [ ] motion_utils/trajectory/trajectory.hpp
   - [ ] sub-dependencies...
 
-## Autoware Interpolation
+## PORTING: Autoware Interpolation
 
 - [ ] interpolation/linear_interpolation.hpp
   - [ ] sub-dependencies...
@@ -45,7 +51,7 @@
 - [ ] interpolation/zero_order_hold.hpp
   - [ ] sub-dependencies...
 
-## Autoware Trajectory Follower Base
+## PORTING: Autoware Trajectory Follower Base
 
 - [ ] trajectory_follower_base/lateral_controller_base.hpp
   - [ ] sub-dependencies...
