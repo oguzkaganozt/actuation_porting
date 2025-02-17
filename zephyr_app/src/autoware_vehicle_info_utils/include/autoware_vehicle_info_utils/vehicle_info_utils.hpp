@@ -17,8 +17,6 @@
 
 #include "autoware_vehicle_info_utils/vehicle_info.hpp"
 
-#include <rclcpp/node.hpp>
-
 namespace autoware::vehicle_info_utils
 {
 /// This is a convenience class for saving you from declaring all parameters
@@ -29,7 +27,7 @@ class VehicleInfoUtils
 public:
   /// Constructor
   // NOTE(soblin): this throws which should be replaced with a factory
-  explicit VehicleInfoUtils(rclcpp::Node & node);
+  // explicit VehicleInfoUtils(rclcpp::Node & node);
 
   /// Get vehicle info
   VehicleInfo getVehicleInfo() const;
