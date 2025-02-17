@@ -113,4 +113,4 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 
 # Link actuation messages and CycloneDDS library
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
-target_link_libraries(app PRIVATE actuation_msgs cdds_lib)
+target_link_libraries(app PRIVATE cdds_lib)
