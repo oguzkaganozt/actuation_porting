@@ -1,0 +1,21 @@
+macro(add_autoware_universe_utils)
+  # Find dependencies
+  find_package(Eigen3 REQUIRED)
+  set(BOOST_INCLUDEDIR "/usr/include")
+  find_package(Boost REQUIRED)
+  
+  # Add source files
+  list(APPEND APP_SOURCES
+    src/autoware_universe_utils_min/src/geometry/geometry.cpp
+    src/autoware_universe_utils_min/src/geometry/boost_polygon_utils.cpp
+    src/autoware_universe_utils_min/src/geometry/gjk_2d.cpp
+    src/autoware_universe_utils_min/src/geometry/pose_deviation.cpp
+  )
+
+  # Add include directories
+  list(APPEND APP_INCLUDE_DIRS
+    src/autoware_universe_utils_min/include
+    "${EIGEN3_INCLUDE_DIR}"
+    "${Boost_INCLUDE_DIR}"
+  )
+endmacro()
