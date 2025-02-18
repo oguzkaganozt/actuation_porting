@@ -5,7 +5,7 @@ macro(add_autoware_universe_utils)
   # Add source files
   list(APPEND APP_SOURCES
     src/autoware_universe_utils_min/src/geometry/geometry.cpp
-    src/autoware_universe_utils_min/src/geometry/boost_polygon_utils.cpp
+    src/autoware_universe_utils_min/src/geometry/alt_geometry.cpp
     src/autoware_universe_utils_min/src/geometry/gjk_2d.cpp
     src/autoware_universe_utils_min/src/geometry/pose_deviation.cpp
   )

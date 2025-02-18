@@ -26,27 +26,6 @@
 
 namespace autoware::universe_utils
 {
-bool isClockwise(const alt::Polygon2d & polygon);
-alt::Polygon2d inverseClockwise(const alt::Polygon2d & polygon);
-geometry_msgs::msg::Polygon rotatePolygon(
-  const geometry_msgs::msg::Polygon & polygon, const double & angle);
-/// @brief rotate a polygon by some angle around the origin
-/// @param[in] polygon input polygon
-/// @param[in] angle angle of rotation [rad]
-/// @return rotated polygon
-alt::Polygon2d rotatePolygon(const alt::Polygon2d & polygon, const double angle);
-alt::Polygon2d toPolygon2d(
-  const geometry_msgs::msg::Pose & pose, const autoware_perception_msgs::msg::Shape & shape);
-alt::Polygon2d toPolygon2d(
-  const geometry_msgs::msg::Pose & pose, const autoware_perception_msgs::msg::Shape & shape);
-alt::Polygon2d toPolygon2d(const autoware_perception_msgs::msg::DetectedObject & object);
-alt::Polygon2d toPolygon2d(const autoware_perception_msgs::msg::TrackedObject & object);
-alt::Polygon2d toPolygon2d(const autoware_perception_msgs::msg::PredictedObject & object);
-alt::Polygon2d toFootprint(
-  const geometry_msgs::msg::Pose & base_link_pose, const double base_to_front,
-  const double base_to_rear, const double width);
-double getArea(const autoware_perception_msgs::msg::Shape & shape);
-alt::Polygon2d expandPolygon(const alt::Polygon2d & input_polygon, const double offset);
 }  // namespace autoware::universe_utils
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POLYGON_UTILS_HPP_

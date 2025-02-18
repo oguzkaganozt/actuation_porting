@@ -13,10 +13,7 @@
 // limitations under the License.
 
 #include "autoware/universe_utils/geometry/gjk_2d.hpp"
-
-#include "autoware/universe_utils/geometry/boost_geometry.hpp"
-
-#include <boost/geometry/algorithms/equals.hpp>
+#include "autoware/universe_utils/geometry/alt_geometry.hpp"
 
 namespace autoware::universe_utils::gjk
 {
@@ -121,7 +118,7 @@ bool intersects(const Polygon2d & convex_polygon1, const Polygon2d & convex_poly
   if (convex_polygon1.outer().empty() || convex_polygon2.outer().empty()) {
     return false;
   }
-  if (boost::geometry::equals(convex_polygon1, convex_polygon2)) {
+  if (alt::equals(convex_polygon1, convex_polygon2)) {
     return true;
   }
 

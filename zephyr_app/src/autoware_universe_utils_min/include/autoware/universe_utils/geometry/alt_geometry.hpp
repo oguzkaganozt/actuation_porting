@@ -15,187 +15,163 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 
-#include <list>
-#include <utility>
+#include <Eigen/Core>
 #include <vector>
+#include <optional>
+#include <cmath>
 
-namespace autoware::universe_utils
-{
-// Alternatives for Boost.Geometry ----------------------------------------------------------------
-// TODO(mitukou1109): remove namespace
-namespace alt
-{
-class Vector2d
-{
+namespace autoware::universe_utils::alt {
+
+class Point2d {
 public:
-  Vector2d() : x_(0.0), y_(0.0) {}
+  Point2d() : x_(0.0), y_(0.0) {}
+  Point2d(double x, double y) : x_(x), y_(y) {}
 
-  Vector2d(const double x, const double y) : x_(x), y_(y) {}
-
-  explicit Vector2d(const autoware::universe_utils::Point2d & point) : x_(point.x()), y_(point.y())
-  {
-  }
-
-  double cross(const Vector2d & other) const { return x_ * other.y() - y_ * other.x(); }
-
-  double dot(const Vector2d & other) const { return x_ * other.x() + y_ * other.y(); }
-
-  double norm2() const { return x_ * x_ + y_ * y_; }
-
-  double norm() const { return std::sqrt(norm2()); }
-
-  Vector2d vector_triple(const Vector2d & v1, const Vector2d & v2) const
-  {
-    const auto tmp = this->cross(v1);
-    return {-v2.y() * tmp, v2.x() * tmp};
-  }
-
-  const double & x() const { return x_; }
-
-  double & x() { return x_; }
-
-  const double & y() const { return y_; }
-
-  double & y() { return y_; }
+  double x() const { return x_; }
+  double y() const { return y_; }
+  double& x() { return x_; }
+  double& y() { return y_; }
 
 private:
   double x_;
   double y_;
 };
 
-inline Vector2d operator+(const Vector2d & v1, const Vector2d & v2)
-{
-  return {v1.x() + v2.x(), v1.y() + v2.y()};
-}
-
-inline Vector2d operator-(const Vector2d & v1, const Vector2d & v2)
-{
-  return {v1.x() - v2.x(), v1.y() - v2.y()};
-}
-
-inline Vector2d operator-(const Vector2d & v)
-{
-  return {-v.x(), -v.y()};
-}
-
-inline Vector2d operator*(const double & s, const Vector2d & v)
-{
-  return {s * v.x(), s * v.y()};
-}
-
-// We use Vector2d to represent points, but we do not name the class Point2d directly
-// as it has some vector operation functions.
-using Point2d = Vector2d;
 using Points2d = std::vector<Point2d>;
-using PointList2d = std::list<Point2d>;
+using PointList2d = std::vector<Point2d>;
 
-class Polygon2d
-{
+class Polygon2d {
 public:
-  static Polygon2d create(
-    const PointList2d & outer, const std::vector<PointList2d> & inners) noexcept;
+  explicit Polygon2d(const PointList2d& outer = {}, const std::vector<PointList2d>& inners = {})
+    : outer_(outer), inners_(inners) {}
 
-  static Polygon2d create(
-    PointList2d && outer, std::vector<PointList2d> && inners) noexcept;
+  const PointList2d& outer() const { return outer_; }
+  PointList2d& outer() { return outer_; }
+  const std::vector<PointList2d>& inners() const { return inners_; }
+  std::vector<PointList2d>& inners() { return inners_; }
 
-  static Polygon2d create(
-    const autoware::universe_utils::Polygon2d & polygon) noexcept;
-
-  const PointList2d & outer() const noexcept { return outer_; }
-
-  PointList2d & outer() noexcept { return outer_; }
-
-  const std::vector<PointList2d> & inners() const noexcept { return inners_; }
-
-  std::vector<PointList2d> & inners() noexcept { return inners_; }
-
-  autoware::universe_utils::Polygon2d to_boost() const;
-
-protected:
-  Polygon2d(const PointList2d & outer, const std::vector<PointList2d> & inners)
-  : outer_(outer), inners_(inners)
-  {
-  }
-
-  Polygon2d(PointList2d && outer, std::vector<PointList2d> && inners)
-  : outer_(std::move(outer)), inners_(std::move(inners))
-  {
-  }
-
+private:
   PointList2d outer_;
-
   std::vector<PointList2d> inners_;
 };
 
-class ConvexPolygon2d : public Polygon2d
-{
+class ConvexPolygon2d : public Polygon2d {
 public:
-  static ConvexPolygon2d create(const PointList2d & vertices) noexcept;
+  static ConvexPolygon2d create(const PointList2d& vertices) noexcept;
+  static ConvexPolygon2d create(PointList2d&& vertices) noexcept;
+  static ConvexPolygon2d create(const Polygon2d& polygon) noexcept;
 
-  static ConvexPolygon2d create(PointList2d && vertices) noexcept;
-
-  static ConvexPolygon2d create(
-    const autoware::universe_utils::Polygon2d & polygon) noexcept;
-
-  const PointList2d & vertices() const noexcept { return outer(); }
-
-  PointList2d & vertices() noexcept { return outer(); }
+  const PointList2d& vertices() const noexcept { return outer(); }
+  PointList2d& vertices() noexcept { return outer(); }
 
 private:
-  explicit ConvexPolygon2d(const PointList2d & vertices) : Polygon2d(vertices, {}) {}
-
-  explicit ConvexPolygon2d(PointList2d && vertices) : Polygon2d(std::move(vertices), {}) {}
+  explicit ConvexPolygon2d(const PointList2d& vertices) : Polygon2d(vertices, {}) {}
+  explicit ConvexPolygon2d(PointList2d&& vertices) : Polygon2d(std::move(vertices), {}) {}
 };
-}  // namespace alt
 
-double area(const alt::ConvexPolygon2d & poly);
+/**
+ * @brief A simple 2D linear ring class that represents a closed sequence of points
+ */
+class LinearRing2d
+{
+public:
+  using Points = std::vector<Point2d>;
+  using iterator = Points::iterator;
+  using const_iterator = Points::const_iterator;
 
-alt::ConvexPolygon2d convex_hull(const alt::Points2d & points);
+  LinearRing2d() = default;
+  explicit LinearRing2d(const Points & points) : points_(points) {}
 
-void correct(alt::Polygon2d & poly);
+  // Access points
+  Points & points() { return points_; }
+  const Points & points() const { return points_; }
 
-bool covered_by(const alt::Point2d & point, const alt::ConvexPolygon2d & poly);
+  // Size operations
+  size_t size() const { return points_.size(); }
+  bool empty() const { return points_.empty(); }
 
-bool disjoint(const alt::ConvexPolygon2d & poly1, const alt::ConvexPolygon2d & poly2);
+  // Element access
+  Point2d & operator[](size_t i) { return points_[i]; }
+  const Point2d & operator[](size_t i) const { return points_[i]; }
+  Point2d & at(size_t i) { return points_.at(i); }
+  const Point2d & at(size_t i) const { return points_.at(i); }
 
-double distance(
-  const alt::Point2d & point, const alt::Point2d & seg_start, const alt::Point2d & seg_end);
+  // Iterators
+  iterator begin() { return points_.begin(); }
+  const_iterator begin() const { return points_.begin(); }
+  iterator end() { return points_.end(); }
+  const_iterator end() const { return points_.end(); }
 
-double distance(const alt::Point2d & point, const alt::ConvexPolygon2d & poly);
+  // Modifiers
+  void push_back(const Point2d & point) { points_.push_back(point); }
+  void clear() { points_.clear(); }
+  void resize(size_t n) { points_.resize(n); }
+  void reserve(size_t n) { points_.reserve(n); }
 
-alt::ConvexPolygon2d envelope(const alt::Polygon2d & poly);
+  // Check if ring is closed (first point equals last point)
+  bool is_closed() const
+  {
+    return !empty() && points_.front() == points_.back();
+  }
 
-bool equals(const alt::Point2d & point1, const alt::Point2d & point2);
+  // Close the ring by adding first point at the end if needed
+  void close()
+  {
+    if (!is_closed() && !empty()) {
+      points_.push_back(points_.front());
+    }
+  }
 
-bool equals(const alt::Polygon2d & poly1, const alt::Polygon2d & poly2);
+private:
+  Points points_;
+};
 
-alt::Points2d::const_iterator find_farthest(
-  const alt::Points2d & points, const alt::Point2d & seg_start, const alt::Point2d & seg_end);
+// Geometric operations
+double area(const ConvexPolygon2d& poly);
+ConvexPolygon2d convex_hull(const Points2d& points);
+void correct(Polygon2d& poly);
+bool covered_by(const Point2d& point, const ConvexPolygon2d& poly);
+bool equals(const Polygon2d& poly1, const Polygon2d& poly2);
+bool is_convex(const Polygon2d& poly);
+PointList2d simplify(const PointList2d& line, const double max_distance);
+bool touches(const Point2d& point, const Point2d& seg_start, const Point2d& seg_end);
+bool touches(const Point2d& point, const ConvexPolygon2d& poly);
+bool within(const Point2d& point, const ConvexPolygon2d& poly);
+bool within(const ConvexPolygon2d& poly_contained, const ConvexPolygon2d& poly_containing);
 
-bool intersects(
-  const alt::Point2d & seg1_start, const alt::Point2d & seg1_end, const alt::Point2d & seg2_start,
-  const alt::Point2d & seg2_end);
+// Helper functions
+double dot_product(const Point2d& p1, const Point2d& p2);
+double cross_product(const Point2d& p1, const Point2d& p2);
+double distance(const Point2d& p1, const Point2d& p2);
+double squared_distance(const Point2d& p1, const Point2d& p2);
 
-bool intersects(const alt::ConvexPolygon2d & poly1, const alt::ConvexPolygon2d & poly2);
+// Add new functions for polygon operations
+Polygon2d rotatePolygon(const Polygon2d& polygon, double angle);
+Polygon2d translatePolygon(const Polygon2d& polygon, double x, double y);
 
-bool is_above(
-  const alt::Point2d & point, const alt::Point2d & seg_start, const alt::Point2d & seg_end);
+// Add conversion functions
+Polygon2d msgToPolygon2d(const geometry_msgs::msg::Polygon& polygon_msg);
+geometry_msgs::msg::Polygon polygon2dToMsg(const Polygon2d& polygon);
 
-bool is_clockwise(const alt::PointList2d & vertices);
-
-bool is_convex(const alt::Polygon2d & poly);
-
-alt::PointList2d simplify(const alt::PointList2d & line, const double max_distance);
-
-bool touches(
-  const alt::Point2d & point, const alt::Point2d & seg_start, const alt::Point2d & seg_end);
-
-bool touches(const alt::Point2d & point, const alt::ConvexPolygon2d & poly);
-
-bool within(const alt::Point2d & point, const alt::ConvexPolygon2d & poly);
-
-bool within(
-  const alt::ConvexPolygon2d & poly_contained, const alt::ConvexPolygon2d & poly_containing);
-}  // namespace autoware::universe_utils
+// Add utility functions
+bool isValid(const Polygon2d& polygon);
+void makeClockwise(Polygon2d& polygon);
+void makeCounterClockwise(Polygon2d& polygon);
+} // namespace autoware::universe_utils::alt
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
+
+/*USAGE EXAMPLE:
+using namespace autoware::universe_utils::alt;
+
+// Create a triangle
+LinearRing2d ring;
+ring.push_back(Point2d(0, 0));
+ring.push_back(Point2d(1, 0));
+ring.push_back(Point2d(0, 1));
+ring.close();  // Adds first point again to close the ring
+
+// Check if it's closed
+assert(ring.is_closed());
+assert(ring.size() == 4);  // 3 vertices + 1 closing point
+*/
