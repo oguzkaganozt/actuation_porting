@@ -13,7 +13,7 @@ project(actuation_autoware)
 # INCLUDES
 include(GNUInstallDirs)
 include(ExternalProject)
-include(cyclonedds_config.cmake)
+# include(cyclonedds_config.cmake)
 include(src/autoware_osqp_interface/osqp_interface.cmake)
 # include(src/autoware_universe_utils/autoware_universe_utils.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
@@ -23,7 +23,7 @@ include(src/autoware_osqp_interface/osqp_interface.cmake)
 # include(src/autoware_motion_utils/autoware_motion_utils.cmake)
 
 ### BUILD CYCLONEDDS ###
-create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
+# create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
 ### SET ZEPHYR COMPILER AND FLAGS ###
 # Get compile options from Zephyr to be passed to the Autoware packages.
@@ -113,4 +113,4 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 
 # Link actuation messages and CycloneDDS library
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
-target_link_libraries(app PRIVATE cdds_lib)
+# target_link_libraries(app PRIVATE cdds_lib)
