@@ -66,8 +66,8 @@ double calcLongitudinalDeviation(
 double calcYawDeviation(
   const geometry_msgs::msg::Pose & base_pose, const geometry_msgs::msg::Pose & target_pose)
 {
-  const auto base_yaw = tf2::getYaw(base_pose.orientation);
-  const auto target_yaw = tf2::getYaw(target_pose.orientation);
+  const auto base_yaw = getYaw(base_pose.orientation);
+  const auto target_yaw = getYaw(target_pose.orientation);
   return normalizeRadian(target_yaw - base_yaw);
 }
 

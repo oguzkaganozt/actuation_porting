@@ -220,12 +220,56 @@ geometry_msgs::msg::Point32 transformPoint(
 }
 
 geometry_msgs::msg::Pose transformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::TransformStamped & transform)
+  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Pose & pose_transform)
 {
+  // Replace tf2 transform with direct quaternion multiplication
   geometry_msgs::msg::Pose transformed_pose;
-  tf2::doTransform(pose, transformed_pose, transform);
+  
+  // Position transformation
+  transformed_pose.position.x = pose_transform.position.x + pose.position.x;
+  transformed_pose.position.y = pose_transform.position.y + pose.position.y;
+  transformed_pose.position.z = pose_transform.position.z + pose.position.z;
+  
+  // Orientation transformation using quaternion multiplication
+  // w1*w2 - x1*x2 - y1*y2 - z1*z2
+  transformed_pose.orientation.w = 
+    pose_transform.orientation.w * pose.orientation.w -
+    pose_transform.orientation.x * pose.orientation.x -
+    pose_transform.orientation.y * pose.orientation.y -
+    pose_transform.orientation.z * pose.orientation.z;
+    
+  // w1*x2 + x1*w2 + y1*z2 - z1*y2
+  transformed_pose.orientation.x =
+    pose_transform.orientation.w * pose.orientation.x +
+    pose_transform.orientation.x * pose.orientation.w +
+    pose_transform.orientation.y * pose.orientation.z -
+    pose_transform.orientation.z * pose.orientation.y;
+    
+  // w1*y2 - x1*z2 + y1*w2 + z1*x2
+  transformed_pose.orientation.y =
+    pose_transform.orientation.w * pose.orientation.y -
+    pose_transform.orientation.x * pose.orientation.z +
+    pose_transform.orientation.y * pose.orientation.w +
+    pose_transform.orientation.z * pose.orientation.x;
+    
+  // w1*z2 + x1*y2 - y1*x2 + z1*w2
+  transformed_pose.orientation.z =
+    pose_transform.orientation.w * pose.orientation.z +
+    pose_transform.orientation.x * pose.orientation.y -
+    pose_transform.orientation.y * pose.orientation.x +
+    pose_transform.orientation.z * pose.orientation.w;
 
   return transformed_pose;
+}
+
+// Replace tf2::getYaw with direct calculation
+double getYaw(const geometry_msgs::msg::Quaternion & q)
+{
+  // Convert quaternion to Euler angles
+  // yaw (z-axis rotation)
+  double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+  double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+  return std::atan2(siny_cosp, cosy_cosp);
 }
 
 geometry_msgs::msg::Pose transformPose(

@@ -15,10 +15,7 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 
-#include "autoware/universe_utils/geometry/boost_geometry.hpp"
-
 #include <list>
-#include <optional>
 #include <utility>
 #include <vector>
 
@@ -95,13 +92,13 @@ using PointList2d = std::list<Point2d>;
 class Polygon2d
 {
 public:
-  static std::optional<Polygon2d> create(
+  static Polygon2d create(
     const PointList2d & outer, const std::vector<PointList2d> & inners) noexcept;
 
-  static std::optional<Polygon2d> create(
+  static Polygon2d create(
     PointList2d && outer, std::vector<PointList2d> && inners) noexcept;
 
-  static std::optional<Polygon2d> create(
+  static Polygon2d create(
     const autoware::universe_utils::Polygon2d & polygon) noexcept;
 
   const PointList2d & outer() const noexcept { return outer_; }
@@ -133,11 +130,11 @@ protected:
 class ConvexPolygon2d : public Polygon2d
 {
 public:
-  static std::optional<ConvexPolygon2d> create(const PointList2d & vertices) noexcept;
+  static ConvexPolygon2d create(const PointList2d & vertices) noexcept;
 
-  static std::optional<ConvexPolygon2d> create(PointList2d && vertices) noexcept;
+  static ConvexPolygon2d create(PointList2d && vertices) noexcept;
 
-  static std::optional<ConvexPolygon2d> create(
+  static ConvexPolygon2d create(
     const autoware::universe_utils::Polygon2d & polygon) noexcept;
 
   const PointList2d & vertices() const noexcept { return outer(); }
@@ -153,7 +150,7 @@ private:
 
 double area(const alt::ConvexPolygon2d & poly);
 
-std::optional<alt::ConvexPolygon2d> convex_hull(const alt::Points2d & points);
+alt::ConvexPolygon2d convex_hull(const alt::Points2d & points);
 
 void correct(alt::Polygon2d & poly);
 
@@ -166,7 +163,7 @@ double distance(
 
 double distance(const alt::Point2d & point, const alt::ConvexPolygon2d & poly);
 
-std::optional<alt::ConvexPolygon2d> envelope(const alt::Polygon2d & poly);
+alt::ConvexPolygon2d envelope(const alt::Polygon2d & poly);
 
 bool equals(const alt::Point2d & point1, const alt::Point2d & point2);
 

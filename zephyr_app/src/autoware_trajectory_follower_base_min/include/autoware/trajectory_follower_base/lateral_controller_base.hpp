@@ -22,7 +22,6 @@
 
 #include "autoware_control_msgs/msg/lateral.hpp"
 
-#include <boost/optional.hpp>
 namespace autoware::motion::control::trajectory_follower
 {
 using autoware_control_msgs::msg::Lateral;

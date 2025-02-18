@@ -15,7 +15,7 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__GEOMETRY_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__GEOMETRY_HPP_
 
-#include "autoware/universe_utils/geometry/boost_geometry.hpp"
+#include "autoware/universe_utils/geometry/alt_geometry.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 #include "autoware/universe_utils/ros/msg_covariance.hpp"

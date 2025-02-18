@@ -1,8 +1,6 @@
 macro(add_autoware_universe_utils)
   # Find dependencies
   find_package(Eigen3 REQUIRED)
-  set(BOOST_INCLUDEDIR "/usr/include")
-  find_package(Boost REQUIRED)
   
   # Add source files
   list(APPEND APP_SOURCES
@@ -16,6 +14,5 @@ macro(add_autoware_universe_utils)
   list(APPEND APP_INCLUDE_DIRS
     src/autoware_universe_utils_min/include
     "${EIGEN3_INCLUDE_DIR}"
-    "${Boost_INCLUDE_DIR}"
   )
 endmacro()
