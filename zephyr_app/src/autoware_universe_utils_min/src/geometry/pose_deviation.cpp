@@ -12,21 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Autoware
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
-
 #include "autoware/universe_utils/math/normalization.hpp"
 
-#include <tf2/utils.h>
-
+// Eigen
 #define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
-#ifdef ROS_DISTRO_GALACTIC
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#else
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
-#endif
 
 namespace autoware::universe_utils
 {
@@ -36,7 +29,7 @@ double calcLateralDeviation(
 {
   const auto & base_point = base_pose.position;
 
-  const auto yaw = tf2::getYaw(base_pose.orientation);
+  const auto yaw = getYaw(base_pose.orientation);
   const Eigen::Vector3d base_unit_vec{std::cos(yaw), std::sin(yaw), 0};
 
   const auto dx = target_point.x - base_point.x;
@@ -53,7 +46,7 @@ double calcLongitudinalDeviation(
 {
   const auto & base_point = base_pose.position;
 
-  const auto yaw = tf2::getYaw(base_pose.orientation);
+  const auto yaw = getYaw(base_pose.orientation);
   const Eigen::Vector3d base_unit_vec{std::cos(yaw), std::sin(yaw), 0};
 
   const auto dx = target_point.x - base_point.x;

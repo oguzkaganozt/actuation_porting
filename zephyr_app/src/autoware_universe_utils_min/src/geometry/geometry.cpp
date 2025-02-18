@@ -13,28 +13,9 @@
 // limitations under the License.
 
 #include "autoware/universe_utils/geometry/geometry.hpp"
-
 #include "autoware/universe_utils/geometry/gjk_2d.hpp"
-
 #include <Eigen/Geometry>
-
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
-
-#include <tf2/convert.h>
-
 #include <string>
-
-namespace tf2
-{
-void fromMsg(const geometry_msgs::msg::PoseStamped & msg, tf2::Stamped<tf2::Transform> & out)
-{
-  out.stamp_ = tf2_ros::fromMsg(msg.header.stamp);
-  out.frame_id_ = msg.header.frame_id;
-  tf2::Transform tmp;
-  fromMsg(msg.pose, tmp);
-  out.setData(tmp);
-}
-}  // namespace tf2
 
 namespace autoware::universe_utils
 {
@@ -81,21 +62,42 @@ geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, co
   return v;
 }
 
-// Revival of tf::createQuaternionFromRPY
-// https://answers.ros.org/question/304397/recommended-way-to-construct-quaternion-from-rollpitchyaw-with-tf2/
 geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw)
 {
-  tf2::Quaternion q;
-  q.setRPY(roll, pitch, yaw);
-  return tf2::toMsg(q);
+  // Calculate rotation matrix elements
+  const double cr = std::cos(roll * 0.5);
+  const double sr = std::sin(roll * 0.5);
+  const double cp = std::cos(pitch * 0.5);
+  const double sp = std::sin(pitch * 0.5);
+  const double cy = std::cos(yaw * 0.5);
+  const double sy = std::sin(yaw * 0.5);
+
+  // Convert to quaternion using the rotation matrix to quaternion formulas
+  geometry_msgs::msg::Quaternion q;
+  q.w = cr * cp * cy + sr * sp * sy;
+  q.x = sr * cp * cy - cr * sp * sy;
+  q.y = cr * sp * cy + sr * cp * sy;
+  q.z = cr * cp * sy - sr * sp * cy;
+
+  return q;
 }
 
 geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
 {
-  tf2::Quaternion q;
-  q.setRPY(0, 0, yaw);
-  return tf2::toMsg(q);
+  // Calculate half angles
+  const double half_yaw = yaw * 0.5;
+  const double cy = std::cos(half_yaw);
+  const double sy = std::sin(half_yaw);
+
+  // When roll and pitch are 0, the quaternion simplifies to:
+  geometry_msgs::msg::Quaternion q;
+  q.w = cy;  // cos(0/2)cos(0/2)cos(yaw/2) = cos(yaw/2)
+  q.x = 0;   // sin(0/2)cos(0/2)cos(yaw/2) = 0
+  q.y = 0;   // cos(0/2)sin(0/2)cos(yaw/2) = 0
+  q.z = sy;  // cos(0/2)cos(0/2)sin(yaw/2) = sin(yaw/2)
+
+  return q;
 }
 
 double calcElevationAngle(
@@ -434,6 +436,19 @@ std::optional<geometry_msgs::msg::Point> intersect(
 bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2)
 {
   return gjk::intersects(convex_polygon1, convex_polygon2);
+}
+
+geometry_msgs::msg::Vector3 lerp(
+  const geometry_msgs::msg::Vector3 & src_vec, 
+  const geometry_msgs::msg::Vector3 & dst_vec, 
+  const double ratio)
+{
+  geometry_msgs::msg::Vector3 result;
+  // Linear interpolation formula: result = src + ratio * (dst - src)
+  result.x = src_vec.x + ratio * (dst_vec.x - src_vec.x);
+  result.y = src_vec.y + ratio * (dst_vec.y - src_vec.y);
+  result.z = src_vec.z + ratio * (dst_vec.z - src_vec.z);
+  return result;
 }
 
 }  // namespace autoware::universe_utils

@@ -15,18 +15,23 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__GEOMETRY_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__GEOMETRY_HPP_
 
+// Autoware
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 #include "autoware/universe_utils/ros/msg_covariance.hpp"
 
+// Standard library
 #include <exception>
 #include <string>
 #include <vector>
+#include <cmath>
 
+// Eigen
 #define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
 
+// Message types
 #include <autoware_planning_msgs/msg/path.hpp>
 #include <autoware_planning_msgs/msg/trajectory.hpp>
 #include <geometry_msgs/msg/point32.hpp>
@@ -37,64 +42,7 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/twist_with_covariance.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <tier4_planning_msgs/msg/path_with_lane_id.hpp>
-
-#include <tf2/utils.h>
-
-// TODO(wep21): Remove these apis
-//              after they are implemented in ros2 geometry2.
-namespace tf2
-{
-void fromMsg(const geometry_msgs::msg::PoseStamped & msg, tf2::Stamped<tf2::Transform> & out);
-#ifdef ROS_DISTRO_GALACTIC
-// Remove after this commit is released
-// https://github.com/ros2/geometry2/commit/e9da371d81e388a589540357c050e262442f1b4a
-inline geometry_msgs::msg::Point & toMsg(const tf2::Vector3 & in, geometry_msgs::msg::Point & out)
-{
-  out.x = in.getX();
-  out.y = in.getY();
-  out.z = in.getZ();
-  return out;
-}
-
-// Remove after this commit is released
-// https://github.com/ros2/geometry2/commit/e9da371d81e388a589540357c050e262442f1b4a
-inline void fromMsg(const geometry_msgs::msg::Point & in, tf2::Vector3 & out)
-{
-  out = tf2::Vector3(in.x, in.y, in.z);
-}
-
-template <>
-inline void doTransform(
-  const geometry_msgs::msg::Point & t_in, geometry_msgs::msg::Point & t_out,
-  const geometry_msgs::msg::TransformStamped & transform)
-{
-  tf2::Transform t;
-  fromMsg(transform.transform, t);
-  tf2::Vector3 v_in;
-  fromMsg(t_in, v_in);
-  tf2::Vector3 v_out = t * v_in;
-  toMsg(v_out, t_out);
-}
-
-template <>
-inline void doTransform(
-  const geometry_msgs::msg::Pose & t_in, geometry_msgs::msg::Pose & t_out,
-  const geometry_msgs::msg::TransformStamped & transform)
-{
-  tf2::Vector3 v;
-  fromMsg(t_in.position, v);
-  tf2::Quaternion r;
-  fromMsg(t_in.orientation, r);
-
-  tf2::Transform t;
-  fromMsg(transform.transform, t);
-  tf2::Transform v_out = t * tf2::Transform(r, v);
-  toMsg(v_out, t_out);
-}
-#endif
-}  // namespace tf2
 
 namespace autoware::universe_utils
 {
@@ -375,7 +323,7 @@ geometry_msgs::msg::TransformStamped pose2transform(
   const geometry_msgs::msg::PoseStamped & pose, const std::string & child_frame_id);
 
 template <class Point1, class Point2>
-tf2::Vector3 point2tfVector(const Point1 & src, const Point2 & dst)
+Vector3 point2tfVector(const Point1 & src, const Point2 & dst)
 {
   const auto src_p = getPoint(src);
   const auto dst_p = getPoint(dst);
@@ -383,7 +331,7 @@ tf2::Vector3 point2tfVector(const Point1 & src, const Point2 & dst)
   double dx = dst_p.x - src_p.x;
   double dy = dst_p.y - src_p.y;
   double dz = dst_p.z - src_p.z;
-  return tf2::Vector3(dx, dy, dz);
+  return Vector3(dx, dy, dz);
 }
 
 Point3d transformPoint(const Point3d & point, const geometry_msgs::msg::Transform & transform);
@@ -448,7 +396,7 @@ template <class Pose1, class Pose2>
 bool isDrivingForward(const Pose1 & src_pose, const Pose2 & dst_pose)
 {
   // check the first point direction
-  const double src_yaw = tf2::getYaw(getPose(src_pose).orientation);
+  const double src_yaw = getYaw(getPose(src_pose).orientation);
   const double pose_direction_yaw = calcAzimuthAngle(getPoint(src_pose), getPoint(dst_pose));
   return std::fabs(normalizeRadian(src_yaw - pose_direction_yaw)) < pi / 2.0;
 }
@@ -475,19 +423,19 @@ geometry_msgs::msg::Point calcInterpolatedPoint(
   const auto src_point = getPoint(src);
   const auto dst_point = getPoint(dst);
 
-  tf2::Vector3 src_vec;
+  Vector3 src_vec;
   src_vec.setX(src_point.x);
   src_vec.setY(src_point.y);
   src_vec.setZ(src_point.z);
 
-  tf2::Vector3 dst_vec;
+  Vector3 dst_vec;
   dst_vec.setX(dst_point.x);
   dst_vec.setY(dst_point.y);
   dst_vec.setZ(dst_point.z);
 
   // Get pose by linear interpolation
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
-  const auto & vec = tf2::lerp(src_vec, dst_vec, clamped_ratio);
+  const auto & vec = lerp(src_vec, dst_vec, clamped_ratio);
 
   geometry_msgs::msg::Point point;
   point.x = vec.x();
@@ -536,12 +484,17 @@ geometry_msgs::msg::Pose calcInterpolatedPose(
     }
   } else {
     // Get orientation by spherical linear interpolation
-    tf2::Transform src_tf;
-    tf2::Transform dst_tf;
-    tf2::fromMsg(getPose(src_pose), src_tf);
-    tf2::fromMsg(getPose(dst_pose), dst_tf);
-    const auto & quaternion = tf2::slerp(src_tf.getRotation(), dst_tf.getRotation(), clamped_ratio);
-    output_pose.orientation = tf2::toMsg(quaternion);
+    // tf2::Transform src_tf;
+    // tf2::Transform dst_tf;
+    // tf2::fromMsg(getPose(src_pose), src_tf);
+    // tf2::fromMsg(getPose(dst_pose), dst_tf);
+    // const auto & quaternion = tf2::slerp(src_tf.getRotation(), dst_tf.getRotation(), clamped_ratio);
+    // output_pose.orientation = tf2::toMsg(quaternion);
+
+    Quaterniond qa, qb, qres;
+    // initialize qa, qb;
+    qres = qa.slerp(clamped_ratio, qb);
+    output_pose.orientation = toMsg(qres);
   }
 
   return output_pose;
@@ -582,6 +535,18 @@ std::optional<geometry_msgs::msg::Point> intersect(
  * @details much faster than boost::geometry::intersects()
  */
 bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2);
+
+/**
+ * @brief Linear interpolation between two vectors
+ * @param src_vec Source vector
+ * @param dst_vec Destination vector
+ * @param ratio Interpolation ratio (typically between 0 and 1)
+ * @return Interpolated vector
+ */
+geometry_msgs::msg::Vector3 lerp(
+  const geometry_msgs::msg::Vector3 & src_vec,
+  const geometry_msgs::msg::Vector3 & dst_vec,
+  const double ratio);
 
 }  // namespace autoware::universe_utils
 
