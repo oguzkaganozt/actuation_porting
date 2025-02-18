@@ -655,5 +655,4 @@ bool within(
 
   return true;
 }
-
 }  // namespace autoware::universe_utils

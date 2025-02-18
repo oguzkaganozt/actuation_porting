@@ -19,6 +19,26 @@
 
 namespace autoware::universe_utils
 {
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat)
+{
+  geometry_msgs::msg::Vector3 rpy;
+  tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
+  tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
+  return rpy;
+}
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose)
+{
+  return getRPY(pose.orientation);
+}
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose)
+{
+  return getRPY(pose.pose);
+}
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose)
+{
+  return getRPY(pose.pose.pose);
+}
+
 geometry_msgs::msg::Quaternion createQuaternion(
   const double x, const double y, const double z, const double w)
 {
@@ -66,26 +86,6 @@ geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
   q.z = sy;  // cos(0/2)cos(0/2)sin(yaw/2) = sin(yaw/2)
 
   return q;
-}
-
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat)
-{
-  geometry_msgs::msg::Vector3 rpy;
-  tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
-  tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
-  return rpy;
-}
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose)
-{
-  return getRPY(pose.orientation);
-}
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose)
-{
-  return getRPY(pose.pose);
-}
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose)
-{
-  return getRPY(pose.pose.pose);
 }
 
 geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z)
