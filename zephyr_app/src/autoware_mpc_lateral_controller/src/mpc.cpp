@@ -177,8 +177,8 @@ Float32MultiArrayStamped MPC::generateDiagData(
   append_diag(std::atan(nearest_smooth_k * wb));  // [3] feed-forward steering value raw
   append_diag(mpc_data.steer);                    // [4] current steering angle
   append_diag(mpc_data.lateral_err);              // [5] lateral error
-  append_diag(tf2::getYaw(current_kinematics.pose.pose.orientation));  // [6] current_pose yaw
-  append_diag(tf2::getYaw(mpc_data.nearest_pose.orientation));         // [7] nearest_pose yaw
+  append_diag(getYaw(current_kinematics.pose.pose.orientation));  // [6] current_pose yaw
+  append_diag(getYaw(mpc_data.nearest_pose.orientation));         // [7] nearest_pose yaw
   append_diag(mpc_data.yaw_err);                                       // [8] yaw error
   append_diag(reference_trajectory.vx.at(mpc_data.nearest_idx));       // [9] reference velocity
   append_diag(current_velocity);                                       // [10] measured velocity
@@ -302,7 +302,7 @@ std::pair<ResultWithReason, MPCData> MPC::getData(
   data.steer = static_cast<double>(current_steer.steering_tire_angle);
   data.lateral_err = MPCUtils::calcLateralError(current_pose, data.nearest_pose);
   data.yaw_err = normalizeRadian(
-    tf2::getYaw(current_pose.orientation) - tf2::getYaw(data.nearest_pose.orientation));
+    getYaw(current_pose.orientation) - getYaw(data.nearest_pose.orientation));
 
   // get predicted steer
   data.predicted_steer = m_steering_predictor->calcSteerPrediction();

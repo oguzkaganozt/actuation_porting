@@ -75,7 +75,7 @@ double calcLateralError(const Pose & ego_pose, const Pose & ref_pose)
 {
   const double err_x = ego_pose.position.x - ref_pose.position.x;
   const double err_y = ego_pose.position.y - ref_pose.position.y;
-  const double ref_yaw = tf2::getYaw(ref_pose.orientation);
+  const double ref_yaw = getYaw(ref_pose.orientation);
   const double lat_err = -std::sin(ref_yaw) * err_x + std::cos(ref_yaw) * err_y;
   return lat_err;
 }
@@ -265,7 +265,7 @@ MPCTrajectory convertToMPCTrajectory(const Trajectory & input)
     const double x = p.pose.position.x;
     const double y = p.pose.position.y;
     const double z = p.pose.position.z;
-    const double yaw = tf2::getYaw(p.pose.orientation);
+    const double yaw = getYaw(p.pose.orientation);
     const double vx = p.longitudinal_velocity_mps;
     const double k = 0.0;
     const double t = 0.0;

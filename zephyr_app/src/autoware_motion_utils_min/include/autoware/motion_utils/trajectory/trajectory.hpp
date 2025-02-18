@@ -1927,8 +1927,8 @@ void removeFirstInvalidOrientationPoints(T & points, const double max_yaw_diff =
   for (auto itr = points.begin(); std::next(itr) != points.end();) {
     const auto p1 = autoware::universe_utils::getPose(*itr);
     const auto p2 = autoware::universe_utils::getPose(*std::next(itr));
-    const double yaw1 = tf2::getYaw(p1.orientation);
-    const double yaw2 = tf2::getYaw(p2.orientation);
+    const double yaw1 = getYaw(p1.orientation);
+    const double yaw2 = getYaw(p2.orientation);
 
     if (
       max_yaw_diff < std::abs(autoware::universe_utils::normalizeRadian(yaw1 - yaw2)) ||
@@ -2452,7 +2452,7 @@ double calcYawDeviation(
   const double path_yaw = autoware::universe_utils::calcAzimuthAngle(
     autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx)),
     autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx + 1)));
-  const double pose_yaw = tf2::getYaw(pose.orientation);
+  const double pose_yaw = getYaw(pose.orientation);
 
   return autoware::universe_utils::normalizeRadian(pose_yaw - path_yaw);
 }

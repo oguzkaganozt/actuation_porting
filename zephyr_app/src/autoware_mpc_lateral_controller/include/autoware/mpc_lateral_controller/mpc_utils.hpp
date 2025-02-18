@@ -16,15 +16,8 @@
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_UTILS_HPP_
 
 #include "rclcpp/rclcpp.hpp"
-#include "tf2/utils.h"
 
 #include <Eigen/Core>
-
-#ifdef ROS_DISTRO_GALACTIC
-#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
-#else
-#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
-#endif
 
 #include "autoware/mpc_lateral_controller/mpc_trajectory.hpp"
 
