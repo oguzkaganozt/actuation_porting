@@ -136,39 +136,81 @@ private:
   Points points_;
 };
 
-// Geometric operations
+/**
+ * @brief Calculate the area of a convex polygon
+ * @param poly The convex polygon to calculate the area of
+ * @return The area of the polygon
+ */
 double area(const ConvexPolygon2d& poly);
+
+/**
+ * @brief Calculate the convex hull of a set of points
+ * @param points The points to calculate the convex hull of
+ * @return The convex hull of the points
+ */
 ConvexPolygon2d convex_hull(const Points2d& points);
+
+/**
+ * @brief Correct a polygon
+ * @param poly The polygon to correct
+ */
 void correct(Polygon2d& poly);
+
+/**
+ * @brief Check if a point is covered by a convex polygon
+ * @param point The point to check
+ * @param poly The convex polygon to check against
+ */
 bool covered_by(const Point2d& point, const ConvexPolygon2d& poly);
+
+/**
+ * @brief Check if two polygons are equal
+ * @param poly1 The first polygon
+ * @param poly2 The second polygon
+ * @return true if the polygons are equal, false otherwise
+ */
 bool equals(const Polygon2d& poly1, const Polygon2d& poly2);
+
+/**
+ * @brief Check if a polygon is convex
+ * @param poly The polygon to check
+ * @return true if the polygon is convex, false otherwise
+ */
 bool is_convex(const Polygon2d& poly);
+
+/**
+ * @brief Simplify a polygon
+ * @param line The polygon to simplify
+ * @param max_distance The maximum distance between points
+ * @return The simplified polygon
+ */
 PointList2d simplify(const PointList2d& line, const double max_distance);
+
+/**
+ * @brief Check if a point touches a segment
+ * @param point The point to check
+ * @param seg_start The start point of the segment
+ * @param seg_end The end point of the segment
+ * @return true if the point touches the segment, false otherwise
+ */
 bool touches(const Point2d& point, const Point2d& seg_start, const Point2d& seg_end);
 bool touches(const Point2d& point, const ConvexPolygon2d& poly);
+
+/**
+ * @brief Check if a point is within a convex polygon
+ * @param point The point to check
+ * @param poly The convex polygon to check against
+ * @return true if the point is within the polygon, false otherwise
+ */
 bool within(const Point2d& point, const ConvexPolygon2d& poly);
 bool within(const ConvexPolygon2d& poly_contained, const ConvexPolygon2d& poly_containing);
 
 // Helper functions
 double dot_product(const Point2d& p1, const Point2d& p2);
 double cross_product(const Point2d& p1, const Point2d& p2);
+Point2d cross_product(const Point2d & p1, const Point2d & p2, const Point2d & p3)
 double distance(const Point2d& p1, const Point2d& p2);
 double squared_distance(const Point2d& p1, const Point2d& p2);
 } // namespace autoware::universe_utils::alt
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
-
-/*USAGE EXAMPLE:
-using namespace autoware::universe_utils::alt;
-
-// Create a triangle
-LinearRing2d ring;
-ring.push_back(Point2d(0, 0));
-ring.push_back(Point2d(1, 0));
-ring.push_back(Point2d(0, 1));
-ring.close();  // Adds first point again to close the ring
-
-// Check if it's closed
-assert(ring.is_closed());
-assert(ring.size() == 4);  // 3 vertices + 1 closing point
-*/

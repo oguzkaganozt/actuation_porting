@@ -157,6 +157,12 @@ double cross_product(const Point2d& p1, const Point2d& p2) {
   return p1.x() * p2.y() - p1.y() * p2.x();
 }
 
+Point2d cross_product(const Point2d & p1, const Point2d & p2, const Point2d & p3)
+{
+  const auto tmp = p1.x() * p2.y() - p1.y() * p2.x();
+  return Point2d(-p3.y() * tmp, p3.x() * tmp);
+}
+
 double distance(const Point2d& p1, const Point2d& p2) {
   return std::sqrt(squared_distance(p1, p2));
 }

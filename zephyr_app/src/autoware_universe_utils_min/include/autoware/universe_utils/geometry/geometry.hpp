@@ -174,13 +174,32 @@ geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose);
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose);
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose);
 
-// createQuaternion
+/**
+ * @brief Create a quaternion from a x, y, z, and w value
+ * @param x The x value
+ * @param y The y value
+ * @param z The z value
+ * @param w The w value
+ * @return The quaternion
+ */
 geometry_msgs::msg::Quaternion createQuaternion(
   const double x, const double y, const double z, const double w);
 
+/**
+ * @brief Create a quaternion from a roll, pitch, and yaw angle
+ * @param roll The roll angle
+ * @param pitch The pitch angle
+ * @param yaw The yaw angle
+ * @return The quaternion
+ */
 geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw);
 
+/**
+ * @brief Create a quaternion from a yaw angle
+ * @param yaw The yaw angle
+ * @return The quaternion
+ */
 geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw);
 
 /**
@@ -207,6 +226,12 @@ double calcElevationAngle(
 double calcAzimuthAngle(
   const geometry_msgs::msg::Point & p_from, const geometry_msgs::msg::Point & p_to);
 
+/**
+ * @brief Convert a point to a tf vector
+ * @param src The source point
+ * @param dst The destination point
+ * @return The tf vector
+ */
 template <class Point1, class Point2>
 Vector3 point2tfVector(const Point1 & src, const Point2 & dst)
 {
@@ -219,10 +244,23 @@ Vector3 point2tfVector(const Point1 & src, const Point2 & dst)
   return Vector3(dx, dy, dz);
 }
 
+/**
+ * @brief Calculate the curvature of a path
+ * @param p1 The first point
+ * @param p2 The second point
+ * @param p3 The third point
+ * @return The curvature
+ */
 double calcCurvature(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
   const geometry_msgs::msg::Point & p3);
 
+/**
+ * @brief Check if a vehicle is driving forward
+ * @param src_pose The source pose
+ * @param dst_pose The destination pose
+ * @return true if the vehicle is driving forward, false otherwise
+ */
 template <class Pose1, class Pose2>
 bool isDrivingForward(const Pose1 & src_pose, const Pose2 & dst_pose)
 {
@@ -235,6 +273,12 @@ bool isDrivingForward(const Pose1 & src_pose, const Pose2 & dst_pose)
 /**
  * @brief Calculate offset pose. The offset values are defined in the local coordinate of the input
  * pose.
+ * @param p The input pose
+ * @param x The x offset
+ * @param y The y offset
+ * @param z The z offset
+ * @param yaw The yaw offset
+ * @return The offset pose
  */
 geometry_msgs::msg::Pose calcOffsetPose(
   const geometry_msgs::msg::Pose & p, const double x, const double y, const double z,

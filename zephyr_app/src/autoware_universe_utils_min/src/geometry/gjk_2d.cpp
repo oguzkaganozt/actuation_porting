@@ -36,12 +36,6 @@ struct SimplexSearch
   Point2d direction;         // current search direction
 };
 
-/// @brief calculate the dot product between 2 points
-double dot_product(const Point2d & p1, const Point2d & p2)
-{
-  return p1.x() * p2.x() + p1.y() * p2.y();
-}
-
 /// @brief calculate the index of the furthest polygon vertex in the given direction
 size_t furthest_vertex_idx(const Polygon2d & poly, const Point2d & direction)
 {
@@ -72,13 +66,6 @@ Point2d support_vertex(const Polygon2d & poly1, const Polygon2d & poly2, const P
 bool same_direction(const Point2d & p1, const Point2d & p2)
 {
   return dot_product(p1, p2) > 0.0;
-}
-
-/// @brief return the triple cross product of the given points
-Point2d cross_product(const Point2d & p1, const Point2d & p2, const Point2d & p3)
-{
-  const auto tmp = p1.x() * p2.y() - p1.y() * p2.x();
-  return Point2d(-p3.y() * tmp, p3.x() * tmp);
 }
 
 /// @brief update the search simplex and search direction to try to surround the origin
