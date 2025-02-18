@@ -22,6 +22,9 @@
 
 namespace autoware::universe_utils::alt {
 
+/**
+ * @brief A 2D point class that represents a point in 2D space
+ */
 class Point2d {
 public:
   Point2d() : x_(0.0), y_(0.0) {}
@@ -37,9 +40,13 @@ private:
   double y_;
 };
 
+// alias types
 using Points2d = std::vector<Point2d>;
 using PointList2d = std::vector<Point2d>;
 
+/**
+ * @brief A polygon class that represents a polygon
+ */
 class Polygon2d {
 public:
   explicit Polygon2d(const PointList2d& outer = {}, const std::vector<PointList2d>& inners = {})
@@ -55,6 +62,9 @@ private:
   std::vector<PointList2d> inners_;
 };
 
+/**
+ * @brief A convex polygon class that represents a convex polygon
+ */
 class ConvexPolygon2d : public Polygon2d {
 public:
   static ConvexPolygon2d create(const PointList2d& vertices) noexcept;
@@ -144,7 +154,6 @@ double dot_product(const Point2d& p1, const Point2d& p2);
 double cross_product(const Point2d& p1, const Point2d& p2);
 double distance(const Point2d& p1, const Point2d& p2);
 double squared_distance(const Point2d& p1, const Point2d& p2);
-
 } // namespace autoware::universe_utils::alt
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_

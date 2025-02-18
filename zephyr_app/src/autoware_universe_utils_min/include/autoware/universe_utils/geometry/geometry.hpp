@@ -339,6 +339,9 @@ std::optional<geometry_msgs::msg::Point> intersect(
 /**
  * @brief Check if 2 convex polygons intersect using the GJK algorithm
  * @details much faster than boost::geometry::intersects()
+ * @param convex_polygon1 First convex polygon
+ * @param convex_polygon2 Second convex polygon
+ * @return true if the polygons intersect, false otherwise
  */
 bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2);
 
