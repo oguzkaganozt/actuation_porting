@@ -36,7 +36,4 @@
 - calcoffsetpose
 
 # others
-- transformpoint - eigen ama check
-- transformPose - eigen ama check
 - createdefaultmarker - rclcpp - time
-
