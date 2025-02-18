@@ -46,192 +46,7 @@
 
 namespace autoware::universe_utils
 {
-template <class T>
-geometry_msgs::msg::Point getPoint(const T & p)
-{
-  return geometry_msgs::build<geometry_msgs::msg::Point>().x(p.x).y(p.y).z(p.z);
-}
-
-template <>
-inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::Point & p)
-{
-  return p;
-}
-
-template <>
-inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::Pose & p)
-{
-  return p.position;
-}
-
-template <>
-inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::PoseStamped & p)
-{
-  return p.pose.position;
-}
-
-template <>
-inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::PoseWithCovarianceStamped & p)
-{
-  return p.pose.pose.position;
-}
-
-template <>
-inline geometry_msgs::msg::Point getPoint(const autoware_planning_msgs::msg::PathPoint & p)
-{
-  return p.pose.position;
-}
-
-template <>
-inline geometry_msgs::msg::Point getPoint(const tier4_planning_msgs::msg::PathPointWithLaneId & p)
-{
-  return p.point.pose.position;
-}
-
-template <>
-inline geometry_msgs::msg::Point getPoint(const autoware_planning_msgs::msg::TrajectoryPoint & p)
-{
-  return p.pose.position;
-}
-
-template <class T>
-geometry_msgs::msg::Pose getPose([[maybe_unused]] const T & p)
-{
-  static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
-  throw std::logic_error("Only specializations of getPose can be used.");
-}
-
-template <>
-inline geometry_msgs::msg::Pose getPose(const geometry_msgs::msg::Pose & p)
-{
-  return p;
-}
-
-template <>
-inline geometry_msgs::msg::Pose getPose(const geometry_msgs::msg::PoseStamped & p)
-{
-  return p.pose;
-}
-
-template <>
-inline geometry_msgs::msg::Pose getPose(const autoware_planning_msgs::msg::PathPoint & p)
-{
-  return p.pose;
-}
-
-template <>
-inline geometry_msgs::msg::Pose getPose(const tier4_planning_msgs::msg::PathPointWithLaneId & p)
-{
-  return p.point.pose;
-}
-
-template <>
-inline geometry_msgs::msg::Pose getPose(const autoware_planning_msgs::msg::TrajectoryPoint & p)
-{
-  return p.pose;
-}
-
-template <class T>
-double getLongitudinalVelocity([[maybe_unused]] const T & p)
-{
-  static_assert(sizeof(T) == 0, "Only specializations of getVelocity can be used.");
-  throw std::logic_error("Only specializations of getVelocity can be used.");
-}
-
-template <>
-inline double getLongitudinalVelocity(const autoware_planning_msgs::msg::PathPoint & p)
-{
-  return p.longitudinal_velocity_mps;
-}
-
-template <>
-inline double getLongitudinalVelocity(const tier4_planning_msgs::msg::PathPointWithLaneId & p)
-{
-  return p.point.longitudinal_velocity_mps;
-}
-
-template <>
-inline double getLongitudinalVelocity(const autoware_planning_msgs::msg::TrajectoryPoint & p)
-{
-  return p.longitudinal_velocity_mps;
-}
-
-template <class T>
-void setPose([[maybe_unused]] const geometry_msgs::msg::Pose & pose, [[maybe_unused]] T & p)
-{
-  static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
-  throw std::logic_error("Only specializations of getPose can be used.");
-}
-
-template <>
-inline void setPose(const geometry_msgs::msg::Pose & pose, geometry_msgs::msg::Pose & p)
-{
-  p = pose;
-}
-
-template <>
-inline void setPose(const geometry_msgs::msg::Pose & pose, geometry_msgs::msg::PoseStamped & p)
-{
-  p.pose = pose;
-}
-
-template <>
-inline void setPose(
-  const geometry_msgs::msg::Pose & pose, autoware_planning_msgs::msg::PathPoint & p)
-{
-  p.pose = pose;
-}
-
-template <>
-inline void setPose(
-  const geometry_msgs::msg::Pose & pose, tier4_planning_msgs::msg::PathPointWithLaneId & p)
-{
-  p.point.pose = pose;
-}
-
-template <>
-inline void setPose(
-  const geometry_msgs::msg::Pose & pose, autoware_planning_msgs::msg::TrajectoryPoint & p)
-{
-  p.pose = pose;
-}
-
-template <class T>
-inline void setOrientation(const geometry_msgs::msg::Quaternion & orientation, T & p)
-{
-  auto pose = getPose(p);
-  pose.orientation = orientation;
-  setPose(pose, p);
-}
-
-template <class T>
-void setLongitudinalVelocity([[maybe_unused]] const float velocity, [[maybe_unused]] T & p)
-{
-  static_assert(sizeof(T) == 0, "Only specializations of getLongitudinalVelocity can be used.");
-  throw std::logic_error("Only specializations of getLongitudinalVelocity can be used.");
-}
-
-template <>
-inline void setLongitudinalVelocity(
-  const float velocity, autoware_planning_msgs::msg::TrajectoryPoint & p)
-{
-  p.longitudinal_velocity_mps = velocity;
-}
-
-template <>
-inline void setLongitudinalVelocity(
-  const float velocity, autoware_planning_msgs::msg::PathPoint & p)
-{
-  p.longitudinal_velocity_mps = velocity;
-}
-
-template <>
-inline void setLongitudinalVelocity(
-  const float velocity, tier4_planning_msgs::msg::PathPointWithLaneId & p)
-{
-  p.point.longitudinal_velocity_mps = velocity;
-}
-
+// createPoint: create a point
 inline geometry_msgs::msg::Point createPoint(const double x, const double y, const double z)
 {
   geometry_msgs::msg::Point p;
@@ -241,21 +56,101 @@ inline geometry_msgs::msg::Point createPoint(const double x, const double y, con
   return p;
 }
 
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat);
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose);
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose);
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose);
+// createVector3: create a vector3
+inline geometry_msgs::msg::Vector3 createVector3(const double x, double y, double z)
+{
+  return geometry_msgs::build<geometry_msgs::msg::Vector3>().x(x).y(y).z(z);
+}
 
-geometry_msgs::msg::Quaternion createQuaternion(
-  const double x, const double y, const double z, const double w);
+// getPoint: get the location of the point
+template <class T>
+geometry_msgs::msg::Point getPoint(const T & p) 
+{
+  return geometry_msgs::build<geometry_msgs::msg::Point>().x(p.x).y(p.y).z(p.z);  
+}
+template <>
+inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::Point & p)  { return p; }
+template <>
+inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::Pose & p)  { return p.position; }
+template <>
+inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::PoseStamped & p)  { return p.pose.position; }
+template <>
+inline geometry_msgs::msg::Point getPoint(const geometry_msgs::msg::PoseWithCovarianceStamped & p)  { return p.pose.pose.position; }
+template <>
+inline geometry_msgs::msg::Point getPoint(const autoware_planning_msgs::msg::PathPoint & p) { return p.pose.position; }
+template <>
+inline geometry_msgs::msg::Point getPoint(const tier4_planning_msgs::msg::PathPointWithLaneId & p)  { return p.point.pose.position; }
+template <>
+inline geometry_msgs::msg::Point getPoint(const autoware_planning_msgs::msg::TrajectoryPoint & p) { return p.pose.position; }
 
+// getPose: get the pose of the point
+template <class T>
+geometry_msgs::msg::Pose getPose([[maybe_unused]] const T & p)
+{
+  static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
+  throw std::logic_error("Only specializations of getPose can be used.");
+}
+template <>
+inline geometry_msgs::msg::Pose getPose(const geometry_msgs::msg::Pose & p) { return p; }
+template <>
+inline geometry_msgs::msg::Pose getPose(const geometry_msgs::msg::PoseStamped & p) { return p.pose; }
+template <>
+inline geometry_msgs::msg::Pose getPose(const autoware_planning_msgs::msg::PathPoint & p) { return p.pose; }
+template <>
+inline geometry_msgs::msg::Pose getPose(const tier4_planning_msgs::msg::PathPointWithLaneId & p) { return p.point.pose; }
+template <>
+inline geometry_msgs::msg::Pose getPose(const autoware_planning_msgs::msg::TrajectoryPoint & p) { return p.pose; }
+
+// setPose: set the pose of the point
+template <class T>
+void setPose([[maybe_unused]] const geometry_msgs::msg::Pose & pose, [[maybe_unused]] T & p)
+{
+  static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
+  throw std::logic_error("Only specializations of getPose can be used.");
+}
+template <>
+inline void setPose(const geometry_msgs::msg::Pose & pose, geometry_msgs::msg::Pose & p) { p = pose; }
+template <>
+inline void setPose(const geometry_msgs::msg::Pose & pose, geometry_msgs::msg::PoseStamped & p) { p.pose = pose; }
+template <>
+inline void setPose(const geometry_msgs::msg::Pose & pose, autoware_planning_msgs::msg::PathPoint & p)  { p.pose = pose; }
+template <>
+inline void setPose(const geometry_msgs::msg::Pose & pose, tier4_planning_msgs::msg::PathPointWithLaneId & p) { p.point.pose = pose; }
+template <>
+inline void setPose(const geometry_msgs::msg::Pose & pose, autoware_planning_msgs::msg::TrajectoryPoint & p) { p.pose = pose; }
+
+// getLongitudinalVelocity: get the longitudinal velocity of the point
+template <class T>
+double getLongitudinalVelocity([[maybe_unused]] const T & p)
+{
+  static_assert(sizeof(T) == 0, "Only specializations of getVelocity can be used.");
+  throw std::logic_error("Only specializations of getVelocity can be used.");
+}
+template <>
+inline double getLongitudinalVelocity(const autoware_planning_msgs::msg::PathPoint & p) { return p.longitudinal_velocity_mps; }
+template <>
+inline double getLongitudinalVelocity(const tier4_planning_msgs::msg::PathPointWithLaneId & p) { return p.point.longitudinal_velocity_mps; }
+template <>
+inline double getLongitudinalVelocity(const autoware_planning_msgs::msg::TrajectoryPoint & p) { return p.longitudinal_velocity_mps; }
+
+// setLongitudinalVelocity: set the longitudinal velocity of the point
+template <class T>
+void setLongitudinalVelocity([[maybe_unused]] const float velocity, [[maybe_unused]] T & p)
+{
+  static_assert(sizeof(T) == 0, "Only specializations of getLongitudinalVelocity can be used.");
+  throw std::logic_error("Only specializations of getLongitudinalVelocity can be used.");
+}
+template <>
+inline void setLongitudinalVelocity(const float velocity, autoware_planning_msgs::msg::TrajectoryPoint & p) { p.longitudinal_velocity_mps = velocity; }
+template <>
+inline void setLongitudinalVelocity(const float velocity, autoware_planning_msgs::msg::PathPoint & p) { p.longitudinal_velocity_mps = velocity; }
+template <>
+inline void setLongitudinalVelocity(const float velocity, tier4_planning_msgs::msg::PathPointWithLaneId & p) { p.point.longitudinal_velocity_mps = velocity; }
+
+// createTranslation: create a translation vector
 geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z);
 
-geometry_msgs::msg::Quaternion createQuaternionFromRPY(
-  const double roll, const double pitch, const double yaw);
-
-geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw);
-
+// calcDistance2d: calculate the distance between two points
 template <class Point1, class Point2>
 double calcDistance2d(const Point1 & point1, const Point2 & point2)
 {
@@ -263,6 +158,30 @@ double calcDistance2d(const Point1 & point1, const Point2 & point2)
   const auto p2 = getPoint(point2);
   return std::hypot(p1.x - p2.x, p1.y - p2.y);
 }
+
+// setOrientation: set the orientation of the point
+template <class T>
+inline void setOrientation(const geometry_msgs::msg::Quaternion & orientation, T & p)
+{
+  auto pose = getPose(p);
+  pose.orientation = orientation;
+  setPose(pose, p);
+}
+
+// getRPY: get the roll, pitch, and yaw of the point
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat);
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose);
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose);
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose);
+
+// createQuaternion
+geometry_msgs::msg::Quaternion createQuaternion(
+  const double x, const double y, const double z, const double w);
+
+geometry_msgs::msg::Quaternion createQuaternionFromRPY(
+  const double roll, const double pitch, const double yaw);
+
+geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw);
 
 /**
  * @brief calculate elevation angle of two points.
@@ -410,11 +329,6 @@ geometry_msgs::msg::Pose calcInterpolatedPose(
   }
 
   return output_pose;
-}
-
-inline geometry_msgs::msg::Vector3 createVector3(const double x, double y, double z)
-{
-  return geometry_msgs::build<geometry_msgs::msg::Vector3>().x(x).y(y).z(z);
 }
 
 // NOTE: much faster than boost::geometry::intersects()

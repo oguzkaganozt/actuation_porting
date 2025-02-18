@@ -15,13 +15,16 @@
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__INTERPOLATION_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__INTERPOLATION_HPP_
 
+// autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "tier4_planning_msgs/msg/path_with_lane_id.hpp"
-
+// standard library
 #include <algorithm>
 #include <limits>
+
+// message types
+#include "autoware_planning_msgs/msg/trajectory.hpp"
+#include "tier4_planning_msgs/msg/path_with_lane_id.hpp"
 
 namespace autoware::motion_utils
 {
