@@ -22,6 +22,9 @@ namespace autoware::universe_utils::gjk
 /**
  * @brief Check if 2 convex polygons intersect using the GJK algorithm
  * @details much faster than boost::geometry::overlaps() but limited to convex polygons
+ * @param convex_polygon1 The first convex polygon
+ * @param convex_polygon2 The second convex polygon
+ * @return true if the polygons intersect, false otherwise
  */
 bool intersects(const alt::Polygon2d & convex_polygon1, const alt::Polygon2d & convex_polygon2);
 }  // namespace autoware::universe_utils::gjk

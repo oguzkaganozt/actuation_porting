@@ -23,9 +23,6 @@
 
 namespace autoware::universe_utils
 {
-// Alternatives for Boost.Geometry ----------------------------------------------------------------
-namespace alt
-{
 std::optional<Polygon2d> Polygon2d::create(
   const PointList2d & outer, const std::vector<PointList2d> & inners) noexcept
 {

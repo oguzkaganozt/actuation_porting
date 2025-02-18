@@ -27,6 +27,12 @@ struct PoseDeviation
   double yaw{0.0};
 };
 
+/**
+ * @brief Calculate the yaw deviation between two poses
+ * @param base_pose The base pose
+ * @param target_pose The target pose
+ * @return The yaw deviation
+ */
 double calcYawDeviation(
   const geometry_msgs::msg::Pose & base_pose, const geometry_msgs::msg::Pose & target_pose);
 

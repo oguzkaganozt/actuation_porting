@@ -46,7 +46,13 @@
 
 namespace autoware::universe_utils
 {
-// createPoint: create a point
+/**
+ * @brief Create a point
+ * @param x The x coordinate
+ * @param y The y coordinate
+ * @param z The z coordinate
+ * @return The point
+ */
 inline geometry_msgs::msg::Point createPoint(const double x, const double y, const double z)
 {
   geometry_msgs::msg::Point p;
@@ -56,13 +62,23 @@ inline geometry_msgs::msg::Point createPoint(const double x, const double y, con
   return p;
 }
 
-// createVector3: create a vector3
+/**
+ * @brief Create a vector3
+ * @param x The x coordinate
+ * @param y The y coordinate
+ * @param z The z coordinate
+ * @return The vector3
+ */
 inline geometry_msgs::msg::Vector3 createVector3(const double x, double y, double z)
 {
   return geometry_msgs::build<geometry_msgs::msg::Vector3>().x(x).y(y).z(z);
 }
 
-// getPoint: get the location of the point
+/**
+ * @brief Get the location of a point
+ * @param p The point
+ * @return The location
+ */
 template <class T>
 geometry_msgs::msg::Point getPoint(const T & p) 
 {
@@ -83,7 +99,11 @@ inline geometry_msgs::msg::Point getPoint(const tier4_planning_msgs::msg::PathPo
 template <>
 inline geometry_msgs::msg::Point getPoint(const autoware_planning_msgs::msg::TrajectoryPoint & p) { return p.pose.position; }
 
-// getPose: get the pose of the point
+/**
+ * @brief Get the pose of a point
+ * @param p The point
+ * @return The pose
+ */
 template <class T>
 geometry_msgs::msg::Pose getPose([[maybe_unused]] const T & p)
 {
@@ -101,7 +121,11 @@ inline geometry_msgs::msg::Pose getPose(const tier4_planning_msgs::msg::PathPoin
 template <>
 inline geometry_msgs::msg::Pose getPose(const autoware_planning_msgs::msg::TrajectoryPoint & p) { return p.pose; }
 
-// setPose: set the pose of the point
+/**
+ * @brief Set the pose of a point
+ * @param pose The pose
+ * @param p The point
+ */
 template <class T>
 void setPose([[maybe_unused]] const geometry_msgs::msg::Pose & pose, [[maybe_unused]] T & p)
 {
@@ -119,7 +143,11 @@ inline void setPose(const geometry_msgs::msg::Pose & pose, tier4_planning_msgs::
 template <>
 inline void setPose(const geometry_msgs::msg::Pose & pose, autoware_planning_msgs::msg::TrajectoryPoint & p) { p.pose = pose; }
 
-// getLongitudinalVelocity: get the longitudinal velocity of the point
+/**
+ * @brief Get the longitudinal velocity of a point
+ * @param p The point
+ * @return The longitudinal velocity
+ */
 template <class T>
 double getLongitudinalVelocity([[maybe_unused]] const T & p)
 {
@@ -133,7 +161,11 @@ inline double getLongitudinalVelocity(const tier4_planning_msgs::msg::PathPointW
 template <>
 inline double getLongitudinalVelocity(const autoware_planning_msgs::msg::TrajectoryPoint & p) { return p.longitudinal_velocity_mps; }
 
-// setLongitudinalVelocity: set the longitudinal velocity of the point
+/**
+ * @brief Set the longitudinal velocity of a point
+ * @param velocity The longitudinal velocity
+ * @param p The point
+ */
 template <class T>
 void setLongitudinalVelocity([[maybe_unused]] const float velocity, [[maybe_unused]] T & p)
 {
@@ -147,10 +179,21 @@ inline void setLongitudinalVelocity(const float velocity, autoware_planning_msgs
 template <>
 inline void setLongitudinalVelocity(const float velocity, tier4_planning_msgs::msg::PathPointWithLaneId & p) { p.point.longitudinal_velocity_mps = velocity; }
 
-// createTranslation: create a translation vector
+/**
+ * @brief Create a translation vector
+ * @param x The x coordinate
+ * @param y The y coordinate
+ * @param z The z coordinate
+ * @return The translation vector
+ */
 geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z);
 
-// calcDistance2d: calculate the distance between two points
+/**
+ * @brief Calculate the distance between two points
+ * @param point1 The first point
+ * @param point2 The second point
+ * @return The distance between the two points
+ */
 template <class Point1, class Point2>
 double calcDistance2d(const Point1 & point1, const Point2 & point2)
 {
@@ -159,7 +202,11 @@ double calcDistance2d(const Point1 & point1, const Point2 & point2)
   return std::hypot(p1.x - p2.x, p1.y - p2.y);
 }
 
-// setOrientation: set the orientation of the point
+/**
+ * @brief Set the orientation of a point
+ * @param orientation The orientation
+ * @param p The point
+ */
 template <class T>
 inline void setOrientation(const geometry_msgs::msg::Quaternion & orientation, T & p)
 {
@@ -168,7 +215,11 @@ inline void setOrientation(const geometry_msgs::msg::Quaternion & orientation, T
   setPose(pose, p);
 }
 
-// getRPY: get the roll, pitch, and yaw of the point
+/**
+ * @brief Get the roll, pitch, and yaw of a quaternion
+ * @param quat The quaternion
+ * @return The roll, pitch, and yaw
+ */
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat);
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose);
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose);
@@ -375,7 +426,14 @@ geometry_msgs::msg::Pose calcInterpolatedPose(
   return output_pose;
 }
 
-// NOTE: much faster than boost::geometry::intersects()
+/**
+ * @brief Calculate the intersection point of two lines
+ * @param p1 The first point of the first line
+ * @param p2 The second point of the first line
+ * @param p3 The first point of the second line
+ * @param p4 The second point of the second line
+ * @return The intersection point
+ */
 std::optional<geometry_msgs::msg::Point> intersect(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
   const geometry_msgs::msg::Point & p3, const geometry_msgs::msg::Point & p4);

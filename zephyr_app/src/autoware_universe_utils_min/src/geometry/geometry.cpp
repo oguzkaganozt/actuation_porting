@@ -19,15 +19,6 @@
 
 namespace autoware::universe_utils
 {
-
-/**
- * @brief Create quaternion.
- * @param x x coordinate
- * @param y y coordinate
- * @param z z coordinate
- * @param w w coordinate
- * @return quaternion
- */
 geometry_msgs::msg::Quaternion createQuaternion(
   const double x, const double y, const double z, const double w)
 {
@@ -39,13 +30,6 @@ geometry_msgs::msg::Quaternion createQuaternion(
   return q;
 }
 
-/**
- * @brief Create quaternion from roll, pitch, and yaw.
- * @param roll roll
- * @param pitch pitch
- * @param yaw yaw
- * @return quaternion
- */
 geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw)
 {
@@ -67,11 +51,6 @@ geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   return q;
 }
 
-/**
- * @brief Create quaternion from yaw.
- * @param yaw yaw
- * @return quaternion
- */
 geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
 {
   // Calculate half angles
@@ -89,11 +68,6 @@ geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
   return q;
 }
 
-/**
- * @brief Get RPY from quaternion.
- * @param quat input quaternion
- * @return RPY
- */
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat)
 {
   geometry_msgs::msg::Vector3 rpy;
@@ -114,13 +88,6 @@ geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceS
   return getRPY(pose.pose.pose);
 }
 
-/**
- * @brief Create translation vector.
- * @param x x coordinate
- * @param y y coordinate
- * @param z z coordinate
- * @return translation vector
- */
 geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z)
 {
   geometry_msgs::msg::Vector3 v;
@@ -130,12 +97,6 @@ geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, co
   return v;
 }
 
-/**
- * @brief Calculate elevation angle of two points.
- * @param p_from source point
- * @param p_to target point
- * @return elevation angle
- */
 double calcElevationAngle(
   const geometry_msgs::msg::Point & p_from, const geometry_msgs::msg::Point & p_to)
 {
@@ -144,15 +105,6 @@ double calcElevationAngle(
   return std::atan2(dz, dist_2d);
 }
 
-/**
- * @brief calculate azimuth angle of two points.
- * @details This function returns the azimuth angle of the position of the two input points
- *          with respect to the origin of their coordinate system.
- *          If x and y of the two points are the same, the calculation result will be unstable.
- * @param p_from source point
- * @param p_to target point
- * @return -pi < azimuth angle < pi.
- */
 double calcAzimuthAngle(
   const geometry_msgs::msg::Point & p_from, const geometry_msgs::msg::Point & p_to)
 {
@@ -161,11 +113,6 @@ double calcAzimuthAngle(
   return std::atan2(dy, dx);
 }
 
-/**
- * @brief Calculate yaw from quaternion.
- * @param q input quaternion
- * @return yaw
- */
 double getYaw(const geometry_msgs::msg::Quaternion & q)
 {
   // Convert quaternion to Euler angles
@@ -175,13 +122,6 @@ double getYaw(const geometry_msgs::msg::Quaternion & q)
   return std::atan2(siny_cosp, cosy_cosp);
 }
 
-/**
- * @brief Calculate curvature of three points.
- * @param p1 first point
- * @param p2 second point
- * @param p3 third point
- * @return curvature
- */
 double calcCurvature(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
   const geometry_msgs::msg::Point & p3)
@@ -196,14 +136,6 @@ double calcCurvature(
   return 2.0 * ((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)) / denominator;
 }
 
-/**
- * @brief Calculate intersection point of two lines.
- * @param p1 first point of first line
- * @param p2 second point of first line
- * @param p3 first point of second line
- * @param p4 second point of second line
- * @return intersection point
- */
 std::optional<geometry_msgs::msg::Point> intersect(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
   const geometry_msgs::msg::Point & p3, const geometry_msgs::msg::Point & p4)
@@ -227,27 +159,11 @@ std::optional<geometry_msgs::msg::Point> intersect(
   return intersect_point;
 }
 
-/**
- * @brief Check if two convex polygons intersect.
- * @param convex_polygon1 first convex polygon
- * @param convex_polygon2 second convex polygon
- * @return true if the polygons intersect, false otherwise
- */
 bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2)
 {
   return gjk::intersects(convex_polygon1, convex_polygon2);
 }
 
-/**
- * @brief Calculate offset pose. The offset values are defined in the local coordinate of the input
- * pose.
- * @param p input pose
- * @param x offset in x direction
- * @param y offset in y direction
- * @param z offset in z direction
- * @param yaw offset in yaw direction
- * @return offset pose
- */
 geometry_msgs::msg::Pose calcOffsetPose(
   const geometry_msgs::msg::Pose & p, const double x, const double y, const double z,
   const double yaw)
@@ -274,13 +190,6 @@ geometry_msgs::msg::Pose calcOffsetPose(
   return pose;
 }
 
-/**
- * @brief Linear interpolation between two vectors.
- * @param src_vec source vector
- * @param dst_vec destination vector
- * @param ratio interpolation ratio
- * @return interpolated vector
- */
 geometry_msgs::msg::Vector3 lerp(
   const geometry_msgs::msg::Vector3 & src_vec, 
   const geometry_msgs::msg::Vector3 & dst_vec, 
@@ -293,5 +202,4 @@ geometry_msgs::msg::Vector3 lerp(
   result.z = src_vec.z + ratio * (dst_vec.z - src_vec.z);
   return result;
 }
-
 }  // namespace autoware::universe_utils
