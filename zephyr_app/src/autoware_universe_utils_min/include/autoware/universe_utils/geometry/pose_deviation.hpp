@@ -27,16 +27,7 @@ struct PoseDeviation
   double yaw{0.0};
 };
 
-double calcLateralDeviation(
-  const geometry_msgs::msg::Pose & base_pose, const geometry_msgs::msg::Point & target_point);
-
-double calcLongitudinalDeviation(
-  const geometry_msgs::msg::Pose & base_pose, const geometry_msgs::msg::Point & target_point);
-
 double calcYawDeviation(
-  const geometry_msgs::msg::Pose & base_pose, const geometry_msgs::msg::Pose & target_pose);
-
-PoseDeviation calcPoseDeviation(
   const geometry_msgs::msg::Pose & base_pose, const geometry_msgs::msg::Pose & target_pose);
 
 }  // namespace autoware::universe_utils

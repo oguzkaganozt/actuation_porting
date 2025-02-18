@@ -19,29 +19,15 @@
 
 namespace autoware::universe_utils
 {
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat)
-{
-  geometry_msgs::msg::Vector3 rpy;
-  tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
-  tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
-  return rpy;
-}
 
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose)
-{
-  return getRPY(pose.orientation);
-}
-
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose)
-{
-  return getRPY(pose.pose);
-}
-
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose)
-{
-  return getRPY(pose.pose.pose);
-}
-
+/**
+ * @brief Create quaternion.
+ * @param x x coordinate
+ * @param y y coordinate
+ * @param z z coordinate
+ * @param w w coordinate
+ * @return quaternion
+ */
 geometry_msgs::msg::Quaternion createQuaternion(
   const double x, const double y, const double z, const double w)
 {
@@ -53,15 +39,13 @@ geometry_msgs::msg::Quaternion createQuaternion(
   return q;
 }
 
-geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z)
-{
-  geometry_msgs::msg::Vector3 v;
-  v.x = x;
-  v.y = y;
-  v.z = z;
-  return v;
-}
-
+/**
+ * @brief Create quaternion from roll, pitch, and yaw.
+ * @param roll roll
+ * @param pitch pitch
+ * @param yaw yaw
+ * @return quaternion
+ */
 geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw)
 {
@@ -83,6 +67,11 @@ geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   return q;
 }
 
+/**
+ * @brief Create quaternion from yaw.
+ * @param yaw yaw
+ * @return quaternion
+ */
 geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
 {
   // Calculate half angles
@@ -100,6 +89,53 @@ geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
   return q;
 }
 
+/**
+ * @brief Get RPY from quaternion.
+ * @param quat input quaternion
+ * @return RPY
+ */
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat)
+{
+  geometry_msgs::msg::Vector3 rpy;
+  tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
+  tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
+  return rpy;
+}
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose)
+{
+  return getRPY(pose.orientation);
+}
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose)
+{
+  return getRPY(pose.pose);
+}
+geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose)
+{
+  return getRPY(pose.pose.pose);
+}
+
+/**
+ * @brief Create translation vector.
+ * @param x x coordinate
+ * @param y y coordinate
+ * @param z z coordinate
+ * @return translation vector
+ */
+geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z)
+{
+  geometry_msgs::msg::Vector3 v;
+  v.x = x;
+  v.y = y;
+  v.z = z;
+  return v;
+}
+
+/**
+ * @brief Calculate elevation angle of two points.
+ * @param p_from source point
+ * @param p_to target point
+ * @return elevation angle
+ */
 double calcElevationAngle(
   const geometry_msgs::msg::Point & p_from, const geometry_msgs::msg::Point & p_to)
 {
@@ -125,107 +161,11 @@ double calcAzimuthAngle(
   return std::atan2(dy, dx);
 }
 
-Point3d transformPoint(const Point3d & point, const geometry_msgs::msg::Transform & transform)
-{
-  const auto & translation = transform.translation;
-  const auto & rotation = transform.rotation;
-
-  const Eigen::Translation3d T(translation.x, translation.y, translation.z);
-  const Eigen::Quaterniond R(rotation.w, rotation.x, rotation.y, rotation.z);
-
-  const Eigen::Vector3d transformed(T * R * point);
-
-  return Point3d{transformed.x(), transformed.y(), transformed.z()};
-}
-
-Point2d transformPoint(const Point2d & point, const geometry_msgs::msg::Transform & transform)
-{
-  Point3d point_3d{point.x(), point.y(), 0};
-  const auto transformed = transformPoint(point_3d, transform);
-  return Point2d{transformed.x(), transformed.y()};
-}
-
-Eigen::Vector3d transformPoint(const Eigen::Vector3d & point, const geometry_msgs::msg::Pose & pose)
-{
-  geometry_msgs::msg::Transform transform;
-  transform.translation.x = pose.position.x;
-  transform.translation.y = pose.position.y;
-  transform.translation.z = pose.position.z;
-  transform.rotation = pose.orientation;
-
-  Point3d p = transformPoint(Point3d(point.x(), point.y(), point.z()), transform);
-  return Eigen::Vector3d(p.x(), p.y(), p.z());
-}
-
-geometry_msgs::msg::Point transformPoint(
-  const geometry_msgs::msg::Point & point, const geometry_msgs::msg::Pose & pose)
-{
-  const Eigen::Vector3d vec = Eigen::Vector3d(point.x, point.y, point.z);
-  auto transformed_vec = transformPoint(vec, pose);
-
-  geometry_msgs::msg::Point transformed_point;
-  transformed_point.x = transformed_vec.x();
-  transformed_point.y = transformed_vec.y();
-  transformed_point.z = transformed_vec.z();
-  return transformed_point;
-}
-
-geometry_msgs::msg::Point32 transformPoint(
-  const geometry_msgs::msg::Point32 & point32, const geometry_msgs::msg::Pose & pose)
-{
-  const auto point =
-    geometry_msgs::build<geometry_msgs::msg::Point>().x(point32.x).y(point32.y).z(point32.z);
-  const auto transformed_point = autoware::universe_utils::transformPoint(point, pose);
-  return geometry_msgs::build<geometry_msgs::msg::Point32>()
-    .x(transformed_point.x)
-    .y(transformed_point.y)
-    .z(transformed_point.z);
-}
-
-geometry_msgs::msg::Pose transformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Pose & pose_transform)
-{
-  // Replace tf2 transform with direct quaternion multiplication
-  geometry_msgs::msg::Pose transformed_pose;
-  
-  // Position transformation
-  transformed_pose.position.x = pose_transform.position.x + pose.position.x;
-  transformed_pose.position.y = pose_transform.position.y + pose.position.y;
-  transformed_pose.position.z = pose_transform.position.z + pose.position.z;
-  
-  // Orientation transformation using quaternion multiplication
-  // w1*w2 - x1*x2 - y1*y2 - z1*z2
-  transformed_pose.orientation.w = 
-    pose_transform.orientation.w * pose.orientation.w -
-    pose_transform.orientation.x * pose.orientation.x -
-    pose_transform.orientation.y * pose.orientation.y -
-    pose_transform.orientation.z * pose.orientation.z;
-    
-  // w1*x2 + x1*w2 + y1*z2 - z1*y2
-  transformed_pose.orientation.x =
-    pose_transform.orientation.w * pose.orientation.x +
-    pose_transform.orientation.x * pose.orientation.w +
-    pose_transform.orientation.y * pose.orientation.z -
-    pose_transform.orientation.z * pose.orientation.y;
-    
-  // w1*y2 - x1*z2 + y1*w2 + z1*x2
-  transformed_pose.orientation.y =
-    pose_transform.orientation.w * pose.orientation.y -
-    pose_transform.orientation.x * pose.orientation.z +
-    pose_transform.orientation.y * pose.orientation.w +
-    pose_transform.orientation.z * pose.orientation.x;
-    
-  // w1*z2 + x1*y2 - y1*x2 + z1*w2
-  transformed_pose.orientation.z =
-    pose_transform.orientation.w * pose.orientation.z +
-    pose_transform.orientation.x * pose.orientation.y -
-    pose_transform.orientation.y * pose.orientation.x +
-    pose_transform.orientation.z * pose.orientation.w;
-
-  return transformed_pose;
-}
-
-// Replace tf2::getYaw with direct calculation
+/**
+ * @brief Calculate yaw from quaternion.
+ * @param q input quaternion
+ * @return yaw
+ */
 double getYaw(const geometry_msgs::msg::Quaternion & q)
 {
   // Convert quaternion to Euler angles
@@ -235,27 +175,13 @@ double getYaw(const geometry_msgs::msg::Quaternion & q)
   return std::atan2(siny_cosp, cosy_cosp);
 }
 
-geometry_msgs::msg::Pose transformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Transform & transform)
-{
-  geometry_msgs::msg::TransformStamped transform_stamped;
-  transform_stamped.transform = transform;
-
-  return transformPose(pose, transform_stamped);
-}
-
-geometry_msgs::msg::Pose transformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Pose & pose_transform)
-{
-  tf2::Transform transform;
-  tf2::convert(pose_transform, transform);
-
-  geometry_msgs::msg::TransformStamped transform_msg;
-  transform_msg.transform = tf2::toMsg(transform);
-
-  return transformPose(pose, transform_msg);
-}
-
+/**
+ * @brief Calculate curvature of three points.
+ * @param p1 first point
+ * @param p2 second point
+ * @param p3 third point
+ * @return curvature
+ */
 double calcCurvature(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
   const geometry_msgs::msg::Point & p3)
@@ -271,26 +197,13 @@ double calcCurvature(
 }
 
 /**
- * @brief Calculate offset pose. The offset values are defined in the local coordinate of the input
- * pose.
+ * @brief Calculate intersection point of two lines.
+ * @param p1 first point of first line
+ * @param p2 second point of first line
+ * @param p3 first point of second line
+ * @param p4 second point of second line
+ * @return intersection point
  */
-geometry_msgs::msg::Pose calcOffsetPose(
-  const geometry_msgs::msg::Pose & p, const double x, const double y, const double z,
-  const double yaw)
-{
-  geometry_msgs::msg::Pose pose;
-  geometry_msgs::msg::Transform transform;
-  transform.translation = createTranslation(x, y, z);
-  transform.rotation = createQuaternionFromYaw(yaw);
-  tf2::Transform tf_pose;
-  tf2::Transform tf_offset;
-  tf2::fromMsg(transform, tf_offset);
-  tf2::fromMsg(p, tf_pose);
-  tf2::toMsg(tf_pose * tf_offset, pose);
-  return pose;
-}
-
-// NOTE: much faster than boost::geometry::intersects()
 std::optional<geometry_msgs::msg::Point> intersect(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
   const geometry_msgs::msg::Point & p3, const geometry_msgs::msg::Point & p4)
@@ -314,11 +227,60 @@ std::optional<geometry_msgs::msg::Point> intersect(
   return intersect_point;
 }
 
+/**
+ * @brief Check if two convex polygons intersect.
+ * @param convex_polygon1 first convex polygon
+ * @param convex_polygon2 second convex polygon
+ * @return true if the polygons intersect, false otherwise
+ */
 bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2)
 {
   return gjk::intersects(convex_polygon1, convex_polygon2);
 }
 
+/**
+ * @brief Calculate offset pose. The offset values are defined in the local coordinate of the input
+ * pose.
+ * @param p input pose
+ * @param x offset in x direction
+ * @param y offset in y direction
+ * @param z offset in z direction
+ * @param yaw offset in yaw direction
+ * @return offset pose
+ */
+geometry_msgs::msg::Pose calcOffsetPose(
+  const geometry_msgs::msg::Pose & p, const double x, const double y, const double z,
+  const double yaw)
+{
+  geometry_msgs::msg::Pose pose;
+  geometry_msgs::msg::Transform transform;
+  transform.translation = createTranslation(x, y, z);
+  transform.rotation = createQuaternionFromYaw(yaw);
+  // replace tf2 with eigen
+  // tf2::Transform tf_pose;
+  // tf2::Transform tf_offset;
+  // tf2::fromMsg(transform, tf_offset);
+  // tf2::fromMsg(p, tf_pose);
+  // tf2::toMsg(tf_pose * tf_offset, pose);
+  Eigen::Translation3d T(x, y, z);
+  Eigen::Quaterniond R(createQuaternionFromYaw(yaw));
+  Eigen::Matrix4d transform_matrix = (T * R).matrix();
+  Eigen::Matrix4d pose_matrix = p.position.x, p.position.y, p.position.z, 1.0);
+  Eigen::Matrix4d result_matrix = transform_matrix * pose_matrix;
+  pose.position.x = result_matrix(0, 3);
+  pose.position.y = result_matrix(1, 3);
+  pose.position.z = result_matrix(2, 3);
+  pose.orientation = createQuaternionFromRPY(0, 0, yaw);
+  return pose;
+}
+
+/**
+ * @brief Linear interpolation between two vectors.
+ * @param src_vec source vector
+ * @param dst_vec destination vector
+ * @param ratio interpolation ratio
+ * @return interpolated vector
+ */
 geometry_msgs::msg::Vector3 lerp(
   const geometry_msgs::msg::Vector3 & src_vec, 
   const geometry_msgs::msg::Vector3 & dst_vec, 

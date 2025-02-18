@@ -145,18 +145,6 @@ double cross_product(const Point2d& p1, const Point2d& p2);
 double distance(const Point2d& p1, const Point2d& p2);
 double squared_distance(const Point2d& p1, const Point2d& p2);
 
-// Polygon operations
-Polygon2d rotatePolygon(const Polygon2d& polygon, double angle);
-Polygon2d translatePolygon(const Polygon2d& polygon, double x, double y);
-
-// Conversion operations
-Polygon2d msgToPolygon2d(const geometry_msgs::msg::Polygon& polygon_msg);
-geometry_msgs::msg::Polygon polygon2dToMsg(const Polygon2d& polygon);
-
-// Utility operations
-bool isValid(const Polygon2d& polygon);
-void makeClockwise(Polygon2d& polygon);
-void makeCounterClockwise(Polygon2d& polygon);
 } // namespace autoware::universe_utils::alt
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_

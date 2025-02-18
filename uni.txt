@@ -33,8 +33,7 @@
 - calcInterpolatedPoint
 - calcinterpolatedpose
 - point2tfvector
-
-- calcoffsetpose -tf2
+- calcoffsetpose
 
 # others
 - transformpoint - eigen ama check

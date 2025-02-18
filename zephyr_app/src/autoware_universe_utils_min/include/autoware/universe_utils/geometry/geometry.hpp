@@ -242,11 +242,8 @@ inline geometry_msgs::msg::Point createPoint(const double x, const double y, con
 }
 
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat);
-
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose);
-
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose);
-
 geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose);
 
 geometry_msgs::msg::Quaternion createQuaternion(
@@ -265,25 +262,6 @@ double calcDistance2d(const Point1 & point1, const Point2 & point2)
   const auto p1 = getPoint(point1);
   const auto p2 = getPoint(point2);
   return std::hypot(p1.x - p2.x, p1.y - p2.y);
-}
-
-template <class Point1, class Point2>
-double calcSquaredDistance2d(const Point1 & point1, const Point2 & point2)
-{
-  const auto p1 = getPoint(point1);
-  const auto p2 = getPoint(point2);
-  const auto dx = p1.x - p2.x;
-  const auto dy = p1.y - p2.y;
-  return dx * dx + dy * dy;
-}
-
-template <class Point1, class Point2>
-double calcDistance3d(const Point1 & point1, const Point2 & point2)
-{
-  const auto p1 = getPoint(point1);
-  const auto p2 = getPoint(point2);
-  // To be replaced by std::hypot(dx, dy, dz) in C++17
-  return std::hypot(std::hypot(p1.x - p2.x, p1.y - p2.y), p1.z - p2.z);
 }
 
 /**
@@ -321,38 +299,6 @@ Vector3 point2tfVector(const Point1 & src, const Point2 & dst)
   double dz = dst_p.z - src_p.z;
   return Vector3(dx, dy, dz);
 }
-
-Point3d transformPoint(const Point3d & point, const geometry_msgs::msg::Transform & transform);
-
-Point2d transformPoint(const Point2d & point, const geometry_msgs::msg::Transform & transform);
-
-Eigen::Vector3d transformPoint(
-  const Eigen::Vector3d & point, const geometry_msgs::msg::Pose & pose);
-
-geometry_msgs::msg::Point transformPoint(
-  const geometry_msgs::msg::Point & point, const geometry_msgs::msg::Pose & pose);
-
-geometry_msgs::msg::Point32 transformPoint(
-  const geometry_msgs::msg::Point32 & point32, const geometry_msgs::msg::Pose & pose);
-
-template <class T>
-T transformVector(const T & points, const geometry_msgs::msg::Transform & transform)
-{
-  T transformed;
-  for (const auto & point : points) {
-    transformed.push_back(transformPoint(point, transform));
-  }
-  return transformed;
-}
-
-geometry_msgs::msg::Pose transformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::TransformStamped & transform);
-
-geometry_msgs::msg::Pose transformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Transform & transform);
-
-geometry_msgs::msg::Pose transformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Pose & pose_transform);
 
 double calcCurvature(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
@@ -469,17 +415,6 @@ geometry_msgs::msg::Pose calcInterpolatedPose(
 inline geometry_msgs::msg::Vector3 createVector3(const double x, double y, double z)
 {
   return geometry_msgs::build<geometry_msgs::msg::Vector3>().x(x).y(y).z(z);
-}
-
-inline geometry_msgs::msg::Twist createTwist(
-  const geometry_msgs::msg::Vector3 & velocity, geometry_msgs::msg::Vector3 & angular)
-{
-  return geometry_msgs::build<geometry_msgs::msg::Twist>().linear(velocity).angular(angular);
-}
-
-inline double calcNorm(const geometry_msgs::msg::Vector3 & v)
-{
-  return std::hypot(v.x, v.y, v.z);
 }
 
 // NOTE: much faster than boost::geometry::intersects()
