@@ -254,8 +254,6 @@ geometry_msgs::msg::Quaternion createQuaternion(
 
 geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z);
 
-// Revival of tf::createQuaternionFromRPY
-// https://answers.ros.org/question/304397/recommended-way-to-construct-quaternion-from-rollpitchyaw-with-tf2/
 geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw);
 
@@ -312,16 +310,6 @@ double calcElevationAngle(
 double calcAzimuthAngle(
   const geometry_msgs::msg::Point & p_from, const geometry_msgs::msg::Point & p_to);
 
-geometry_msgs::msg::Pose transform2pose(const geometry_msgs::msg::Transform & transform);
-
-geometry_msgs::msg::PoseStamped transform2pose(
-  const geometry_msgs::msg::TransformStamped & transform);
-
-geometry_msgs::msg::Transform pose2transform(const geometry_msgs::msg::Pose & pose);
-
-geometry_msgs::msg::TransformStamped pose2transform(
-  const geometry_msgs::msg::PoseStamped & pose, const std::string & child_frame_id);
-
 template <class Point1, class Point2>
 Vector3 point2tfVector(const Point1 & src, const Point2 & dst)
 {
@@ -365,28 +353,6 @@ geometry_msgs::msg::Pose transformPose(
 
 geometry_msgs::msg::Pose transformPose(
   const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Pose & pose_transform);
-
-// Transform pose in world coordinates to local coordinates
-/*
-geometry_msgs::msg::Pose inverseTransformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::TransformStamped & transform);
-*/
-
-// Transform pose in world coordinates to local coordinates
-geometry_msgs::msg::Pose inverseTransformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Transform & transform);
-
-// Transform pose in world coordinates to local coordinates
-geometry_msgs::msg::Pose inverseTransformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Pose & transform_pose);
-
-// Transform point in world coordinates to local coordinates
-Eigen::Vector3d inverseTransformPoint(
-  const Eigen::Vector3d & point, const geometry_msgs::msg::Pose & pose);
-
-// Transform point in world coordinates to local coordinates
-geometry_msgs::msg::Point inverseTransformPoint(
-  const geometry_msgs::msg::Point & point, const geometry_msgs::msg::Pose & pose);
 
 double calcCurvature(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
@@ -515,15 +481,6 @@ inline double calcNorm(const geometry_msgs::msg::Vector3 & v)
 {
   return std::hypot(v.x, v.y, v.z);
 }
-
-/**
- * @brief Judge whether twist covariance is valid.
- *
- * @param twist_with_covariance source twist with covariance
- * @return If all element of covariance is 0, return false.
- */
-//
-bool isTwistCovarianceValid(const geometry_msgs::msg::TwistWithCovariance & twist_with_covariance);
 
 // NOTE: much faster than boost::geometry::intersects()
 std::optional<geometry_msgs::msg::Point> intersect(

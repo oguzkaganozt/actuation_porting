@@ -125,45 +125,6 @@ double calcAzimuthAngle(
   return std::atan2(dy, dx);
 }
 
-geometry_msgs::msg::Pose transform2pose(const geometry_msgs::msg::Transform & transform)
-{
-  geometry_msgs::msg::Pose pose;
-  pose.position.x = transform.translation.x;
-  pose.position.y = transform.translation.y;
-  pose.position.z = transform.translation.z;
-  pose.orientation = transform.rotation;
-  return pose;
-}
-
-geometry_msgs::msg::PoseStamped transform2pose(
-  const geometry_msgs::msg::TransformStamped & transform)
-{
-  geometry_msgs::msg::PoseStamped pose;
-  pose.header = transform.header;
-  pose.pose = transform2pose(transform.transform);
-  return pose;
-}
-
-geometry_msgs::msg::Transform pose2transform(const geometry_msgs::msg::Pose & pose)
-{
-  geometry_msgs::msg::Transform transform;
-  transform.translation.x = pose.position.x;
-  transform.translation.y = pose.position.y;
-  transform.translation.z = pose.position.z;
-  transform.rotation = pose.orientation;
-  return transform;
-}
-
-geometry_msgs::msg::TransformStamped pose2transform(
-  const geometry_msgs::msg::PoseStamped & pose, const std::string & child_frame_id)
-{
-  geometry_msgs::msg::TransformStamped transform;
-  transform.header = pose.header;
-  transform.transform = pose2transform(pose.pose);
-  transform.child_frame_id = child_frame_id;
-  return transform;
-}
-
 Point3d transformPoint(const Point3d & point, const geometry_msgs::msg::Transform & transform)
 {
   const auto & translation = transform.translation;
@@ -295,69 +256,6 @@ geometry_msgs::msg::Pose transformPose(
   return transformPose(pose, transform_msg);
 }
 
-// Transform pose in world coordinates to local coordinates
-/*
-geometry_msgs::msg::Pose inverseTransformPose(
-const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::TransformStamped & transform)
-{
-tf2::Transform tf;
-tf2::fromMsg(transform, tf);
-geometry_msgs::msg::TransformStamped transform_stamped;
-transform_stamped.transform = tf2::toMsg(tf.inverse());
-
-return transformPose(pose, transform_stamped);
-}
-*/
-
-// Transform pose in world coordinates to local coordinates
-geometry_msgs::msg::Pose inverseTransformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Transform & transform)
-{
-  tf2::Transform tf;
-  tf2::fromMsg(transform, tf);
-  geometry_msgs::msg::TransformStamped transform_stamped;
-  transform_stamped.transform = tf2::toMsg(tf.inverse());
-
-  return transformPose(pose, transform_stamped);
-}
-
-// Transform pose in world coordinates to local coordinates
-geometry_msgs::msg::Pose inverseTransformPose(
-  const geometry_msgs::msg::Pose & pose, const geometry_msgs::msg::Pose & transform_pose)
-{
-  tf2::Transform transform;
-  tf2::convert(transform_pose, transform);
-
-  return inverseTransformPose(pose, tf2::toMsg(transform));
-}
-
-// Transform point in world coordinates to local coordinates
-Eigen::Vector3d inverseTransformPoint(
-  const Eigen::Vector3d & point, const geometry_msgs::msg::Pose & pose)
-{
-  const Eigen::Quaterniond q(
-    pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
-  const Eigen::Matrix3d R = q.normalized().toRotationMatrix();
-
-  const Eigen::Vector3d local_origin(pose.position.x, pose.position.y, pose.position.z);
-  Eigen::Vector3d local_point = R.transpose() * point - R.transpose() * local_origin;
-
-  return local_point;
-}
-
-// Transform point in world coordinates to local coordinates
-geometry_msgs::msg::Point inverseTransformPoint(
-  const geometry_msgs::msg::Point & point, const geometry_msgs::msg::Pose & pose)
-{
-  const Eigen::Vector3d local_vec =
-    inverseTransformPoint(Eigen::Vector3d(point.x, point.y, point.z), pose);
-  geometry_msgs::msg::Point local_point;
-  local_point.x = local_vec.x();
-  local_point.y = local_vec.y();
-  local_point.z = local_vec.z();
-  return local_point;
-}
-
 double calcCurvature(
   const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
   const geometry_msgs::msg::Point & p3)
@@ -390,23 +288,6 @@ geometry_msgs::msg::Pose calcOffsetPose(
   tf2::fromMsg(p, tf_pose);
   tf2::toMsg(tf_pose * tf_offset, pose);
   return pose;
-}
-
-/**
- * @brief Judge whether twist covariance is valid.
- *
- * @param twist_with_covariance source twist with covariance
- * @return If all element of covariance is 0, return false.
- */
-//
-bool isTwistCovarianceValid(const geometry_msgs::msg::TwistWithCovariance & twist_with_covariance)
-{
-  for (const auto & c : twist_with_covariance.covariance) {
-    if (c != 0.0) {
-      return true;
-    }
-  }
-  return false;
 }
 
 // NOTE: much faster than boost::geometry::intersects()
