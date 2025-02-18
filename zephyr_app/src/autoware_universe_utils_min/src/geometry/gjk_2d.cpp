@@ -105,7 +105,7 @@ bool intersects(const Polygon2d & convex_polygon1, const Polygon2d & convex_poly
   if (convex_polygon1.outer().empty() || convex_polygon2.outer().empty()) {
     return false;
   }
-  if (alt::equals(convex_polygon1, convex_polygon2)) {
+  if (equals(convex_polygon1, convex_polygon2)) {
     return true;
   }
 

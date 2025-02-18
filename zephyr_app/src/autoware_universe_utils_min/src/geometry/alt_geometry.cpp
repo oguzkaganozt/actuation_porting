@@ -62,7 +62,7 @@ std::optional<Polygon2d> Polygon2d::create(
 }
 
 std::optional<Polygon2d> Polygon2d::create(
-  const autoware::universe_utils::Polygon2d & polygon) noexcept
+  const Polygon2d & polygon) noexcept
 {
   PointList2d outer;
   for (const auto & point : polygon.outer()) {
@@ -82,25 +82,6 @@ std::optional<Polygon2d> Polygon2d::create(
   }
 
   return Polygon2d::create(outer, inners);
-}
-
-autoware::universe_utils::Polygon2d Polygon2d::to_boost() const
-{
-  autoware::universe_utils::Polygon2d polygon;
-
-  for (const auto & point : outer_) {
-    polygon.outer().emplace_back(point.x(), point.y());
-  }
-
-  for (const auto & inner : inners_) {
-    autoware::universe_utils::LinearRing2d _inner;
-    for (const auto & point : inner) {
-      _inner.emplace_back(point.x(), point.y());
-    }
-    polygon.inners().push_back(_inner);
-  }
-
-  return polygon;
 }
 
 std::optional<ConvexPolygon2d> ConvexPolygon2d::create(const PointList2d & vertices) noexcept
@@ -136,7 +117,7 @@ std::optional<ConvexPolygon2d> ConvexPolygon2d::create(PointList2d && vertices) 
 }
 
 std::optional<ConvexPolygon2d> ConvexPolygon2d::create(
-  const autoware::universe_utils::Polygon2d & polygon) noexcept
+  const Polygon2d & polygon) noexcept
 {
   PointList2d vertices;
   for (const auto & point : polygon.outer()) {
@@ -453,9 +434,9 @@ bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2)
   auto find_support_vector = [](
                                const ConvexPolygon2d & poly1,
                                const ConvexPolygon2d & poly2,
-                               const Vector2d & direction) {
+                               const Point2d & direction) {
     auto find_farthest_vertex =
-      [](const ConvexPolygon2d & poly, const Vector2d & direction) {
+      [](const ConvexPolygon2d & poly, const Point2d & direction) {
         return std::max_element(
           poly.vertices().begin(), std::prev(poly.vertices().end()),
           [&](const auto & a, const auto & b) { return direction.dot(a) <= direction.dot(b); });
@@ -463,7 +444,7 @@ bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2)
     return *find_farthest_vertex(poly1, direction) - *find_farthest_vertex(poly2, -direction);
   };
 
-  Vector2d direction = {1.0, 0.0};
+  Point2d direction = {1.0, 0.0};
   auto a = find_support_vector(poly1, poly2, direction);
   direction = -a;
   auto b = find_support_vector(poly1, poly2, direction);

@@ -20,7 +20,7 @@
 #include <optional>
 #include <cmath>
 
-namespace autoware::universe_utils::alt {
+namespace autoware::universe_utils {
 
 /**
  * @brief A 2D point class that represents a point in 2D space
@@ -29,6 +29,10 @@ class Point2d {
 public:
   Point2d() : x_(0.0), y_(0.0) {}
   Point2d(double x, double y) : x_(x), y_(y) {}
+
+  double dot(const Point2d & other) const { return x_ * other.x() + y_ * other.y(); }
+  double norm2() const { return x_ * x_ + y_ * y_; }
+  double norm() const { return std::sqrt(norm2()); }
 
   double x() const { return x_; }
   double y() const { return y_; }
@@ -39,6 +43,31 @@ private:
   double x_;
   double y_;
 };
+
+inline Point2d operator+(const Point2d & v1, const Point2d & v2)
+{
+  return {v1.x() + v2.x(), v1.y() + v2.y()};
+}
+
+inline Point2d operator-(const Point2d & v1, const Point2d & v2)
+{
+  return {v1.x() - v2.x(), v1.y() - v2.y()};
+}
+
+inline Point2d operator-(const Point2d & v)
+{
+  return {-v.x(), -v.y()};
+}
+
+inline Point2d operator*(const double & s, const Point2d & v)
+{
+  return {s * v.x(), s * v.y()};
+}
+
+inline bool operator==(const Point2d & v1, const Point2d & v2)
+{
+  return v1.x() == v2.x() && v1.y() == v2.y();
+}
 
 // alias types
 using Points2d = std::vector<Point2d>;
@@ -57,6 +86,10 @@ public:
   const std::vector<PointList2d>& inners() const { return inners_; }
   std::vector<PointList2d>& inners() { return inners_; }
 
+  static std::optional<Polygon2d> create(const PointList2d& outer, const std::vector<PointList2d>& inners) noexcept;
+  static std::optional<Polygon2d> create(PointList2d&& outer, std::vector<PointList2d>&& inners) noexcept;
+  static std::optional<Polygon2d> create(const Polygon2d polygon) noexcept;
+
 private:
   PointList2d outer_;
   std::vector<PointList2d> inners_;
@@ -67,9 +100,9 @@ private:
  */
 class ConvexPolygon2d : public Polygon2d {
 public:
-  static ConvexPolygon2d create(const PointList2d& vertices) noexcept;
-  static ConvexPolygon2d create(PointList2d&& vertices) noexcept;
-  static ConvexPolygon2d create(const Polygon2d& polygon) noexcept;
+  static std::optional<ConvexPolygon2d> create(const PointList2d& vertices) noexcept;
+  static std::optional<ConvexPolygon2d> create(PointList2d&& vertices) noexcept;
+  static std::optional<ConvexPolygon2d> create(const Polygon2d polygon) noexcept;
 
   const PointList2d& vertices() const noexcept { return outer(); }
   PointList2d& vertices() noexcept { return outer(); }
@@ -208,7 +241,7 @@ bool within(const ConvexPolygon2d& poly_contained, const ConvexPolygon2d& poly_c
 // Helper functions
 double dot_product(const Point2d& p1, const Point2d& p2);
 double cross_product(const Point2d& p1, const Point2d& p2);
-Point2d cross_product(const Point2d & p1, const Point2d & p2, const Point2d & p3)
+Point2d cross_product(const Point2d & p1, const Point2d & p2, const Point2d & p3);
 double distance(const Point2d& p1, const Point2d& p2);
 double squared_distance(const Point2d& p1, const Point2d& p2);
 } // namespace autoware::universe_utils::alt

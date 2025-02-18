@@ -26,7 +26,7 @@ namespace autoware::universe_utils::gjk
  * @param convex_polygon2 The second convex polygon
  * @return true if the polygons intersect, false otherwise
  */
-bool intersects(const alt::Polygon2d & convex_polygon1, const alt::Polygon2d & convex_polygon2);
+bool intersects(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2);
 }  // namespace autoware::universe_utils::gjk
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__GJK_2D_HPP_
