@@ -13,17 +13,17 @@
 // limitations under the License.
 
 #include "autoware/universe_utils/geometry/geometry.hpp"
-#include "autoware/universe_utils/geometry/gjk_2d.hpp"
 #include <Eigen/Geometry>
 #include <string>
 
 namespace autoware::universe_utils
 {
+// TODO: replace with eigen
 geometryMsgsVector3 getRPY(const geometryMsgsQuaternion & quat)
 {
   geometryMsgsVector3 rpy;
-  tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
-  tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
+  // tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
+  // tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
   return rpy;
 }
 geometryMsgsVector3 getRPY(const geometryMsgsPose & pose)
@@ -159,11 +159,7 @@ std::optional<geometryMsgsPoint> intersect(
   return intersect_point;
 }
 
-bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2)
-{
-  return gjk::intersects(convex_polygon1, convex_polygon2);
-}
-
+// TODO: replace with eigen
 geometryMsgsPose calcOffsetPose(
   const geometryMsgsPose & p, const double x, const double y, const double z,
   const double yaw)
@@ -178,15 +174,15 @@ geometryMsgsPose calcOffsetPose(
   // tf2::fromMsg(transform, tf_offset);
   // tf2::fromMsg(p, tf_pose);
   // tf2::toMsg(tf_pose * tf_offset, pose);
-  Eigen::Translation3d T(x, y, z);
-  Eigen::Quaterniond R(createQuaternionFromYaw(yaw));
-  Eigen::Matrix4d transform_matrix = (T * R).matrix();
-  Eigen::Matrix4d pose_matrix = p.position.x, p.position.y, p.position.z, 1.0);
-  Eigen::Matrix4d result_matrix = transform_matrix * pose_matrix;
-  pose.position.x = result_matrix(0, 3);
-  pose.position.y = result_matrix(1, 3);
-  pose.position.z = result_matrix(2, 3);
-  pose.orientation = createQuaternionFromRPY(0, 0, yaw);
+  // Eigen::Translation3d T(x, y, z);
+  // Eigen::Quaterniond R(createQuaternionFromYaw(yaw));
+  // Eigen::Matrix4d transform_matrix = (T * R).matrix();
+  // Eigen::Matrix4d pose_matrix = p.position.x, p.position.y, p.position.z, 1.0);
+  // Eigen::Matrix4d result_matrix = transform_matrix * pose_matrix;
+  // pose.position.x = result_matrix(0, 3);
+  // pose.position.y = result_matrix(1, 3);
+  // pose.position.z = result_matrix(2, 3);
+  // pose.orientation = createQuaternionFromRPY(0, 0, yaw);
   return pose;
 }
 

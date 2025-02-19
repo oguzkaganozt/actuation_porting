@@ -16,81 +16,105 @@
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 
 #include <Eigen/Core>
-#include <vector>
-#include <optional>
 #include <cmath>
+#include <list>
+#include <optional>
+#include <utility>
+#include <vector>
 
 namespace autoware::universe_utils {
 
 /**
  * @brief A 2D point class that represents a point in 2D space
  */
-class Point2d {
+class Vector2d {
 public:
-  Point2d() : x_(0.0), y_(0.0) {}
-  Point2d(double x, double y) : x_(x), y_(y) {}
+  Vector2d() : x_(0.0), y_(0.0) {}
+  Vector2d(const double x, const double y) : x_(x), y_(y) {}
 
-  double dot(const Point2d & other) const { return x_ * other.x() + y_ * other.y(); }
+  // TODO: autoware::universe_utils::Point2d  ??
+  // explicit Vector2d(const autoware::universe_utils::Point2d & point) : x_(point.x()), y_(point.y())
+  // {
+  // }
+
+  double cross(const Vector2d & other) const { return x_ * other.y() - y_ * other.x(); }
+  double dot(const Vector2d & other) const { return x_ * other.x() + y_ * other.y(); }
   double norm2() const { return x_ * x_ + y_ * y_; }
   double norm() const { return std::sqrt(norm2()); }
 
-  double x() const { return x_; }
-  double y() const { return y_; }
-  double& x() { return x_; }
-  double& y() { return y_; }
+  Vector2d vector_triple(const Vector2d & v1, const Vector2d & v2) const
+  {
+    const auto tmp = this->cross(v1);
+    return {-v2.y() * tmp, v2.x() * tmp};
+  }
 
+  const double& x() const { return x_; }
+  double& x() { return x_; }
+  const double& y() const { return y_; }
+  double& y() { return y_; }
 private:
   double x_;
   double y_;
 };
 
-inline Point2d operator+(const Point2d & v1, const Point2d & v2)
+inline Vector2d operator+(const Vector2d & v1, const Vector2d & v2)
 {
   return {v1.x() + v2.x(), v1.y() + v2.y()};
 }
 
-inline Point2d operator-(const Point2d & v1, const Point2d & v2)
+inline Vector2d operator-(const Vector2d & v1, const Vector2d & v2)
 {
   return {v1.x() - v2.x(), v1.y() - v2.y()};
 }
 
-inline Point2d operator-(const Point2d & v)
+inline Vector2d operator-(const Vector2d & v)
 {
   return {-v.x(), -v.y()};
 }
 
-inline Point2d operator*(const double & s, const Point2d & v)
+inline Vector2d operator*(const double & s, const Vector2d & v)
 {
   return {s * v.x(), s * v.y()};
 }
 
-inline bool operator==(const Point2d & v1, const Point2d & v2)
+// TODO: check ?
+inline bool operator==(const Vector2d & v1, const Vector2d & v2)
 {
   return v1.x() == v2.x() && v1.y() == v2.y();
 }
 
-// alias types
+// We use Vector2d to represent points, but we do not name the class Point2d directly
+// as it has some vector operation functions.
+using Point2d = Vector2d;
 using Points2d = std::vector<Point2d>;
-using PointList2d = std::vector<Point2d>;
+using PointList2d = std::list<Point2d>;
 
 /**
  * @brief A polygon class that represents a polygon
  */
 class Polygon2d {
 public:
-  explicit Polygon2d(const PointList2d& outer = {}, const std::vector<PointList2d>& inners = {})
-    : outer_(outer), inners_(inners) {}
-
-  const PointList2d& outer() const { return outer_; }
-  PointList2d& outer() { return outer_; }
-  const std::vector<PointList2d>& inners() const { return inners_; }
-  std::vector<PointList2d>& inners() { return inners_; }
-
   static std::optional<Polygon2d> create(const PointList2d& outer, const std::vector<PointList2d>& inners) noexcept;
   static std::optional<Polygon2d> create(PointList2d&& outer, std::vector<PointList2d>&& inners) noexcept;
-  static std::optional<Polygon2d> create(const Polygon2d polygon) noexcept;
+  // TODO: autoware::universe_utils::Polygon2d  ??
+  static std::optional<Polygon2d> create(const Polygon2d& polygon) noexcept;
 
-private:
+  const PointList2d& outer() const noexcept { return outer_; }
+  PointList2d& outer() noexcept { return outer_; }
+  const std::vector<PointList2d>& inners() const noexcept { return inners_; }
+  std::vector<PointList2d>& inners() noexcept { return inners_; }
+
+protected:
+  Polygon2d(const PointList2d & outer, const std::vector<PointList2d> & inners)
+  : outer_(outer), inners_(inners)
+  {
+  }
+
+  Polygon2d(PointList2d && outer, std::vector<PointList2d> && inners)
+  : outer_(std::move(outer)), inners_(std::move(inners))
+  {
+  }
+
   PointList2d outer_;
   std::vector<PointList2d> inners_;
 };
@@ -102,7 +126,8 @@ class ConvexPolygon2d : public Polygon2d {
 public:
   static std::optional<ConvexPolygon2d> create(const PointList2d& vertices) noexcept;
   static std::optional<ConvexPolygon2d> create(PointList2d&& vertices) noexcept;
-  static std::optional<ConvexPolygon2d> create(const Polygon2d polygon) noexcept;
+  // TODO: autoware::universe_utils::Polygon2d  ??
+  static std::optional<ConvexPolygon2d> create(const Polygon2d& polygon) noexcept;
 
   const PointList2d& vertices() const noexcept { return outer(); }
   PointList2d& vertices() noexcept { return outer(); }
@@ -110,63 +135,6 @@ public:
 private:
   explicit ConvexPolygon2d(const PointList2d& vertices) : Polygon2d(vertices, {}) {}
   explicit ConvexPolygon2d(PointList2d&& vertices) : Polygon2d(std::move(vertices), {}) {}
-};
-
-/**
- * @brief A simple 2D linear ring class that represents a closed sequence of points
- */
-class LinearRing2d
-{
-public:
-  using Points = std::vector<Point2d>;
-  using iterator = Points::iterator;
-  using const_iterator = Points::const_iterator;
-
-  LinearRing2d() = default;
-  explicit LinearRing2d(const Points & points) : points_(points) {}
-
-  // Access points
-  Points & points() { return points_; }
-  const Points & points() const { return points_; }
-
-  // Size operations
-  size_t size() const { return points_.size(); }
-  bool empty() const { return points_.empty(); }
-
-  // Element access
-  Point2d & operator[](size_t i) { return points_[i]; }
-  const Point2d & operator[](size_t i) const { return points_[i]; }
-  Point2d & at(size_t i) { return points_.at(i); }
-  const Point2d & at(size_t i) const { return points_.at(i); }
-
-  // Iterators
-  iterator begin() { return points_.begin(); }
-  const_iterator begin() const { return points_.begin(); }
-  iterator end() { return points_.end(); }
-  const_iterator end() const { return points_.end(); }
-
-  // Modifiers
-  void push_back(const Point2d & point) { points_.push_back(point); }
-  void clear() { points_.clear(); }
-  void resize(size_t n) { points_.resize(n); }
-  void reserve(size_t n) { points_.reserve(n); }
-
-  // Check if ring is closed (first point equals last point)
-  bool is_closed() const
-  {
-    return !empty() && points_.front() == points_.back();
-  }
-
-  // Close the ring by adding first point at the end if needed
-  void close()
-  {
-    if (!is_closed() && !empty()) {
-      points_.push_back(points_.front());
-    }
-  }
-
-private:
-  Points points_;
 };
 
 /**
@@ -181,7 +149,7 @@ double area(const ConvexPolygon2d& poly);
  * @param points The points to calculate the convex hull of
  * @return The convex hull of the points
  */
-ConvexPolygon2d convex_hull(const Points2d& points);
+std::optional<ConvexPolygon2d> convex_hull(const Points2d& points);
 
 /**
  * @brief Correct a polygon
@@ -197,12 +165,70 @@ void correct(Polygon2d& poly);
 bool covered_by(const Point2d& point, const ConvexPolygon2d& poly);
 
 /**
+ * @brief Check if two convex polygons are disjoint
+ * @param poly1 The first convex polygon
+ * @param poly2 The second convex polygon
+ * @return true if the polygons are disjoint, false otherwise
+ */
+bool disjoint(const ConvexPolygon2d& poly1, const ConvexPolygon2d& poly2);
+
+/**
+ * @brief Calculate the distance between a point and a segment
+ * @param point The point to calculate the distance to
+ * @param seg_start The start point of the segment
+ * @param seg_end The end point of the segment
+ * @return The distance between the point and the segment
+ */
+double distance(
+  const Point2d & point, const Point2d& seg_start, const Point2d& seg_end);
+
+/**
+ * @brief Calculate the distance between a point and a convex polygon
+ * @param point The point to calculate the distance to
+ * @param poly The convex polygon to calculate the distance to
+ * @return The distance between the point and the polygon
+ */
+double distance(const Point2d & point, const ConvexPolygon2d& poly);
+
+/**
+ * @brief Calculate the envelope of a polygon
+ * @param poly The polygon to calculate the envelope of
+ * @return The envelope of the polygon
+ */
+std::optional<ConvexPolygon2d> envelope(const Polygon2d& poly);
+
+/**
+ * @brief Check if two points are equal
+ * @param point1 The first point
+ * @param point2 The second point
+ * @return true if the points are equal, false otherwise
+ */
+bool equals(const Point2d& point1, const Point2d& point2);
+
+/**
  * @brief Check if two polygons are equal
  * @param poly1 The first polygon
  * @param poly2 The second polygon
  * @return true if the polygons are equal, false otherwise
  */
 bool equals(const Polygon2d& poly1, const Polygon2d& poly2);
+
+/**
+ * @brief Find the farthest point from a segment
+ * @param points The points to find the farthest point from
+ * @param seg_start The start point of the segment
+ * @param seg_end The end point of the segment
+ * @return The farthest point from the segment
+ */
+Points2d::const_iterator find_farthest(
+  const Points2d& points, const Point2d& seg_start, const Point2d& seg_end);
+
+/**
+ * @brief Check if a polygon is clockwise
+ * @param points The points of the polygon
+ * @return true if the polygon is clockwise, false otherwise
+ */
+bool is_clockwise(const PointList2d& vertices);
 
 /**
  * @brief Check if a polygon is convex
@@ -227,6 +253,13 @@ PointList2d simplify(const PointList2d& line, const double max_distance);
  * @return true if the point touches the segment, false otherwise
  */
 bool touches(const Point2d& point, const Point2d& seg_start, const Point2d& seg_end);
+
+/**
+ * @brief Check if a point touches a convex polygon
+ * @param point The point to check
+ * @param poly The convex polygon to check against
+ * @return true if the point touches the polygon, false otherwise
+ */
 bool touches(const Point2d& point, const ConvexPolygon2d& poly);
 
 /**
@@ -236,14 +269,35 @@ bool touches(const Point2d& point, const ConvexPolygon2d& poly);
  * @return true if the point is within the polygon, false otherwise
  */
 bool within(const Point2d& point, const ConvexPolygon2d& poly);
+
+/**
+ * @brief Check if a convex polygon is within another convex polygon
+ * @param poly_contained The convex polygon to check
+ * @param poly_containing The convex polygon to check against
+ * @return true if the polygon is within the other polygon, false otherwise
+ */
 bool within(const ConvexPolygon2d& poly_contained, const ConvexPolygon2d& poly_containing);
 
-// Helper functions
-double dot_product(const Point2d& p1, const Point2d& p2);
-double cross_product(const Point2d& p1, const Point2d& p2);
-Point2d cross_product(const Point2d & p1, const Point2d & p2, const Point2d & p3);
-double distance(const Point2d& p1, const Point2d& p2);
-double squared_distance(const Point2d& p1, const Point2d& p2);
-} // namespace autoware::universe_utils::alt
+/**
+ * @brief Check if two segments intersect
+ * @param seg1_start The start point of the first segment
+ * @param seg1_end The end point of the first segment
+ * @param seg2_start The start point of the second segment
+ * @param seg2_end The end point of the second segment
+ * @return true if the segments intersect, false otherwise
+ */
+bool intersects(
+  const Point2d & seg1_start, const Point2d & seg1_end, const Point2d & seg2_start,
+  const Point2d & seg2_end);
+
+/**
+ * @brief Check if two convex polygons intersect
+ * @param poly1 The first convex polygon
+ * @param poly2 The second convex polygon
+ * @return true if the polygons intersect, false otherwise
+ */
+bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2);
+
+} // namespace autoware::universe_utils
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_

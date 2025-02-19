@@ -61,6 +61,7 @@ std::optional<Polygon2d> Polygon2d::create(
   return poly;
 }
 
+// autoware::universe_utils::Polygon2d  ??
 std::optional<Polygon2d> Polygon2d::create(
   const Polygon2d & polygon) noexcept
 {
@@ -116,6 +117,7 @@ std::optional<ConvexPolygon2d> ConvexPolygon2d::create(PointList2d && vertices) 
   return poly;
 }
 
+// autoware::universe_utils::Polygon2d  ??
 std::optional<ConvexPolygon2d> ConvexPolygon2d::create(
   const Polygon2d & polygon) noexcept
 {
@@ -127,105 +129,104 @@ std::optional<ConvexPolygon2d> ConvexPolygon2d::create(
   return ConvexPolygon2d::create(vertices);
 }
 
-double dot_product(const Point2d& p1, const Point2d& p2) {
-  return p1.x() * p2.x() + p1.y() * p2.y();
-}
-
-double cross_product(const Point2d& p1, const Point2d& p2) {
-  return p1.x() * p2.y() - p1.y() * p2.x();
-}
-
-Point2d cross_product(const Point2d & p1, const Point2d & p2, const Point2d & p3)
+double area(const ConvexPolygon2d & poly)
 {
-  const auto tmp = p1.x() * p2.y() - p1.y() * p2.x();
-  return Point2d(-p3.y() * tmp, p3.x() * tmp);
-}
+  const auto & vertices = poly.vertices();
 
-double distance(const Point2d& p1, const Point2d& p2) {
-  return std::sqrt(squared_distance(p1, p2));
-}
-
-double squared_distance(const Point2d& p1, const Point2d& p2) {
-  const double dx = p2.x() - p1.x();
-  const double dy = p2.y() - p1.y();
-  return dx * dx + dy * dy;
-}
-
-double area(const ConvexPolygon2d& poly) {
-  const auto& vertices = poly.vertices();
-  if (vertices.size() < 3) return 0.0;
-  
-  double area = 0.0;
-  for (size_t i = 0; i < vertices.size(); ++i) {
-    const auto& p1 = vertices[i];
-    const auto& p2 = vertices[(i + 1) % vertices.size()];
-    area += cross_product(p1, p2);
+  double area = 0.;
+  for (auto it = std::next(vertices.cbegin()); it != std::prev(vertices.cend(), 2); ++it) {
+    area += (*std::next(it) - vertices.front()).cross(*it - vertices.front()) / 2;
   }
-  return std::abs(area) * 0.5;
+
+  return area;
 }
 
-ConvexPolygon2d convex_hull(const Points2d& points) {
-  if (points.size() < 3) return ConvexPolygon2d::create(points);
-  
-  // Graham scan algorithm
-  std::vector<Point2d> hull = points;
-  
-  // Find point with lowest y-coordinate (and leftmost if tied)
-  auto pivot = std::min_element(hull.begin(), hull.end(),
-    [](const Point2d& p1, const Point2d& p2) {
-      return p1.y() < p2.y() || (p1.y() == p2.y() && p1.x() < p2.x());
-    });
-    
-  // Sort points by polar angle with pivot
-  std::sort(hull.begin(), hull.end(),
-    [pivot](const Point2d& p1, const Point2d& p2) {
-      double cross = cross_product(
-        Point2d(p1.x() - pivot->x(), p1.y() - pivot->y()),
-        Point2d(p2.x() - pivot->x(), p2.y() - pivot->y())
-      );
-      return cross > 0;
-    });
-    
-  // Build convex hull
-  std::vector<Point2d> result;
-  for (const auto& point : hull) {
-    while (result.size() >= 2) {
-      const auto& p1 = result[result.size() - 2];
-      const auto& p2 = result[result.size() - 1];
-      if (cross_product(
-        Point2d(p2.x() - p1.x(), p2.y() - p1.y()),
-        Point2d(point.x() - p2.x(), point.y() - p2.y())
-      ) > 0) break;
-      result.pop_back();
+std::optional<ConvexPolygon2d> convex_hull(const Points2d & points)
+{
+  if (points.size() < 3) {
+    return std::nullopt;
+  }
+
+  // QuickHull algorithm
+
+  const auto p_minmax_itr = std::minmax_element(
+    points.begin(), points.end(), [](const auto & a, const auto & b) { return a.x() < b.x(); });
+  const auto & p_min = *p_minmax_itr.first;
+  const auto & p_max = *p_minmax_itr.second;
+
+  PointList2d vertices;
+
+  if (points.size() == 3) {
+    std::rotate_copy(
+      points.begin(), p_minmax_itr.first, points.end(), std::back_inserter(vertices));
+  } else {
+    auto make_hull = [&vertices](
+                       auto self, const Point2d & p1, const Point2d & p2,
+                       const Points2d & points) {
+      if (points.empty()) {
+        return;
+      }
+
+      const auto & farthest = *find_farthest(points, p1, p2);
+
+      Points2d subset1, subset2;
+      for (const auto & point : points) {
+        if (is_above(point, p1, farthest)) {
+          subset1.push_back(point);
+        } else if (is_above(point, farthest, p2)) {
+          subset2.push_back(point);
+        }
+      }
+
+      self(self, p1, farthest, subset1);
+      vertices.push_back(farthest);
+      self(self, farthest, p2, subset2);
+    };
+
+    Points2d above_points, below_points;
+    for (const auto & point : points) {
+      if (is_above(point, p_min, p_max)) {
+        above_points.push_back(point);
+      } else if (is_above(point, p_max, p_min)) {
+        below_points.push_back(point);
+      }
     }
-    result.push_back(point);
+
+    vertices.push_back(p_min);
+    make_hull(make_hull, p_min, p_max, above_points);
+    vertices.push_back(p_max);
+    make_hull(make_hull, p_max, p_min, below_points);
   }
-  
-  return ConvexPolygon2d::create(result);
+
+  auto hull = ConvexPolygon2d::create(vertices);
+  if (!hull) {
+    return std::nullopt;
+  }
+
+  return hull;
 }
 
-bool is_clockwise(const PointList2d& points) {
-  if (points.size() < 3) return false;
-  
-  double sum = 0.0;
-  for (size_t i = 0; i < points.size(); ++i) {
-    const auto& p1 = points[i];
-    const auto& p2 = points[(i + 1) % points.size()];
-    sum += (p2.x() - p1.x()) * (p2.y() + p1.y());
-  }
-  return sum > 0;
-}
+void correct(Polygon2d & poly)
+{
+  auto correct_vertices = [](PointList2d & vertices) {
+    // remove adjacent duplicate points
+    const auto it = std::unique(
+      vertices.begin(), vertices.end(),
+      [](const auto & a, const auto & b) { return equals(a, b); });
+    vertices.erase(it, vertices.end());
 
-void correct(Polygon2d& poly) {
-  auto& outer = poly.outer();
-  if (!is_clockwise(outer)) {
-    std::reverse(outer.begin(), outer.end());
-  }
-  
-  for (auto& inner : poly.inners()) {
-    if (is_clockwise(inner)) {
-      std::reverse(inner.begin(), inner.end());
+    if (!equals(vertices.front(), vertices.back())) {
+      vertices.push_back(vertices.front());
     }
+
+    if (!is_clockwise(vertices)) {
+      std::reverse(std::next(vertices.begin()), std::prev(vertices.end()));
+    }
+  };
+
+  correct_vertices(poly.outer());
+  for (auto & inner : poly.inners()) {
+    correct_vertices(inner);
   }
 }
 
@@ -249,13 +250,13 @@ bool covered_by(const Point2d & point, const ConvexPolygon2d & poly)
     const auto & p2 = *std::next(it);
 
     if (p1.y() <= point.y() && p2.y() >= point.y()) {  // upward edge
-      cross = cross_product(p2 - p1, point - p1);
+      cross = (p2 - p1).cross(point - p1);
       if (cross > 0) {  // point is to the left of edge
         winding_number++;
         continue;
       }
     } else if (p1.y() >= point.y() && p2.y() <= point.y()) {  // downward edge
-      cross = cross_product(p2 - p1, point - p1);
+      cross = (p2 - p1).cross(point - p1);
       if (cross < 0) {  // point is to the left of edge
         winding_number--;
         continue;
@@ -307,7 +308,7 @@ double distance(
   } else if (seg_point_dot > std::pow(seg_vec_norm, 2)) {
     return (point - seg_end).norm();
   } else {
-    return std::abs(cross_product(seg_vec, point_vec)) / seg_vec_norm;
+    return std::abs(seg_vec.cross(point_vec)) / seg_vec_norm;
   }
 }
 
@@ -350,52 +351,31 @@ bool equals(const Point2d & point1, const Point2d & point2)
   return std::abs(point1.x() - point2.x()) < epsilon && std::abs(point1.y() - point2.y()) < epsilon;
 }
 
-bool equals(const Polygon2d & poly1, const Polygon2d & poly2)
+bool equals(const alt::Polygon2d & poly1, const alt::Polygon2d & poly2)
 {
-  // Check if outer rings have same size
-  if (poly1.outer().size() != poly2.outer().size()) {
-    return false;
+  const auto outer_equals = std::equal(
+    poly1.outer().begin(), std::prev(poly1.outer().end()), poly2.outer().begin(),
+    std::prev(poly2.outer().end()), [](const auto & a, const auto & b) { return equals(a, b); });
+
+  auto inners_equal = true;
+  for (const auto & inner1 : poly1.inners()) {
+    inners_equal &=
+      std::any_of(poly2.inners().begin(), poly2.inners().end(), [&](const auto & inner2) {
+        return std::equal(
+          inner1.begin(), std::prev(inner1.end()), inner2.begin(), std::prev(inner2.end()),
+          [](const auto & a, const auto & b) { return equals(a, b); });
+      });
   }
 
-  // Check if inner rings count matches
-  if (poly1.inners().size() != poly2.inners().size()) {
-    return false;
-  }
-
-  // Compare outer ring points
-  const auto& outer1 = poly1.outer();
-  const auto& outer2 = poly2.outer();
-  for (size_t i = 0; i < outer1.size(); ++i) {
-    if (std::abs(outer1[i].x() - outer2[i].x()) > 1e-10 ||
-        std::abs(outer1[i].y() - outer2[i].y()) > 1e-10) {
-      return false;
-    }
-  }
-
-  // Compare inner rings
-  const auto& inners1 = poly1.inners();
-  const auto& inners2 = poly2.inners();
-  for (size_t i = 0; i < inners1.size(); ++i) {
-    if (inners1[i].size() != inners2[i].size()) {
-      return false;
-    }
-    for (size_t j = 0; j < inners1[i].size(); ++j) {
-      if (std::abs(inners1[i][j].x() - inners2[i][j].x()) > 1e-10 ||
-          std::abs(inners1[i][j].y() - inners2[i][j].y()) > 1e-10) {
-        return false;
-      }
-    }
-  }
-
-  return true;
+  return outer_equals && inners_equal;
 }
 
-PointList2d::const_iterator find_farthest(
-  const PointList2d & points, const Point2d & seg_start, const Point2d & seg_end)
+Points2d::const_iterator find_farthest(
+  const Points2d & points, const Point2d & seg_start, const Point2d & seg_end)
 {
   const auto seg_vec = seg_end - seg_start;
   return std::max_element(points.begin(), points.end(), [&](const auto & a, const auto & b) {
-    return std::abs(cross_product(seg_vec, a - seg_start)) < std::abs(cross_product(seg_vec, b - seg_start));
+    return std::abs(seg_vec.cross(a - seg_start)) < std::abs(seg_vec.cross(b - seg_start));
   });
 }
 
@@ -408,14 +388,14 @@ bool intersects(
   const auto v1 = seg1_end - seg1_start;
   const auto v2 = seg2_end - seg2_start;
 
-  const auto det = cross_product(v1, v2);
+  const auto det = v1.cross(v2);
   if (std::abs(det) < epsilon) {
     return false;
   }
 
   const auto v12 = seg2_end - seg1_end;
-  const double t = cross_product(v2, v12) / det;
-  const double s = cross_product(v1, v12) / det;
+  const double t = v2.cross(v12) / det;
+  const double s = v1.cross(v12) / det;
   if (t < 0 || 1 < t || s < 0 || 1 < s) {
     return false;
   }
@@ -434,9 +414,9 @@ bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2)
   auto find_support_vector = [](
                                const ConvexPolygon2d & poly1,
                                const ConvexPolygon2d & poly2,
-                               const Point2d & direction) {
+                               const Vector2d & direction) {
     auto find_farthest_vertex =
-      [](const ConvexPolygon2d & poly, const Point2d & direction) {
+      [](const ConvexPolygon2d & poly, const Vector2d & direction) {
         return std::max_element(
           poly.vertices().begin(), std::prev(poly.vertices().end()),
           [&](const auto & a, const auto & b) { return direction.dot(a) <= direction.dot(b); });
@@ -444,7 +424,7 @@ bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2)
     return *find_farthest_vertex(poly1, direction) - *find_farthest_vertex(poly2, -direction);
   };
 
-  Point2d direction = {1.0, 0.0};
+  Vector2d direction = {1.0, 0.0};
   auto a = find_support_vector(poly1, poly2, direction);
   direction = -a;
   auto b = find_support_vector(poly1, poly2, direction);
@@ -480,7 +460,17 @@ bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2)
 bool is_above(
   const Point2d & point, const Point2d & seg_start, const Point2d & seg_end)
 {
-  return cross_product(seg_end - seg_start, point - seg_start) > 0;
+  return (seg_end - seg_start).cross(point - seg_start) > 0;
+}
+
+bool is_clockwise(const alt::PointList2d & vertices)
+{
+  double sum = 0.;
+  for (auto it = vertices.cbegin(); it != std::prev(vertices.cend()); ++it) {
+    sum += (std::next(it)->x() - it->x()) * (std::next(it)->y() + it->y());
+  }
+
+  return sum > 0;
 }
 
 bool is_convex(const Polygon2d & poly)
@@ -498,7 +488,7 @@ bool is_convex(const Polygon2d & poly)
     const auto & p2 = *it;
     const auto & p3 = *++it;
 
-    if (cross_product(p2 - p1, p3 - p2) > epsilon) {
+    if ((p2 - p1).cross(p3 - p2) > epsilon) {
       return false;
     }
   }
@@ -553,7 +543,7 @@ bool touches(
   // and the vectors opposite each other, the point is on the segment
   const auto start_vec = point - seg_start;
   const auto end_vec = point - seg_end;
-  return std::abs(cross_product(start_vec, end_vec)) < epsilon && dot_product(start_vec, end_vec) <= 0;
+  return std::abs(start_vec.cross(end_vec)) < epsilon && start_vec.dot(end_vec) <= 0;
 }
 
 bool touches(const Point2d & point, const ConvexPolygon2d & poly)
@@ -597,13 +587,13 @@ bool within(const Point2d & point, const ConvexPolygon2d & poly)
     const auto & p2 = *std::next(it);
 
     if (p1.y() < point.y() && p2.y() > point.y()) {  // upward edge
-      cross = cross_product(p2 - p1, point - p1);
+      cross = (p2 - p1).cross(point - p1);
       if (cross > 0) {  // point is to the left of edge
         winding_number++;
         continue;
       }
     } else if (p1.y() > point.y() && p2.y() < point.y()) {  // downward edge
-      cross = cross_product(p2 - p1, point - p1);
+      cross = (p2 - p1).cross(point - p1);
       if (cross < 0) {  // point is to the left of edge
         winding_number--;
         continue;

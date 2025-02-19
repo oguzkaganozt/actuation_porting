@@ -203,6 +203,13 @@ geometryMsgsQuaternion createQuaternion(
   const double x, const double y, const double z, const double w);
 
 /**
+ * @brief Get the yaw of a quaternion
+ * @param q The quaternion
+ * @return The yaw
+ */
+double getYaw(const geometryMsgsQuaternion & q);
+
+/**
  * @brief Create a quaternion from a roll, pitch, and yaw angle
  * @param roll The roll angle
  * @param pitch The pitch angle
@@ -218,6 +225,18 @@ geometryMsgsQuaternion createQuaternionFromRPY(
  * @return The quaternion
  */
 geometryMsgsQuaternion createQuaternionFromYaw(const double yaw);
+
+/**
+ * @brief Linear interpolation between two vectors
+ * @param src_vec Source vector
+ * @param dst_vec Destination vector
+ * @param ratio Interpolation ratio (typically between 0 and 1)
+ * @return Interpolated vector
+ */
+geometryMsgsVector3 lerp(
+  const geometryMsgsVector3 & src_vec,
+  const geometryMsgsVector3 & dst_vec,
+  const double ratio);
 
 /**
  * @brief calculate elevation angle of two points.
@@ -242,24 +261,6 @@ double calcElevationAngle(
  */
 double calcAzimuthAngle(
   const geometryMsgsPoint & p_from, const geometryMsgsPoint & p_to);
-
-/**
- * @brief Convert a point to a tf vector
- * @param src The source point
- * @param dst The destination point
- * @return The tf vector
- */
-template <class Point1, class Point2>
-geometryMsgsVector3 point2tfVector(const Point1 & src, const Point2 & dst)
-{
-  const auto src_p = getPoint(src);
-  const auto dst_p = getPoint(dst);
-
-  double dx = dst_p.x - src_p.x;
-  double dy = dst_p.y - src_p.y;
-  double dz = dst_p.z - src_p.z;
-  return Vector3(dx, dy, dz);
-}
 
 /**
  * @brief Calculate the curvature of a path
@@ -315,15 +316,15 @@ geometryMsgsPoint calcInterpolatedPoint(
   const auto src_point = getPoint(src);
   const auto dst_point = getPoint(dst);
 
-  Vector3 src_vec;
-  src_vec.setX(src_point.x);
-  src_vec.setY(src_point.y);
-  src_vec.setZ(src_point.z);
+  geometryMsgsVector3 src_vec;
+  src_vec.x = src_point.x;
+  src_vec.y = src_point.y;
+  src_vec.z = src_point.z;
 
-  Vector3 dst_vec;
-  dst_vec.setX(dst_point.x);
-  dst_vec.setY(dst_point.y);
-  dst_vec.setZ(dst_point.z);
+  geometryMsgsVector3 dst_vec;
+  dst_vec.x = dst_point.x;
+  dst_vec.y = dst_point.y;
+  dst_vec.z = dst_point.z;
 
   // Get pose by linear interpolation
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
@@ -375,6 +376,7 @@ geometryMsgsPose calcInterpolatedPose(
       output_pose.orientation = createQuaternionFromRPY(0.0, pitch, yaw);
     }
   } else {
+    // TODO: replace with eigen
     // Get orientation by spherical linear interpolation
     // tf2::Transform src_tf;
     // tf2::Transform dst_tf;
@@ -383,10 +385,10 @@ geometryMsgsPose calcInterpolatedPose(
     // const auto & quaternion = tf2::slerp(src_tf.getRotation(), dst_tf.getRotation(), clamped_ratio);
     // output_pose.orientation = tf2::toMsg(quaternion);
 
-    Quaterniond qa, qb, qres;
-    // initialize qa, qb;
-    qres = qa.slerp(clamped_ratio, qb);
-    output_pose.orientation = toMsg(qres);
+    // Quaterniond qa, qb, qres;
+    // // initialize qa, qb;
+    // qres = qa.slerp(clamped_ratio, qb);
+    // output_pose.orientation = toMsg(qres);
   }
 
   return output_pose;
@@ -403,27 +405,6 @@ geometryMsgsPose calcInterpolatedPose(
 std::optional<geometryMsgsPoint> intersect(
   const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
   const geometryMsgsPoint & p3, const geometryMsgsPoint & p4);
-
-/**
- * @brief Check if 2 convex polygons intersect using the GJK algorithm
- * @details much faster than boost::geometry::intersects()
- * @param convex_polygon1 First convex polygon
- * @param convex_polygon2 Second convex polygon
- * @return true if the polygons intersect, false otherwise
- */
-bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & convex_polygon2);
-
-/**
- * @brief Linear interpolation between two vectors
- * @param src_vec Source vector
- * @param dst_vec Destination vector
- * @param ratio Interpolation ratio (typically between 0 and 1)
- * @return Interpolated vector
- */
-geometryMsgsVector3 lerp(
-  const geometryMsgsVector3 & src_vec,
-  const geometryMsgsVector3 & dst_vec,
-  const double ratio);
 
 }  // namespace autoware::universe_utils
 
