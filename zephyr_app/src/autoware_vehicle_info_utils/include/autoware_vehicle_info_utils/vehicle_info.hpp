@@ -52,26 +52,6 @@ struct VehicleInfo
   static constexpr size_t RearRightIndex = 3;   //<! the point index of rear-right > front-right
   static constexpr size_t RearLeftIndex = 4;    //<! the point index of rear-left > rear-right
 
-  /**
-   * @brief calculate the vehicle footprint in clockwise manner starting from the front-left edge,
-   * through front-right edge, center-right point, to front-left edge again to form a enclosed
-   * polygon
-   * @param margin the longitudinal and lateral inflation margin
-   */
-  autoware::universe_utils::LinearRing2d createFootprint(const double margin = 0.0) const;
-
-  /**
-   * @brief calculate the vehicle footprint in clockwise manner starting from the front-left edge,
-   * through front-right edge, center-right point, to front-left edge again to form a enclosed
-   * polygon
-   * @param margin the longitudinal and lateral inflation margin
-   */
-  autoware::universe_utils::LinearRing2d createFootprint(
-    const double lat_margin, const double lon_margin) const;
-
-  double calcMaxCurvature() const;
-  double calcCurvatureFromSteerAngle(const double steer_angle) const;
-  double calcSteerAngleFromCurvature(const double curvature) const;
 };
 
 /// Create vehicle info from base parameters

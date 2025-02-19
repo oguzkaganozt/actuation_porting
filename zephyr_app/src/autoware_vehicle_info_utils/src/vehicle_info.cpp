@@ -17,35 +17,6 @@
 
 namespace autoware::vehicle_info_utils
 {
-autoware::universe_utils::LinearRing2d VehicleInfo::createFootprint(const double margin) const
-{
-  return createFootprint(margin, margin);
-}
-
-autoware::universe_utils::LinearRing2d VehicleInfo::createFootprint(
-  const double lat_margin, const double lon_margin) const
-{
-  using autoware::universe_utils::LinearRing2d;
-  using autoware::universe_utils::Point2d;
-
-  const double x_front = front_overhang_m + wheel_base_m + lon_margin;
-  const double x_center = wheel_base_m / 2.0;
-  const double x_rear = -(rear_overhang_m + lon_margin);
-  const double y_left = wheel_tread_m / 2.0 + left_overhang_m + lat_margin;
-  const double y_right = -(wheel_tread_m / 2.0 + right_overhang_m + lat_margin);
-
-  LinearRing2d footprint;
-  footprint.push_back(Point2d{x_front, y_left});
-  footprint.push_back(Point2d{x_front, y_right});
-  footprint.push_back(Point2d{x_center, y_right});
-  footprint.push_back(Point2d{x_rear, y_right});
-  footprint.push_back(Point2d{x_rear, y_left});
-  footprint.push_back(Point2d{x_center, y_left});
-  footprint.push_back(Point2d{x_front, y_left});
-
-  return footprint;
-}
-
 VehicleInfo createVehicleInfo(
   const double wheel_radius_m, const double wheel_width_m, const double wheel_base_m_arg,
   const double wheel_tread_m, const double front_overhang_m, const double rear_overhang_m,
@@ -109,32 +80,5 @@ VehicleInfo createVehicleInfo(
     min_height_offset_m_,
     max_height_offset_m_,
   };
-}
-
-double VehicleInfo::calcMaxCurvature() const
-{
-  const double radius = wheel_base_m / std::tan(max_steer_angle_rad);
-  const double curvature = 1.0 / radius;
-  return curvature;
-}
-double VehicleInfo::calcCurvatureFromSteerAngle(const double steer_angle) const
-{
-  if (std::abs(steer_angle) < 1e-6) {
-    return std::numeric_limits<double>::max();
-  }
-  const double radius = wheel_base_m / std::tan(steer_angle);
-  const double curvature = 1.0 / radius;
-  return curvature;
-}
-
-double VehicleInfo::calcSteerAngleFromCurvature(const double curvature) const
-{
-  if (std::abs(curvature) < 1e-6) {
-    return 0.0;
-  }
-
-  const double radius = 1.0 / curvature;
-  const double steer_angle = std::atan2(wheel_base_m, radius);
-  return steer_angle;
 }
 }  // namespace autoware::vehicle_info_utils
