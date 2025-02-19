@@ -67,15 +67,15 @@ std::string ProcessingTimeNode::to_string() const
   return oss.str();
 }
 
-tier4_debug_msgs::msg::ProcessingTimeTree ProcessingTimeNode::to_msg() const
+tier4DebugMsgsProcessingTimeTree ProcessingTimeNode::to_msg() const
 {
-  tier4_debug_msgs::msg::ProcessingTimeTree time_tree_msg;
+  tier4DebugMsgsProcessingTimeTree time_tree_msg;
 
-  std::function<void(const ProcessingTimeNode &, tier4_debug_msgs::msg::ProcessingTimeTree &, int)>
+  std::function<void(const ProcessingTimeNode &, tier4DebugMsgsProcessingTimeTree &, int)>
     construct_msg = [&](
                       const ProcessingTimeNode & node,
-                      tier4_debug_msgs::msg::ProcessingTimeTree & tree_msg, int parent_id) {
-      tier4_debug_msgs::msg::ProcessingTimeNode time_node_msg;
+                      tier4DebugMsgsProcessingTimeTree & tree_msg, int parent_id) {
+      tier4DebugMsgsProcessingTimeNode time_node_msg;
       time_node_msg.name = node.name_;
       time_node_msg.processing_time = node.processing_time_;
       time_node_msg.id = static_cast<int>(tree_msg.nodes.size() + 1);

@@ -17,26 +17,28 @@
 
 #include <rclcpp/time.hpp>
 
-#include <visualization_msgs/msg/marker_array.hpp>
-
 #include <optional>
 #include <string>
 
+// message types
+#include "MarkerArray.h"
+using visualizationMsgsMarkerArray = visualization_msgs_msg_MarkerArray;
+
 namespace autoware::universe_utils
 {
-inline geometry_msgs::msg::Point createMarkerPosition(double x, double y, double z)
+inline geometryMsgsPoint createMarkerPosition(double x, double y, double z)
 {
-  geometry_msgs::msg::Point point;
+  geometryMsgsPoint point;
   point.x = x;
   point.y = y;
   point.z = z;
   return point;
 }
 
-inline geometry_msgs::msg::Quaternion createMarkerOrientation(
+inline geometryMsgsQuaternion createMarkerOrientation(
   double x, double y, double z, double w)
 {
-  geometry_msgs::msg::Quaternion quaternion;
+  geometryMsgsQuaternion quaternion;
   quaternion.x = x;
   quaternion.y = y;
   quaternion.z = z;
@@ -44,18 +46,18 @@ inline geometry_msgs::msg::Quaternion createMarkerOrientation(
   return quaternion;
 }
 
-inline geometry_msgs::msg::Vector3 createMarkerScale(double x, double y, double z)
+inline geometryMsgsVector3 createMarkerScale(double x, double y, double z)
 {
-  geometry_msgs::msg::Vector3 scale;
+  geometryMsgsVector3 scale;
   scale.x = x;
   scale.y = y;
   scale.z = z;
   return scale;
 }
 
-inline std_msgs::msg::ColorRGBA createMarkerColor(float r, float g, float b, float a)
+inline stdMsgsColorRGBA createMarkerColor(float r, float g, float b, float a)
 {
-  std_msgs::msg::ColorRGBA color;
+  stdMsgsColorRGBA color;
   color.r = r;
   color.g = g;
   color.b = b;
@@ -63,17 +65,17 @@ inline std_msgs::msg::ColorRGBA createMarkerColor(float r, float g, float b, flo
   return color;
 }
 
-visualization_msgs::msg::Marker createDefaultMarker(
+visualizationMsgsMarker createDefaultMarker(
   const std::string & frame_id, const rclcpp::Time & now, const std::string & ns, const int32_t id,
-  const int32_t type, const geometry_msgs::msg::Vector3 & scale,
-  const std_msgs::msg::ColorRGBA & color);
+  const int32_t type, const geometryMsgsVector3 & scale,
+  const stdMsgsColorRGBA & color);
 
-visualization_msgs::msg::Marker createDeletedDefaultMarker(
+visualizationMsgsMarker createDeletedDefaultMarker(
   const rclcpp::Time & now, const std::string & ns, const int32_t id);
 
 void appendMarkerArray(
-  const visualization_msgs::msg::MarkerArray & additional_marker_array,
-  visualization_msgs::msg::MarkerArray * marker_array,
+  const visualizationMsgsMarkerArray & additional_marker_array,
+  visualizationMsgsMarkerArray * marker_array,
   const std::optional<rclcpp::Time> & current_time = {});
 
 }  // namespace autoware::universe_utils

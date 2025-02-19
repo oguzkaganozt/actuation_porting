@@ -18,19 +18,19 @@
 
 namespace autoware::universe_utils
 {
-visualization_msgs::msg::Marker createDefaultMarker(
+visualizationMsgsMarker createDefaultMarker(
   const std::string & frame_id, const rclcpp::Time & now, const std::string & ns, const int32_t id,
-  const int32_t type, const geometry_msgs::msg::Vector3 & scale,
-  const std_msgs::msg::ColorRGBA & color)
+  const int32_t type, const geometryMsgsVector3 & scale,
+  const stdMsgsColorRGBA & color)
 {
-  visualization_msgs::msg::Marker marker;
+  visualizationMsgsMarker marker;
 
   marker.header.frame_id = frame_id;
   marker.header.stamp = now;
   marker.ns = ns;
   marker.id = id;
   marker.type = type;
-  marker.action = visualization_msgs::msg::Marker::ADD;
+  marker.action = visualizationMsgsMarker::ADD;
   marker.lifetime = rclcpp::Duration::from_seconds(0.5);
 
   marker.pose.position = createMarkerPosition(0.0, 0.0, 0.0);
@@ -42,22 +42,22 @@ visualization_msgs::msg::Marker createDefaultMarker(
   return marker;
 }
 
-visualization_msgs::msg::Marker createDeletedDefaultMarker(
+visualizationMsgsMarker createDeletedDefaultMarker(
   const rclcpp::Time & now, const std::string & ns, const int32_t id)
 {
-  visualization_msgs::msg::Marker marker;
+  visualizationMsgsMarker marker;
 
   marker.header.stamp = now;
   marker.ns = ns;
   marker.id = id;
-  marker.action = visualization_msgs::msg::Marker::DELETE;
+  marker.action = visualizationMsgsMarker::DELETE;
 
   return marker;
 }
 
 void appendMarkerArray(
-  const visualization_msgs::msg::MarkerArray & additional_marker_array,
-  visualization_msgs::msg::MarkerArray * marker_array,
+  const visualizationMsgsMarkerArray & additional_marker_array,
+  visualizationMsgsMarkerArray * marker_array,
   const std::optional<rclcpp::Time> & current_time)
 {
   for (const auto & marker : additional_marker_array.markers) {

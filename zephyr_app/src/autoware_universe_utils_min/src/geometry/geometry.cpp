@@ -19,30 +19,30 @@
 
 namespace autoware::universe_utils
 {
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Quaternion & quat)
+geometryMsgsVector3 getRPY(const geometryMsgsQuaternion & quat)
 {
-  geometry_msgs::msg::Vector3 rpy;
+  geometryMsgsVector3 rpy;
   tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
   tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
   return rpy;
 }
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::Pose & pose)
+geometryMsgsVector3 getRPY(const geometryMsgsPose & pose)
 {
   return getRPY(pose.orientation);
 }
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseStamped & pose)
+geometryMsgsVector3 getRPY(const geometryMsgsPoseStamped & pose)
 {
   return getRPY(pose.pose);
 }
-geometry_msgs::msg::Vector3 getRPY(const geometry_msgs::msg::PoseWithCovarianceStamped & pose)
+geometryMsgsVector3 getRPY(const geometryMsgsPoseWithCovarianceStamped & pose)
 {
   return getRPY(pose.pose.pose);
 }
 
-geometry_msgs::msg::Quaternion createQuaternion(
+geometryMsgsQuaternion createQuaternion(
   const double x, const double y, const double z, const double w)
 {
-  geometry_msgs::msg::Quaternion q;
+  geometryMsgsQuaternion q;
   q.x = x;
   q.y = y;
   q.z = z;
@@ -50,7 +50,7 @@ geometry_msgs::msg::Quaternion createQuaternion(
   return q;
 }
 
-geometry_msgs::msg::Quaternion createQuaternionFromRPY(
+geometryMsgsQuaternion createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw)
 {
   // Calculate rotation matrix elements
@@ -62,7 +62,7 @@ geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   const double sy = std::sin(yaw * 0.5);
 
   // Convert to quaternion using the rotation matrix to quaternion formulas
-  geometry_msgs::msg::Quaternion q;
+  geometryMsgsQuaternion q;
   q.w = cr * cp * cy + sr * sp * sy;
   q.x = sr * cp * cy - cr * sp * sy;
   q.y = cr * sp * cy + sr * cp * sy;
@@ -71,7 +71,7 @@ geometry_msgs::msg::Quaternion createQuaternionFromRPY(
   return q;
 }
 
-geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
+geometryMsgsQuaternion createQuaternionFromYaw(const double yaw)
 {
   // Calculate half angles
   const double half_yaw = yaw * 0.5;
@@ -79,7 +79,7 @@ geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
   const double sy = std::sin(half_yaw);
 
   // When roll and pitch are 0, the quaternion simplifies to:
-  geometry_msgs::msg::Quaternion q;
+  geometryMsgsQuaternion q;
   q.w = cy;  // cos(0/2)cos(0/2)cos(yaw/2) = cos(yaw/2)
   q.x = 0;   // sin(0/2)cos(0/2)cos(yaw/2) = 0
   q.y = 0;   // cos(0/2)sin(0/2)cos(yaw/2) = 0
@@ -88,9 +88,9 @@ geometry_msgs::msg::Quaternion createQuaternionFromYaw(const double yaw)
   return q;
 }
 
-geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, const double z)
+geometryMsgsVector3 createTranslation(const double x, const double y, const double z)
 {
-  geometry_msgs::msg::Vector3 v;
+  geometryMsgsVector3 v;
   v.x = x;
   v.y = y;
   v.z = z;
@@ -98,7 +98,7 @@ geometry_msgs::msg::Vector3 createTranslation(const double x, const double y, co
 }
 
 double calcElevationAngle(
-  const geometry_msgs::msg::Point & p_from, const geometry_msgs::msg::Point & p_to)
+  const geometryMsgsPoint & p_from, const geometryMsgsPoint & p_to)
 {
   const double dz = p_to.z - p_from.z;
   const double dist_2d = calcDistance2d(p_from, p_to);
@@ -106,14 +106,14 @@ double calcElevationAngle(
 }
 
 double calcAzimuthAngle(
-  const geometry_msgs::msg::Point & p_from, const geometry_msgs::msg::Point & p_to)
+  const geometryMsgsPoint & p_from, const geometryMsgsPoint & p_to)
 {
   const double dx = p_to.x - p_from.x;
   const double dy = p_to.y - p_from.y;
   return std::atan2(dy, dx);
 }
 
-double getYaw(const geometry_msgs::msg::Quaternion & q)
+double getYaw(const geometryMsgsQuaternion & q)
 {
   // Convert quaternion to Euler angles
   // yaw (z-axis rotation)
@@ -123,8 +123,8 @@ double getYaw(const geometry_msgs::msg::Quaternion & q)
 }
 
 double calcCurvature(
-  const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
-  const geometry_msgs::msg::Point & p3)
+  const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
+  const geometryMsgsPoint & p3)
 {
   // Calculation details are described in the following page
   // https://en.wikipedia.org/wiki/Menger_curvature
@@ -136,9 +136,9 @@ double calcCurvature(
   return 2.0 * ((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)) / denominator;
 }
 
-std::optional<geometry_msgs::msg::Point> intersect(
-  const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2,
-  const geometry_msgs::msg::Point & p3, const geometry_msgs::msg::Point & p4)
+std::optional<geometryMsgsPoint> intersect(
+  const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
+  const geometryMsgsPoint & p3, const geometryMsgsPoint & p4)
 {
   // calculate intersection point
   const double det = (p1.x - p2.x) * (p4.y - p3.y) - (p4.x - p3.x) * (p1.y - p2.y);
@@ -152,7 +152,7 @@ std::optional<geometry_msgs::msg::Point> intersect(
     return std::nullopt;
   }
 
-  geometry_msgs::msg::Point intersect_point;
+  geometryMsgsPoint intersect_point;
   intersect_point.x = t * p1.x + (1.0 - t) * p2.x;
   intersect_point.y = t * p1.y + (1.0 - t) * p2.y;
   intersect_point.z = t * p1.z + (1.0 - t) * p2.z;
@@ -164,12 +164,12 @@ bool intersects_convex(const Polygon2d & convex_polygon1, const Polygon2d & conv
   return gjk::intersects(convex_polygon1, convex_polygon2);
 }
 
-geometry_msgs::msg::Pose calcOffsetPose(
-  const geometry_msgs::msg::Pose & p, const double x, const double y, const double z,
+geometryMsgsPose calcOffsetPose(
+  const geometryMsgsPose & p, const double x, const double y, const double z,
   const double yaw)
 {
-  geometry_msgs::msg::Pose pose;
-  geometry_msgs::msg::Transform transform;
+  geometryMsgsPose pose;
+  geometryMsgsTransform transform;
   transform.translation = createTranslation(x, y, z);
   transform.rotation = createQuaternionFromYaw(yaw);
   // replace tf2 with eigen
@@ -190,12 +190,12 @@ geometry_msgs::msg::Pose calcOffsetPose(
   return pose;
 }
 
-geometry_msgs::msg::Vector3 lerp(
-  const geometry_msgs::msg::Vector3 & src_vec, 
-  const geometry_msgs::msg::Vector3 & dst_vec, 
+geometryMsgsVector3 lerp(
+  const geometryMsgsVector3 & src_vec, 
+  const geometryMsgsVector3 & dst_vec, 
   const double ratio)
 {
-  geometry_msgs::msg::Vector3 result;
+  geometryMsgsVector3 result;
   // Linear interpolation formula: result = src + ratio * (dst - src)
   result.x = src_vec.x + ratio * (dst_vec.x - src_vec.x);
   result.y = src_vec.y + ratio * (dst_vec.y - src_vec.y);

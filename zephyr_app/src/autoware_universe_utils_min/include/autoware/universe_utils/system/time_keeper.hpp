@@ -18,9 +18,15 @@
 
 #include <rclcpp/publisher.hpp>
 
-#include <std_msgs/msg/string.hpp>
-#include <tier4_debug_msgs/msg/processing_time_node.hpp>
-#include <tier4_debug_msgs/msg/processing_time_tree.hpp>
+// #include <std_msgs/msg/string.hpp>
+// #include <tier4_debug_msgs/msg/processing_time_node.hpp>
+// #include <tier4_debug_msgs/msg/processing_time_tree.hpp>
+#include "String.h"
+#include "ProcessingTimeNode.h"
+#include "ProcessingTimeTree.h"
+using stdMsgsString = std_msgs_msg_String;
+using tier4DebugMsgsProcessingTimeNode = tier4_debug_msgs_msg_ProcessingTimeNode;
+using tier4DebugMsgsProcessingTimeTree = tier4_debug_msgs_msg_ProcessingTimeTree;
 
 #include <memory>
 #include <ostream>
@@ -61,9 +67,9 @@ public:
   /**
    * @brief Construct a ProcessingTimeTree message from the node and its children
    *
-   * @return tier4_debug_msgs::msg::ProcessingTimeTree Constructed ProcessingTimeTree message
+   * @return tier4DebugMsgsProcessingTimeTree Constructed ProcessingTimeTree message
    */
-  tier4_debug_msgs::msg::ProcessingTimeTree to_msg() const;
+  tier4DebugMsgsProcessingTimeTree to_msg() const;
 
   /**
    * @brief Get the parent node
@@ -110,8 +116,7 @@ private:
     child_nodes_;  //!< Vector of shared pointers to the child nodes
 };
 
-using ProcessingTimeDetail =
-  tier4_debug_msgs::msg::ProcessingTimeTree;  //!< Alias for the ProcessingTimeTree message
+using ProcessingTimeDetail = tier4DebugMsgsProcessingTimeTree;  //!< Alias for the ProcessingTimeTree message
 
 /**
  * @brief Class for tracking and reporting the processing time of various functions

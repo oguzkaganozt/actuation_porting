@@ -15,8 +15,11 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 
-#include <geometry_msgs/msg/point.hpp>
-#include <geometry_msgs/msg/pose.hpp>
+// message types
+#include "Point.h"
+#include "Pose.h"
+using geometryMsgsPoint = geometry_msgs_msg_Point;
+using geometryMsgsPose = geometry_msgs_msg_Pose;
 
 namespace autoware::universe_utils
 {
@@ -34,7 +37,7 @@ struct PoseDeviation
  * @return The yaw deviation
  */
 double calcYawDeviation(
-  const geometry_msgs::msg::Pose & base_pose, const geometry_msgs::msg::Pose & target_pose);
+  const geometryMsgsPose & base_pose, const geometryMsgsPose & target_pose);
 
 }  // namespace autoware::universe_utils
 
