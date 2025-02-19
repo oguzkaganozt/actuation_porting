@@ -1,10 +1,9 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__MESSAGES_H_
 #define AUTOWARE__UNIVERSE_UTILS__MESSAGES_H_
 
+#include "Point.h"
 #include "Path.h"
 #include "Trajectory.h"
-#include "Point32.h"
-#include "Point.h"
 #include "PoseStamped.h"
 #include "PoseWithCovarianceStamped.h"
 #include "Quaternion.h"
