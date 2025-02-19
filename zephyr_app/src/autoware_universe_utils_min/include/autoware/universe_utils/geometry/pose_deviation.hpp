@@ -15,11 +15,8 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 
-// message types
-#include "Point.h"
-#include "Pose.h"
-using geometryMsgsPoint = geometry_msgs_msg_Point;
-using geometryMsgsPose = geometry_msgs_msg_Pose;
+// Message types
+#include "autoware/universe_utils/messages.h"
 
 namespace autoware::universe_utils
 {

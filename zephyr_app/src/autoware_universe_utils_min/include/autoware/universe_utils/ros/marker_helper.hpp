@@ -15,14 +15,11 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__ROS__MARKER_HELPER_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__ROS__MARKER_HELPER_HPP_
 
-#include <rclcpp/time.hpp>
-
 #include <optional>
 #include <string>
 
-// message types
-#include "MarkerArray.h"
-using visualizationMsgsMarkerArray = visualization_msgs_msg_MarkerArray;
+// Message types
+#include "autoware/universe_utils/messages.h"
 
 namespace autoware::universe_utils
 {
