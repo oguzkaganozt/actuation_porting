@@ -20,7 +20,7 @@ namespace geometry_msgs
 {
 namespace msg
 {
-Quaternion operator+(Quaternion a, Quaternion b) noexcept
+geometryMsgsQuaternion operator+(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept
 {
   // tf2::Quaternion quat_a;
   // tf2::Quaternion quat_b;
@@ -29,14 +29,14 @@ Quaternion operator+(Quaternion a, Quaternion b) noexcept
   // return tf2::toMsg(quat_a + quat_b);
 }
 
-Quaternion operator-(Quaternion a) noexcept
+geometryMsgsQuaternion operator-(geometryMsgsQuaternion a) noexcept
 {
   // tf2::Quaternion quat_a;
   // tf2::fromMsg(a, quat_a);
   // return tf2::toMsg(quat_a * -1.0);
 }
 
-Quaternion operator-(Quaternion a, Quaternion b) noexcept
+geometryMsgsQuaternion operator-(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept
 {
   // tf2::Quaternion quat_a;
   // tf2::Quaternion quat_b;
