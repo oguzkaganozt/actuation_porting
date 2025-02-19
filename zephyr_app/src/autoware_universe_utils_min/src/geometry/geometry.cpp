@@ -198,4 +198,29 @@ geometryMsgsVector3 lerp(
   result.z = src_vec.z + ratio * (dst_vec.z - src_vec.z);
   return result;
 }
+
+geometryMsgsQuaternion operator+(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept
+{
+  // tf2::Quaternion quat_a;
+  // tf2::Quaternion quat_b;
+  // tf2::fromMsg(a, quat_a);
+  // tf2::fromMsg(b, quat_b);
+  // return tf2::toMsg(quat_a + quat_b);
+}
+
+geometryMsgsQuaternion operator-(geometryMsgsQuaternion a) noexcept
+{
+  // tf2::Quaternion quat_a;
+  // tf2::fromMsg(a, quat_a);
+  // return tf2::toMsg(quat_a * -1.0);
+}
+
+geometryMsgsQuaternion operator-(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept
+{
+  // tf2::Quaternion quat_a;
+  // tf2::Quaternion quat_b;
+  // tf2::fromMsg(a, quat_a);
+  // tf2::fromMsg(b, quat_b);
+  // return tf2::toMsg(quat_a * quat_b.inverse());
+}
 }  // namespace autoware::universe_utils

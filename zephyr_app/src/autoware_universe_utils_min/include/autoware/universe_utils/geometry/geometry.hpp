@@ -19,7 +19,6 @@
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
-#include "autoware/universe_utils/ros/msg_covariance.hpp"
 
 // Standard library
 #include <exception>
@@ -405,6 +404,11 @@ geometryMsgsPose calcInterpolatedPose(
 std::optional<geometryMsgsPoint> intersect(
   const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
   const geometryMsgsPoint & p3, const geometryMsgsPoint & p4);
+
+// PORTED FROM AUTOWARE_UNIVERSE_UTILS_ROS
+geometryMsgsQuaternion operator+(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept;
+geometryMsgsQuaternion operator-(geometryMsgsQuaternion a) noexcept;
+geometryMsgsQuaternion operator-(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept;
 
 }  // namespace autoware::universe_utils
 
