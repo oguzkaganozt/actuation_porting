@@ -18,14 +18,8 @@
 #include "autoware/universe_utils/geometry/geometry.hpp"
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
-#include "autoware/universe_utils/system/backtrace.hpp"
 
 #include <Eigen/Geometry>
-#include <rclcpp/logging.hpp>
-
-#include <autoware_planning_msgs/msg/path_point.hpp>
-#include <autoware_planning_msgs/msg/trajectory_point.hpp>
-#include <tier4_planning_msgs/msg/path_point_with_lane_id.hpp>
 
 #include <algorithm>
 #include <limits>
@@ -34,6 +28,10 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <autoware_planning_msgs/msg/path_point.hpp>
+#include <autoware_planning_msgs/msg/trajectory_point.hpp>
+#include <tier4_planning_msgs/msg/path_point_with_lane_id.hpp>
 
 namespace autoware::motion_utils
 {
