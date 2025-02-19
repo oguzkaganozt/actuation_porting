@@ -224,8 +224,35 @@ Points2d::const_iterator find_farthest(
   const Points2d& points, const Point2d& seg_start, const Point2d& seg_end);
 
 /**
+ * @brief Check if two segments intersect
+ * @param seg1_start The start point of the first segment
+ * @param seg1_end The end point of the first segment
+ * @param seg2_start The start point of the second segment
+ * @param seg2_end The end point of the second segment
+ * @return true if the segments intersect, false otherwise
+ */
+bool intersects(const Point2d& seg1_start, const Point2d& seg1_end, const Point2d& seg2_start, const Point2d& seg2_end);
+
+/**
+ * @brief Check if two convex polygons intersect
+ * @param poly1 The first convex polygon
+ * @param poly2 The second convex polygon
+ * @return true if the polygons intersect, false otherwise
+ */
+bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2);
+
+/**
+ * @brief Check if a point is above a segment
+ * @param point The point to check
+ * @param seg_start The start point of the segment
+ * @param seg_end The end point of the segment
+ * @return true if the point is above the segment, false otherwise
+ */
+bool is_above(const Point2d& point, const Point2d& seg_start, const Point2d& seg_end);
+
+/**
  * @brief Check if a polygon is clockwise
- * @param points The points of the polygon
+ * @param vertices The vertices of the polygon
  * @return true if the polygon is clockwise, false otherwise
  */
 bool is_clockwise(const PointList2d& vertices);
@@ -252,7 +279,8 @@ PointList2d simplify(const PointList2d& line, const double max_distance);
  * @param seg_end The end point of the segment
  * @return true if the point touches the segment, false otherwise
  */
-bool touches(const Point2d& point, const Point2d& seg_start, const Point2d& seg_end);
+bool touches(
+  const Point2d & point, const Point2d & seg_start, const Point2d & seg_end);
 
 /**
  * @brief Check if a point touches a convex polygon
@@ -260,7 +288,7 @@ bool touches(const Point2d& point, const Point2d& seg_start, const Point2d& seg_
  * @param poly The convex polygon to check against
  * @return true if the point touches the polygon, false otherwise
  */
-bool touches(const Point2d& point, const ConvexPolygon2d& poly);
+bool touches(const Point2d & point, const ConvexPolygon2d & poly);
 
 /**
  * @brief Check if a point is within a convex polygon
@@ -268,7 +296,7 @@ bool touches(const Point2d& point, const ConvexPolygon2d& poly);
  * @param poly The convex polygon to check against
  * @return true if the point is within the polygon, false otherwise
  */
-bool within(const Point2d& point, const ConvexPolygon2d& poly);
+bool within(const Point2d & point, const ConvexPolygon2d & poly);
 
 /**
  * @brief Check if a convex polygon is within another convex polygon
@@ -276,28 +304,8 @@ bool within(const Point2d& point, const ConvexPolygon2d& poly);
  * @param poly_containing The convex polygon to check against
  * @return true if the polygon is within the other polygon, false otherwise
  */
-bool within(const ConvexPolygon2d& poly_contained, const ConvexPolygon2d& poly_containing);
-
-/**
- * @brief Check if two segments intersect
- * @param seg1_start The start point of the first segment
- * @param seg1_end The end point of the first segment
- * @param seg2_start The start point of the second segment
- * @param seg2_end The end point of the second segment
- * @return true if the segments intersect, false otherwise
- */
-bool intersects(
-  const Point2d & seg1_start, const Point2d & seg1_end, const Point2d & seg2_start,
-  const Point2d & seg2_end);
-
-/**
- * @brief Check if two convex polygons intersect
- * @param poly1 The first convex polygon
- * @param poly2 The second convex polygon
- * @return true if the polygons intersect, false otherwise
- */
-bool intersects(const ConvexPolygon2d & poly1, const ConvexPolygon2d & poly2);
-
+bool within(
+  const ConvexPolygon2d& poly_contained, const ConvexPolygon2d& poly_containing);
 } // namespace autoware::universe_utils
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
