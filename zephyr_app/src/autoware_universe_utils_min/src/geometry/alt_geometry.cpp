@@ -351,7 +351,7 @@ bool equals(const Point2d & point1, const Point2d & point2)
   return std::abs(point1.x() - point2.x()) < epsilon && std::abs(point1.y() - point2.y()) < epsilon;
 }
 
-bool equals(const alt::Polygon2d & poly1, const alt::Polygon2d & poly2)
+bool equals(const Polygon2d & poly1, const Polygon2d & poly2)
 {
   const auto outer_equals = std::equal(
     poly1.outer().begin(), std::prev(poly1.outer().end()), poly2.outer().begin(),
@@ -463,7 +463,7 @@ bool is_above(
   return (seg_end - seg_start).cross(point - seg_start) > 0;
 }
 
-bool is_clockwise(const alt::PointList2d & vertices)
+bool is_clockwise(const PointList2d & vertices)
 {
   double sum = 0.;
   for (auto it = vertices.cbegin(); it != std::prev(vertices.cend()); ++it) {

@@ -14,10 +14,7 @@
 
 #include "autoware/universe_utils/system/backtrace.hpp"
 
-#include "rclcpp/rclcpp.hpp"
-
 #include <execinfo.h>
-
 #include <iostream>
 #include <memory>
 #include <sstream>
