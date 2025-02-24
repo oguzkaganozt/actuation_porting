@@ -291,7 +291,7 @@ searchZeroVelocityIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  * @return index of nearest point
  */
 template <class T>
-size_t findNearestIndex(const T & points, const geometry_msgs::msg::Point & point)
+size_t findNearestIndex(const T & points, const geometryMsgsPoint & point)
 {
   validateNonEmpty(points);
 
@@ -310,13 +310,13 @@ size_t findNearestIndex(const T & points, const geometry_msgs::msg::Point & poin
 
 extern template size_t findNearestIndex<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & point);
+  const geometryMsgsPoint & point);
 extern template size_t findNearestIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & point);
+  const geometryMsgsPoint & point);
 extern template size_t findNearestIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & point);
+  const geometryMsgsPoint & point);
 
 /**
  * @brief find nearest point index through points container for a given pose.
@@ -333,7 +333,7 @@ extern template size_t findNearestIndex<std::vector<awfPlanningMsgsTrajectoryPoi
  */
 template <class T>
 std::optional<size_t> findNearestIndex(
-  const T & points, const geometry_msgs::msg::Pose & pose,
+  const T & points, const geometryMsgsPose & pose,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
@@ -376,17 +376,17 @@ std::optional<size_t> findNearestIndex(
 extern template std::optional<size_t>
 findNearestIndex<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<size_t>
 findNearestIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<size_t>
 findNearestIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 
 /**
@@ -401,7 +401,7 @@ findNearestIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcLongitudinalOffsetToSegment(
-  const T & points, const size_t seg_idx, const geometry_msgs::msg::Point & p_target,
+  const T & points, const size_t seg_idx, const geometryMsgsPoint & p_target,
   const bool throw_exception = false)
 {
   if (seg_idx >= points.size() - 1) {
@@ -460,15 +460,15 @@ double calcLongitudinalOffsetToSegment(
 extern template double
 calcLongitudinalOffsetToSegment<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points, const size_t seg_idx,
-  const geometry_msgs::msg::Point & p_target, const bool throw_exception = false);
+  const geometryMsgsPoint & p_target, const bool throw_exception = false);
 extern template double
 calcLongitudinalOffsetToSegment<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t seg_idx,
-  const geometry_msgs::msg::Point & p_target, const bool throw_exception = false);
+  const geometryMsgsPoint & p_target, const bool throw_exception = false);
 extern template double
 calcLongitudinalOffsetToSegment<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points, const size_t seg_idx,
-  const geometry_msgs::msg::Point & p_target, const bool throw_exception = false);
+  const geometryMsgsPoint & p_target, const bool throw_exception = false);
 
 /**
  * @brief find nearest segment index to point.
@@ -479,7 +479,7 @@ calcLongitudinalOffsetToSegment<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  * @return nearest index
  */
 template <class T>
-size_t findNearestSegmentIndex(const T & points, const geometry_msgs::msg::Point & point)
+size_t findNearestSegmentIndex(const T & points, const geometryMsgsPoint & point)
 {
   const size_t nearest_idx = findNearestIndex(points, point);
 
@@ -501,15 +501,15 @@ size_t findNearestSegmentIndex(const T & points, const geometry_msgs::msg::Point
 
 extern template size_t findNearestSegmentIndex<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & point);
+  const geometryMsgsPoint & point);
 extern template size_t
 findNearestSegmentIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & point);
+  const geometryMsgsPoint & point);
 extern template size_t
 findNearestSegmentIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & point);
+  const geometryMsgsPoint & point);
 
 /**
  * @brief find nearest segment index to pose
@@ -523,7 +523,7 @@ findNearestSegmentIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 std::optional<size_t> findNearestSegmentIndex(
-  const T & points, const geometry_msgs::msg::Pose & pose,
+  const T & points, const geometryMsgsPose & pose,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
@@ -552,17 +552,17 @@ std::optional<size_t> findNearestSegmentIndex(
 extern template std::optional<size_t>
 findNearestSegmentIndex<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<size_t>
 findNearestSegmentIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<size_t>
 findNearestSegmentIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 
 /**
@@ -576,7 +576,7 @@ findNearestSegmentIndex<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcLateralOffset(
-  const T & points, const geometry_msgs::msg::Point & p_target, const size_t seg_idx,
+  const T & points, const geometryMsgsPoint & p_target, const size_t seg_idx,
   const bool throw_exception = false)
 {
   const auto overlap_removed_points = removeOverlapPoints(points, 0);
@@ -626,16 +626,16 @@ double calcLateralOffset(
 
 extern template double calcLateralOffset<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & p_target, const size_t seg_idx,
+  const geometryMsgsPoint & p_target, const size_t seg_idx,
   const bool throw_exception = false);
 extern template double
 calcLateralOffset<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & p_target, const size_t seg_idx,
+  const geometryMsgsPoint & p_target, const size_t seg_idx,
   const bool throw_exception = false);
 extern template double calcLateralOffset<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & p_target, const size_t seg_idx,
+  const geometryMsgsPoint & p_target, const size_t seg_idx,
   const bool throw_exception = false);
 
 /**
@@ -650,7 +650,7 @@ extern template double calcLateralOffset<std::vector<awfPlanningMsgsTrajectoryPo
  */
 template <class T>
 double calcLateralOffset(
-  const T & points, const geometry_msgs::msg::Point & p_target, const bool throw_exception = false)
+  const T & points, const geometryMsgsPoint & p_target, const bool throw_exception = false)
 {
   const auto overlap_removed_points = removeOverlapPoints(points, 0);
 
@@ -689,14 +689,14 @@ double calcLateralOffset(
 
 extern template double calcLateralOffset<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & p_target, const bool throw_exception = false);
+  const geometryMsgsPoint & p_target, const bool throw_exception = false);
 extern template double
 calcLateralOffset<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & p_target, const bool throw_exception = false);
+  const geometryMsgsPoint & p_target, const bool throw_exception = false);
 extern template double calcLateralOffset<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & p_target, const bool throw_exception = false);
+  const geometryMsgsPoint & p_target, const bool throw_exception = false);
 
 /**
  * @brief calculate length of 2D distance between two points, specified by start and end points
@@ -803,7 +803,7 @@ calcSignedArcLengthPartialSum<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcSignedArcLength(
-  const T & points, const geometry_msgs::msg::Point & src_point, const size_t dst_idx)
+  const T & points, const geometryMsgsPoint & src_point, const size_t dst_idx)
 {
   try {
     validateNonEmpty(points);
@@ -823,15 +823,15 @@ double calcSignedArcLength(
 
 extern template double calcSignedArcLength<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const size_t dst_idx);
+  const geometryMsgsPoint & src_point, const size_t dst_idx);
 extern template double
 calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> &,
-  const geometry_msgs::msg::Point & src_point, const size_t dst_idx);
+  const geometryMsgsPoint & src_point, const size_t dst_idx);
 extern template double
 calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> &,
-  const geometry_msgs::msg::Point & src_point, const size_t dst_idx);
+  const geometryMsgsPoint & src_point, const size_t dst_idx);
 
 /**
  * @brief calculate length of 2D distance between two points, specified by start index of points
@@ -845,7 +845,7 @@ calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcSignedArcLength(
-  const T & points, const size_t src_idx, const geometry_msgs::msg::Point & dst_point)
+  const T & points, const size_t src_idx, const geometryMsgsPoint & dst_point)
 {
   try {
     validateNonEmpty(points);
@@ -859,15 +859,15 @@ double calcSignedArcLength(
 
 extern template double calcSignedArcLength<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points, const size_t src_idx,
-  const geometry_msgs::msg::Point & dst_point);
+  const geometryMsgsPoint & dst_point);
 extern template double
 calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
-  const geometry_msgs::msg::Point & dst_point);
+  const geometryMsgsPoint & dst_point);
 extern template double
 calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
-  const geometry_msgs::msg::Point & dst_point);
+  const geometryMsgsPoint & dst_point);
 
 /**
  * @brief calculate length of 2D distance between two points, specified by start point and end
@@ -882,8 +882,8 @@ calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcSignedArcLength(
-  const T & points, const geometry_msgs::msg::Point & src_point,
-  const geometry_msgs::msg::Point & dst_point)
+  const T & points, const geometryMsgsPoint & src_point,
+  const geometryMsgsPoint & dst_point)
 {
   try {
     validateNonEmpty(points);
@@ -906,15 +906,15 @@ double calcSignedArcLength(
 
 extern template double calcSignedArcLength<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const geometry_msgs::msg::Point & dst_point);
+  const geometryMsgsPoint & src_point, const geometryMsgsPoint & dst_point);
 extern template double
 calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & src_point, const geometry_msgs::msg::Point & dst_point);
+  const geometryMsgsPoint & src_point, const geometryMsgsPoint & dst_point);
 extern template double
 calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const geometry_msgs::msg::Point & dst_point);
+  const geometryMsgsPoint & src_point, const geometryMsgsPoint & dst_point);
 
 /**
  * @brief calculate length of 2D distance for whole points container, from its start to its end.
@@ -1080,7 +1080,7 @@ calcDistanceToForwardStopPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  * @return offset point
  */
 template <class T>
-std::optional<geometry_msgs::msg::Point> calcLongitudinalOffsetPoint(
+std::optional<geometryMsgsPoint> calcLongitudinalOffsetPoint(
   const T & points, const size_t src_idx, const double offset, const bool throw_exception = false)
 {
   try {
@@ -1141,15 +1141,15 @@ std::optional<geometry_msgs::msg::Point> calcLongitudinalOffsetPoint(
   return {};
 }
 
-extern template std::optional<geometry_msgs::msg::Point>
+extern template std::optional<geometryMsgsPoint>
 calcLongitudinalOffsetPoint<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points, const size_t src_idx,
   const double offset, const bool throw_exception = false);
-extern template std::optional<geometry_msgs::msg::Point>
+extern template std::optional<geometryMsgsPoint>
 calcLongitudinalOffsetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
   const double offset, const bool throw_exception = false);
-extern template std::optional<geometry_msgs::msg::Point>
+extern template std::optional<geometryMsgsPoint>
 calcLongitudinalOffsetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
   const double offset, const bool throw_exception = false);
@@ -1163,8 +1163,8 @@ calcLongitudinalOffsetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  * @return offset point
  */
 template <class T>
-std::optional<geometry_msgs::msg::Point> calcLongitudinalOffsetPoint(
-  const T & points, const geometry_msgs::msg::Point & src_point, const double offset)
+std::optional<geometryMsgsPoint> calcLongitudinalOffsetPoint(
+  const T & points, const geometryMsgsPoint & src_point, const double offset)
 {
   try {
     validateNonEmpty(points);
@@ -1186,18 +1186,18 @@ std::optional<geometry_msgs::msg::Point> calcLongitudinalOffsetPoint(
   return calcLongitudinalOffsetPoint(points, src_seg_idx, offset + signed_length_src_offset);
 }
 
-extern template std::optional<geometry_msgs::msg::Point>
+extern template std::optional<geometryMsgsPoint>
 calcLongitudinalOffsetPoint<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const double offset);
-extern template std::optional<geometry_msgs::msg::Point>
+  const geometryMsgsPoint & src_point, const double offset);
+extern template std::optional<geometryMsgsPoint>
 calcLongitudinalOffsetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & src_point, const double offset);
-extern template std::optional<geometry_msgs::msg::Point>
+  const geometryMsgsPoint & src_point, const double offset);
+extern template std::optional<geometryMsgsPoint>
 calcLongitudinalOffsetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const double offset);
+  const geometryMsgsPoint & src_point, const double offset);
 
 /**
  * @brief calculate the point offset from source point index along the trajectory (or path) (points
@@ -1210,7 +1210,7 @@ calcLongitudinalOffsetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  * @return offset pose
  */
 template <class T>
-std::optional<geometry_msgs::msg::Pose> calcLongitudinalOffsetPose(
+std::optional<geometryMsgsPose> calcLongitudinalOffsetPose(
   const T & points, const size_t src_idx, const double offset,
   const bool set_orientation_from_position_direction = true, const bool throw_exception = false)
 {
@@ -1286,17 +1286,17 @@ std::optional<geometry_msgs::msg::Pose> calcLongitudinalOffsetPose(
   return {};
 }
 
-extern template std::optional<geometry_msgs::msg::Pose>
+extern template std::optional<geometryMsgsPose>
 calcLongitudinalOffsetPose<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points, const size_t src_idx,
   const double offset, const bool set_orientation_from_position_direction = true,
   const bool throw_exception = false);
-extern template std::optional<geometry_msgs::msg::Pose>
+extern template std::optional<geometryMsgsPose>
 calcLongitudinalOffsetPose<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
   const double offset, const bool set_orientation_from_position_direction = true,
   const bool throw_exception = false);
-extern template std::optional<geometry_msgs::msg::Pose>
+extern template std::optional<geometryMsgsPose>
 calcLongitudinalOffsetPose<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
   const double offset, const bool set_orientation_from_position_direction = true,
@@ -1313,8 +1313,8 @@ calcLongitudinalOffsetPose<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  * @return offset pose
  */
 template <class T>
-std::optional<geometry_msgs::msg::Pose> calcLongitudinalOffsetPose(
-  const T & points, const geometry_msgs::msg::Point & src_point, const double offset,
+std::optional<geometryMsgsPose> calcLongitudinalOffsetPose(
+  const T & points, const geometryMsgsPoint & src_point, const double offset,
   const bool set_orientation_from_position_direction = true)
 {
   try {
@@ -1333,20 +1333,20 @@ std::optional<geometry_msgs::msg::Pose> calcLongitudinalOffsetPose(
     set_orientation_from_position_direction);
 }
 
-extern template std::optional<geometry_msgs::msg::Pose>
+extern template std::optional<geometryMsgsPose>
 calcLongitudinalOffsetPose<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const double offset,
+  const geometryMsgsPoint & src_point, const double offset,
   const bool set_orientation_from_position_direction = true);
-extern template std::optional<geometry_msgs::msg::Pose>
+extern template std::optional<geometryMsgsPose>
 calcLongitudinalOffsetPose<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & src_point, const double offset,
+  const geometryMsgsPoint & src_point, const double offset,
   const bool set_orientation_from_position_direction = true);
-extern template std::optional<geometry_msgs::msg::Pose>
+extern template std::optional<geometryMsgsPose>
 calcLongitudinalOffsetPose<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const double offset,
+  const geometryMsgsPoint & src_point, const double offset,
   const bool set_orientation_from_position_direction = true);
 
 /**
@@ -1360,7 +1360,7 @@ calcLongitudinalOffsetPose<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 std::optional<size_t> insertTargetPoint(
-  const size_t seg_idx, const geometry_msgs::msg::Point & p_target, T & points,
+  const size_t seg_idx, const geometryMsgsPoint & p_target, T & points,
   const double overlap_threshold = 1e-3)
 {
   try {
@@ -1395,7 +1395,7 @@ std::optional<size_t> insertTargetPoint(
     return {};
   }
 
-  geometry_msgs::msg::Pose target_pose;
+  geometryMsgsPose target_pose;
   {
     const auto p_base = is_driving_forward.value() ? p_back : p_front;
     const auto pitch = autoware::universe_utils::calcElevationAngle(p_target, p_base);
@@ -1408,7 +1408,7 @@ std::optional<size_t> insertTargetPoint(
   auto p_insert = points.at(seg_idx);
   autoware::universe_utils::setPose(target_pose, p_insert);
 
-  geometry_msgs::msg::Pose base_pose;
+  geometryMsgsPose, base_pose;
   {
     const auto p_base = is_driving_forward.value() ? p_front : p_back;
     const auto pitch = autoware::universe_utils::calcElevationAngle(p_base, p_target);
@@ -1437,17 +1437,17 @@ std::optional<size_t> insertTargetPoint(
 
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<awfPlanningMsgsPathPoint>>(
-  const size_t seg_idx, const geometry_msgs::msg::Point & p_target,
+  const size_t seg_idx, const geometryMsgsPoint & p_target,
   std::vector<awfPlanningMsgsPathPoint> & points,
   const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const size_t seg_idx, const geometry_msgs::msg::Point & p_target,
+  const size_t seg_idx, const geometryMsgsPoint & p_target,
   std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
   const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
-  const size_t seg_idx, const geometry_msgs::msg::Point & p_target,
+  const size_t seg_idx, const geometryMsgsPoint & p_target,
   std::vector<awfPlanningMsgsTrajectoryPoint> & points,
   const double overlap_threshold = 1e-3);
 
@@ -1463,7 +1463,7 @@ insertTargetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 std::optional<size_t> insertTargetPoint(
-  const double insert_point_length, const geometry_msgs::msg::Point & p_target, T & points,
+  const double insert_point_length, const geometryMsgsPoint & p_target, T & points,
   const double overlap_threshold = 1e-3)
 {
   validateNonEmpty(points);
@@ -1492,17 +1492,17 @@ std::optional<size_t> insertTargetPoint(
 
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<awfPlanningMsgsPathPoint>>(
-  const double insert_point_length, const geometry_msgs::msg::Point & p_target,
+  const double insert_point_length, const geometryMsgsPoint & p_target,
   std::vector<awfPlanningMsgsPathPoint> & points,
   const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const double insert_point_length, const geometry_msgs::msg::Point & p_target,
+  const double insert_point_length, const geometryMsgsPoint & p_target,
   std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
   const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
-  const double insert_point_length, const geometry_msgs::msg::Point & p_target,
+  const double insert_point_length, const geometryMsgsPoint & p_target,
   std::vector<awfPlanningMsgsTrajectoryPoint> & points,
   const double overlap_threshold = 1e-3);
 
@@ -1594,7 +1594,7 @@ insertTargetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 std::optional<size_t> insertTargetPoint(
-  const geometry_msgs::msg::Pose & src_pose, const double insert_point_length, T & points,
+  const geometryMsgsPose, & src_pose, const double insert_point_length, T & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3)
 {
@@ -1618,19 +1618,19 @@ std::optional<size_t> insertTargetPoint(
 
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<awfPlanningMsgsPathPoint>>(
-  const geometry_msgs::msg::Pose & src_pose, const double insert_point_length,
+  const geometryMsgsPose, & src_pose, const double insert_point_length,
   std::vector<awfPlanningMsgsPathPoint> & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const geometry_msgs::msg::Pose & src_pose, const double insert_point_length,
+  const geometryMsgsPose, & src_pose, const double insert_point_length,
   std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
-  const geometry_msgs::msg::Pose & src_pose, const double insert_point_length,
+  const geometryMsgsPose, & src_pose, const double insert_point_length,
   std::vector<awfPlanningMsgsTrajectoryPoint> & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
@@ -1748,7 +1748,7 @@ insertStopPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 std::optional<size_t> insertStopPoint(
-  const geometry_msgs::msg::Pose & src_pose, const double distance_to_stop_point,
+  const geometryMsgsPose, & src_pose, const double distance_to_stop_point,
   T & points_with_twist, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3)
 {
@@ -1774,19 +1774,19 @@ std::optional<size_t> insertStopPoint(
 
 extern template std::optional<size_t>
 insertStopPoint<std::vector<awfPlanningMsgsPathPoint>>(
-  const geometry_msgs::msg::Pose & src_pose, const double distance_to_stop_point,
+  const geometryMsgsPose, & src_pose, const double distance_to_stop_point,
   std::vector<awfPlanningMsgsPathPoint> & points_with_twist,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertStopPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const geometry_msgs::msg::Pose & src_pose, const double distance_to_stop_point,
+  const geometryMsgsPose, & src_pose, const double distance_to_stop_point,
   std::vector<tier4PlanningMsgsPathPointWithLaneId> & points_with_twist,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertStopPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
-  const geometry_msgs::msg::Pose & src_pose, const double distance_to_stop_point,
+  const geometryMsgsPose, & src_pose, const double distance_to_stop_point,
   std::vector<awfPlanningMsgsTrajectoryPoint> & points_with_twist,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
@@ -1802,7 +1802,7 @@ insertStopPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 std::optional<size_t> insertStopPoint(
-  const size_t stop_seg_idx, const geometry_msgs::msg::Point & stop_point, T & points_with_twist,
+  const size_t stop_seg_idx, const geometryMsgsPoint & stop_point, T & points_with_twist,
   const double overlap_threshold = 1e-3)
 {
   const auto insert_idx = autoware::motion_utils::insertTargetPoint(
@@ -1821,7 +1821,7 @@ std::optional<size_t> insertStopPoint(
 
 extern template std::optional<size_t>
 insertStopPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
-  const size_t stop_seg_idx, const geometry_msgs::msg::Point & stop_point,
+  const size_t stop_seg_idx, const geometryMsgsPoint & stop_point,
   std::vector<awfPlanningMsgsTrajectoryPoint> & points_with_twist,
   const double overlap_threshold = 1e-3);
 
@@ -1834,7 +1834,7 @@ insertStopPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 std::optional<size_t> insertDecelPoint(
-  const geometry_msgs::msg::Point & src_point, const double distance_to_decel_point,
+  const geometryMsgsPoint & src_point, const double distance_to_decel_point,
   const double velocity, T & points_with_twist)
 {
   const auto decel_point =
@@ -1863,7 +1863,7 @@ std::optional<size_t> insertDecelPoint(
 
 extern template std::optional<size_t>
 insertDecelPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
-  const geometry_msgs::msg::Point & src_point, const double distance_to_decel_point,
+  const geometryMsgsPoint & src_point, const double distance_to_decel_point,
   const double velocity,
   std::vector<awfPlanningMsgsTrajectoryPoint> & points_with_twist);
 
@@ -1955,8 +1955,8 @@ void removeFirstInvalidOrientationPoints(T & points, const double max_yaw_diff =
  */
 template <class T>
 double calcSignedArcLength(
-  const T & points, const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx,
-  const geometry_msgs::msg::Point & dst_point, const size_t dst_seg_idx)
+  const T & points, const geometryMsgsPoint & src_point, const size_t src_seg_idx,
+  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx)
 {
   validateNonEmpty(points);
 
@@ -1971,18 +1971,18 @@ double calcSignedArcLength(
 
 extern template double calcSignedArcLength<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx,
-  const geometry_msgs::msg::Point & dst_point, const size_t dst_seg_idx);
+  const geometryMsgsPoint & src_point, const size_t src_seg_idx,
+  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
 extern template double
 calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx,
-  const geometry_msgs::msg::Point & dst_point, const size_t dst_seg_idx);
+  const geometryMsgsPoint & src_point, const size_t src_seg_idx,
+  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
 extern template double
 calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx,
-  const geometry_msgs::msg::Point & dst_point, const size_t dst_seg_idx);
+  const geometryMsgsPoint & src_point, const size_t src_seg_idx,
+  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
 
 /**
  * @brief calculate length of 2D distance between two points, specified by start point and its
@@ -1997,7 +1997,7 @@ calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcSignedArcLength(
-  const T & points, const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx,
+  const T & points, const geometryMsgsPoint & src_point, const size_t src_seg_idx,
   const size_t dst_idx)
 {
   validateNonEmpty(points);
@@ -2011,15 +2011,15 @@ double calcSignedArcLength(
 
 extern template double calcSignedArcLength<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx, const size_t dst_idx);
+  const geometryMsgsPoint & src_point, const size_t src_seg_idx, const size_t dst_idx);
 extern template double
 calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx, const size_t dst_idx);
+  const geometryMsgsPoint & src_point, const size_t src_seg_idx, const size_t dst_idx);
 extern template double
 calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & src_point, const size_t src_seg_idx, const size_t dst_idx);
+  const geometryMsgsPoint & src_point, const size_t src_seg_idx, const size_t dst_idx);
 
 /**
  * @brief calculate length of 2D distance between two points, specified by start point index in
@@ -2034,7 +2034,7 @@ calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcSignedArcLength(
-  const T & points, const size_t src_idx, const geometry_msgs::msg::Point & dst_point,
+  const T & points, const size_t src_idx, const geometryMsgsPoint & dst_point,
   const size_t dst_seg_idx)
 {
   validateNonEmpty(points);
@@ -2048,15 +2048,15 @@ double calcSignedArcLength(
 
 extern template double calcSignedArcLength<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points, const size_t src_idx,
-  const geometry_msgs::msg::Point & dst_point, const size_t dst_seg_idx);
+  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
 extern template double
 calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
-  const geometry_msgs::msg::Point & dst_point, const size_t dst_seg_idx);
+  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
 extern template double
 calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
-  const geometry_msgs::msg::Point & dst_point, const size_t dst_seg_idx);
+  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
 
 /**
  * @brief find first nearest point index through points container for a given pose with soft
@@ -2072,7 +2072,7 @@ calcSignedArcLength<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 size_t findFirstNearestIndexWithSoftConstraints(
-  const T & points, const geometry_msgs::msg::Pose & pose,
+  const T & points, const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max())
 {
@@ -2149,19 +2149,19 @@ size_t findFirstNearestIndexWithSoftConstraints(
 extern template size_t
 findFirstNearestIndexWithSoftConstraints<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Pose & pose,
+  const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t findFirstNearestIndexWithSoftConstraints<
   std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Pose & pose,
+  const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t
 findFirstNearestIndexWithSoftConstraints<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Pose & pose,
+  const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 
@@ -2177,7 +2177,7 @@ findFirstNearestIndexWithSoftConstraints<std::vector<awfPlanningMsgsTrajectoryPo
  */
 template <class T>
 size_t findFirstNearestSegmentIndexWithSoftConstraints(
-  const T & points, const geometry_msgs::msg::Pose & pose,
+  const T & points, const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max())
 {
@@ -2205,19 +2205,19 @@ size_t findFirstNearestSegmentIndexWithSoftConstraints(
 extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
   std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Pose & pose,
+  const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
   std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Pose & pose,
+  const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
   std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Pose & pose,
+  const geometryMsgsPose, & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 
@@ -2236,7 +2236,7 @@ extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
  */
 template <class T>
 std::optional<double> calcDistanceToForwardStopPoint(
-  const T & points_with_twist, const geometry_msgs::msg::Pose & pose,
+  const T & points_with_twist, const geometryMsgsPose, & pose,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
@@ -2270,24 +2270,24 @@ std::optional<double> calcDistanceToForwardStopPoint(
 extern template std::optional<double>
 calcDistanceToForwardStopPoint<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points_with_twist,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose, & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<double>
 calcDistanceToForwardStopPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points_with_twist,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose, & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<double>
 calcDistanceToForwardStopPoint<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points_with_twist,
-  const geometry_msgs::msg::Pose & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const geometryMsgsPose, & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 
 // NOTE: Points after forward length from the point will be cropped
 //       forward_length is assumed to be positive.
 template <typename T>
 T cropForwardPoints(
-  const T & points, const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const T & points, const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length)
 {
   if (points.empty()) {
@@ -2310,24 +2310,24 @@ T cropForwardPoints(
 extern template std::vector<awfPlanningMsgsPathPoint>
 cropForwardPoints<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length);
 extern template std::vector<tier4PlanningMsgsPathPointWithLaneId>
 cropForwardPoints<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length);
 extern template std::vector<awfPlanningMsgsTrajectoryPoint>
 cropForwardPoints<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length);
 
 // NOTE: Points before backward length from the point will be cropped
 //       backward_length is assumed to be positive.
 template <typename T>
 T cropBackwardPoints(
-  const T & points, const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const T & points, const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double backward_length)
 {
   if (points.empty()) {
@@ -2350,22 +2350,22 @@ T cropBackwardPoints(
 extern template std::vector<awfPlanningMsgsPathPoint>
 cropBackwardPoints<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double backward_length);
 extern template std::vector<tier4PlanningMsgsPathPointWithLaneId>
 cropBackwardPoints<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double backward_length);
 extern template std::vector<awfPlanningMsgsTrajectoryPoint>
 cropBackwardPoints<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double backward_length);
 
 template <typename T>
 T cropPoints(
-  const T & points, const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const T & points, const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length)
 {
   if (points.empty()) {
@@ -2392,17 +2392,17 @@ T cropPoints(
 extern template std::vector<awfPlanningMsgsPathPoint>
 cropPoints<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length);
 extern template std::vector<tier4PlanningMsgsPathPointWithLaneId>
 cropPoints<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length);
 extern template std::vector<awfPlanningMsgsTrajectoryPoint>
 cropPoints<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & target_pos, const size_t target_seg_idx,
+  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length);
 
 /**
@@ -2417,7 +2417,7 @@ cropPoints<std::vector<awfPlanningMsgsTrajectoryPoint>>(
  */
 template <class T>
 double calcYawDeviation(
-  const T & points, const geometry_msgs::msg::Pose & pose, const bool throw_exception = false)
+  const T & points, const geometryMsgsPose, & pose, const bool throw_exception = false)
 {
   const auto overlap_removed_points = removeOverlapPoints(points, 0);
 
@@ -2459,13 +2459,13 @@ double calcYawDeviation(
 
 extern template double calcYawDeviation<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Pose & pose, const bool throw_exception = false);
+  const geometryMsgsPose, & pose, const bool throw_exception = false);
 extern template double calcYawDeviation<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Pose & pose, const bool throw_exception = false);
+  const geometryMsgsPose, & pose, const bool throw_exception = false);
 extern template double calcYawDeviation<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Pose & pose, const bool throw_exception = false);
+  const geometryMsgsPose, & pose, const bool throw_exception = false);
 
 /**
  * @brief Check if the given target point is in front of the based pose from the trajectory.
@@ -2478,8 +2478,8 @@ extern template double calcYawDeviation<std::vector<awfPlanningMsgsTrajectoryPoi
  */
 template <class T>
 bool isTargetPointFront(
-  const T & points, const geometry_msgs::msg::Point & base_point,
-  const geometry_msgs::msg::Point & target_point, const double threshold = 0.0)
+  const T & points, const geometryMsgsPoint & base_point,
+  const geometryMsgsPoint & target_point, const double threshold = 0.0)
 {
   if (points.empty()) {
     return false;
@@ -2493,15 +2493,15 @@ bool isTargetPointFront(
 
 extern template bool isTargetPointFront<std::vector<awfPlanningMsgsPathPoint>>(
   const std::vector<awfPlanningMsgsPathPoint> & points,
-  const geometry_msgs::msg::Point & base_point, const geometry_msgs::msg::Point & target_point,
+  const geometryMsgsPoint & base_point, const geometryMsgsPoint & target_point,
   const double threshold = 0.0);
 extern template bool isTargetPointFront<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
   const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometry_msgs::msg::Point & base_point, const geometry_msgs::msg::Point & target_point,
+  const geometryMsgsPoint & base_point, const geometryMsgsPoint & target_point,
   const double threshold = 0.0);
 extern template bool isTargetPointFront<std::vector<awfPlanningMsgsTrajectoryPoint>>(
   const std::vector<awfPlanningMsgsTrajectoryPoint> & points,
-  const geometry_msgs::msg::Point & base_point, const geometry_msgs::msg::Point & target_point,
+  const geometryMsgsPoint & base_point, const geometryMsgsPoint & target_point,
   const double threshold = 0.0);
 
 /// @brief calculate the time_from_start fields of the given trajectory points
@@ -2511,7 +2511,7 @@ extern template bool isTargetPointFront<std::vector<awfPlanningMsgsTrajectoryPoi
 /// @param min_velocity minimum velocity used for a trajectory point
 void calculate_time_from_start(
   std::vector<awfPlanningMsgsTrajectoryPoint> & trajectory,
-  const geometry_msgs::msg::Point & current_ego_point, const float min_velocity = 1.0f);
+  const geometryMsgsPoint & current_ego_point, const float min_velocity = 1.0f);
 
 }  // namespace autoware::motion_utils
 

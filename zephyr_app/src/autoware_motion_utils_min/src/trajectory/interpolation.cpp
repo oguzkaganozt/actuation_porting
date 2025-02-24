@@ -13,23 +13,18 @@
 // limitations under the License.
 
 #include "autoware/motion_utils/trajectory/interpolation.hpp"
-
-#include "autoware/interpolation/linear_interpolation.hpp"
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
+#include "autoware/interpolation/linear_interpolation.hpp"
 
-using autoware_planning_msgs::msg::Trajectory;
-using autoware_planning_msgs::msg::TrajectoryPoint;
-using tier4_planning_msgs::msg::PathPointWithLaneId;
-using tier4_planning_msgs::msg::PathWithLaneId;
 
 namespace autoware::motion_utils
 {
-TrajectoryPoint calcInterpolatedPoint(
-  const Trajectory & trajectory, const geometry_msgs::msg::Pose & target_pose,
+autowarePlanningMsgsTrajectoryPoint calcInterpolatedPoint(
+  const autowarePlanningMsgsTrajectory & trajectory, const geometryMsgsPose & target_pose,
   const bool use_zero_order_hold_for_twist, const double dist_threshold, const double yaw_threshold)
 {
   if (trajectory.points.empty()) {
-    TrajectoryPoint interpolated_point{};
+    autowarePlanningMsgsTrajectoryPoint interpolated_point{};
     interpolated_point.pose = target_pose;
     return interpolated_point;
   }
@@ -54,7 +49,7 @@ TrajectoryPoint calcInterpolatedPoint(
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
 
   // Interpolate
-  TrajectoryPoint interpolated_point{};
+  autowarePlanningMsgsTrajectoryPoint interpolated_point{};
 
   // pose interpolation
   interpolated_point.pose =
@@ -93,12 +88,12 @@ TrajectoryPoint calcInterpolatedPoint(
   return interpolated_point;
 }
 
-PathPointWithLaneId calcInterpolatedPoint(
-  const PathWithLaneId & path, const geometry_msgs::msg::Pose & target_pose,
+tier4PlanningMsgsPathPointWithLaneId calcInterpolatedPoint(
+  const tier4PlanningMsgsPathWithLaneId & path, const geometryMsgsPose & target_pose,
   const bool use_zero_order_hold_for_twist, const double dist_threshold, const double yaw_threshold)
 {
   if (path.points.empty()) {
-    PathPointWithLaneId interpolated_point{};
+    tier4PlanningMsgsPathPointWithLaneId interpolated_point{};
     interpolated_point.point.pose = target_pose;
     return interpolated_point;
   }
@@ -123,7 +118,7 @@ PathPointWithLaneId calcInterpolatedPoint(
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
 
   // Interpolate
-  PathPointWithLaneId interpolated_point{};
+  tier4PlanningMsgsPathPointWithLaneId interpolated_point{};
 
   // pose interpolation
   interpolated_point.point.pose =

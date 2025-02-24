@@ -19,23 +19,21 @@
 #include <deque>
 
 // message types
-#include <autoware_planning_msgs/msg/trajectory.hpp>
-#include <geometry_msgs/msg/twist_stamped.hpp>
-#include <nav_msgs/msg/odometry.hpp>
+#include "messages.h"
 
 namespace autoware::motion_utils
 {
 
-using autoware_planning_msgs::msg::Trajectory;
-using geometry_msgs::msg::TwistStamped;
-using nav_msgs::msg::Odometry;
+using autowarePlanningMsgsTrajectory = autoware_planning_msgs_msg_Trajectory;
+using geometryMsgsTwistStamped = geometry_msgs_msg_TwistStamped;
+using navMsgsOdometry = nav_msgs_msg_Odometry;
 
 class VehicleStopCheckerBase
 {
 public:
   VehicleStopCheckerBase(rclcpp::Node * node, double buffer_duration);
   rclcpp::Logger getLogger() { return logger_; }
-  void addTwist(const TwistStamped & twist);
+  void addTwist(const geometryMsgsTwistStamped & twist);
   bool isVehicleStopped(const double stop_duration = 0.0) const;
 
 protected:
@@ -44,7 +42,7 @@ protected:
 
 private:
   double buffer_duration_;
-  std::deque<TwistStamped> twist_buffer_;
+  std::deque<geometryMsgsTwistStamped> twist_buffer_;
 };
 
 class VehicleStopChecker : public VehicleStopCheckerBase
@@ -53,12 +51,12 @@ public:
   explicit VehicleStopChecker(rclcpp::Node * node);
 
 protected:
-  rclcpp::Subscription<Odometry>::SharedPtr sub_odom_;
-  Odometry::ConstSharedPtr odometry_ptr_;
+  rclcpp::Subscription<navMsgsOdometry>::SharedPtr sub_odom_;
+  navMsgsOdometry::ConstSharedPtr odometry_ptr_;
 
 private:
   static constexpr double velocity_buffer_time_sec = 10.0;
-  void onOdom(const Odometry::ConstSharedPtr msg);
+  void onOdom(const navMsgsOdometry::ConstSharedPtr msg);
 };
 
 class VehicleArrivalChecker : public VehicleStopChecker
@@ -71,11 +69,11 @@ public:
 private:
   static constexpr double th_arrived_distance_m = 1.0;
 
-  rclcpp::Subscription<Trajectory>::SharedPtr sub_trajectory_;
+  rclcpp::Subscription<autowarePlanningMsgsTrajectory>::SharedPtr sub_trajectory_;
 
-  Trajectory::ConstSharedPtr trajectory_ptr_;
+  autowarePlanningMsgsTrajectory::ConstSharedPtr trajectory_ptr_;
 
-  void onTrajectory(const Trajectory::ConstSharedPtr msg);
+  void onTrajectory(const autowarePlanningMsgsTrajectory::ConstSharedPtr msg);
 };
 }  // namespace autoware::motion_utils
 
