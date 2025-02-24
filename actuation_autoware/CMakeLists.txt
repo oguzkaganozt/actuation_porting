@@ -8,21 +8,16 @@ cmake_minimum_required(VERSION 3.22.1)
 set(CONF_FILE "prj_actuation.conf")
 set(OVERLAY_CONFIG "prj_net.conf;${OVERLAY_CONFIG}" CACHE STRING "overlay config" FORCE)  # Do not overwrite the OVERLAY_CONFIG value provided by the user.
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+find_package(Eigen3 REQUIRED)
+find_package(osqp REQUIRED)
 project(actuation_autoware)
 
 # INCLUDES
 include(GNUInstallDirs)
 include(ExternalProject)
-include(cyclonedds_config.cmake)
-include(src/autoware_osqp_interface/autoware_osqp_interface.cmake)
-include(src/autoware_universe_utils_min/autoware_universe_utils.cmake)
-include(src/autoware_interpolation_min/autoware_interpolation.cmake)
-# include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
-# include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-# include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
-# include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
 
-### BUILD CYCLONEDDS ###
+### CYCLONEDDS ###
+include(cyclonedds_config.cmake)
 create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
 ### SET ZEPHYR COMPILER AND FLAGS ###
@@ -77,6 +72,18 @@ add_dependencies(app actuation_msgs_pkg)
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
+# Find dependencies
+get_target_property(OSQP_INCLUDE_SUB_DIR osqp::osqp INTERFACE_INCLUDE_DIRECTORIES)
+get_filename_component(OSQP_INCLUDE_DIR ${OSQP_INCLUDE_SUB_DIR} PATH)
+
+include(src/autoware_osqp_interface/autoware_osqp_interface.cmake)
+include(src/autoware_universe_utils_min/autoware_universe_utils.cmake)
+include(src/autoware_interpolation_min/autoware_interpolation.cmake)
+# include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
+# include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
+# include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
+# include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
+
 # Add main
 list(APPEND APP_SOURCES
   src/main.cpp
@@ -86,16 +93,9 @@ list(APPEND APP_SOURCES
 list(APPEND APP_INCLUDE_DIRS
   ${CMAKE_CURRENT_BINARY_DIR}/install/include
   ${CycloneDDS_INCLUDE_DIR}
+  ${OSQP_INCLUDE_DIR}
+  ${EIGEN3_INCLUDE_DIR}
 )
-
-# Add actuation modules
-add_autoware_osqp_interface()
-add_autoware_universe_utils(app_sources app_headers)
-add_autoware_interpolation(app_sources app_headers)
-# add_autoware_motion_utils(app_sources app_headers)
-# add_autoware_vehicle_info_utils(app_sources app_headers)
-# add_autoware_trajectory_follower_base(app_sources app_headers)
-# add_autoware_mpc_lateral_controller(app_sources app_headers)
 
 # Build actuation modules
 target_sources(app PRIVATE
