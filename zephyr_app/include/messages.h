@@ -1,5 +1,5 @@
-#ifndef AUTOWARE__UNIVERSE_UTILS__MESSAGES_H_
-#define AUTOWARE__UNIVERSE_UTILS__MESSAGES_H_
+#ifndef ACTUATION_AUTOWARE__MESSAGES_H_
+#define ACTUATION_AUTOWARE__MESSAGES_H_
 
 #include "Point.h"
 #include "Path.h"
@@ -18,7 +18,7 @@
 #include "PathWithLaneId.h"
 #include "PathPointWithLaneId.h"
 
-// Message types for autoware_universe_utils_min
+// Message types for actuation
 using geometryMsgsPoint = geometry_msgs_msg_Point;
 using geometryMsgsPose = geometry_msgs_msg_Pose;
 using geometryMsgsVector3 = geometry_msgs_msg_Vector3;
@@ -32,4 +32,5 @@ using awfPlanningMsgsTrajectoryPoint = autoware_planning_msgs_msg_TrajectoryPoin
 using awfPlanningMsgsPathPoint = autoware_planning_msgs_msg_PathPoint;
 using tier4PlanningMsgsPathPointWithLaneId = tier4_planning_msgs_msg_PathPointWithLaneId;
 using geometryMsgsTransform = geometry_msgs_msg_Transform;
-#endif  // AUTOWARE__UNIVERSE_UTILS__MESSAGES_H_
+
+#endif  // ACTUATION_AUTOWARE__MESSAGES_H_

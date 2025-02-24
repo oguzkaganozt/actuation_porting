@@ -18,7 +18,7 @@
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
 // Message types
-#include "autoware/universe_utils/messages.h"
+#include "messages.h"
 
 namespace autoware::universe_utils
 {

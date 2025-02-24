@@ -31,7 +31,7 @@
 #include <Eigen/Core>
 
 // Messages
-#include "autoware/universe_utils/messages.h"
+#include "messages.h"
 
 namespace autoware::universe_utils
 {

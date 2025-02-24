@@ -23,8 +23,7 @@
 #include <limits>
 
 // message types
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "tier4_planning_msgs/msg/path_with_lane_id.hpp"
+#include "messages.h"
 
 namespace autoware::motion_utils
 {

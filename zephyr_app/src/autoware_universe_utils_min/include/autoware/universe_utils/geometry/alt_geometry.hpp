@@ -22,6 +22,8 @@
 #include <utility>
 #include <vector>
 
+#include "messages.h"
+
 namespace autoware::universe_utils {
 
 /**

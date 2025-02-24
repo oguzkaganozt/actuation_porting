@@ -15,13 +15,13 @@
 #ifndef AUTOWARE__MOTION_UTILS__VEHICLE__VEHICLE_STATE_CHECKER_HPP_
 #define AUTOWARE__MOTION_UTILS__VEHICLE__VEHICLE_STATE_CHECKER_HPP_
 
-#include <rclcpp/rclcpp.hpp>
+// standard library
+#include <deque>
 
+// message types
 #include <autoware_planning_msgs/msg/trajectory.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <nav_msgs/msg/odometry.hpp>
-
-#include <deque>
 
 namespace autoware::motion_utils
 {
