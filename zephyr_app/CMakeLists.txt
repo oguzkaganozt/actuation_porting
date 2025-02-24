@@ -79,9 +79,9 @@ set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Add main
 list(APPEND APP_SOURCES
-  src/main.c
+  src/main.cpp
   src/file.c
-  include/zephyr_app.hpp
+  include/main.hpp
 )
 list(APPEND APP_INCLUDE_DIRS
   ${CMAKE_CURRENT_BINARY_DIR}/install/include

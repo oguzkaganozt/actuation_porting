@@ -22,7 +22,7 @@
 #include "autoware/interpolation/spline_interpolation.hpp"
 
 // Zephyr App Includes
-#include "zephyr_app.hpp"
+#include "main.hpp"
 
 namespace autoware::interpolation
 {

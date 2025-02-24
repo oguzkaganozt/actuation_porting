@@ -22,7 +22,7 @@
 #include <vector>
 
 // Zephyr App Includes
-#include "zephyr_app.hpp"
+#include "main.hpp"
 
 namespace autoware::interpolation
 {

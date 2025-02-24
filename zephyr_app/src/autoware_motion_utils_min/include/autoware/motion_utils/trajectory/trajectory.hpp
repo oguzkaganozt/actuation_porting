@@ -36,7 +36,7 @@
 #include "autoware/universe_utils/math/constants.hpp"
 
 // Zephyr App Includes
-#include "zephyr_app.hpp"
+#include "main.hpp"
 
 namespace autoware::motion_utils
 {

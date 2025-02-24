@@ -16,8 +16,8 @@
 
 #include <string>
 
-namespace
-{
+// namespace
+// {
 // TODO: implement with custom zephyr parameters
 // template <class T>
 // T getParameter(rclcpp::Node & node, const std::string & name)
@@ -35,7 +35,7 @@ namespace
 //     throw(ex);
 //   }
 // }
-}  // namespace
+// }  // namespace
 
 namespace autoware::vehicle_info_utils
 {
