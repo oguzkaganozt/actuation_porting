@@ -16,7 +16,6 @@
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 #include "autoware/interpolation/linear_interpolation.hpp"
 
-
 namespace autoware::motion_utils
 {
 TrajectoryPointMsg calcInterpolatedPoint(
@@ -120,8 +119,8 @@ PathPointWithLaneIdMsg calcInterpolatedPoint(
   // TODO: implement the logic with eigen
   // const auto v1 = autoware::universe_utils::point2tfVector(curr_pt.point, next_pt.point);
   // const auto v2 = autoware::universe_utils::point2tfVector(curr_pt.point, target_pose);
-  const auto v1 = std::vector<double>;
-  const auto v2 = std::vector<double>;
+  const auto v1 = std::vector<double>{curr_pt.point.pose.position.x, curr_pt.point.pose.position.y, curr_pt.point.pose.position.z};
+  const auto v2 = std::vector<double>{target_pose.position.x, target_pose.position.y, target_pose.position.z};
   if (v1.length2() < 1e-3) {
     return curr_pt;
   }
