@@ -28,7 +28,7 @@ FILE* fopen(const char* filename, const char* mode)
           flags |= FS_O_WRITE;
       }
   } else if (mode[0] == 'w') {
-      flags = FS_O_WRITE | FS_O_CREATE | FS_O_TRUNC;
+      flags = FS_O_WRITE | FS_O_CREATE;
       if (mode[1] == '+') {
           flags |= FS_O_READ;
       }
