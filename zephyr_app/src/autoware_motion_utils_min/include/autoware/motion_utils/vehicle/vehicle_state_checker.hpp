@@ -21,19 +21,25 @@
 // message types
 #include "messages.h"
 
+// zephyr
+#include "zephyr_app/zephyr_logger.hpp"
+
 namespace autoware::motion_utils
 {
 class VehicleStopCheckerBase
 {
 public:
-  VehicleStopCheckerBase(rclcpp::Node * node, double buffer_duration);
-  rclcpp::Logger getLogger() { return logger_; }
+  // VehicleStopCheckerBase(rclcpp::Node * node, double buffer_duration); // TODO: implement with zephyr threads
+  VehicleStopCheckerBase(double buffer_duration);
+  bool getLogger() { return true; } // TODO: implement with zephyr logger
   void addTwist(const TwistStampedMsg & twist);
   bool isVehicleStopped(const double stop_duration = 0.0) const;
 
 protected:
-  rclcpp::Clock::SharedPtr clock_;
-  rclcpp::Logger logger_;
+  // rclcpp::Clock::SharedPtr clock_; // TODO: implement with zephyr clock
+  // rclcpp::Logger logger_; // TODO: implement with zephyr logger
+  bool getClock() { return true; } // TODO: implement with zephyr clock
+  bool getLogger() { return true; } // TODO: implement with zephyr logger
 
 private:
   double buffer_duration_;
@@ -43,11 +49,16 @@ private:
 class VehicleStopChecker : public VehicleStopCheckerBase
 {
 public:
-  explicit VehicleStopChecker(rclcpp::Node * node);
+  // explicit VehicleStopChecker(rclcpp::Node * node); // TODO: implement with zephyr threads
+  explicit VehicleStopChecker();
 
 protected:
-  rclcpp::Subscription<OdometryMsg>::SharedPtr sub_odom_;
-  OdometryMsg::ConstSharedPtr odometry_ptr_;
+  // TODO: implement with custom subscription
+  // rclcpp::Subscription<OdometryMsg>::SharedPtr sub_odom_;
+  // OdometryMsg::ConstSharedPtr odometry_ptr_;
+
+  void* sub_odom_;
+  void* odometry_ptr_;
 
 private:
   static constexpr double velocity_buffer_time_sec = 10.0;
@@ -57,18 +68,25 @@ private:
 class VehicleArrivalChecker : public VehicleStopChecker
 {
 public:
-  explicit VehicleArrivalChecker(rclcpp::Node * node);
+  // explicit VehicleArrivalChecker(rclcpp::Node * node); // TODO: implement with zephyr threads
+  explicit VehicleArrivalChecker();
 
   bool isVehicleStoppedAtStopPoint(const double stop_duration = 0.0) const;
 
 private:
   static constexpr double th_arrived_distance_m = 1.0;
 
-  rclcpp::Subscription<TrajectoryMsg>::SharedPtr sub_trajectory_;
+  // TODO: implement with custom subscription
+  // rclcpp::Subscription<TrajectoryMsg>::SharedPtr sub_trajectory_;
+  void* sub_trajectory_;
 
-  TrajectoryMsg::ConstSharedPtr trajectory_ptr_;
+  // TODO: check shared pointer vs zephyr pointer
+  // TrajectoryMsg::ConstSharedPtr trajectory_ptr_;
+  void* trajectory_ptr_;
 
-  void onTrajectory(const TrajectoryMsg::ConstSharedPtr msg);
+  // TODO: implement with custom callback
+  // void onTrajectory(const TrajectoryMsg::ConstSharedPtr msg);
+  void onTrajectory(const void* msg);
 };
 }  // namespace autoware::motion_utils
 

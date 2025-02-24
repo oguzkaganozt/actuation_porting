@@ -80,10 +80,12 @@ TrajectoryPointMsg calcInterpolatedPoint(
     curr_pt.rear_wheel_angle_rad, next_pt.rear_wheel_angle_rad, clamped_ratio);
 
   // time interpolation
-  const double interpolated_time = autoware::interpolation::lerp(
-    rclcpp::Duration(curr_pt.time_from_start).seconds(),
-    rclcpp::Duration(next_pt.time_from_start).seconds(), clamped_ratio);
-  interpolated_point.time_from_start = rclcpp::Duration::from_seconds(interpolated_time);
+  // TODO: implement with zephyr duration
+  // const double interpolated_time = autoware::interpolation::lerp(
+  //   rclcpp::Duration(curr_pt.time_from_start).seconds(),
+  //   rclcpp::Duration(next_pt.time_from_start).seconds(), clamped_ratio);
+  // interpolated_point.time_from_start = rclcpp::Duration::from_seconds(interpolated_time);
+  interpolated_point.time_from_start = 0;
 
   return interpolated_point;
 }

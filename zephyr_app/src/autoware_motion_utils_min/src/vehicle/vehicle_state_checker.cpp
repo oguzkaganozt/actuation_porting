@@ -20,8 +20,13 @@
 
 namespace autoware::motion_utils
 {
-VehicleStopCheckerBase::VehicleStopCheckerBase(rclcpp::Node * node, double buffer_duration)
-: clock_(node->get_clock()), logger_(node->get_logger())
+// TODO: implement with zephyr threads
+// VehicleStopCheckerBase::VehicleStopCheckerBase(rclcpp::Node * node, double buffer_duration)
+// : clock_(node->get_clock()), logger_(node->get_logger())
+// {
+//   buffer_duration_ = buffer_duration;
+// }
+VehicleStopCheckerBase::VehicleStopCheckerBase(double buffer_duration)
 {
   buffer_duration_ = buffer_duration;
 }
@@ -78,14 +83,26 @@ bool VehicleStopCheckerBase::isVehicleStopped(const double stop_duration) const
   return true;
 }
 
-VehicleStopChecker::VehicleStopChecker(rclcpp::Node * node)
-: VehicleStopCheckerBase(node, velocity_buffer_time_sec)
-{
-  using std::placeholders::_1;
+// TODO: implement with zephyr threads
+// VehicleStopChecker::VehicleStopChecker(rclcpp::Node * node)
+// : VehicleStopCheckerBase(node, velocity_buffer_time_sec)
+// {
+//   using std::placeholders::_1;
 
-  sub_odom_ = node->create_subscription<Odometry>(
-    "/localization/kinematic_state", rclcpp::QoS(1),
-    std::bind(&VehicleStopChecker::onOdom, this, _1));
+//   sub_odom_ = node->create_subscription<Odometry>(
+//     "/localization/kinematic_state", rclcpp::QoS(1),
+//     std::bind(&VehicleStopChecker::onOdom, this, _1));
+// }
+
+VehicleStopChecker::VehicleStopChecker()
+: VehicleStopCheckerBase(velocity_buffer_time_sec)
+{
+  // TODO: implement with custom subscription
+  // using std::placeholders::_1;
+
+  // sub_odom_ = node->create_subscription<Odometry>(
+  //   "/localization/kinematic_state", rclcpp::QoS(1),
+  //   std::bind(&VehicleStopChecker::onOdom, this, _1));
 }
 
 void VehicleStopChecker::onOdom(const Odometry::ConstSharedPtr msg)
@@ -98,13 +115,22 @@ void VehicleStopChecker::onOdom(const Odometry::ConstSharedPtr msg)
   addTwist(current_velocity);
 }
 
-VehicleArrivalChecker::VehicleArrivalChecker(rclcpp::Node * node) : VehicleStopChecker(node)
-{
-  using std::placeholders::_1;
 
-  sub_trajectory_ = node->create_subscription<Trajectory>(
-    "/planning/scenario_planning/trajectory", rclcpp::QoS(1),
-    std::bind(&VehicleArrivalChecker::onTrajectory, this, _1));
+// TODO: implement with zephyr threads
+// VehicleArrivalChecker::VehicleArrivalChecker(rclcpp::Node * node) : VehicleStopChecker(node)
+// {
+//   using std::placeholders::_1;
+
+//   sub_trajectory_ = node->create_subscription<Trajectory>(
+//     "/planning/scenario_planning/trajectory", rclcpp::QoS(1),
+//     std::bind(&VehicleArrivalChecker::onTrajectory, this, _1));
+// }
+
+VehicleArrivalChecker::VehicleArrivalChecker()
+: VehicleStopChecker()
+{
+  // TODO: implement with custom subscription
+  // using std::placeholders::_1;
 }
 
 bool VehicleArrivalChecker::isVehicleStoppedAtStopPoint(const double stop_duration) const

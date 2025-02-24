@@ -612,17 +612,22 @@ void calculate_time_from_start(
     return;
   }
   for (auto & p : trajectory) {
-    p.time_from_start = rclcpp::Duration::from_seconds(0);
+    // TODO: implement with zephyr duration
+    // p.time_from_start = rclcpp::Duration::from_seconds(0);
+    p.time_from_start = 0;
   }
   // TODO(Maxime): some points can have very low velocities which introduce huge time errors
   // Temporary solution: use a minimum velocity
   for (auto idx = nearest_segment_idx + 1; idx < trajectory.size(); ++idx) {
     const auto & from = trajectory[idx - 1];
     const auto velocity = std::max(min_velocity, from.longitudinal_velocity_mps);
+
+    // TODO: implement with zephyr duration
     if (velocity != 0.0) {
       auto & to = trajectory[idx];
       const auto t = universe_utils::calcDistance2d(from, to) / velocity;
-      to.time_from_start = rclcpp::Duration::from_seconds(t) + from.time_from_start;
+      // to.time_from_start = rclcpp::Duration::from_seconds(t) + from.time_from_start;
+      to.time_from_start = 0;
     }
   }
 }

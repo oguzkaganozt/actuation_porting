@@ -15,13 +15,18 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 
-#include <Eigen/Core>
+// Standard library
 #include <cmath>
 #include <list>
 #include <optional>
 #include <utility>
 #include <vector>
 
+// Eigen
+#define EIGEN_MPL2_ONLY
+#include <Eigen/Core>
+
+// Messages
 #include "messages.h"
 
 namespace autoware::universe_utils {

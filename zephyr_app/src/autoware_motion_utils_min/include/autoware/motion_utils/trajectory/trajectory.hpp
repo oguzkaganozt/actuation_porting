@@ -15,14 +15,6 @@
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 
-// autoware
-#include "autoware/universe_utils/geometry/geometry.hpp"
-#include "autoware/universe_utils/geometry/pose_deviation.hpp"
-#include "autoware/universe_utils/math/constants.hpp"
-
-// eigen
-#include <Eigen/Geometry>
-
 // standard library
 #include <algorithm>
 #include <limits>
@@ -32,15 +24,27 @@
 #include <utility>
 #include <vector>
 
-// message types
+// Eigen
+#define EIGEN_MPL2_ONLY
+#include <Eigen/Geometry>
+
+// Autoware
+#include "autoware/universe_utils/geometry/geometry.hpp"
+#include "autoware/universe_utils/geometry/pose_deviation.hpp"
+#include "autoware/universe_utils/math/constants.hpp"
+
+// Message types
 #include "messages.h"
 
 namespace autoware::motion_utils
 {
-static inline rclcpp::Logger get_logger()
+
+  // TODO: implement with zephyr logger
+static inline bool get_logger()
 {
-  constexpr const char * logger{"autoware_motion_utils.trajectory"};
-  return rclcpp::get_logger(logger);
+  // constexpr const char * logger{"autoware_motion_utils.trajectory"};
+  // return rclcpp::get_logger(logger);
+  return true;
 }
 
 /**

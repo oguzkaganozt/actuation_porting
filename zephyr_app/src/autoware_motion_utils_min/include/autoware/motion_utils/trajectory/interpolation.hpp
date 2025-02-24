@@ -15,15 +15,15 @@
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__INTERPOLATION_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__INTERPOLATION_HPP_
 
-// autoware
-#include "autoware/universe_utils/geometry/geometry.hpp"
-
-// standard library
+// Standard library
 #include <algorithm>
 #include <limits>
 
-// message types
+// Message types
 #include "messages.h"
+
+// Autoware
+#include "autoware/universe_utils/geometry/geometry.hpp"
 
 namespace autoware::motion_utils
 {

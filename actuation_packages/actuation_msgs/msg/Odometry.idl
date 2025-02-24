@@ -1,10 +1,13 @@
+#ifndef ODOMETRY_IDL_
+#define ODOMETRY_IDL_
+
 // generated from rosidl_adapter/resource/msg.idl.em
 // with input from nav_msgs/msg/Odometry.msg
 // generated code does not contain a copyright notice
 
-#include "geometry_msgs/msg/PoseWithCovariance.idl"
-#include "geometry_msgs/msg/TwistWithCovariance.idl"
-#include "std_msgs/msg/Header.idl"
+#include "PoseWithCovariance.idl"
+#include "TwistWithCovariance.idl"
+#include "Header.idl"
 
 module nav_msgs {
   module msg {
@@ -31,3 +34,5 @@ module nav_msgs {
     };
   };
 };
+
+#endif  // ODOMETRY_IDL_
