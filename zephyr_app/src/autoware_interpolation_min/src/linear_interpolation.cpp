@@ -18,6 +18,7 @@
 
 namespace autoware::interpolation
 {
+  // TODO: check with other lerp implementation in universe_utils
 double lerp(const double src_val, const double dst_val, const double ratio)
 {
   return src_val + (dst_val - src_val) * ratio;

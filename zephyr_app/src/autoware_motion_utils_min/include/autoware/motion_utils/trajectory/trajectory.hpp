@@ -24,6 +24,7 @@
 #include <utility>
 #include <vector>
 #include <numeric>
+#include <cmath>
 
 // Eigen
 #define EIGEN_MPL2_ONLY
@@ -34,8 +35,8 @@
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 
-// Message types
-#include "messages.h"
+// Zephyr App Includes
+#include "zephyr_app.hpp"
 
 namespace autoware::motion_utils
 {
@@ -1413,7 +1414,7 @@ std::optional<size_t> insertTargetPoint(
   auto p_insert = points.at(seg_idx);
   autoware::universe_utils::setPose(target_pose, p_insert);
 
-  PoseMsg, base_pose;
+  PoseMsg base_pose;
   {
     const auto p_base = is_driving_forward.value() ? p_front : p_back;
     const auto pitch = autoware::universe_utils::calcElevationAngle(p_base, p_target);
@@ -1599,7 +1600,7 @@ insertTargetPoint<std::vector<TrajectoryPointMsg>>(
  */
 template <class T>
 std::optional<size_t> insertTargetPoint(
-  const PoseMsg, & src_pose, const double insert_point_length, T & points,
+  const PoseMsg & src_pose, const double insert_point_length, T & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3)
 {
@@ -1623,19 +1624,19 @@ std::optional<size_t> insertTargetPoint(
 
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<PathPointMsg>>(
-  const PoseMsg, & src_pose, const double insert_point_length,
+  const PoseMsg & src_pose, const double insert_point_length,
   std::vector<PathPointMsg> & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<PathPointWithLaneIdMsg>>(
-  const PoseMsg, & src_pose, const double insert_point_length,
+  const PoseMsg & src_pose, const double insert_point_length,
   std::vector<PathPointWithLaneIdMsg> & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertTargetPoint<std::vector<TrajectoryPointMsg>>(
-  const PoseMsg, & src_pose, const double insert_point_length,
+  const PoseMsg & src_pose, const double insert_point_length,
   std::vector<TrajectoryPointMsg> & points,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
@@ -1753,7 +1754,7 @@ insertStopPoint<std::vector<TrajectoryPointMsg>>(
  */
 template <class T>
 std::optional<size_t> insertStopPoint(
-  const PoseMsg, & src_pose, const double distance_to_stop_point,
+  const PoseMsg & src_pose, const double distance_to_stop_point,
   T & points_with_twist, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3)
 {
@@ -1779,19 +1780,19 @@ std::optional<size_t> insertStopPoint(
 
 extern template std::optional<size_t>
 insertStopPoint<std::vector<PathPointMsg>>(
-  const PoseMsg, & src_pose, const double distance_to_stop_point,
+  const PoseMsg & src_pose, const double distance_to_stop_point,
   std::vector<PathPointMsg> & points_with_twist,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertStopPoint<std::vector<PathPointWithLaneIdMsg>>(
-  const PoseMsg, & src_pose, const double distance_to_stop_point,
+  const PoseMsg & src_pose, const double distance_to_stop_point,
   std::vector<PathPointWithLaneIdMsg> & points_with_twist,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
 extern template std::optional<size_t>
 insertStopPoint<std::vector<TrajectoryPointMsg>>(
-  const PoseMsg, & src_pose, const double distance_to_stop_point,
+  const PoseMsg & src_pose, const double distance_to_stop_point,
   std::vector<TrajectoryPointMsg> & points_with_twist,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3);
@@ -1932,8 +1933,8 @@ void removeFirstInvalidOrientationPoints(T & points, const double max_yaw_diff =
   for (auto itr = points.begin(); std::next(itr) != points.end();) {
     const auto p1 = autoware::universe_utils::getPose(*itr);
     const auto p2 = autoware::universe_utils::getPose(*std::next(itr));
-    const double yaw1 = getYaw(p1.orientation);
-    const double yaw2 = getYaw(p2.orientation);
+    const double yaw1 = autoware::universe_utils::getYaw(p1.orientation);
+    const double yaw2 = autoware::universe_utils::getYaw(p2.orientation);
 
     if (
       max_yaw_diff < std::abs(autoware::universe_utils::normalizeRadian(yaw1 - yaw2)) ||
@@ -2077,7 +2078,7 @@ calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
  */
 template <class T>
 size_t findFirstNearestIndexWithSoftConstraints(
-  const T & points, const PoseMsg, & pose,
+  const T & points, const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max())
 {
@@ -2154,19 +2155,19 @@ size_t findFirstNearestIndexWithSoftConstraints(
 extern template size_t
 findFirstNearestIndexWithSoftConstraints<std::vector<PathPointMsg>>(
   const std::vector<PathPointMsg> & points,
-  const PoseMsg, & pose,
+  const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t findFirstNearestIndexWithSoftConstraints<
   std::vector<PathPointWithLaneIdMsg>>(
   const std::vector<PathPointWithLaneIdMsg> & points,
-  const PoseMsg, & pose,
+  const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t
 findFirstNearestIndexWithSoftConstraints<std::vector<TrajectoryPointMsg>>(
   const std::vector<TrajectoryPointMsg> & points,
-  const PoseMsg, & pose,
+  const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 
@@ -2182,7 +2183,7 @@ findFirstNearestIndexWithSoftConstraints<std::vector<TrajectoryPointMsg>>(
  */
 template <class T>
 size_t findFirstNearestSegmentIndexWithSoftConstraints(
-  const T & points, const PoseMsg, & pose,
+  const T & points, const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max())
 {
@@ -2210,19 +2211,19 @@ size_t findFirstNearestSegmentIndexWithSoftConstraints(
 extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
   std::vector<PathPointMsg>>(
   const std::vector<PathPointMsg> & points,
-  const PoseMsg, & pose,
+  const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
   std::vector<PathPointWithLaneIdMsg>>(
   const std::vector<PathPointWithLaneIdMsg> & points,
-  const PoseMsg, & pose,
+  const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
   std::vector<TrajectoryPointMsg>>(
   const std::vector<TrajectoryPointMsg> & points,
-  const PoseMsg, & pose,
+  const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 
@@ -2241,7 +2242,7 @@ extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<
  */
 template <class T>
 std::optional<double> calcDistanceToForwardStopPoint(
-  const T & points_with_twist, const PoseMsg, & pose,
+  const T & points_with_twist, const PoseMsg & pose,
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
@@ -2275,17 +2276,17 @@ std::optional<double> calcDistanceToForwardStopPoint(
 extern template std::optional<double>
 calcDistanceToForwardStopPoint<std::vector<PathPointMsg>>(
   const std::vector<PathPointMsg> & points_with_twist,
-  const PoseMsg, & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<double>
 calcDistanceToForwardStopPoint<std::vector<PathPointWithLaneIdMsg>>(
   const std::vector<PathPointWithLaneIdMsg> & points_with_twist,
-  const PoseMsg, & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<double>
 calcDistanceToForwardStopPoint<std::vector<TrajectoryPointMsg>>(
   const std::vector<TrajectoryPointMsg> & points_with_twist,
-  const PoseMsg, & pose, const double max_dist = std::numeric_limits<double>::max(),
+  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 
 // NOTE: Points after forward length from the point will be cropped
@@ -2422,7 +2423,7 @@ cropPoints<std::vector<TrajectoryPointMsg>>(
  */
 template <class T>
 double calcYawDeviation(
-  const T & points, const PoseMsg, & pose, const bool throw_exception = false)
+  const T & points, const PoseMsg & pose, const bool throw_exception = false)
 {
   const auto overlap_removed_points = removeOverlapPoints(points, 0);
 
@@ -2457,20 +2458,20 @@ double calcYawDeviation(
   const double path_yaw = autoware::universe_utils::calcAzimuthAngle(
     autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx)),
     autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx + 1)));
-  const double pose_yaw = getYaw(pose.orientation);
+  const double pose_yaw = autoware::universe_utils::getYaw(pose.orientation);
 
   return autoware::universe_utils::normalizeRadian(pose_yaw - path_yaw);
 }
 
 extern template double calcYawDeviation<std::vector<PathPointMsg>>(
   const std::vector<PathPointMsg> & points,
-  const PoseMsg, & pose, const bool throw_exception = false);
+  const PoseMsg & pose, const bool throw_exception = false);
 extern template double calcYawDeviation<std::vector<PathPointWithLaneIdMsg>>(
   const std::vector<PathPointWithLaneIdMsg> & points,
-  const PoseMsg, & pose, const bool throw_exception = false);
+  const PoseMsg & pose, const bool throw_exception = false);
 extern template double calcYawDeviation<std::vector<TrajectoryPointMsg>>(
   const std::vector<TrajectoryPointMsg> & points,
-  const PoseMsg, & pose, const bool throw_exception = false);
+  const PoseMsg & pose, const bool throw_exception = false);
 
 /**
  * @brief Check if the given target point is in front of the based pose from the trajectory.

@@ -17,7 +17,7 @@
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 
 #include <string>
-
+#include <chrono>
 namespace autoware::motion_utils
 {
 // TODO: implement with zephyr threads
@@ -31,11 +31,12 @@ VehicleStopCheckerBase::VehicleStopCheckerBase(double buffer_duration)
   buffer_duration_ = buffer_duration;
 }
 
-void VehicleStopCheckerBase::addTwist(const TwistStamped & twist)
+void VehicleStopCheckerBase::addTwist(const TwistStampedMsg & twist)
 {
   twist_buffer_.push_front(twist);
 
-  const auto now = clock_->now();
+  // TODO: implement and check compatibility with now()
+  const auto now = std::chrono::steady_clock::now();
   while (!twist_buffer_.empty()) {
     // Check oldest data time
     const auto time_diff = now - twist_buffer_.back().header.stamp;
@@ -57,7 +58,8 @@ bool VehicleStopCheckerBase::isVehicleStopped(const double stop_duration) const
   }
 
   constexpr double squared_stop_velocity = 1e-3 * 1e-3;
-  const auto now = clock_->now();
+  // TODO: check compatibility with now()
+  const auto now = std::chrono::steady_clock::now();
 
   const auto time_buffer_back = now - twist_buffer_.back().header.stamp;
   if (time_buffer_back.seconds() < stop_duration) {
@@ -105,11 +107,11 @@ VehicleStopChecker::VehicleStopChecker()
   //   std::bind(&VehicleStopChecker::onOdom, this, _1));
 }
 
-void VehicleStopChecker::onOdom(const Odometry::ConstSharedPtr msg)
+void VehicleStopChecker::onOdom(const OdometryMsg* msg)
 {
   odometry_ptr_ = msg;
 
-  TwistStamped current_velocity;
+  TwistStampedMsg current_velocity;
   current_velocity.header = msg->header;
   current_velocity.twist = msg->twist.twist;
   addTwist(current_velocity);
@@ -154,7 +156,7 @@ bool VehicleArrivalChecker::isVehicleStoppedAtStopPoint(const double stop_durati
            trajectory_ptr_->points, p, idx.value())) < th_arrived_distance_m;
 }
 
-void VehicleArrivalChecker::onTrajectory(const Trajectory::ConstSharedPtr msg)
+void VehicleArrivalChecker::onTrajectory(const TrajectoryMsg* msg)
 {
   trajectory_ptr_ = msg;
 }

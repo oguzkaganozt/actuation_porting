@@ -614,7 +614,8 @@ void calculate_time_from_start(
   for (auto & p : trajectory) {
     // TODO: implement with zephyr duration
     // p.time_from_start = rclcpp::Duration::from_seconds(0);
-    p.time_from_start = 0;
+    // TODO: check compatibility with from_seconds()
+    p.time_from_start.sec = 0;
   }
   // TODO(Maxime): some points can have very low velocities which introduce huge time errors
   // Temporary solution: use a minimum velocity
@@ -627,7 +628,8 @@ void calculate_time_from_start(
       auto & to = trajectory[idx];
       const auto t = universe_utils::calcDistance2d(from, to) / velocity;
       // to.time_from_start = rclcpp::Duration::from_seconds(t) + from.time_from_start;
-      to.time_from_start = 0;
+      // TODO: check compatibility with from_seconds()
+      to.time_from_start.sec = 0;
     }
   }
 }

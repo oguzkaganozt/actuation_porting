@@ -21,8 +21,8 @@
 // Autoware
 #include "autoware/interpolation/interpolation_utils.hpp"
 
-// Message types
-#include "messages.h"
+// Zephyr App Includes
+#include "zephyr_app.hpp"
 
 namespace autoware::interpolation
 {

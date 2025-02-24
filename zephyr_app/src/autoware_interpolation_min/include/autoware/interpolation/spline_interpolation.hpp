@@ -30,8 +30,8 @@
 #include "autoware/interpolation/interpolation_utils.hpp"
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-// Message types
-#include "messages.h"
+// Zephyr App Includes
+#include "zephyr_app.hpp"
 
 namespace autoware::interpolation
 {

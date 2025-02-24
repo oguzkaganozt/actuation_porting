@@ -26,8 +26,17 @@
 
 | ROS Component | Zephyr Target | Status |
 |--------------|---------------|---------|
-| Node Launch  | Zephyr Threads | ✅ Completed |
-| Parameters   | Zephyr Parameters | ✅ Completed |
+| Node Launch  | POSIX Threads | ✅ Completed |
+| Parameters   | Configuration File Reader | ✅ Completed |
 | RCL Logging  | Zephyr Logger | ✅ Completed |
 | RCL Timers   | Zephyr Timers | ⏳ Pending |
 | RCL Callbacks| Zephyr Callbacks | ⏳ Pending |
+
+### Key Notes
+
+- Validate launch structure and synchronization with the native ROS2 nodes
+- Validate the message conversion between ROS2 and Zephyr
+- Validate cycloneDDS <-> ROS2 communication with the native ROS2 nodes
+- Validate the parameter handling with the native ROS2 nodes
+- Validate the logging and logging structure with the native ROS2 nodes
+- Validate the timer and callback structure with the native ROS2 nodes

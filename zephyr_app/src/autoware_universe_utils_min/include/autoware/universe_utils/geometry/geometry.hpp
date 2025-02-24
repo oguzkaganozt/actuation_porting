@@ -30,8 +30,8 @@
 #define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
 
-// Messages
-#include "messages.h"
+// Zephyr App Includes
+#include "zephyr_app.hpp"
 
 namespace autoware::universe_utils
 {
@@ -244,6 +244,7 @@ QuaternionMsg createQuaternionFromRPY(
  */
 QuaternionMsg createQuaternionFromYaw(const double yaw);
 
+// TODO: this lerp refer to tf2::lerp, different from autoware::interpolation::lerp
 /**
  * @brief Linear interpolation between two vectors
  * @param src_vec Source vector
@@ -349,9 +350,9 @@ PointMsg calcInterpolatedPoint(
   const auto & vec = lerp(src_vec, dst_vec, clamped_ratio);
 
   PointMsg point;
-  point.x = vec.x();
-  point.y = vec.y();
-  point.z = vec.z();
+  point.x = vec.x;
+  point.y = vec.y;
+  point.z = vec.z;
 
   return point;
 }

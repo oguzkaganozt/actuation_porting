@@ -21,8 +21,8 @@
 #include <stdexcept>
 #include <vector>
 
-// Message types
-#include "messages.h"
+// Zephyr App Includes
+#include "zephyr_app.hpp"
 
 namespace autoware::interpolation
 {

@@ -18,8 +18,8 @@
 // standard library
 #include <deque>
 
-// message types
-#include "messages.h"
+// Zephyr App Includes
+#include "zephyr_app.hpp"
 
 // zephyr
 // #include "zephyr_app/zephyr_logger.hpp"

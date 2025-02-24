@@ -1,10 +1,12 @@
-// Copyright (c) 2022-2023, Arm Limited.
+// Copyright (c) 2024-2025, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
 #ifndef ZEPHYR_APP_HPP_
 #define ZEPHYR_APP_HPP_
 
 #include <dds/ddsi/ddsi_config.h>
+#include "messages.h"
+#include "constants.h"
 
 #define ACTUATION_STACK_SIZE 16 * 1024
 

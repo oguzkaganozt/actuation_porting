@@ -23,12 +23,14 @@ TrajectoryPointMsg calcInterpolatedPoint(
   const TrajectoryMsg & trajectory, const PoseMsg & target_pose,
   const bool use_zero_order_hold_for_twist, const double dist_threshold, const double yaw_threshold)
 {
-  if (trajectory.points.empty()) {
+  // TODO: check compatibility with empty()
+  if (trajectory.points._length == 0) {
     TrajectoryPointMsg interpolated_point{};
     interpolated_point.pose = target_pose;
     return interpolated_point;
   }
-  if (trajectory.points.size() == 1) {
+  // TODO: check compatibility with size()
+  if (trajectory.points._length == 1) {
     return trajectory.points.front();
   }
 
@@ -37,10 +39,14 @@ TrajectoryPointMsg calcInterpolatedPoint(
       trajectory.points, target_pose, dist_threshold, yaw_threshold);
 
   // Calculate interpolation ratio
-  const auto & curr_pt = trajectory.points.at(segment_idx);
-  const auto & next_pt = trajectory.points.at(segment_idx + 1);
-  const auto v1 = autoware::universe_utils::point2tfVector(curr_pt, next_pt);
-  const auto v2 = autoware::universe_utils::point2tfVector(curr_pt, target_pose);
+  // TODO: implement the at() logic for the nested message
+  const auto & curr_pt = trajectory.points[segment_idx];
+  const auto & next_pt = trajectory.points[segment_idx + 1];
+  // TODO: implement the logic with eigen
+  // const auto v1 = autoware::universe_utils::point2tfVector(curr_pt, next_pt);
+  // const auto v2 = autoware::universe_utils::point2tfVector(curr_pt, target_pose);
+  const auto v1 = std::vector<double>{curr_pt.pose.position.x, curr_pt.pose.position.y, curr_pt.pose.position.z};
+  const auto v2 = std::vector<double>{target_pose.position.x, target_pose.position.y, target_pose.position.z};
   if (v1.length2() < 1e-3) {
     return curr_pt;
   }
@@ -85,7 +91,8 @@ TrajectoryPointMsg calcInterpolatedPoint(
   //   rclcpp::Duration(curr_pt.time_from_start).seconds(),
   //   rclcpp::Duration(next_pt.time_from_start).seconds(), clamped_ratio);
   // interpolated_point.time_from_start = rclcpp::Duration::from_seconds(interpolated_time);
-  interpolated_point.time_from_start = 0;
+  // TODO: check compatibility with from_seconds()
+  interpolated_point.time_from_start.sec = 0;
 
   return interpolated_point;
 }
@@ -110,8 +117,11 @@ PathPointWithLaneIdMsg calcInterpolatedPoint(
   // Calculate interpolation ratio
   const auto & curr_pt = path.points.at(segment_idx);
   const auto & next_pt = path.points.at(segment_idx + 1);
-  const auto v1 = autoware::universe_utils::point2tfVector(curr_pt.point, next_pt.point);
-  const auto v2 = autoware::universe_utils::point2tfVector(curr_pt.point, target_pose);
+  // TODO: implement the logic with eigen
+  // const auto v1 = autoware::universe_utils::point2tfVector(curr_pt.point, next_pt.point);
+  // const auto v2 = autoware::universe_utils::point2tfVector(curr_pt.point, target_pose);
+  const auto v1 = std::vector<double>;
+  const auto v2 = std::vector<double>;
   if (v1.length2() < 1e-3) {
     return curr_pt;
   }

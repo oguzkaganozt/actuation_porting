@@ -19,11 +19,11 @@
 #include <algorithm>
 #include <limits>
 
-// Message types
-#include "messages.h"
-
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
+
+// Zephyr App Includes
+#include "zephyr_app.hpp"
 
 namespace autoware::motion_utils
 {
