@@ -36,7 +36,7 @@ struct PoseDeviation
  * @return The yaw deviation
  */
 double calcYawDeviation(
-  const geometryMsgsPose & base_pose, const geometryMsgsPose & target_pose);
+  const PoseMsg & base_pose, const PoseMsg & target_pose);
 
 }  // namespace autoware::universe_utils
 

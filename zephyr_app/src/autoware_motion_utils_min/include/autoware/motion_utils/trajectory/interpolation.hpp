@@ -36,9 +36,9 @@ namespace autoware::motion_utils
  * twist information
  * @return resampled path(poses)
  */
-autowarePlanningMsgsTrajectoryPoint calcInterpolatedPoint(
-  const autowarePlanningMsgsTrajectory & trajectory,
-  const geometryMsgsPose & target_pose, const bool use_zero_order_hold_for_twist = false,
+TrajectoryPointMsg calcInterpolatedPoint(
+  const TrajectoryMsg & trajectory,
+  const PoseMsg & target_pose, const bool use_zero_order_hold_for_twist = false,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 
@@ -51,9 +51,9 @@ autowarePlanningMsgsTrajectoryPoint calcInterpolatedPoint(
  * twist information
  * @return resampled path(poses)
  */
-tier4PlanningMsgsPathPointWithLaneId calcInterpolatedPoint(
-  const tier4PlanningMsgsPathWithLaneId & path,
-  const geometryMsgsPose & target_pose, const bool use_zero_order_hold_for_twist = false,
+PathPointWithLaneIdMsg calcInterpolatedPoint(
+  const PathWithLaneIdMsg & path,
+  const PoseMsg & target_pose, const bool use_zero_order_hold_for_twist = false,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
 
@@ -65,10 +65,10 @@ tier4PlanningMsgsPathPointWithLaneId calcInterpolatedPoint(
  * @return resampled pose
  */
 template <class T>
-geometryMsgsPose calcInterpolatedPose(const T & points, const double target_length)
+PoseMsg calcInterpolatedPose(const T & points, const double target_length)
 {
   if (points.empty()) {
-    geometryMsgsPose interpolated_pose;
+    PoseMsg interpolated_pose;
     return interpolated_pose;
   }
 

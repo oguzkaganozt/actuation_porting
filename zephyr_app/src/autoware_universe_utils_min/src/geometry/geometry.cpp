@@ -19,30 +19,30 @@
 namespace autoware::universe_utils
 {
 // TODO: replace with eigen
-geometryMsgsVector3 getRPY(const geometryMsgsQuaternion & quat)
+Vector3Msg getRPY(const QuaternionMsg & quat)
 {
-  geometryMsgsVector3 rpy;
+  Vector3Msg rpy;
   // tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
   // tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
   return rpy;
 }
-geometryMsgsVector3 getRPY(const geometryMsgsPose & pose)
+Vector3Msg getRPY(const PoseMsg & pose)
 {
   return getRPY(pose.orientation);
 }
-geometryMsgsVector3 getRPY(const geometryMsgsPoseStamped & pose)
+Vector3Msg getRPY(const PoseStampedMsg & pose)
 {
   return getRPY(pose.pose);
 }
-geometryMsgsVector3 getRPY(const geometryMsgsPoseWithCovarianceStamped & pose)
+Vector3Msg getRPY(const PoseWithCovarianceStampedMsg & pose)
 {
   return getRPY(pose.pose.pose);
 }
 
-geometryMsgsQuaternion createQuaternion(
+QuaternionMsg createQuaternion(
   const double x, const double y, const double z, const double w)
 {
-  geometryMsgsQuaternion q;
+  QuaternionMsg q;
   q.x = x;
   q.y = y;
   q.z = z;
@@ -50,7 +50,7 @@ geometryMsgsQuaternion createQuaternion(
   return q;
 }
 
-geometryMsgsQuaternion createQuaternionFromRPY(
+QuaternionMsg createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw)
 {
   // Calculate rotation matrix elements
@@ -62,7 +62,7 @@ geometryMsgsQuaternion createQuaternionFromRPY(
   const double sy = std::sin(yaw * 0.5);
 
   // Convert to quaternion using the rotation matrix to quaternion formulas
-  geometryMsgsQuaternion q;
+  QuaternionMsg q;
   q.w = cr * cp * cy + sr * sp * sy;
   q.x = sr * cp * cy - cr * sp * sy;
   q.y = cr * sp * cy + sr * cp * sy;
@@ -71,7 +71,7 @@ geometryMsgsQuaternion createQuaternionFromRPY(
   return q;
 }
 
-geometryMsgsQuaternion createQuaternionFromYaw(const double yaw)
+QuaternionMsg createQuaternionFromYaw(const double yaw)
 {
   // Calculate half angles
   const double half_yaw = yaw * 0.5;
@@ -79,7 +79,7 @@ geometryMsgsQuaternion createQuaternionFromYaw(const double yaw)
   const double sy = std::sin(half_yaw);
 
   // When roll and pitch are 0, the quaternion simplifies to:
-  geometryMsgsQuaternion q;
+  QuaternionMsg q;
   q.w = cy;  // cos(0/2)cos(0/2)cos(yaw/2) = cos(yaw/2)
   q.x = 0;   // sin(0/2)cos(0/2)cos(yaw/2) = 0
   q.y = 0;   // cos(0/2)sin(0/2)cos(yaw/2) = 0
@@ -88,9 +88,9 @@ geometryMsgsQuaternion createQuaternionFromYaw(const double yaw)
   return q;
 }
 
-geometryMsgsVector3 createTranslation(const double x, const double y, const double z)
+Vector3Msg createTranslation(const double x, const double y, const double z)
 {
-  geometryMsgsVector3 v;
+  Vector3Msg v;
   v.x = x;
   v.y = y;
   v.z = z;
@@ -98,7 +98,7 @@ geometryMsgsVector3 createTranslation(const double x, const double y, const doub
 }
 
 double calcElevationAngle(
-  const geometryMsgsPoint & p_from, const geometryMsgsPoint & p_to)
+  const PointMsg & p_from, const PointMsg & p_to)
 {
   const double dz = p_to.z - p_from.z;
   const double dist_2d = calcDistance2d(p_from, p_to);
@@ -106,14 +106,14 @@ double calcElevationAngle(
 }
 
 double calcAzimuthAngle(
-  const geometryMsgsPoint & p_from, const geometryMsgsPoint & p_to)
+  const PointMsg & p_from, const PointMsg & p_to)
 {
   const double dx = p_to.x - p_from.x;
   const double dy = p_to.y - p_from.y;
   return std::atan2(dy, dx);
 }
 
-double getYaw(const geometryMsgsQuaternion & q)
+double getYaw(const QuaternionMsg & q)
 {
   // Convert quaternion to Euler angles
   // yaw (z-axis rotation)
@@ -123,8 +123,8 @@ double getYaw(const geometryMsgsQuaternion & q)
 }
 
 double calcCurvature(
-  const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
-  const geometryMsgsPoint & p3)
+  const PointMsg & p1, const PointMsg & p2,
+  const PointMsg & p3)
 {
   // Calculation details are described in the following page
   // https://en.wikipedia.org/wiki/Menger_curvature
@@ -136,9 +136,9 @@ double calcCurvature(
   return 2.0 * ((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)) / denominator;
 }
 
-std::optional<geometryMsgsPoint> intersect(
-  const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
-  const geometryMsgsPoint & p3, const geometryMsgsPoint & p4)
+std::optional<PointMsg> intersect(
+  const PointMsg & p1, const PointMsg & p2,
+  const PointMsg & p3, const PointMsg & p4)
 {
   // calculate intersection point
   const double det = (p1.x - p2.x) * (p4.y - p3.y) - (p4.x - p3.x) * (p1.y - p2.y);
@@ -152,7 +152,7 @@ std::optional<geometryMsgsPoint> intersect(
     return std::nullopt;
   }
 
-  geometryMsgsPoint intersect_point;
+  PointMsg intersect_point;
   intersect_point.x = t * p1.x + (1.0 - t) * p2.x;
   intersect_point.y = t * p1.y + (1.0 - t) * p2.y;
   intersect_point.z = t * p1.z + (1.0 - t) * p2.z;
@@ -160,12 +160,12 @@ std::optional<geometryMsgsPoint> intersect(
 }
 
 // TODO: replace with eigen
-geometryMsgsPose calcOffsetPose(
-  const geometryMsgsPose & p, const double x, const double y, const double z,
+PoseMsg calcOffsetPose(
+  const PoseMsg & p, const double x, const double y, const double z,
   const double yaw)
 {
-  geometryMsgsPose pose;
-  geometryMsgsTransform transform;
+  PoseMsg pose;
+  TransformMsg transform;
   transform.translation = createTranslation(x, y, z);
   transform.rotation = createQuaternionFromYaw(yaw);
   // replace tf2 with eigen
@@ -186,12 +186,12 @@ geometryMsgsPose calcOffsetPose(
   return pose;
 }
 
-geometryMsgsVector3 lerp(
-  const geometryMsgsVector3 & src_vec, 
-  const geometryMsgsVector3 & dst_vec, 
+Vector3Msg lerp(
+  const Vector3Msg & src_vec, 
+  const Vector3Msg & dst_vec, 
   const double ratio)
 {
-  geometryMsgsVector3 result;
+  Vector3Msg result;
   // Linear interpolation formula: result = src + ratio * (dst - src)
   result.x = src_vec.x + ratio * (dst_vec.x - src_vec.x);
   result.y = src_vec.y + ratio * (dst_vec.y - src_vec.y);
@@ -199,7 +199,7 @@ geometryMsgsVector3 lerp(
   return result;
 }
 
-geometryMsgsQuaternion operator+(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept
+QuaternionMsg operator+(QuaternionMsg a, QuaternionMsg b) noexcept
 {
   // tf2::Quaternion quat_a;
   // tf2::Quaternion quat_b;
@@ -208,14 +208,14 @@ geometryMsgsQuaternion operator+(geometryMsgsQuaternion a, geometryMsgsQuaternio
   // return tf2::toMsg(quat_a + quat_b);
 }
 
-geometryMsgsQuaternion operator-(geometryMsgsQuaternion a) noexcept
+QuaternionMsg operator-(QuaternionMsg a) noexcept
 {
   // tf2::Quaternion quat_a;
   // tf2::fromMsg(a, quat_a);
   // return tf2::toMsg(quat_a * -1.0);
 }
 
-geometryMsgsQuaternion operator-(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept
+QuaternionMsg operator-(QuaternionMsg a, QuaternionMsg b) noexcept
 {
   // tf2::Quaternion quat_a;
   // tf2::Quaternion quat_b;

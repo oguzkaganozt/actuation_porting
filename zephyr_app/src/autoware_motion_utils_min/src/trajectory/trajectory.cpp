@@ -22,590 +22,590 @@ namespace autoware::motion_utils
 {
 
 //
-template void validateNonEmpty<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> &);
-template void validateNonEmpty<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> &);
-template void validateNonEmpty<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> &);
+template void validateNonEmpty<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> &);
+template void validateNonEmpty<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> &);
+template void validateNonEmpty<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> &);
 
 //
-template std::optional<bool> isDrivingForward<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> &);
+template std::optional<bool> isDrivingForward<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> &);
 template std::optional<bool>
-isDrivingForward<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> &);
+isDrivingForward<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> &);
 template std::optional<bool>
-isDrivingForward<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> &);
+isDrivingForward<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> &);
 
 //
 template std::optional<bool>
-isDrivingForwardWithTwist<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> &);
+isDrivingForwardWithTwist<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> &);
 template std::optional<bool>
-isDrivingForwardWithTwist<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> &);
+isDrivingForwardWithTwist<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> &);
 template std::optional<bool>
-isDrivingForwardWithTwist<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> &);
+isDrivingForwardWithTwist<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> &);
 
 //
-template std::vector<autowarePlanningMsgsPathPoint>
-removeOverlapPoints<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t start_idx);
-template std::vector<tier4PlanningMsgsPathPointWithLaneId>
-removeOverlapPoints<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
+template std::vector<PathPointMsg>
+removeOverlapPoints<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t start_idx);
+template std::vector<PathPointWithLaneIdMsg>
+removeOverlapPoints<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
   const size_t start_idx);
-template std::vector<autowarePlanningMsgsTrajectoryPoint>
-removeOverlapPoints<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t start_idx);
+template std::vector<TrajectoryPointMsg>
+removeOverlapPoints<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t start_idx);
 
 //
 template std::optional<size_t>
-searchZeroVelocityIndex<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
+searchZeroVelocityIndex<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points_with_twist,
   const size_t src_idx, const size_t dst_idx);
 
 //
 template std::optional<size_t>
-searchZeroVelocityIndex<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
+searchZeroVelocityIndex<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points_with_twist,
   const size_t src_idx);
 
 //
 template std::optional<size_t>
-searchZeroVelocityIndex<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist);
+searchZeroVelocityIndex<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points_with_twist);
 
 //
-template size_t findNearestIndex<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & point);
-template size_t findNearestIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & point);
-template size_t findNearestIndex<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & point);
+template size_t findNearestIndex<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & point);
+template size_t findNearestIndex<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & point);
+template size_t findNearestIndex<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & point);
 
 //
 template std::optional<size_t>
-findNearestIndex<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPose & pose, const double max_dist, const double max_yaw);
+findNearestIndex<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PoseMsg & pose, const double max_dist, const double max_yaw);
 template std::optional<size_t>
-findNearestIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPose & pose, const double max_dist, const double max_yaw);
+findNearestIndex<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PoseMsg & pose, const double max_dist, const double max_yaw);
 template std::optional<size_t>
-findNearestIndex<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPose & pose, const double max_dist, const double max_yaw);
+findNearestIndex<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PoseMsg & pose, const double max_dist, const double max_yaw);
 
 //
 template double
-calcLongitudinalOffsetToSegment<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t seg_idx,
-  const geometryMsgsPoint & p_target, const bool throw_exception);
+calcLongitudinalOffsetToSegment<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t seg_idx,
+  const PointMsg & p_target, const bool throw_exception);
 template double
-calcLongitudinalOffsetToSegment<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t seg_idx,
-  const geometryMsgsPoint & p_target, const bool throw_exception);
+calcLongitudinalOffsetToSegment<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points, const size_t seg_idx,
+  const PointMsg & p_target, const bool throw_exception);
 template double
-calcLongitudinalOffsetToSegment<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t seg_idx,
-  const geometryMsgsPoint & p_target, const bool throw_exception);
+calcLongitudinalOffsetToSegment<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t seg_idx,
+  const PointMsg & p_target, const bool throw_exception);
 
 //
-template size_t findNearestSegmentIndex<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & point);
-template size_t findNearestSegmentIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & point);
-template size_t findNearestSegmentIndex<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & point);
+template size_t findNearestSegmentIndex<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & point);
+template size_t findNearestSegmentIndex<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & point);
+template size_t findNearestSegmentIndex<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & point);
 
 //
 template std::optional<size_t>
-findNearestSegmentIndex<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPose & pose, const double max_dist, const double max_yaw);
+findNearestSegmentIndex<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PoseMsg & pose, const double max_dist, const double max_yaw);
 template std::optional<size_t>
-findNearestSegmentIndex<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPose & pose, const double max_dist, const double max_yaw);
+findNearestSegmentIndex<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PoseMsg & pose, const double max_dist, const double max_yaw);
 template std::optional<size_t>
-findNearestSegmentIndex<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPose & pose, const double max_dist, const double max_yaw);
+findNearestSegmentIndex<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PoseMsg & pose, const double max_dist, const double max_yaw);
 
 //
-template double calcLateralOffset<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & p_target, const size_t seg_idx, const bool throw_exception);
-template double calcLateralOffset<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & p_target, const size_t seg_idx, const bool throw_exception);
-template double calcLateralOffset<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & p_target, const size_t seg_idx, const bool throw_exception);
+template double calcLateralOffset<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & p_target, const size_t seg_idx, const bool throw_exception);
+template double calcLateralOffset<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & p_target, const size_t seg_idx, const bool throw_exception);
+template double calcLateralOffset<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & p_target, const size_t seg_idx, const bool throw_exception);
 
 //
-template double calcLateralOffset<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & p_target, const bool throw_exception);
-template double calcLateralOffset<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & p_target, const bool throw_exception);
-template double calcLateralOffset<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & p_target, const bool throw_exception);
+template double calcLateralOffset<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & p_target, const bool throw_exception);
+template double calcLateralOffset<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & p_target, const bool throw_exception);
+template double calcLateralOffset<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & p_target, const bool throw_exception);
 
 //
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t src_idx,
+template double calcSignedArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t src_idx,
   const size_t dst_idx);
-template double calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
+template double calcSignedArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points, const size_t src_idx,
   const size_t dst_idx);
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
+template double calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t src_idx,
   const size_t dst_idx);
 
 //
 template std::vector<double>
-calcSignedArcLengthPartialSum<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t src_idx,
+calcSignedArcLengthPartialSum<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t src_idx,
   const size_t dst_idx);
 template std::vector<double>
-calcSignedArcLengthPartialSum<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
+calcSignedArcLengthPartialSum<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points, const size_t src_idx,
   const size_t dst_idx);
 template std::vector<double>
-calcSignedArcLengthPartialSum<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
+calcSignedArcLengthPartialSum<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t src_idx,
   const size_t dst_idx);
 
 //
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & src_point, const size_t dst_idx);
-template double calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> &,
-  const geometryMsgsPoint & src_point, const size_t dst_idx);
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> &,
-  const geometryMsgsPoint & src_point, const size_t dst_idx);
+template double calcSignedArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & src_point, const size_t dst_idx);
+template double calcSignedArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> &,
+  const PointMsg & src_point, const size_t dst_idx);
+template double calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> &,
+  const PointMsg & src_point, const size_t dst_idx);
 
 //
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t src_idx,
-  const geometryMsgsPoint & dst_point);
-template double calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
-  const geometryMsgsPoint & dst_point);
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
-  const geometryMsgsPoint & dst_point);
+template double calcSignedArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t src_idx,
+  const PointMsg & dst_point);
+template double calcSignedArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points, const size_t src_idx,
+  const PointMsg & dst_point);
+template double calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t src_idx,
+  const PointMsg & dst_point);
 
 //
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & src_point, const geometryMsgsPoint & dst_point);
-template double calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & src_point, const geometryMsgsPoint & dst_point);
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & src_point, const geometryMsgsPoint & dst_point);
+template double calcSignedArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & src_point, const PointMsg & dst_point);
+template double calcSignedArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & src_point, const PointMsg & dst_point);
+template double calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & src_point, const PointMsg & dst_point);
 
 //
-template double calcArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points);
-template double calcArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points);
-template double calcArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points);
+template double calcArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points);
+template double calcArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points);
+template double calcArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points);
 
 //
-template std::vector<double> calcCurvature<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points);
+template std::vector<double> calcCurvature<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points);
 template std::vector<double>
-calcCurvature<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points);
+calcCurvature<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points);
 template std::vector<double>
-calcCurvature<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points);
+calcCurvature<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points);
 
 //
 template std::vector<std::pair<double, std::pair<double, double>>>
-calcCurvatureAndSegmentLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points);
+calcCurvatureAndSegmentLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points);
 template std::vector<std::pair<double, std::pair<double, double>>>
-calcCurvatureAndSegmentLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points);
+calcCurvatureAndSegmentLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points);
 template std::vector<std::pair<double, std::pair<double, double>>>
-calcCurvatureAndSegmentLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points);
+calcCurvatureAndSegmentLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points);
 
 //
 template std::optional<double>
-calcDistanceToForwardStopPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
+calcDistanceToForwardStopPoint<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points_with_twist,
   const size_t src_idx);
 
 //
-template std::optional<geometryMsgsPoint>
-calcLongitudinalOffsetPoint<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t src_idx,
+template std::optional<PointMsg>
+calcLongitudinalOffsetPoint<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t src_idx,
   const double offset, const bool throw_exception);
-template std::optional<geometryMsgsPoint>
-calcLongitudinalOffsetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
+template std::optional<PointMsg>
+calcLongitudinalOffsetPoint<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points, const size_t src_idx,
   const double offset, const bool throw_exception);
-template std::optional<geometryMsgsPoint>
-calcLongitudinalOffsetPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
+template std::optional<PointMsg>
+calcLongitudinalOffsetPoint<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t src_idx,
   const double offset, const bool throw_exception);
 
 //
-template std::optional<geometryMsgsPoint>
-calcLongitudinalOffsetPoint<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & src_point, const double offset);
-template std::optional<geometryMsgsPoint>
-calcLongitudinalOffsetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & src_point, const double offset);
-template std::optional<geometryMsgsPoint>
-calcLongitudinalOffsetPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & src_point, const double offset);
+template std::optional<PointMsg>
+calcLongitudinalOffsetPoint<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & src_point, const double offset);
+template std::optional<PointMsg>
+calcLongitudinalOffsetPoint<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & src_point, const double offset);
+template std::optional<PointMsg>
+calcLongitudinalOffsetPoint<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & src_point, const double offset);
 
 //
-template std::optional<geometryMsgsPose>
-calcLongitudinalOffsetPose<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t src_idx,
+template std::optional<PoseMsg>
+calcLongitudinalOffsetPose<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t src_idx,
   const double offset, const bool set_orientation_from_position_direction,
   const bool throw_exception);
-template std::optional<geometryMsgsPose>
-calcLongitudinalOffsetPose<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
+template std::optional<PoseMsg>
+calcLongitudinalOffsetPose<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points, const size_t src_idx,
   const double offset, const bool set_orientation_from_position_direction,
   const bool throw_exception);
-template std::optional<geometryMsgsPose>
-calcLongitudinalOffsetPose<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
+template std::optional<PoseMsg>
+calcLongitudinalOffsetPose<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t src_idx,
   const double offset, const bool set_orientation_from_position_direction,
   const bool throw_exception);
 
 //
-template std::optional<geometryMsgsPose>
-calcLongitudinalOffsetPose<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & src_point, const double offset,
+template std::optional<PoseMsg>
+calcLongitudinalOffsetPose<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & src_point, const double offset,
   const bool set_orientation_from_position_direction);
-template std::optional<geometryMsgsPose>
-calcLongitudinalOffsetPose<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & src_point, const double offset,
+template std::optional<PoseMsg>
+calcLongitudinalOffsetPose<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & src_point, const double offset,
   const bool set_orientation_from_position_direction);
-template std::optional<geometryMsgsPose>
-calcLongitudinalOffsetPose<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & src_point, const double offset,
+template std::optional<PoseMsg>
+calcLongitudinalOffsetPose<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & src_point, const double offset,
   const bool set_orientation_from_position_direction);
 
 //
 template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsPathPoint>>(
-  const size_t seg_idx, const geometryMsgsPoint & p_target,
-  std::vector<autowarePlanningMsgsPathPoint> & points, const double overlap_threshold);
+insertTargetPoint<std::vector<PathPointMsg>>(
+  const size_t seg_idx, const PointMsg & p_target,
+  std::vector<PathPointMsg> & points, const double overlap_threshold);
 template std::optional<size_t>
-insertTargetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const size_t seg_idx, const geometryMsgsPoint & p_target,
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
+insertTargetPoint<std::vector<PathPointWithLaneIdMsg>>(
+  const size_t seg_idx, const PointMsg & p_target,
+  std::vector<PathPointWithLaneIdMsg> & points,
   const double overlap_threshold);
 template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const size_t seg_idx, const geometryMsgsPoint & p_target,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const double overlap_threshold);
-
-//
-template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsPathPoint>>(
-  const double insert_point_length, const geometryMsgsPoint & p_target,
-  std::vector<autowarePlanningMsgsPathPoint> & points, const double overlap_threshold);
-template std::optional<size_t>
-insertTargetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const double insert_point_length, const geometryMsgsPoint & p_target,
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const double overlap_threshold);
-template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const double insert_point_length, const geometryMsgsPoint & p_target,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
+insertTargetPoint<std::vector<TrajectoryPointMsg>>(
+  const size_t seg_idx, const PointMsg & p_target,
+  std::vector<TrajectoryPointMsg> & points,
   const double overlap_threshold);
 
 //
 template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsPathPoint>>(
-  const size_t src_segment_idx, const double insert_point_length,
-  std::vector<autowarePlanningMsgsPathPoint> & points, const double overlap_threshold);
+insertTargetPoint<std::vector<PathPointMsg>>(
+  const double insert_point_length, const PointMsg & p_target,
+  std::vector<PathPointMsg> & points, const double overlap_threshold);
 template std::optional<size_t>
-insertTargetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const size_t src_segment_idx, const double insert_point_length,
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
+insertTargetPoint<std::vector<PathPointWithLaneIdMsg>>(
+  const double insert_point_length, const PointMsg & p_target,
+  std::vector<PathPointWithLaneIdMsg> & points,
   const double overlap_threshold);
 template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const size_t src_segment_idx, const double insert_point_length,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
+insertTargetPoint<std::vector<TrajectoryPointMsg>>(
+  const double insert_point_length, const PointMsg & p_target,
+  std::vector<TrajectoryPointMsg> & points,
   const double overlap_threshold);
 
 //
 template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsPathPoint>>(
-  const geometryMsgsPose & src_pose, const double insert_point_length,
-  std::vector<autowarePlanningMsgsPathPoint> & points, const double max_dist,
+insertTargetPoint<std::vector<PathPointMsg>>(
+  const size_t src_segment_idx, const double insert_point_length,
+  std::vector<PathPointMsg> & points, const double overlap_threshold);
+template std::optional<size_t>
+insertTargetPoint<std::vector<PathPointWithLaneIdMsg>>(
+  const size_t src_segment_idx, const double insert_point_length,
+  std::vector<PathPointWithLaneIdMsg> & points,
+  const double overlap_threshold);
+template std::optional<size_t>
+insertTargetPoint<std::vector<TrajectoryPointMsg>>(
+  const size_t src_segment_idx, const double insert_point_length,
+  std::vector<TrajectoryPointMsg> & points,
+  const double overlap_threshold);
+
+//
+template std::optional<size_t>
+insertTargetPoint<std::vector<PathPointMsg>>(
+  const PoseMsg & src_pose, const double insert_point_length,
+  std::vector<PathPointMsg> & points, const double max_dist,
   const double max_yaw, const double overlap_threshold);
 template std::optional<size_t>
-insertTargetPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const geometryMsgsPose & src_pose, const double insert_point_length,
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const double max_dist,
+insertTargetPoint<std::vector<PathPointWithLaneIdMsg>>(
+  const PoseMsg & src_pose, const double insert_point_length,
+  std::vector<PathPointWithLaneIdMsg> & points, const double max_dist,
   const double max_yaw, const double overlap_threshold);
 template std::optional<size_t>
-insertTargetPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const geometryMsgsPose & src_pose, const double insert_point_length,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const double max_dist,
+insertTargetPoint<std::vector<TrajectoryPointMsg>>(
+  const PoseMsg & src_pose, const double insert_point_length,
+  std::vector<TrajectoryPointMsg> & points, const double max_dist,
   const double max_yaw, const double overlap_threshold);
 
 //
-template std::optional<size_t> insertStopPoint<std::vector<autowarePlanningMsgsPathPoint>>(
+template std::optional<size_t> insertStopPoint<std::vector<PathPointMsg>>(
   const size_t src_segment_idx, const double distance_to_stop_point,
-  std::vector<autowarePlanningMsgsPathPoint> & points_with_twist,
+  std::vector<PathPointMsg> & points_with_twist,
   const double overlap_threshold = 1e-3);
 template std::optional<size_t>
-insertStopPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
+insertStopPoint<std::vector<PathPointWithLaneIdMsg>>(
   const size_t src_segment_idx, const double distance_to_stop_point,
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points_with_twist,
+  std::vector<PathPointWithLaneIdMsg> & points_with_twist,
   const double overlap_threshold = 1e-3);
 template std::optional<size_t>
-insertStopPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
+insertStopPoint<std::vector<TrajectoryPointMsg>>(
   const size_t src_segment_idx, const double distance_to_stop_point,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
+  std::vector<TrajectoryPointMsg> & points_with_twist,
   const double overlap_threshold = 1e-3);
 
 //
-template std::optional<size_t> insertStopPoint<std::vector<autowarePlanningMsgsPathPoint>>(
+template std::optional<size_t> insertStopPoint<std::vector<PathPointMsg>>(
   const double distance_to_stop_point,
-  std::vector<autowarePlanningMsgsPathPoint> & points_with_twist,
+  std::vector<PathPointMsg> & points_with_twist,
   const double overlap_threshold);
 template std::optional<size_t>
-insertStopPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
+insertStopPoint<std::vector<PathPointWithLaneIdMsg>>(
   const double distance_to_stop_point,
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points_with_twist,
+  std::vector<PathPointWithLaneIdMsg> & points_with_twist,
   const double overlap_threshold);
 template std::optional<size_t>
-insertStopPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
+insertStopPoint<std::vector<TrajectoryPointMsg>>(
   const double distance_to_stop_point,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
+  std::vector<TrajectoryPointMsg> & points_with_twist,
   const double overlap_threshold);
 
 //
-template std::optional<size_t> insertStopPoint<std::vector<autowarePlanningMsgsPathPoint>>(
-  const geometryMsgsPose & src_pose, const double distance_to_stop_point,
-  std::vector<autowarePlanningMsgsPathPoint> & points_with_twist, const double max_dist,
+template std::optional<size_t> insertStopPoint<std::vector<PathPointMsg>>(
+  const PoseMsg & src_pose, const double distance_to_stop_point,
+  std::vector<PathPointMsg> & points_with_twist, const double max_dist,
   const double max_yaw, const double overlap_threshold);
 template std::optional<size_t>
-insertStopPoint<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const geometryMsgsPose & src_pose, const double distance_to_stop_point,
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points_with_twist,
+insertStopPoint<std::vector<PathPointWithLaneIdMsg>>(
+  const PoseMsg & src_pose, const double distance_to_stop_point,
+  std::vector<PathPointWithLaneIdMsg> & points_with_twist,
   const double max_dist, const double max_yaw, const double overlap_threshold);
 template std::optional<size_t>
-insertStopPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const geometryMsgsPose & src_pose, const double distance_to_stop_point,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
+insertStopPoint<std::vector<TrajectoryPointMsg>>(
+  const PoseMsg & src_pose, const double distance_to_stop_point,
+  std::vector<TrajectoryPointMsg> & points_with_twist,
   const double max_dist, const double max_yaw, const double overlap_threshold);
 
 //
 template std::optional<size_t>
-insertStopPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const size_t stop_seg_idx, const geometryMsgsPoint & stop_point,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
+insertStopPoint<std::vector<TrajectoryPointMsg>>(
+  const size_t stop_seg_idx, const PointMsg & stop_point,
+  std::vector<TrajectoryPointMsg> & points_with_twist,
   const double overlap_threshold);
 
 //
 template std::optional<size_t>
-insertDecelPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const geometryMsgsPoint & src_point, const double distance_to_decel_point,
+insertDecelPoint<std::vector<TrajectoryPointMsg>>(
+  const PointMsg & src_point, const double distance_to_decel_point,
   const double velocity,
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist);
+  std::vector<TrajectoryPointMsg> & points_with_twist);
 
 //
-template void insertOrientation<std::vector<autowarePlanningMsgsPathPoint>>(
-  std::vector<autowarePlanningMsgsPathPoint> & points, const bool is_driving_forward);
-template void insertOrientation<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
+template void insertOrientation<std::vector<PathPointMsg>>(
+  std::vector<PathPointMsg> & points, const bool is_driving_forward);
+template void insertOrientation<std::vector<PathPointWithLaneIdMsg>>(
+  std::vector<PathPointWithLaneIdMsg> & points,
   const bool is_driving_forward);
-template void insertOrientation<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
+template void insertOrientation<std::vector<TrajectoryPointMsg>>(
+  std::vector<TrajectoryPointMsg> & points,
   const bool is_driving_forward);
 
 //
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & src_point, const size_t src_seg_idx,
-  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
-template double calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & src_point, const size_t src_seg_idx,
-  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & src_point, const size_t src_seg_idx,
-  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
+template double calcSignedArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
+template double calcSignedArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
+template double calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
 
 //
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & src_point, const size_t src_seg_idx, const size_t dst_idx);
-template double calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & src_point, const size_t src_seg_idx, const size_t dst_idx);
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & src_point, const size_t src_seg_idx, const size_t dst_idx);
+template double calcSignedArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & src_point, const size_t src_seg_idx, const size_t dst_idx);
+template double calcSignedArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & src_point, const size_t src_seg_idx, const size_t dst_idx);
+template double calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & src_point, const size_t src_seg_idx, const size_t dst_idx);
 
 //
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points, const size_t src_idx,
-  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
-template double calcSignedArcLength<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points, const size_t src_idx,
-  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
-template double calcSignedArcLength<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points, const size_t src_idx,
-  const geometryMsgsPoint & dst_point, const size_t dst_seg_idx);
+template double calcSignedArcLength<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points, const size_t src_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
+template double calcSignedArcLength<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points, const size_t src_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
+template double calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points, const size_t src_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
 
 //
 template size_t
-findFirstNearestIndexWithSoftConstraints<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPose & pose, const double dist_threshold, const double yaw_threshold);
+findFirstNearestIndexWithSoftConstraints<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PoseMsg & pose, const double dist_threshold, const double yaw_threshold);
 template size_t findFirstNearestIndexWithSoftConstraints<
-  std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPose & pose, const double dist_threshold, const double yaw_threshold);
+  std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PoseMsg & pose, const double dist_threshold, const double yaw_threshold);
 template size_t
-findFirstNearestIndexWithSoftConstraints<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPose & pose, const double dist_threshold, const double yaw_threshold);
+findFirstNearestIndexWithSoftConstraints<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PoseMsg & pose, const double dist_threshold, const double yaw_threshold);
 
 //
 template size_t findFirstNearestSegmentIndexWithSoftConstraints<
-  std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPose & pose, const double dist_threshold, const double yaw_threshold);
+  std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PoseMsg & pose, const double dist_threshold, const double yaw_threshold);
 template size_t findFirstNearestSegmentIndexWithSoftConstraints<
-  std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPose & pose, const double dist_threshold, const double yaw_threshold);
+  std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PoseMsg & pose, const double dist_threshold, const double yaw_threshold);
 template size_t findFirstNearestSegmentIndexWithSoftConstraints<
-  std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPose & pose, const double dist_threshold, const double yaw_threshold);
+  std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PoseMsg & pose, const double dist_threshold, const double yaw_threshold);
 
 //
 template std::optional<double>
-calcDistanceToForwardStopPoint<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points_with_twist,
-  const geometryMsgsPose & pose, const double max_dist, const double max_yaw);
+calcDistanceToForwardStopPoint<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points_with_twist,
+  const PoseMsg & pose, const double max_dist, const double max_yaw);
 
 //
-template std::vector<autowarePlanningMsgsPathPoint>
-cropForwardPoints<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<PathPointMsg>
+cropForwardPoints<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double forward_length);
-template std::vector<tier4PlanningMsgsPathPointWithLaneId>
-cropForwardPoints<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<PathPointWithLaneIdMsg>
+cropForwardPoints<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double forward_length);
-template std::vector<autowarePlanningMsgsTrajectoryPoint>
-cropForwardPoints<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<TrajectoryPointMsg>
+cropForwardPoints<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double forward_length);
 
 //
-template std::vector<autowarePlanningMsgsPathPoint>
-cropBackwardPoints<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<PathPointMsg>
+cropBackwardPoints<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double backward_length);
-template std::vector<tier4PlanningMsgsPathPointWithLaneId>
-cropBackwardPoints<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<PathPointWithLaneIdMsg>
+cropBackwardPoints<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double backward_length);
-template std::vector<autowarePlanningMsgsTrajectoryPoint>
-cropBackwardPoints<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<TrajectoryPointMsg>
+cropBackwardPoints<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double backward_length);
 
 //
-template std::vector<autowarePlanningMsgsPathPoint>
-cropPoints<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<PathPointMsg>
+cropPoints<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length);
-template std::vector<tier4PlanningMsgsPathPointWithLaneId>
-cropPoints<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<PathPointWithLaneIdMsg>
+cropPoints<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length);
-template std::vector<autowarePlanningMsgsTrajectoryPoint>
-cropPoints<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & target_pos, const size_t target_seg_idx,
+template std::vector<TrajectoryPointMsg>
+cropPoints<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length);
 
 //
-template double calcYawDeviation<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPose & pose, const bool throw_exception);
-template double calcYawDeviation<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPose & pose, const bool throw_exception);
-template double calcYawDeviation<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPose & pose, const bool throw_exception);
+template double calcYawDeviation<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PoseMsg & pose, const bool throw_exception);
+template double calcYawDeviation<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PoseMsg & pose, const bool throw_exception);
+template double calcYawDeviation<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PoseMsg & pose, const bool throw_exception);
 
 //
-template bool isTargetPointFront<std::vector<autowarePlanningMsgsPathPoint>>(
-  const std::vector<autowarePlanningMsgsPathPoint> & points,
-  const geometryMsgsPoint & base_point, const geometryMsgsPoint & target_point,
+template bool isTargetPointFront<std::vector<PathPointMsg>>(
+  const std::vector<PathPointMsg> & points,
+  const PointMsg & base_point, const PointMsg & target_point,
   const double threshold);
-template bool isTargetPointFront<std::vector<tier4PlanningMsgsPathPointWithLaneId>>(
-  const std::vector<tier4PlanningMsgsPathPointWithLaneId> & points,
-  const geometryMsgsPoint & base_point, const geometryMsgsPoint & target_point,
+template bool isTargetPointFront<std::vector<PathPointWithLaneIdMsg>>(
+  const std::vector<PathPointWithLaneIdMsg> & points,
+  const PointMsg & base_point, const PointMsg & target_point,
   const double threshold);
-template bool isTargetPointFront<std::vector<autowarePlanningMsgsTrajectoryPoint>>(
-  const std::vector<autowarePlanningMsgsTrajectoryPoint> & points,
-  const geometryMsgsPoint & base_point, const geometryMsgsPoint & target_point,
+template bool isTargetPointFront<std::vector<TrajectoryPointMsg>>(
+  const std::vector<TrajectoryPointMsg> & points,
+  const PointMsg & base_point, const PointMsg & target_point,
   const double threshold);
 
 void calculate_time_from_start(
-  std::vector<autowarePlanningMsgsTrajectoryPoint> & trajectory,
-  const geometryMsgsPoint & current_ego_point, const float min_velocity)
+  std::vector<TrajectoryPointMsg> & trajectory,
+  const PointMsg & current_ego_point, const float min_velocity)
 {
   const auto nearest_segment_idx = findNearestSegmentIndex(trajectory, current_ego_point);
   if (nearest_segment_idx + 1 == trajectory.size()) {

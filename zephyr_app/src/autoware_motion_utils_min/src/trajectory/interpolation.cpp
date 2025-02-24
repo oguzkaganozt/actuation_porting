@@ -19,12 +19,12 @@
 
 namespace autoware::motion_utils
 {
-autowarePlanningMsgsTrajectoryPoint calcInterpolatedPoint(
-  const autowarePlanningMsgsTrajectory & trajectory, const geometryMsgsPose & target_pose,
+TrajectoryPointMsg calcInterpolatedPoint(
+  const TrajectoryMsg & trajectory, const PoseMsg & target_pose,
   const bool use_zero_order_hold_for_twist, const double dist_threshold, const double yaw_threshold)
 {
   if (trajectory.points.empty()) {
-    autowarePlanningMsgsTrajectoryPoint interpolated_point{};
+    TrajectoryPointMsg interpolated_point{};
     interpolated_point.pose = target_pose;
     return interpolated_point;
   }
@@ -49,7 +49,7 @@ autowarePlanningMsgsTrajectoryPoint calcInterpolatedPoint(
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
 
   // Interpolate
-  autowarePlanningMsgsTrajectoryPoint interpolated_point{};
+  TrajectoryPointMsg interpolated_point{};
 
   // pose interpolation
   interpolated_point.pose =
@@ -88,12 +88,12 @@ autowarePlanningMsgsTrajectoryPoint calcInterpolatedPoint(
   return interpolated_point;
 }
 
-tier4PlanningMsgsPathPointWithLaneId calcInterpolatedPoint(
-  const tier4PlanningMsgsPathWithLaneId & path, const geometryMsgsPose & target_pose,
+PathPointWithLaneIdMsg calcInterpolatedPoint(
+  const PathWithLaneIdMsg & path, const PoseMsg & target_pose,
   const bool use_zero_order_hold_for_twist, const double dist_threshold, const double yaw_threshold)
 {
   if (path.points.empty()) {
-    tier4PlanningMsgsPathPointWithLaneId interpolated_point{};
+    PathPointWithLaneIdMsg interpolated_point{};
     interpolated_point.point.pose = target_pose;
     return interpolated_point;
   }
@@ -118,7 +118,7 @@ tier4PlanningMsgsPathPointWithLaneId calcInterpolatedPoint(
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
 
   // Interpolate
-  tier4PlanningMsgsPathPointWithLaneId interpolated_point{};
+  PathPointWithLaneIdMsg interpolated_point{};
 
   // pose interpolation
   interpolated_point.point.pose =

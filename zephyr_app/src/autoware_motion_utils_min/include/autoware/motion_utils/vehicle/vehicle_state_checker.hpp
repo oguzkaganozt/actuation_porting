@@ -23,17 +23,12 @@
 
 namespace autoware::motion_utils
 {
-
-using autowarePlanningMsgsTrajectory = autoware_planning_msgs_msg_Trajectory;
-using geometryMsgsTwistStamped = geometry_msgs_msg_TwistStamped;
-using navMsgsOdometry = nav_msgs_msg_Odometry;
-
 class VehicleStopCheckerBase
 {
 public:
   VehicleStopCheckerBase(rclcpp::Node * node, double buffer_duration);
   rclcpp::Logger getLogger() { return logger_; }
-  void addTwist(const geometryMsgsTwistStamped & twist);
+  void addTwist(const TwistStampedMsg & twist);
   bool isVehicleStopped(const double stop_duration = 0.0) const;
 
 protected:
@@ -42,7 +37,7 @@ protected:
 
 private:
   double buffer_duration_;
-  std::deque<geometryMsgsTwistStamped> twist_buffer_;
+  std::deque<TwistStampedMsg> twist_buffer_;
 };
 
 class VehicleStopChecker : public VehicleStopCheckerBase
@@ -51,12 +46,12 @@ public:
   explicit VehicleStopChecker(rclcpp::Node * node);
 
 protected:
-  rclcpp::Subscription<navMsgsOdometry>::SharedPtr sub_odom_;
-  navMsgsOdometry::ConstSharedPtr odometry_ptr_;
+  rclcpp::Subscription<OdometryMsg>::SharedPtr sub_odom_;
+  OdometryMsg::ConstSharedPtr odometry_ptr_;
 
 private:
   static constexpr double velocity_buffer_time_sec = 10.0;
-  void onOdom(const navMsgsOdometry::ConstSharedPtr msg);
+  void onOdom(const OdometryMsg::ConstSharedPtr msg);
 };
 
 class VehicleArrivalChecker : public VehicleStopChecker
@@ -69,11 +64,11 @@ public:
 private:
   static constexpr double th_arrived_distance_m = 1.0;
 
-  rclcpp::Subscription<autowarePlanningMsgsTrajectory>::SharedPtr sub_trajectory_;
+  rclcpp::Subscription<TrajectoryMsg>::SharedPtr sub_trajectory_;
 
-  autowarePlanningMsgsTrajectory::ConstSharedPtr trajectory_ptr_;
+  TrajectoryMsg::ConstSharedPtr trajectory_ptr_;
 
-  void onTrajectory(const autowarePlanningMsgsTrajectory::ConstSharedPtr msg);
+  void onTrajectory(const TrajectoryMsg::ConstSharedPtr msg);
 };
 }  // namespace autoware::motion_utils
 

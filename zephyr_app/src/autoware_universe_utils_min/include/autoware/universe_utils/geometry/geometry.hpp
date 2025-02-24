@@ -41,28 +41,28 @@ namespace autoware::universe_utils
  * @return The location
  */
 template <class T>
-geometryMsgsPoint getPoint(const T & p) 
+PointMsg getPoint(const T & p) 
 {
-  geometryMsgsPoint point;
+  PointMsg point;
   point.x = p.x;
   point.y = p.y;
   point.z = p.z;
   return point;
 }
 template <>
-inline geometryMsgsPoint getPoint(const geometryMsgsPoint & p)  { return p; }
+inline PointMsg getPoint(const PointMsg & p)  { return p; }
 template <>
-inline geometryMsgsPoint getPoint(const geometryMsgsPose & p)  { return p.position; }
+inline PointMsg getPoint(const PoseMsg & p)  { return p.position; }
 template <>
-inline geometryMsgsPoint getPoint(const geometryMsgsPoseStamped & p)  { return p.pose.position; }
+inline PointMsg getPoint(const PoseStampedMsg & p)  { return p.pose.position; }
 template <>
-inline geometryMsgsPoint getPoint(const geometryMsgsPoseWithCovarianceStamped & p)  { return p.pose.pose.position; }
+inline PointMsg getPoint(const PoseWithCovarianceStampedMsg & p)  { return p.pose.pose.position; }
 template <>
-inline geometryMsgsPoint getPoint(const awfPlanningMsgsPathPoint & p) { return p.pose.position; }
+inline PointMsg getPoint(const PathPointMsg & p) { return p.pose.position; }
 template <>
-inline geometryMsgsPoint getPoint(const tier4PlanningMsgsPathPointWithLaneId & p)  { return p.point.pose.position; }
+inline PointMsg getPoint(const PathPointWithLaneIdMsg & p)  { return p.point.pose.position; }
 template <>
-inline geometryMsgsPoint getPoint(const awfPlanningMsgsTrajectoryPoint & p) { return p.pose.position; }
+inline PointMsg getPoint(const TrajectoryPointMsg & p) { return p.pose.position; }
 
 /**
  * @brief Get the pose of a point
@@ -70,21 +70,21 @@ inline geometryMsgsPoint getPoint(const awfPlanningMsgsTrajectoryPoint & p) { re
  * @return The pose
  */
 template <class T>
-geometryMsgsPose getPose([[maybe_unused]] const T & p)
+PoseMsg getPose([[maybe_unused]] const T & p)
 {
   static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
   throw std::logic_error("Only specializations of getPose can be used.");
 }
 template <>
-inline geometryMsgsPose getPose(const geometryMsgsPose & p) { return p; }
+inline PoseMsg getPose(const PoseMsg & p) { return p; }
 template <>
-inline geometryMsgsPose getPose(const geometryMsgsPoseStamped & p) { return p.pose; }
+inline PoseMsg getPose(const PoseStampedMsg & p) { return p.pose; }
 template <>
-inline geometryMsgsPose getPose(const awfPlanningMsgsPathPoint & p) { return p.pose; }
+inline PoseMsg getPose(const PathPointMsg & p) { return p.pose; }
 template <>
-inline geometryMsgsPose getPose(const tier4PlanningMsgsPathPointWithLaneId & p) { return p.point.pose; }
+inline PoseMsg getPose(const PathPointWithLaneIdMsg & p) { return p.point.pose; }
 template <>
-inline geometryMsgsPose getPose(const awfPlanningMsgsTrajectoryPoint & p) { return p.pose; }
+inline PoseMsg getPose(const TrajectoryPointMsg & p) { return p.pose; }
 
 /**
  * @brief Set the pose of a point
@@ -92,21 +92,21 @@ inline geometryMsgsPose getPose(const awfPlanningMsgsTrajectoryPoint & p) { retu
  * @param p The point
  */
 template <class T>
-void setPose([[maybe_unused]] const geometryMsgsPose & pose, [[maybe_unused]] T & p)
+void setPose([[maybe_unused]] const PoseMsg & pose, [[maybe_unused]] T & p)
 {
   static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
   throw std::logic_error("Only specializations of getPose can be used.");
 }
 template <>
-inline void setPose(const geometryMsgsPose & pose, geometryMsgsPose & p) { p = pose; }
+inline void setPose(const PoseMsg & pose, PoseMsg & p) { p = pose; }
 template <>
-inline void setPose(const geometryMsgsPose & pose, geometryMsgsPoseStamped & p) { p.pose = pose; }
+inline void setPose(const PoseMsg & pose, PoseStampedMsg & p) { p.pose = pose; }
 template <>
-inline void setPose(const geometryMsgsPose & pose, awfPlanningMsgsPathPoint & p)  { p.pose = pose; }
+inline void setPose(const PoseMsg & pose, PathPointMsg & p)  { p.pose = pose; }
 template <>
-inline void setPose(const geometryMsgsPose & pose, tier4PlanningMsgsPathPointWithLaneId & p) { p.point.pose = pose; }
+inline void setPose(const PoseMsg & pose, PathPointWithLaneIdMsg & p) { p.point.pose = pose; }
 template <>
-inline void setPose(const geometryMsgsPose & pose, awfPlanningMsgsTrajectoryPoint & p) { p.pose = pose; }
+inline void setPose(const PoseMsg & pose, TrajectoryPointMsg & p) { p.pose = pose; }
 
 /**
  * @brief Get the longitudinal velocity of a point
@@ -120,11 +120,11 @@ double getLongitudinalVelocity([[maybe_unused]] const T & p)
   throw std::logic_error("Only specializations of getVelocity can be used.");
 }
 template <>
-inline double getLongitudinalVelocity(const awfPlanningMsgsPathPoint & p) { return p.longitudinal_velocity_mps; }
+inline double getLongitudinalVelocity(const PathPointMsg & p) { return p.longitudinal_velocity_mps; }
 template <>
-inline double getLongitudinalVelocity(const tier4PlanningMsgsPathPointWithLaneId & p) { return p.point.longitudinal_velocity_mps; }
+inline double getLongitudinalVelocity(const PathPointWithLaneIdMsg & p) { return p.point.longitudinal_velocity_mps; }
 template <>
-inline double getLongitudinalVelocity(const awfPlanningMsgsTrajectoryPoint & p) { return p.longitudinal_velocity_mps; }
+inline double getLongitudinalVelocity(const TrajectoryPointMsg & p) { return p.longitudinal_velocity_mps; }
 
 /**
  * @brief Set the longitudinal velocity of a point
@@ -138,11 +138,11 @@ void setLongitudinalVelocity([[maybe_unused]] const float velocity, [[maybe_unus
   throw std::logic_error("Only specializations of getLongitudinalVelocity can be used.");
 }
 template <>
-inline void setLongitudinalVelocity(const float velocity, awfPlanningMsgsTrajectoryPoint & p) { p.longitudinal_velocity_mps = velocity; }
+inline void setLongitudinalVelocity(const float velocity, TrajectoryPointMsg & p) { p.longitudinal_velocity_mps = velocity; }
 template <>
-inline void setLongitudinalVelocity(const float velocity, awfPlanningMsgsPathPoint & p) { p.longitudinal_velocity_mps = velocity; }
+inline void setLongitudinalVelocity(const float velocity, PathPointMsg & p) { p.longitudinal_velocity_mps = velocity; }
 template <>
-inline void setLongitudinalVelocity(const float velocity, tier4PlanningMsgsPathPointWithLaneId & p) { p.point.longitudinal_velocity_mps = velocity; }
+inline void setLongitudinalVelocity(const float velocity, PathPointWithLaneIdMsg & p) { p.point.longitudinal_velocity_mps = velocity; }
 
 /**
  * @brief Create a translation vector
@@ -151,7 +151,7 @@ inline void setLongitudinalVelocity(const float velocity, tier4PlanningMsgsPathP
  * @param z The z coordinate
  * @return The translation vector
  */
-geometryMsgsVector3 createTranslation(const double x, const double y, const double z);
+Vector3Msg createTranslation(const double x, const double y, const double z);
 
 /**
  * @brief Calculate the distance between two points
@@ -173,7 +173,7 @@ double calcDistance2d(const Point1 & point1, const Point2 & point2)
  * @param p The point
  */
 template <class T>
-inline void setOrientation(const geometryMsgsQuaternion & orientation, T & p)
+inline void setOrientation(const QuaternionMsg & orientation, T & p)
 {
   auto pose = getPose(p);
   pose.orientation = orientation;
@@ -185,10 +185,10 @@ inline void setOrientation(const geometryMsgsQuaternion & orientation, T & p)
  * @param quat The quaternion
  * @return The roll, pitch, and yaw
  */
-geometryMsgsVector3 getRPY(const geometryMsgsQuaternion & quat);
-geometryMsgsVector3 getRPY(const geometryMsgsPose & pose);
-geometryMsgsVector3 getRPY(const geometryMsgsPoseStamped & pose);
-geometryMsgsVector3 getRPY(const geometryMsgsPoseWithCovarianceStamped & pose);
+Vector3Msg getRPY(const QuaternionMsg & quat);
+Vector3Msg getRPY(const PoseMsg & pose);
+Vector3Msg getRPY(const PoseStampedMsg & pose);
+Vector3Msg getRPY(const PoseWithCovarianceStampedMsg & pose);
 
 /**
  * @brief Create a quaternion from a x, y, z, and w value
@@ -198,7 +198,7 @@ geometryMsgsVector3 getRPY(const geometryMsgsPoseWithCovarianceStamped & pose);
  * @param w The w value
  * @return The quaternion
  */
-geometryMsgsQuaternion createQuaternion(
+QuaternionMsg createQuaternion(
   const double x, const double y, const double z, const double w);
 
 /**
@@ -206,7 +206,7 @@ geometryMsgsQuaternion createQuaternion(
  * @param q The quaternion
  * @return The yaw
  */
-double getYaw(const geometryMsgsQuaternion & q);
+double getYaw(const QuaternionMsg & q);
 
 /**
  * @brief Create a quaternion from a roll, pitch, and yaw angle
@@ -215,7 +215,7 @@ double getYaw(const geometryMsgsQuaternion & q);
  * @param yaw The yaw angle
  * @return The quaternion
  */
-geometryMsgsQuaternion createQuaternionFromRPY(
+QuaternionMsg createQuaternionFromRPY(
   const double roll, const double pitch, const double yaw);
 
 /**
@@ -223,7 +223,7 @@ geometryMsgsQuaternion createQuaternionFromRPY(
  * @param yaw The yaw angle
  * @return The quaternion
  */
-geometryMsgsQuaternion createQuaternionFromYaw(const double yaw);
+QuaternionMsg createQuaternionFromYaw(const double yaw);
 
 /**
  * @brief Linear interpolation between two vectors
@@ -232,9 +232,9 @@ geometryMsgsQuaternion createQuaternionFromYaw(const double yaw);
  * @param ratio Interpolation ratio (typically between 0 and 1)
  * @return Interpolated vector
  */
-geometryMsgsVector3 lerp(
-  const geometryMsgsVector3 & src_vec,
-  const geometryMsgsVector3 & dst_vec,
+Vector3Msg lerp(
+  const Vector3Msg & src_vec,
+  const Vector3Msg & dst_vec,
   const double ratio);
 
 /**
@@ -247,7 +247,7 @@ geometryMsgsVector3 lerp(
  * @return -pi/2 <= elevation angle <= pi/2
  */
 double calcElevationAngle(
-  const geometryMsgsPoint & p_from, const geometryMsgsPoint & p_to);
+  const PointMsg & p_from, const PointMsg & p_to);
 
 /**
  * @brief calculate azimuth angle of two points.
@@ -259,7 +259,7 @@ double calcElevationAngle(
  * @return -pi < azimuth angle < pi.
  */
 double calcAzimuthAngle(
-  const geometryMsgsPoint & p_from, const geometryMsgsPoint & p_to);
+  const PointMsg & p_from, const PointMsg & p_to);
 
 /**
  * @brief Calculate the curvature of a path
@@ -269,8 +269,8 @@ double calcAzimuthAngle(
  * @return The curvature
  */
 double calcCurvature(
-  const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
-  const geometryMsgsPoint & p3);
+  const PointMsg & p1, const PointMsg & p2,
+  const PointMsg & p3);
 
 /**
  * @brief Check if a vehicle is driving forward
@@ -297,8 +297,8 @@ bool isDrivingForward(const Pose1 & src_pose, const Pose2 & dst_pose)
  * @param yaw The yaw offset
  * @return The offset pose
  */
-geometryMsgsPose calcOffsetPose(
-  const geometryMsgsPose & p, const double x, const double y, const double z,
+PoseMsg calcOffsetPose(
+  const PoseMsg & p, const double x, const double y, const double z,
   const double yaw = 0.0);
 
 /**
@@ -309,18 +309,18 @@ geometryMsgsPose calcOffsetPose(
  * @return interpolated point
  */
 template <class Point1, class Point2>
-geometryMsgsPoint calcInterpolatedPoint(
+PointMsg calcInterpolatedPoint(
   const Point1 & src, const Point2 & dst, const double ratio)
 {
   const auto src_point = getPoint(src);
   const auto dst_point = getPoint(dst);
 
-  geometryMsgsVector3 src_vec;
+  Vector3Msg src_vec;
   src_vec.x = src_point.x;
   src_vec.y = src_point.y;
   src_vec.z = src_point.z;
 
-  geometryMsgsVector3 dst_vec;
+  Vector3Msg dst_vec;
   dst_vec.x = dst_point.x;
   dst_vec.y = dst_point.y;
   dst_vec.z = dst_point.z;
@@ -329,7 +329,7 @@ geometryMsgsPoint calcInterpolatedPoint(
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
   const auto & vec = lerp(src_vec, dst_vec, clamped_ratio);
 
-  geometryMsgsPoint point;
+  PointMsg point;
   point.x = vec.x();
   point.y = vec.y();
   point.z = vec.z();
@@ -349,13 +349,13 @@ geometryMsgsPoint calcInterpolatedPoint(
  * @return interpolated point
  */
 template <class Pose1, class Pose2>
-geometryMsgsPose calcInterpolatedPose(
+PoseMsg calcInterpolatedPose(
   const Pose1 & src_pose, const Pose2 & dst_pose, const double ratio,
   const bool set_orientation_from_position_direction = true)
 {
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
 
-  geometryMsgsPose output_pose;
+  PoseMsg output_pose;
   output_pose.position =
     calcInterpolatedPoint(getPoint(src_pose), getPoint(dst_pose), clamped_ratio);
 
@@ -401,14 +401,14 @@ geometryMsgsPose calcInterpolatedPose(
  * @param p4 The second point of the second line
  * @return The intersection point
  */
-std::optional<geometryMsgsPoint> intersect(
-  const geometryMsgsPoint & p1, const geometryMsgsPoint & p2,
-  const geometryMsgsPoint & p3, const geometryMsgsPoint & p4);
+std::optional<PointMsg> intersect(
+  const PointMsg & p1, const PointMsg & p2,
+  const PointMsg & p3, const PointMsg & p4);
 
 // PORTED FROM AUTOWARE_UNIVERSE_UTILS_ROS
-geometryMsgsQuaternion operator+(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept;
-geometryMsgsQuaternion operator-(geometryMsgsQuaternion a) noexcept;
-geometryMsgsQuaternion operator-(geometryMsgsQuaternion a, geometryMsgsQuaternion b) noexcept;
+QuaternionMsg operator+(QuaternionMsg a, QuaternionMsg b) noexcept;
+QuaternionMsg operator-(QuaternionMsg a) noexcept;
+QuaternionMsg operator-(QuaternionMsg a, QuaternionMsg b) noexcept;
 
 }  // namespace autoware::universe_utils
 

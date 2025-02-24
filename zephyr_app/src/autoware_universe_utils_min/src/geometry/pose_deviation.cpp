@@ -25,7 +25,7 @@ namespace autoware::universe_utils
 {
 
 double calcYawDeviation(
-  const geometryMsgsPose & base_pose, const geometryMsgsPose & target_pose)
+  const PoseMsg & base_pose, const PoseMsg & target_pose)
 {
   const auto base_yaw = getYaw(base_pose.orientation);
   const auto target_yaw = getYaw(target_pose.orientation);
