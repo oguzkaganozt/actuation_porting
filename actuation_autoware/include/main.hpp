@@ -1,8 +1,8 @@
 // Copyright (c) 2024-2025, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
-#ifndef ZEPHYR_APP_HPP_
-#define ZEPHYR_APP_HPP_
+#ifndef ACTUATION_AUTOWARE_HPP_
+#define ACTUATION_AUTOWARE_HPP_
 
 #include <dds/ddsi/ddsi_config.h>
 #include "messages.h"
@@ -76,4 +76,4 @@ inline static void init_config(struct ddsi_config & cfg)
 #endif
 }
 
-#endif  // ZEPHYR_APP_HPP_
+#endif  // ACTUATION_AUTOWARE_HPP_

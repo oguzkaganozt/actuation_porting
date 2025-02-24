@@ -136,7 +136,7 @@ The high-level structure of the ``actuation-demo`` repository is as follows:
 
 - **zephyr**: Submodule targeting an upstream commit of the Zephyr repository.
 
-- **zephyr_app**: The Zephyr application providing the functionality of the
+- **actuation_autoware**: The Zephyr application providing the functionality of the
   Actuation Service.
 
 ******************

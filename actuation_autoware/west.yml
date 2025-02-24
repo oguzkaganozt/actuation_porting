@@ -1,4 +1,4 @@
-# Copyright (c) 2022-2024, Arm Limited.
+# Copyright (c) 2024-2025, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
 
 # The west manifest file for the actuation Zephyr app.
@@ -37,4 +37,4 @@ manifest:
     - -ci
 
   self:
-    path: zephyr_app
+    path: actuation_autoware

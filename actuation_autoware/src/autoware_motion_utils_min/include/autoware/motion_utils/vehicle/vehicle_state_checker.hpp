@@ -21,9 +21,6 @@
 // Zephyr App Includes
 #include "main.hpp"
 
-// zephyr
-// #include "zephyr_app/zephyr_logger.hpp"
-
 namespace autoware::motion_utils
 {
 class VehicleStopCheckerBase

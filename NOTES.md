@@ -1,12 +1,14 @@
-# Autoware MPC Lateral Controller Porting
+# Autoware MPC Lateral Controller Safety Island
 
-## Autoware Components & Versions
+## Components
 
-| Component          | Version | Repository Link |
-|-------------------|---------|-----------------|
-| Autoware          | 2025.02 | [Link](https://github.com/autowarefoundation/autoware/tree/2025.02) |
-| Autoware.Universe | 0.40.0  | [Link](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0) |
-| Autoware.msgs     | 1.3.0   | [Link](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0) |
+| Component | Version |
+|--------------|---------------|
+| Zephyr RTOS  | [3.6.0](https://github.com/zephyrproject-rtos/zephyr/commit/6aeb7a2b96c2b212a34f00c0ad3862ac19e826e8) |
+| CycloneDDS  | [0.11.x](https://github.com/eclipse-cyclonedds/cyclonedds/commit/7c253ad3c4461b10dc4cac36a257b097802cd043) |
+| Autoware    | [2025.02](https://github.com/autowarefoundation/autoware/tree/2025.02) |
+| Autoware.Universe | [0.40.0](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0) |
+| Autoware.msgs | [1.3.0](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0) |
 
 ## Porting Status
 

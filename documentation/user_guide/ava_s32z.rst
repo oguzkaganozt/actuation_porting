@@ -316,7 +316,7 @@ Install Zephyr-specific dependencies:
 .. code-block:: console
 
   $ pip3 install -r zephyr/scripts/requirements-base.txt
-  $ west init -l zephyr_app
+  $ west init -l actuation_autoware
   $ west update
   $ west zephyr-export
 
@@ -330,7 +330,7 @@ Build all the components:
   $ ./build.sh
 
 The resulting Zephyr binary is located at
-``build/zephyr_app/zephyr/zephyr.elf``.
+``build/actuation_autoware/zephyr/zephyr.elf``.
 
 ********
 S32Z run

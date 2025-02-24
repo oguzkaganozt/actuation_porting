@@ -79,13 +79,13 @@ the Zephyr application:
 .. code-block:: console
 
   $ pip3 install -r zephyr/scripts/requirements-base.txt
-  $ west init -l zephyr_app
+  $ west init -l actuation_autoware
   $ west update
   $ west zephyr-export
   $ ./build.sh -d -z -t fvp_baser_aemv8r_smp
 
 The resulting Zephyr binary is located at
-``build/zephyr_app/zephyr/zephyr.elf``.
+``build/actuation_autoware/zephyr/zephyr.elf``.
 
 ***********************
 Virtual machines launch

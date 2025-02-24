@@ -116,7 +116,7 @@ Changed
 Limitations
 ===========
 
-- A devicetree overlay ``zephyr_app/boards/s32z270dc2_rtu0_r52.overlay`` is used
+- A devicetree overlay ``actuation_autoware/boards/s32z270dc2_rtu0_r52.overlay`` is used
   to set the MAC address of the NXP S32Z270DC2_R52 board. This is done as a
   workaround as the NXP S32Z270DC2_R52 platform uses the same MAC address for
   every build (issue tracked in `Zephyr Project#61478
