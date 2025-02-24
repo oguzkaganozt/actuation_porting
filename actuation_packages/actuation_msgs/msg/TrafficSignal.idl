@@ -1,0 +1,22 @@
+#ifndef TRAFFICSIGNAL_IDL_
+#define TRAFFICSIGNAL_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/TrafficSignal.msg
+// generated code does not contain a copyright notice
+
+#include "TrafficSignalElement.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "TODO(youtalk): Remove this after migration to TrafficLight")
+    struct TrafficSignal {
+      int64 traffic_signal_id;
+
+      sequence<autoware_perception_msgs::msg::TrafficSignalElement> elements;
+    };
+  };
+};
+
+#endif  // TRAFFICSIGNAL_IDL_

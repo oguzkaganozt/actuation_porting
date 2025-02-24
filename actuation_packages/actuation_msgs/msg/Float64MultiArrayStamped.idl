@@ -1,0 +1,23 @@
+#ifndef FLOAT64MULTIARRAYSTAMPED_IDL_
+#define FLOAT64MULTIARRAYSTAMPED_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from tier4_debug_msgs/msg/Float64MultiArrayStamped.msg
+// generated code does not contain a copyright notice
+
+#include "Time.idl"
+#include "MultiArrayLayout.idl"
+
+module tier4_debug_msgs {
+  module msg {
+    struct Float64MultiArrayStamped {
+      builtin_interfaces::msg::Time stamp;
+
+      tier4_debug_msgs::msg::MultiArrayLayout layout;
+
+      sequence<double> data;
+    };
+  };
+};
+
+#endif  // FLOAT64MULTIARRAYSTAMPED_IDL_

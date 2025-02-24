@@ -1,0 +1,20 @@
+#ifndef PATHPOINTWITHLANEID_IDL_
+#define PATHPOINTWITHLANEID_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from tier4_planning_msgs/msg/PathPointWithLaneId.msg
+// generated code does not contain a copyright notice
+
+#include "PathPoint.idl"
+
+module tier4_planning_msgs {
+  module msg {
+    struct PathPointWithLaneId {
+      autoware_planning_msgs::msg::PathPoint point;
+
+      sequence<int64> lane_ids;
+    };
+  };
+};
+
+#endif  // PATHPOINTWITHLANEID_IDL_

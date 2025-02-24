@@ -1,0 +1,20 @@
+#ifndef BOOLSTAMPED_IDL_
+#define BOOLSTAMPED_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from tier4_debug_msgs/msg/BoolStamped.msg
+// generated code does not contain a copyright notice
+
+#include "Time.idl"
+
+module tier4_debug_msgs {
+  module msg {
+    struct BoolStamped {
+      builtin_interfaces::msg::Time stamp;
+
+      boolean data;
+    };
+  };
+};
+
+#endif  // BOOLSTAMPED_IDL_

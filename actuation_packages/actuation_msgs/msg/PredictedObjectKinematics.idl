@@ -1,0 +1,27 @@
+#ifndef PREDICTEDOBJECTKINEMATICS_IDL_
+#define PREDICTEDOBJECTKINEMATICS_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/PredictedObjectKinematics.msg
+// generated code does not contain a copyright notice
+
+#include "PredictedPath.idl"
+#include "AccelWithCovariance.idl"
+#include "PoseWithCovariance.idl"
+#include "TwistWithCovariance.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    struct PredictedObjectKinematics {
+      geometry_msgs::msg::PoseWithCovariance initial_pose_with_covariance;
+
+      geometry_msgs::msg::TwistWithCovariance initial_twist_with_covariance;
+
+      geometry_msgs::msg::AccelWithCovariance initial_acceleration_with_covariance;
+
+      sequence<autoware_perception_msgs::msg::PredictedPath> predicted_paths;
+    };
+  };
+};
+
+#endif  // PREDICTEDOBJECTKINEMATICS_IDL_

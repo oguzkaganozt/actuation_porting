@@ -1,0 +1,21 @@
+#ifndef TRAJECTORY_IDL_
+#define TRAJECTORY_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_planning_msgs/msg/Trajectory.msg
+// generated code does not contain a copyright notice
+
+#include "TrajectoryPoint.idl"
+#include "Header.idl"
+
+module autoware_planning_msgs {
+  module msg {
+    struct Trajectory {
+      std_msgs::msg::Header header;
+
+      sequence<autoware_planning_msgs::msg::TrajectoryPoint> points;
+    };
+  };
+};
+
+#endif  // TRAJECTORY_IDL_

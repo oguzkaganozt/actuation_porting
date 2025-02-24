@@ -1,0 +1,29 @@
+#ifndef SYSTEMUSAGE_IDL_
+#define SYSTEMUSAGE_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from tier4_debug_msgs/msg/SystemUsage.msg
+// generated code does not contain a copyright notice
+
+
+module tier4_debug_msgs {
+  module msg {
+    struct SystemUsage {
+      @verbatim (language="comment", text=
+        "unique name to denote the process")
+      string name;
+
+      @verbatim (language="comment", text=
+        "process id")
+      int64 pid;
+
+      @unit (value="%")
+      double cpu_usage;
+
+      @unit (value="byte")
+      double memory_usage;
+    };
+  };
+};
+
+#endif  // SYSTEMUSAGE_IDL_

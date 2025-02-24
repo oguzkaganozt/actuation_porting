@@ -1,0 +1,23 @@
+#ifndef ACCELSTAMPED_IDL_
+#define ACCELSTAMPED_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from geometry_msgs/msg/AccelStamped.msg
+// generated code does not contain a copyright notice
+
+#include "Accel.idl"
+#include "Header.idl"
+
+module geometry_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "An accel with reference coordinate frame and timestamp")
+    struct AccelStamped {
+      std_msgs::msg::Header header;
+
+      geometry_msgs::msg::Accel accel;
+    };
+  };
+};
+
+#endif  // ACCELSTAMPED_IDL_

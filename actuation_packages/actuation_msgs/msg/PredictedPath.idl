@@ -1,0 +1,23 @@
+#ifndef PREDICTEDPATH_IDL_
+#define PREDICTEDPATH_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/PredictedPath.msg
+// generated code does not contain a copyright notice
+
+#include "Duration.idl"
+#include "Pose.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    struct PredictedPath {
+      sequence<geometry_msgs::msg::Pose> path;
+
+      builtin_interfaces::msg::Duration time_step;
+
+      float confidence;
+    };
+  };
+};
+
+#endif  // PREDICTEDPATH_IDL_

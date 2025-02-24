@@ -1,0 +1,31 @@
+#ifndef LANELETROUTE_IDL_
+#define LANELETROUTE_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_planning_msgs/msg/LaneletRoute.msg
+// generated code does not contain a copyright notice
+
+#include "LaneletSegment.idl"
+#include "Pose.idl"
+#include "Header.idl"
+#include "UUID.idl"
+
+module autoware_planning_msgs {
+  module msg {
+    struct LaneletRoute {
+      std_msgs::msg::Header header;
+
+      geometry_msgs::msg::Pose start_pose;
+
+      geometry_msgs::msg::Pose goal_pose;
+
+      sequence<autoware_planning_msgs::msg::LaneletSegment> segments;
+
+      unique_identifier_msgs::msg::UUID uuid;
+
+      boolean allow_modification;
+    };
+  };
+};
+
+#endif  // LANELETROUTE_IDL_

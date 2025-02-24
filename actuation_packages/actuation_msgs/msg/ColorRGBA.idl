@@ -1,0 +1,23 @@
+#ifndef COLORRGBA_IDL_
+#define COLORRGBA_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from std_msgs/msg/ColorRGBA.msg
+// generated code does not contain a copyright notice
+
+
+module std_msgs {
+  module msg {
+    struct ColorRGBA {
+      float r;
+
+      float g;
+
+      float b;
+
+      float a;
+    };
+  };
+};
+
+#endif  // COLORRGBA_IDL_

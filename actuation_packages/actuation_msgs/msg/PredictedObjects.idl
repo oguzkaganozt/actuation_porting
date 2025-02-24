@@ -1,0 +1,21 @@
+#ifndef PREDICTEDOBJECTS_IDL_
+#define PREDICTEDOBJECTS_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/PredictedObjects.msg
+// generated code does not contain a copyright notice
+
+#include "PredictedObject.idl"
+#include "Header.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    struct PredictedObjects {
+      std_msgs::msg::Header header;
+
+      sequence<autoware_perception_msgs::msg::PredictedObject> objects;
+    };
+  };
+};
+
+#endif  // PREDICTEDOBJECTS_IDL_

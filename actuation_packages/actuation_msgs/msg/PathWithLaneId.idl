@@ -1,0 +1,26 @@
+#ifndef PATHWITHLANEID_IDL_
+#define PATHWITHLANEID_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from tier4_planning_msgs/msg/PathWithLaneId.msg
+// generated code does not contain a copyright notice
+
+#include "Point.idl"
+#include "Header.idl"
+#include "PathPointWithLaneId.idl"
+
+module tier4_planning_msgs {
+  module msg {
+    struct PathWithLaneId {
+      std_msgs::msg::Header header;
+
+      sequence<tier4_planning_msgs::msg::PathPointWithLaneId> points;
+
+      sequence<geometry_msgs::msg::Point> left_bound;
+
+      sequence<geometry_msgs::msg::Point> right_bound;
+    };
+  };
+};
+
+#endif  // PATHWITHLANEID_IDL_

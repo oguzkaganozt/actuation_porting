@@ -1,0 +1,19 @@
+#ifndef LANELETPRIMITIVE_IDL_
+#define LANELETPRIMITIVE_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_planning_msgs/msg/LaneletPrimitive.msg
+// generated code does not contain a copyright notice
+
+
+module autoware_planning_msgs {
+  module msg {
+    struct LaneletPrimitive {
+      int64 id;
+
+      string primitive_type;
+    };
+  };
+};
+
+#endif  // LANELETPRIMITIVE_IDL_

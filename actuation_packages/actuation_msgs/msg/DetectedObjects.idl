@@ -1,0 +1,21 @@
+#ifndef DETECTEDOBJECTS_IDL_
+#define DETECTEDOBJECTS_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/DetectedObjects.msg
+// generated code does not contain a copyright notice
+
+#include "DetectedObject.idl"
+#include "Header.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    struct DetectedObjects {
+      std_msgs::msg::Header header;
+
+      sequence<autoware_perception_msgs::msg::DetectedObject> objects;
+    };
+  };
+};
+
+#endif  // DETECTEDOBJECTS_IDL_

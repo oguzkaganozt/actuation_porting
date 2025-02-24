@@ -1,0 +1,29 @@
+#ifndef PREDICTEDOBJECT_IDL_
+#define PREDICTEDOBJECT_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/PredictedObject.msg
+// generated code does not contain a copyright notice
+
+#include "ObjectClassification.idl"
+#include "PredictedObjectKinematics.idl"
+#include "Shape.idl"
+#include "UUID.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    struct PredictedObject {
+      unique_identifier_msgs::msg::UUID object_id;
+
+      float existence_probability;
+
+      sequence<autoware_perception_msgs::msg::ObjectClassification> classification;
+
+      autoware_perception_msgs::msg::PredictedObjectKinematics kinematics;
+
+      autoware_perception_msgs::msg::Shape shape;
+    };
+  };
+};
+
+#endif  // PREDICTEDOBJECT_IDL_

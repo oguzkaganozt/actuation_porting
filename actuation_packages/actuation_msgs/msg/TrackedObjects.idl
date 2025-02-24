@@ -1,0 +1,21 @@
+#ifndef TRACKEDOBJECTS_IDL_
+#define TRACKEDOBJECTS_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/TrackedObjects.msg
+// generated code does not contain a copyright notice
+
+#include "TrackedObject.idl"
+#include "Header.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    struct TrackedObjects {
+      std_msgs::msg::Header header;
+
+      sequence<autoware_perception_msgs::msg::TrackedObject> objects;
+    };
+  };
+};
+
+#endif  // TRACKEDOBJECTS_IDL_

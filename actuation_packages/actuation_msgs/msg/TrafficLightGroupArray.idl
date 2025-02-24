@@ -1,0 +1,21 @@
+#ifndef TRAFFICLIGHTGROUPARRAY_IDL_
+#define TRAFFICLIGHTGROUPARRAY_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_perception_msgs/msg/TrafficLightGroupArray.msg
+// generated code does not contain a copyright notice
+
+#include "TrafficLightGroup.idl"
+#include "Time.idl"
+
+module autoware_perception_msgs {
+  module msg {
+    struct TrafficLightGroupArray {
+      builtin_interfaces::msg::Time stamp;
+
+      sequence<autoware_perception_msgs::msg::TrafficLightGroup> traffic_light_groups;
+    };
+  };
+};
+
+#endif  // TRAFFICLIGHTGROUPARRAY_IDL_

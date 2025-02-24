@@ -1,0 +1,23 @@
+#ifndef TWISTSTAMPED_IDL_
+#define TWISTSTAMPED_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from geometry_msgs/msg/TwistStamped.msg
+// generated code does not contain a copyright notice
+
+#include "Twist.idl"
+#include "Header.idl"
+
+module geometry_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "A twist with reference coordinate frame and timestamp")
+    struct TwistStamped {
+      std_msgs::msg::Header header;
+
+      geometry_msgs::msg::Twist twist;
+    };
+  };
+};
+
+#endif  // TWISTSTAMPED_IDL_

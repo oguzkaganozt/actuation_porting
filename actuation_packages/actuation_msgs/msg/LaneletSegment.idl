@@ -1,0 +1,20 @@
+#ifndef LANELETSEGMENT_IDL_
+#define LANELETSEGMENT_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_planning_msgs/msg/LaneletSegment.msg
+// generated code does not contain a copyright notice
+
+#include "LaneletPrimitive.idl"
+
+module autoware_planning_msgs {
+  module msg {
+    struct LaneletSegment {
+      autoware_planning_msgs::msg::LaneletPrimitive preferred_primitive;
+
+      sequence<autoware_planning_msgs::msg::LaneletPrimitive> primitives;
+    };
+  };
+};
+
+#endif  // LANELETSEGMENT_IDL_
