@@ -22,7 +22,7 @@
 #include "messages.h"
 
 // zephyr
-#include "zephyr_app/zephyr_logger.hpp"
+// #include "zephyr_app/zephyr_logger.hpp"
 
 namespace autoware::motion_utils
 {
@@ -38,8 +38,6 @@ public:
 protected:
   // rclcpp::Clock::SharedPtr clock_; // TODO: implement with zephyr clock
   // rclcpp::Logger logger_; // TODO: implement with zephyr logger
-  bool getClock() { return true; } // TODO: implement with zephyr clock
-  bool getLogger() { return true; } // TODO: implement with zephyr logger
 
 private:
   double buffer_duration_;
@@ -62,7 +60,7 @@ protected:
 
 private:
   static constexpr double velocity_buffer_time_sec = 10.0;
-  void onOdom(const OdometryMsg::ConstSharedPtr msg);
+  void onOdom(const void* msg);
 };
 
 class VehicleArrivalChecker : public VehicleStopChecker

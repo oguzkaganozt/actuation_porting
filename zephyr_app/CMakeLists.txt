@@ -14,13 +14,13 @@ project(actuation_autoware)
 include(GNUInstallDirs)
 include(ExternalProject)
 include(cyclonedds_config.cmake)
-include(src/autoware_osqp_interface/osqp_interface.cmake)
+include(src/autoware_osqp_interface/autoware_osqp_interface.cmake)
 include(src/autoware_universe_utils_min/autoware_universe_utils.cmake)
+include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
+include(src/autoware_interpolation_min/autoware_interpolation.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-# include(src/interpolation/interpolation.cmake)
 # include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
 # include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
-# include(src/autoware_motion_utils/autoware_motion_utils.cmake)
 
 ### BUILD CYCLONEDDS ###
 create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
@@ -89,13 +89,13 @@ list(APPEND APP_INCLUDE_DIRS
 )
 
 # Add actuation modules
-add_osqp_interface()
+add_autoware_osqp_interface()
 add_autoware_universe_utils(app_sources app_headers)
+add_autoware_motion_utils(app_sources app_headers)
+add_autoware_interpolation(app_sources app_headers)
 # add_autoware_vehicle_info_utils(app_sources app_headers)
-# add_interpolation(app_sources app_headers)
 # add_autoware_trajectory_follower_base(app_sources app_headers)
 # add_autoware_mpc_lateral_controller(app_sources app_headers)
-# add_autoware_motion_utils(app_sources app_headers)
 
 # Build actuation modules
 target_sources(app PRIVATE

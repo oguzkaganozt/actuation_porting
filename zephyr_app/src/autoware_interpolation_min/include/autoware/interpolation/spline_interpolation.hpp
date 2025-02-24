@@ -15,16 +15,23 @@
 #ifndef AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_HPP_
 #define AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_HPP_
 
-#include "autoware/interpolation/interpolation_utils.hpp"
-#include "autoware/universe_utils/geometry/geometry.hpp"
-
-#include <Eigen/Core>
-
+// Standard library
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <numeric>
 #include <vector>
+
+// Eigen
+#define EIGEN_MPL2_ONLY
+#include <Eigen/Core>
+
+// Autoware
+#include "autoware/interpolation/interpolation_utils.hpp"
+#include "autoware/universe_utils/geometry/geometry.hpp"
+
+// Message types
+#include "messages.h"
 
 namespace autoware::interpolation
 {

@@ -1,4 +1,4 @@
-macro(add_osqp_interface)
+macro(add_autoware_osqp_interface)
   # Find dependencies
   find_package(Eigen3 REQUIRED)
   find_package(osqp REQUIRED)

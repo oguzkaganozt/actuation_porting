@@ -1,59 +1,33 @@
 # Autoware MPC Lateral Controller Porting
 
-## Autoware Version
+## Autoware Components & Versions
 
-- Autoware: [2025.02](https://github.com/autowarefoundation/autoware/tree/2025.02)
-- Autoware.Universe: [0.40.0](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0)
-- Autoware.msgs: [1.3.0](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0)
+| Component          | Version | Repository Link |
+|-------------------|---------|-----------------|
+| Autoware          | 2025.02 | [Link](https://github.com/autowarefoundation/autoware/tree/2025.02) |
+| Autoware.Universe | 0.40.0  | [Link](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0) |
+| Autoware.msgs     | 1.3.0   | [Link](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0) |
 
-## PORTING: Autoware Universe Utils
+## Porting Status
 
-### Geometry
+### Completed ✅
+- autoware_msgs
+- autoware_osqp_interface
+- autoware_universe_utils_min
+- autoware_motion_utils_min
+- autoware_interpolation_min
+- autoware_vehicle_info_utils
 
-- [ ] geometry/geometry.hpp
-  - [ ] sub-dependencies...
-- [ ] geometry/boost_geometry.hpp
-  - [ ] sub-dependencies...
-- [ ] geometry/boost_polygon_utils.hpp
-  - [ ] sub-dependencies...
-- [ ] geometry/gjk_2d.hpp
-  - [ ] sub-dependencies...
-- [ ] geometry/pose_deviation.hpp
-  - [ ] sub-dependencies...
+### Pending 🔄
+- autoware_trajectory_follower_base
+- autoware_mpc_lateral_controller
 
-### Math
+## ROS to Zephyr Migration Tasks
 
-- [ ] math/constants.hpp
-  - [ ] sub-dependencies...
-- [ ] math/normalization.hpp
-  - [ ] sub-dependencies...
-- [ ] math/unit_conversion.hpp
-  - [ ] sub-dependencies...
-
-### ROS
-
-- [ ] ros/marker_helper.hpp
-  - [ ] sub-dependencies...
-
-## PORTING: Autoware Motion Utils
-
-### Trajectory
-
-- [ ] motion_utils/trajectory/trajectory.hpp
-  - [ ] sub-dependencies...
-
-## PORTING: Autoware Interpolation
-
-- [ ] interpolation/linear_interpolation.hpp
-  - [ ] sub-dependencies...
-- [ ] interpolation/spline_interpolation.hpp
-  - [ ] sub-dependencies...
-- [ ] interpolation/zero_order_hold.hpp
-  - [ ] sub-dependencies...
-
-## PORTING: Autoware Trajectory Follower Base
-
-- [ ] trajectory_follower_base/lateral_controller_base.hpp
-  - [ ] sub-dependencies...
-- [ ] trajectory_follower_base/control_horizon.hpp
-  - [ ] sub-dependencies...
+| ROS Component | Zephyr Target | Status |
+|--------------|---------------|---------|
+| Node Launch  | Zephyr Threads | ✅ Completed |
+| Parameters   | Zephyr Parameters | ✅ Completed |
+| RCL Logging  | Zephyr Logger | ✅ Completed |
+| RCL Timers   | Zephyr Timers | ⏳ Pending |
+| RCL Callbacks| Zephyr Callbacks | ⏳ Pending |

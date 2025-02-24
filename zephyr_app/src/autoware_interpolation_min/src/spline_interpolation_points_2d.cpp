@@ -36,7 +36,7 @@ std::vector<double> calcEuclidDist(const std::vector<double> & x, const std::vec
 }
 
 std::array<std::vector<double>, 4> getBaseValues(
-  const std::vector<geometry_msgs::msg::Point> & points)
+  const std::vector<PointMsg> & points)
 {
   // calculate x, y
   std::vector<double> base_x;
@@ -82,19 +82,19 @@ std::vector<double> splineYawFromPoints(const std::vector<T> & points)
   return yaw_vec;
 }
 template std::vector<double> splineYawFromPoints(
-  const std::vector<geometry_msgs::msg::Point> & points);
+  const std::vector<PointMsg> & points);
 
-geometry_msgs::msg::Pose SplineInterpolationPoints2d::getSplineInterpolatedPose(
+PoseMsg SplineInterpolationPoints2d::getSplineInterpolatedPose(
   const size_t idx, const double s) const
 {
-  geometry_msgs::msg::Pose pose;
+  PoseMsg pose;
   pose.position = getSplineInterpolatedPoint(idx, s);
   pose.orientation =
     autoware::universe_utils::createQuaternionFromYaw(getSplineInterpolatedYaw(idx, s));
   return pose;
 }
 
-geometry_msgs::msg::Point SplineInterpolationPoints2d::getSplineInterpolatedPoint(
+PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
   const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
@@ -113,7 +113,7 @@ geometry_msgs::msg::Point SplineInterpolationPoints2d::getSplineInterpolatedPoin
   const double y = spline_y_.getSplineInterpolatedValues({whole_s}).at(0);
   const double z = spline_z_.getSplineInterpolatedValues({whole_s}).at(0);
 
-  geometry_msgs::msg::Point geom_point;
+  PointMsg geom_point;
   geom_point.x = x;
   geom_point.y = y;
   geom_point.z = z;
@@ -195,7 +195,7 @@ double SplineInterpolationPoints2d::getAccumulatedLength(const size_t idx) const
 }
 
 void SplineInterpolationPoints2d::calcSplineCoefficientsInner(
-  const std::vector<geometry_msgs::msg::Point> & points)
+  const std::vector<PointMsg> & points)
 {
   const auto base = getBaseValues(points);
 

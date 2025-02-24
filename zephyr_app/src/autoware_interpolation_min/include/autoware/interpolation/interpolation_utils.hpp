@@ -15,10 +15,14 @@
 #ifndef AUTOWARE__INTERPOLATION__INTERPOLATION_UTILS_HPP_
 #define AUTOWARE__INTERPOLATION__INTERPOLATION_UTILS_HPP_
 
+// Standard library
 #include <algorithm>
 #include <array>
 #include <stdexcept>
 #include <vector>
+
+// Message types
+#include "messages.h"
 
 namespace autoware::interpolation
 {

@@ -167,6 +167,25 @@ double calcDistance2d(const Point1 & point1, const Point2 & point2)
   return std::hypot(p1.x - p2.x, p1.y - p2.y);
 }
 
+template <class Point1, class Point2>
+double calcSquaredDistance2d(const Point1 & point1, const Point2 & point2)
+{
+  const auto p1 = getPoint(point1);
+  const auto p2 = getPoint(point2);
+  const auto dx = p1.x - p2.x;
+  const auto dy = p1.y - p2.y;
+  return dx * dx + dy * dy;
+}
+
+template <class Point1, class Point2>
+double calcDistance3d(const Point1 & point1, const Point2 & point2)
+{
+  const auto p1 = getPoint(point1);
+  const auto p2 = getPoint(point2);
+  // To be replaced by std::hypot(dx, dy, dz) in C++17
+  return std::hypot(std::hypot(p1.x - p2.x, p1.y - p2.y), p1.z - p2.z);
+}
+
 /**
  * @brief Set the orientation of a point
  * @param orientation The orientation
