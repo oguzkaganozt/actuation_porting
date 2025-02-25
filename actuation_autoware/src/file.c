@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <stdio.h>
-#include <zephyr/kernel.h>
-#include <zephyr/fs/fs.h>
 #include <errno.h>
+#include <zephyr/fs/fs.h>
 
 struct zephyr_file {
     struct fs_file_t file;

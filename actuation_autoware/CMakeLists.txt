@@ -80,7 +80,7 @@ get_filename_component(OSQP_INCLUDE_DIR ${OSQP_INCLUDE_SUB_DIR} PATH)
 include(src/autoware_osqp_interface/autoware_osqp_interface.cmake)
 include(src/autoware_universe_utils_min/autoware_universe_utils.cmake)
 include(src/autoware_interpolation_min/autoware_interpolation.cmake)
-include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
+# include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
 # include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
 # include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
@@ -90,6 +90,7 @@ list(APPEND APP_SOURCES
   src/main.cpp
   src/file.c
   include/main.hpp
+  include/message_adapter.hpp
 )
 list(APPEND APP_INCLUDE_DIRS
   ${CMAKE_CURRENT_BINARY_DIR}/install/include
@@ -97,6 +98,10 @@ list(APPEND APP_INCLUDE_DIRS
   ${OSQP_INCLUDE_DIR}
   ${EIGEN3_INCLUDE_DIR}
 )
+
+message("=== Build Summary ===")
+message("App sources: ${APP_SOURCES}")
+message("App headers: ${APP_INCLUDE_DIRS}")
 
 # Build actuation_autoware
 target_sources(app PRIVATE
@@ -107,10 +112,6 @@ target_include_directories(app PRIVATE
   include
   ${APP_INCLUDE_DIRS}
 )
-
-message("=== Build Summary ===")
-message("App sources: ${APP_SOURCES}")
-message("App headers: ${APP_INCLUDE_DIRS}")
 
 # Link actuation messages and CycloneDDS library
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)

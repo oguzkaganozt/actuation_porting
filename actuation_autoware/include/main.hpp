@@ -5,8 +5,11 @@
 #define ACTUATION_AUTOWARE_HPP_
 
 #include <dds/ddsi/ddsi_config.h>
-#include "messages.h"
-#include "constants.h"
+#include <zephyr/kernel.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/logging/log.h>
+#include "constants.hpp"
+#include "messages.hpp"
 
 #define ACTUATION_STACK_SIZE 16 * 1024
 
