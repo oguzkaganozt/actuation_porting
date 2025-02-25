@@ -159,8 +159,18 @@ public:
         return sequence->_buffer[0];
     }
 
+    const_reference front() const {
+        assert(!empty() && "Cannot access front() of empty sequence");
+        return sequence->_buffer[0];
+    }
+
     // Add direct back() method that returns a reference
     reference back() {
+        assert(!empty() && "Cannot access back() of empty sequence");
+        return sequence->_buffer[sequence->_length - 1];
+    }
+
+    const_reference back() const {
         assert(!empty() && "Cannot access back() of empty sequence");
         return sequence->_buffer[sequence->_length - 1];
     }
@@ -329,6 +339,27 @@ public:
     // Add a method to check if the sequence has been properly initialized
     bool is_valid() const noexcept {
         return sequence != nullptr && sequence->_buffer != nullptr;
+    }
+
+    // Element access with bounds checking
+    reference at(size_type index) {
+        if (index >= sequence->_length) {
+            LOG_ERR("Index %zu out of range (size: %zu)", index, sequence->_length);
+            // This will trigger an assertion failure in debug mode
+            assert(index < sequence->_length && "Index out of range");
+            // In release mode, we'll return the first element as a fallback
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[index];
+    }
+
+    const_reference at(size_type index) const {
+        if (index >= sequence->_length) {
+            LOG_ERR("Index %zu out of range (size: %zu)", index, sequence->_length);
+            assert(index < sequence->_length && "Index out of range");
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[index];
     }
 };
 

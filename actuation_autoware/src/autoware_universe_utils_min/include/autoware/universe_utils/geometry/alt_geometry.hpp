@@ -99,6 +99,7 @@ class Vector3d {
 public:
   Vector3d() : x_(0.0), y_(0.0), z_(0.0) {}
   Vector3d(const double x, const double y, const double z) : x_(x), y_(y), z_(z) {}
+  Vector3d(const Vector2d & v, const double z) : x_(v.x()), y_(v.y()), z_(z) {}
 
   Vector3d cross(const Vector3d & other) const { 
     return {y_ * other.z() - z_ * other.y(), 
@@ -108,6 +109,8 @@ public:
   double dot(const Vector3d & other) const { return x_ * other.x() + y_ * other.y() + z_ * other.z(); }
   double norm2() const { return x_ * x_ + y_ * y_ + z_ * z_; }
   double norm() const { return std::sqrt(norm2()); }
+  double length() const { return std::sqrt(length2()); }
+  double length2() const { return x_ * x_ + y_ * y_ + z_ * z_; }
 
   const double& x() const { return x_; }
   double& x() { return x_; }

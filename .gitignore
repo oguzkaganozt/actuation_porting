@@ -11,6 +11,7 @@ public/
 .vscode/
 *.log
 *.cursorignore
+build_log.txt
 
 zephyr
 cyclonedds

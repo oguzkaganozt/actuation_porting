@@ -430,6 +430,33 @@ QuaternionMsg operator+(QuaternionMsg a, QuaternionMsg b) noexcept;
 QuaternionMsg operator-(QuaternionMsg a) noexcept;
 QuaternionMsg operator-(QuaternionMsg a, QuaternionMsg b) noexcept;
 
+/**
+ * @brief Create a Vector3d from two points
+ * @param src The source point
+ * @param dst The destination point
+ * @return A Vector3d representing the vector from src to dst
+ */
+template <class Point1, class Point2>
+Vector3d pointsToVector3d(const Point1 & src, const Point2 & dst)
+{
+  const auto src_p = getPoint(src);
+  const auto dst_p = getPoint(dst);
+
+  return Vector3d(
+    dst_p.x - src_p.x,
+    dst_p.y - src_p.y,
+    dst_p.z - src_p.z);
+}
+
+template <class Point1, class Point2>
+Vector2d pointsToVector2d(const Point1 & src, const Point2 & dst)
+{
+  const auto src_p = getPoint(src);
+  const auto dst_p = getPoint(dst);
+
+  return Vector2d(dst_p.x - src_p.x, dst_p.y - src_p.y);
+}
+
 }  // namespace autoware::universe_utils
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__GEOMETRY_HPP_

@@ -26,13 +26,13 @@ TrajectoryPointMsg calcInterpolatedPoint(
   // Convert trajectory points to vector
   auto trajectory_points = wrap_sequence(trajectory.points);
 
-  // TODO: check compatibility with empty()
+  // TODO: test the empty() logic
   if (trajectory_points.empty()) {
     TrajectoryPointMsg interpolated_point{};
     interpolated_point.pose = target_pose;
     return interpolated_point;
   }
-  // TODO: check compatibility with size()
+  // TODO: test the size() logic
   if (trajectory_points.size() == 1) {
     return trajectory_points.front();
   }
@@ -42,17 +42,15 @@ TrajectoryPointMsg calcInterpolatedPoint(
       trajectory_points, target_pose, dist_threshold, yaw_threshold);
 
   // Calculate interpolation ratio
-  // TODO: implement the at() logic for the nested message
+  // TODO: test the at() logic
   const auto & curr_pt = trajectory_points.at(segment_idx);
   const auto & next_pt = trajectory_points.at(segment_idx + 1);
-  // TODO: implement the logic with eigen
-  // const auto v1 = autoware::universe_utils::point2tfVector(curr_pt, next_pt);
-  // const auto v2 = autoware::universe_utils::point2tfVector(curr_pt, target_pose);
-  const auto v1 = Vector3Msg{curr_pt.pose.position.x, curr_pt.pose.position.y, curr_pt.pose.position.z};
-  const auto v2 = Vector3Msg{target_pose.position.x, target_pose.position.y, target_pose.position.z};
-  // if (v1.length2() < 1e-3) {
-  //   return curr_pt;
-  // }
+  // TODO: test the pointsToVector3d() logic
+  const auto v1 = autoware::universe_utils::pointsToVector3d(curr_pt, next_pt);
+  const auto v2 = autoware::universe_utils::pointsToVector3d(curr_pt, target_pose);
+  if (v1.length2() < 1e-3) {
+    return curr_pt;
+  }
 
   const double ratio = v1.dot(v2) / v1.length2();
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
@@ -121,11 +119,9 @@ PathPointWithLaneIdMsg calcInterpolatedPoint(
   // Calculate interpolation ratio
   const auto & curr_pt = path_points.at(segment_idx);
   const auto & next_pt = path_points.at(segment_idx + 1);
-  // TODO: implement the logic with eigen
-  // const auto v1 = autoware::universe_utils::point2tfVector(curr_pt.point, next_pt.point);
-  // const auto v2 = autoware::universe_utils::point2tfVector(curr_pt.point, target_pose);
-  const auto v1 = std::vector<double>{curr_pt.point.pose.position.x, curr_pt.point.pose.position.y, curr_pt.point.pose.position.z};
-  const auto v2 = std::vector<double>{target_pose.position.x, target_pose.position.y, target_pose.position.z};
+  // TODO: test the pointsToVector3d() logic
+  const auto v1 = autoware::universe_utils::pointsToVector3d(curr_pt, next_pt);
+  const auto v2 = autoware::universe_utils::pointsToVector3d(curr_pt, target_pose);
   if (v1.length2() < 1e-3) {
     return curr_pt;
   }
