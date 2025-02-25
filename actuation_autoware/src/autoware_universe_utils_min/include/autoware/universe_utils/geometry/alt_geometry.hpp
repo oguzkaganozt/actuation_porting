@@ -84,10 +84,69 @@ inline Vector2d operator*(const double & s, const Vector2d & v)
   return {s * v.x(), s * v.y()};
 }
 
-// TODO: check ?
+// TODO: check if this is correct
 inline bool operator==(const Vector2d & v1, const Vector2d & v2)
 {
-  return v1.x() == v2.x() && v1.y() == v2.y();
+  // Use epsilon-based comparison for floating-point values
+  const double epsilon = 1e-9;  // Small tolerance value
+  return std::abs(v1.x() - v2.x()) < epsilon && std::abs(v1.y() - v2.y()) < epsilon;
+}
+
+/**
+ * @brief A 3D point class that represents a point in 3D space
+ */
+class Vector3d {
+public:
+  Vector3d() : x_(0.0), y_(0.0), z_(0.0) {}
+  Vector3d(const double x, const double y, const double z) : x_(x), y_(y), z_(z) {}
+
+  Vector3d cross(const Vector3d & other) const { 
+    return {y_ * other.z() - z_ * other.y(), 
+            z_ * other.x() - x_ * other.z(), 
+            x_ * other.y() - y_ * other.x()}; 
+  }
+  double dot(const Vector3d & other) const { return x_ * other.x() + y_ * other.y() + z_ * other.z(); }
+  double norm2() const { return x_ * x_ + y_ * y_ + z_ * z_; }
+  double norm() const { return std::sqrt(norm2()); }
+
+  const double& x() const { return x_; }
+  double& x() { return x_; }
+  const double& y() const { return y_; }
+  double& y() { return y_; }
+  const double& z() const { return z_; }
+  double& z() { return z_; }
+private:
+  double x_;
+  double y_;
+  double z_;
+};
+
+inline Vector3d operator+(const Vector3d & v1, const Vector3d & v2)
+{
+  return {v1.x() + v2.x(), v1.y() + v2.y(), v1.z() + v2.z()};
+}
+
+inline Vector3d operator-(const Vector3d & v1, const Vector3d & v2)
+{
+  return {v1.x() - v2.x(), v1.y() - v2.y(), v1.z() - v2.z()};
+}
+
+inline Vector3d operator-(const Vector3d & v)
+{
+  return {-v.x(), -v.y(), -v.z()};
+}
+
+inline Vector3d operator*(const double & s, const Vector3d & v)
+{
+  return {s * v.x(), s * v.y(), s * v.z()};
+}
+
+inline bool operator==(const Vector3d & v1, const Vector3d & v2)
+{
+  const double epsilon = 1e-9;  // Small tolerance value
+  return std::abs(v1.x() - v2.x()) < epsilon && 
+         std::abs(v1.y() - v2.y()) < epsilon && 
+         std::abs(v1.z() - v2.z()) < epsilon;
 }
 
 // We use Vector2d to represent points, but we do not name the class Point2d directly
@@ -313,6 +372,7 @@ bool within(const Point2d & point, const ConvexPolygon2d & poly);
  */
 bool within(
   const ConvexPolygon2d& poly_contained, const ConvexPolygon2d& poly_containing);
+
 } // namespace autoware::universe_utils
 
 #endif  // AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_

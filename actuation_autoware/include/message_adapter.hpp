@@ -153,7 +153,19 @@ public:
         return sequence->_buffer;
     }
 
-    // Safe front/back access
+    // Add direct front() method that returns a reference
+    reference front() {
+        assert(!empty() && "Cannot access front() of empty sequence");
+        return sequence->_buffer[0];
+    }
+
+    // Add direct back() method that returns a reference
+    reference back() {
+        assert(!empty() && "Cannot access back() of empty sequence");
+        return sequence->_buffer[sequence->_length - 1];
+    }
+
+    // Keep the existing safe versions
     bool front(reference& out_value) {
         if (empty()) {
             LOG_ERR("Cannot access front() of empty sequence");

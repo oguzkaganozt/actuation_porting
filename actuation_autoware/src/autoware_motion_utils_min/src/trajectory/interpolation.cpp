@@ -15,6 +15,7 @@
 #include "autoware/motion_utils/trajectory/interpolation.hpp"
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 #include "autoware/interpolation/linear_interpolation.hpp"
+#include "message_adapter.hpp"
 
 namespace autoware::motion_utils
 {
@@ -22,33 +23,36 @@ TrajectoryPointMsg calcInterpolatedPoint(
   const TrajectoryMsg & trajectory, const PoseMsg & target_pose,
   const bool use_zero_order_hold_for_twist, const double dist_threshold, const double yaw_threshold)
 {
+  // Convert trajectory points to vector
+  auto trajectory_points = wrap_sequence(trajectory.points);
+
   // TODO: check compatibility with empty()
-  if (trajectory.points._length == 0) {
+  if (trajectory_points.empty()) {
     TrajectoryPointMsg interpolated_point{};
     interpolated_point.pose = target_pose;
     return interpolated_point;
   }
   // TODO: check compatibility with size()
-  if (trajectory.points._length == 1) {
-    return trajectory.points.front();
+  if (trajectory_points.size() == 1) {
+    return trajectory_points.front();
   }
 
   const size_t segment_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
-      trajectory.points, target_pose, dist_threshold, yaw_threshold);
+      trajectory_points, target_pose, dist_threshold, yaw_threshold);
 
   // Calculate interpolation ratio
   // TODO: implement the at() logic for the nested message
-  const auto & curr_pt = trajectory.points[segment_idx];
-  const auto & next_pt = trajectory.points[segment_idx + 1];
+  const auto & curr_pt = trajectory_points.at(segment_idx);
+  const auto & next_pt = trajectory_points.at(segment_idx + 1);
   // TODO: implement the logic with eigen
   // const auto v1 = autoware::universe_utils::point2tfVector(curr_pt, next_pt);
   // const auto v2 = autoware::universe_utils::point2tfVector(curr_pt, target_pose);
-  const auto v1 = std::vector<double>{curr_pt.pose.position.x, curr_pt.pose.position.y, curr_pt.pose.position.z};
-  const auto v2 = std::vector<double>{target_pose.position.x, target_pose.position.y, target_pose.position.z};
-  if (v1.length2() < 1e-3) {
-    return curr_pt;
-  }
+  const auto v1 = Vector3Msg{curr_pt.pose.position.x, curr_pt.pose.position.y, curr_pt.pose.position.z};
+  const auto v2 = Vector3Msg{target_pose.position.x, target_pose.position.y, target_pose.position.z};
+  // if (v1.length2() < 1e-3) {
+  //   return curr_pt;
+  // }
 
   const double ratio = v1.dot(v2) / v1.length2();
   const double clamped_ratio = std::clamp(ratio, 0.0, 1.0);
@@ -100,22 +104,23 @@ PathPointWithLaneIdMsg calcInterpolatedPoint(
   const PathWithLaneIdMsg & path, const PoseMsg & target_pose,
   const bool use_zero_order_hold_for_twist, const double dist_threshold, const double yaw_threshold)
 {
-  if (path.points.empty()) {
+  auto path_points = wrap_sequence(path.points);
+  if (path_points.empty()) {
     PathPointWithLaneIdMsg interpolated_point{};
     interpolated_point.point.pose = target_pose;
     return interpolated_point;
   }
-  if (path.points.size() == 1) {
-    return path.points.front();
+  if (path_points.size() == 1) {
+    return path_points.front();
   }
 
   const size_t segment_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
-      path.points, target_pose, dist_threshold, yaw_threshold);
+      path_points, target_pose, dist_threshold, yaw_threshold);
 
   // Calculate interpolation ratio
-  const auto & curr_pt = path.points.at(segment_idx);
-  const auto & next_pt = path.points.at(segment_idx + 1);
+  const auto & curr_pt = path_points.at(segment_idx);
+  const auto & next_pt = path_points.at(segment_idx + 1);
   // TODO: implement the logic with eigen
   // const auto v1 = autoware::universe_utils::point2tfVector(curr_pt.point, next_pt.point);
   // const auto v2 = autoware::universe_utils::point2tfVector(curr_pt.point, target_pose);

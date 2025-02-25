@@ -68,7 +68,7 @@ externalproject_add(actuation_msgs_pkg
 )
 add_dependencies(app actuation_msgs_pkg)
 
-### BUILD ACTUATION APPLICATION ###
+### BUILD ACTUATION-AUTOWARE APPLICATION ###
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
@@ -80,7 +80,7 @@ get_filename_component(OSQP_INCLUDE_DIR ${OSQP_INCLUDE_SUB_DIR} PATH)
 include(src/autoware_osqp_interface/autoware_osqp_interface.cmake)
 include(src/autoware_universe_utils_min/autoware_universe_utils.cmake)
 include(src/autoware_interpolation_min/autoware_interpolation.cmake)
-# include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
+include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
 # include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
 # include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
 # include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
