@@ -10,6 +10,8 @@ set(OVERLAY_CONFIG "prj_net.conf;${OVERLAY_CONFIG}" CACHE STRING "overlay config
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 find_package(Eigen3 REQUIRED)
 find_package(osqp REQUIRED)
+get_target_property(OSQP_INCLUDE_SUB_DIR osqp::osqp INTERFACE_INCLUDE_DIRECTORIES)
+get_filename_component(OSQP_INCLUDE_DIR ${OSQP_INCLUDE_SUB_DIR} PATH)
 project(actuation_autoware)
 
 # INCLUDES
@@ -72,44 +74,31 @@ add_dependencies(app actuation_msgs_pkg)
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
-# Find dependencies
-get_target_property(OSQP_INCLUDE_SUB_DIR osqp::osqp INTERFACE_INCLUDE_DIRECTORIES)
-get_filename_component(OSQP_INCLUDE_DIR ${OSQP_INCLUDE_SUB_DIR} PATH)
-
-# Add modules
-include(src/autoware_osqp_interface/autoware_osqp_interface.cmake)
-include(src/autoware_universe_utils_min/autoware_universe_utils.cmake)
-include(src/autoware_interpolation_min/autoware_interpolation.cmake)
-include(src/autoware_motion_utils_min/autoware_motion_utils.cmake)
-# include(src/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-# include(src/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
-# include(src/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
-
-# Add main
-list(APPEND APP_SOURCES
-  src/main.cpp
-  src/file.c
-  include/main.hpp
-  include/message_adapter.hpp
-)
-list(APPEND APP_INCLUDE_DIRS
-  ${CMAKE_CURRENT_BINARY_DIR}/install/include
-  ${CycloneDDS_INCLUDE_DIR}
-  ${OSQP_INCLUDE_DIR}
-  ${EIGEN3_INCLUDE_DIR}
-)
+# Add Autoware nodes
+include(src/nodes/autoware_osqp_interface/autoware_osqp_interface.cmake)
+include(src/nodes/autoware_universe_utils_min/autoware_universe_utils.cmake)
+include(src/nodes/autoware_interpolation_min/autoware_interpolation.cmake)
+# include(src/nodes/autoware_motion_utils_min/autoware_motion_utils.cmake)
+# include(src/nodes/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
+# include(src/nodes/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
+# include(src/nodes/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
 
 message("=== Build Summary ===")
 message("App sources: ${APP_SOURCES}")
 message("App headers: ${APP_INCLUDE_DIRS}")
 
-# Build actuation_autoware
+# Build
 target_sources(app PRIVATE
+  src/main.cpp
   ${APP_SOURCES}
 )
 
 target_include_directories(app PRIVATE
   include
+  ${CMAKE_CURRENT_BINARY_DIR}/install/include  
+  ${CycloneDDS_INCLUDE_DIR}
+  ${OSQP_INCLUDE_DIR}
+  ${EIGEN3_INCLUDE_DIR}
   ${APP_INCLUDE_DIRS}
 )
 

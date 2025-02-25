@@ -12,6 +12,7 @@ public/
 *.log
 *.cursorignore
 build_log.txt
+asd.txt
 
 zephyr
 cyclonedds

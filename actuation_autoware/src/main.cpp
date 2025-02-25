@@ -1,7 +1,8 @@
 // Copyright (c) 2024-2025, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "main.hpp"
+#include <zephyr/kernel.h>
+#include "config.hpp"
 
 static void timer_expiry_function(struct k_timer *timer_id)
 {
