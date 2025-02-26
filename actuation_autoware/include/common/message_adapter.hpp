@@ -2,6 +2,7 @@
 #define MESSAGE_ADAPTER_HPP_
 
 #include <vector>
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
