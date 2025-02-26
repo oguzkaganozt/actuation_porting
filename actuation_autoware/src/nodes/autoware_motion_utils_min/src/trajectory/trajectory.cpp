@@ -24,36 +24,36 @@ namespace autoware::motion_utils
 {
 
 // validateNonEmpty
-template void validateNonEmpty<std::vector<PathPointMsg>>(
-  const std::vector<PathPointMsg> &);
-template void validateNonEmpty<std::vector<PathPointWithLaneIdMsg>>(
-  const std::vector<PathPointWithLaneIdMsg> &);
-template void validateNonEmpty<std::vector<TrajectoryPointMsg>>(
-  const std::vector<TrajectoryPointMsg> &);
+template void validateNonEmpty<SequenceWrapper<PathPointMsg>>(
+  const SequenceWrapper<PathPointMsg> &);
+template void validateNonEmpty<SequenceWrapper<PathPointWithLaneIdMsg>>(
+  const SequenceWrapper<PathPointWithLaneIdMsg> &);
+template void validateNonEmpty<SequenceWrapper<TrajectoryPointMsg>>(
+  const SequenceWrapper<TrajectoryPointMsg> &);
 
 // findNearestIndex
-template size_t findNearestIndex<std::vector<PathPointMsg>>(
-  const std::vector<PathPointMsg> & points,
+template size_t findNearestIndex<SequenceWrapper<PathPointMsg>>(
+  const SequenceWrapper<PathPointMsg> & points,
   const PointMsg & point);
-template size_t findNearestIndex<std::vector<PathPointWithLaneIdMsg>>(
-  const std::vector<PathPointWithLaneIdMsg> & points,
+template size_t findNearestIndex<SequenceWrapper<PathPointWithLaneIdMsg>>(
+  const SequenceWrapper<PathPointWithLaneIdMsg> & points,
   const PointMsg & point);
-template size_t findNearestIndex<std::vector<TrajectoryPointMsg>>(
-  const std::vector<TrajectoryPointMsg> & points,
+template size_t findNearestIndex<SequenceWrapper<TrajectoryPointMsg>>(
+  const SequenceWrapper<TrajectoryPointMsg> & points,
   const PointMsg & point);
 
 // findNearestIndex
 template std::optional<size_t>
-findNearestIndex<std::vector<PathPointMsg>>(
-  const std::vector<PathPointMsg> & points,
+findNearestIndex<SequenceWrapper<PathPointMsg>>(
+  const SequenceWrapper<PathPointMsg> & points,
   const PoseMsg & pose, const double max_dist, const double max_yaw);
 template std::optional<size_t>
-findNearestIndex<std::vector<PathPointWithLaneIdMsg>>(
-  const std::vector<PathPointWithLaneIdMsg> & points,
+findNearestIndex<SequenceWrapper<PathPointWithLaneIdMsg>>(
+  const SequenceWrapper<PathPointWithLaneIdMsg> & points,
   const PoseMsg & pose, const double max_dist, const double max_yaw);
 template std::optional<size_t>
-findNearestIndex<std::vector<TrajectoryPointMsg>>(
-  const std::vector<TrajectoryPointMsg> & points,
+findNearestIndex<SequenceWrapper<TrajectoryPointMsg>>(
+  const SequenceWrapper<TrajectoryPointMsg> & points,
   const PoseMsg & pose, const double max_dist, const double max_yaw);
 
 // // isDrivingForward

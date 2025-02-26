@@ -50,12 +50,12 @@ void validateNonEmpty(const T & points)
   }
 }
 
-extern template void validateNonEmpty<std::vector<PathPointMsg>>(
-  const std::vector<PathPointMsg> &);
-extern template void validateNonEmpty<std::vector<PathPointWithLaneIdMsg>>(
-  const std::vector<PathPointWithLaneIdMsg> &);
-extern template void validateNonEmpty<std::vector<TrajectoryPointMsg>>(
-  const std::vector<TrajectoryPointMsg> &);
+extern template void validateNonEmpty<SequenceWrapper<PathPointMsg>>(
+  const SequenceWrapper<PathPointMsg> &);
+extern template void validateNonEmpty<SequenceWrapper<PathPointWithLaneIdMsg>>(
+  const SequenceWrapper<PathPointWithLaneIdMsg> &);
+extern template void validateNonEmpty<SequenceWrapper<TrajectoryPointMsg>>(
+  const SequenceWrapper<TrajectoryPointMsg> &);
 
 /**
  * @brief find nearest point index through points container for a given point.
@@ -90,14 +90,14 @@ size_t findNearestIndex(const T & points, const PointMsg & point)
   return min_idx;
 }
 
-extern template size_t findNearestIndex<std::vector<PathPointMsg>>(
-  const std::vector<PathPointMsg> & points,
+extern template size_t findNearestIndex<SequenceWrapper<PathPointMsg>>(
+  const SequenceWrapper<PathPointMsg> & points,
   const PointMsg & point);
-extern template size_t findNearestIndex<std::vector<PathPointWithLaneIdMsg>>(
-  const std::vector<PathPointWithLaneIdMsg> & points,
+extern template size_t findNearestIndex<SequenceWrapper<PathPointWithLaneIdMsg>>(
+  const SequenceWrapper<PathPointWithLaneIdMsg> & points,
   const PointMsg & point);
-extern template size_t findNearestIndex<std::vector<TrajectoryPointMsg>>(
-  const std::vector<TrajectoryPointMsg> & points,
+extern template size_t findNearestIndex<SequenceWrapper<TrajectoryPointMsg>>(
+  const SequenceWrapper<TrajectoryPointMsg> & points,
   const PointMsg & point);
 
 /**
@@ -161,18 +161,18 @@ std::optional<size_t> findNearestIndex(
 }
 
 extern template std::optional<size_t>
-findNearestIndex<std::vector<PathPointMsg>>(
-  const std::vector<PathPointMsg> & points,
+findNearestIndex<SequenceWrapper<PathPointMsg>>(
+  const SequenceWrapper<PathPointMsg> & points,
   const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<size_t>
-findNearestIndex<std::vector<PathPointWithLaneIdMsg>>(
-  const std::vector<PathPointWithLaneIdMsg> & points,
+findNearestIndex<SequenceWrapper<PathPointWithLaneIdMsg>>(
+  const SequenceWrapper<PathPointWithLaneIdMsg> & points,
   const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 extern template std::optional<size_t>
-findNearestIndex<std::vector<TrajectoryPointMsg>>(
-  const std::vector<TrajectoryPointMsg> & points,
+findNearestIndex<SequenceWrapper<TrajectoryPointMsg>>(
+  const SequenceWrapper<TrajectoryPointMsg> & points,
   const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max());
 

@@ -38,6 +38,7 @@ using awfPlanningMsgsTrajectoryPoint = autoware_planning_msgs_msg_TrajectoryPoin
 using awfPlanningMsgsPathPoint = autoware_planning_msgs_msg_PathPoint;
 using awfPlanningMsgsPathWithLaneId = tier4_planning_msgs_msg_PathWithLaneId;
 using tier4PlanningMsgsPathPointWithLaneId = tier4_planning_msgs_msg_PathPointWithLaneId;
+using awfPlanningMsgsSequenceTrajectoryPoint = dds_sequence_autoware_planning_msgs_msg_TrajectoryPoint;
 
 // Simplified message names
 using PointMsg = geometryMsgsPoint;
@@ -57,5 +58,7 @@ using TrajectoryPointMsg = awfPlanningMsgsTrajectoryPoint;
 using PathPointMsg = awfPlanningMsgsPathPoint;
 using PathWithLaneIdMsg = awfPlanningMsgsPathWithLaneId;
 using PathPointWithLaneIdMsg = tier4PlanningMsgsPathPointWithLaneId;
+using SequenceTrajectoryPoint = awfPlanningMsgsSequenceTrajectoryPoint;
+using SequenceUInt8 = dds_sequence_uint8;
 
 #endif  // ACTUATION_AUTOWARE__MESSAGES_H_
