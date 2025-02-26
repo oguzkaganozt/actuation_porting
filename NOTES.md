@@ -36,6 +36,7 @@
 
 ### Key Notes
 
+- Validate printk, LOG_* 
 - Check wrap_sequence() and wrap_sequence_ptr() functions
 - Validate launch structure and synchronization with the native ROS2 nodes
 - Validate the message conversion between ROS2 and Zephyr
