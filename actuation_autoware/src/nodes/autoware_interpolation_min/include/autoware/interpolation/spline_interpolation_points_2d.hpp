@@ -15,14 +15,16 @@
 #ifndef AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_POINTS_2D_HPP_
 #define AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_POINTS_2D_HPP_
 
-// Standard library
+// Libs
 #include <vector>
+#include "common/common.hpp"
 
 // Autoware
 #include "autoware/interpolation/spline_interpolation.hpp"
 
-// Zephyr App Includes
-#include "common/common.hpp"
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_interpolation_spline_interpolation_points_2d);
 
 namespace autoware::interpolation
 {

@@ -15,23 +15,23 @@
 #ifndef AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_HPP_
 #define AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_HPP_
 
-// Standard library
+// Libs
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <numeric>
 #include <vector>
-
-// Eigen
 #define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
+#include "common/common.hpp"
 
 // Autoware
 #include "autoware/interpolation/interpolation_utils.hpp"
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-// Zephyr App Includes
-#include "common/common.hpp"
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_interpolation_spline_interpolation);
 
 namespace autoware::interpolation
 {

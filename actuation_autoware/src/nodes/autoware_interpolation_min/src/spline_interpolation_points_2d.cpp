@@ -59,7 +59,8 @@ std::array<std::vector<double>, 4> getBaseValues(
 
   // calculate base_keys, base_values
   if (base_x.size() < 2 || base_y.size() < 2 || base_z.size() < 2) {
-    throw std::logic_error("The number of unique points is not enough.");
+    LOG_ERR("Error: The number of unique points is not enough.");
+    return std::array<std::vector<double>, 4>();
   }
 
   const std::vector<double> base_s = calcEuclidDist(base_x, base_y);
@@ -98,7 +99,8 @@ PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
   const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    throw std::out_of_range("idx is out of range.");
+    LOG_ERR("Error: idx is out of range.");
+    return PointMsg();
   }
 
   double whole_s = base_s_vec_.at(idx) + s;
@@ -123,7 +125,8 @@ PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
 double SplineInterpolationPoints2d::getSplineInterpolatedYaw(const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    throw std::out_of_range("idx is out of range.");
+    LOG_ERR("Error: idx is out of range.");
+    return 0.0;
   }
 
   const double whole_s =
@@ -149,7 +152,8 @@ double SplineInterpolationPoints2d::getSplineInterpolatedCurvature(
   const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    throw std::out_of_range("idx is out of range.");
+    LOG_ERR("Error: idx is out of range.");
+    return 0.0;  // Return 0 curvature as fallback when idx is out of range
   }
 
   const double whole_s =
@@ -189,7 +193,8 @@ size_t SplineInterpolationPoints2d::getOffsetIndex(const size_t idx, const doubl
 double SplineInterpolationPoints2d::getAccumulatedLength(const size_t idx) const
 {
   if (base_s_vec_.size() <= idx) {
-    throw std::out_of_range("idx is out of range.");
+    LOG_ERR("Error: idx is out of range.");
+    return 0.0;
   }
   return base_s_vec_.at(idx);
 }

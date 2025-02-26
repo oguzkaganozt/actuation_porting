@@ -15,10 +15,15 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 
+// Libs
+#include "common/common.hpp"
+
+// Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-// Zephyr App Includes
-#include "common/common.hpp"
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_universe_utils_geometry_pose_deviation);
 
 namespace autoware::universe_utils
 {

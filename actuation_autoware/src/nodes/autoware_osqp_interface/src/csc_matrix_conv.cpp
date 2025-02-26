@@ -113,23 +113,26 @@ CSC_Matrix calCSCMatrixTrapezoidal(const Eigen::MatrixXd & mat)
 
 void printCSCMatrix(const CSC_Matrix & csc_mat)
 {
-  std::cout << "[";
+  std::stringstream ss;
+  ss << "[";
   for (const c_float & val : csc_mat.m_vals) {
-    std::cout << val << ", ";
+    ss << val << ", ";
   }
-  std::cout << "]\n";
+  ss << "]\n";
 
-  std::cout << "[";
+  ss << "[";
   for (const c_int & row : csc_mat.m_row_idxs) {
-    std::cout << row << ", ";
+    ss << row << ", ";
   }
-  std::cout << "]\n";
+  ss << "]\n";
 
-  std::cout << "[";
+  ss << "[";
   for (const c_int & col : csc_mat.m_col_idxs) {
-    std::cout << col << ", ";
+    ss << col << ", ";
   }
-  std::cout << "]\n";
+  ss << "]\n";
+
+  LOG_INF("%s", ss.str().c_str());
 }
 
 }  // namespace autoware::osqp_interface

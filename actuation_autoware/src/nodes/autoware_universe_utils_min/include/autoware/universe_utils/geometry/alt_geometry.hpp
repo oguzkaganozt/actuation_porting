@@ -15,19 +15,19 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 
-// Standard library
+// Libs
 #include <cmath>
 #include <list>
 #include <optional>
 #include <utility>
 #include <vector>
-
-// Eigen
 #define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
-
-// Zephyr App Includes
 #include "common/common.hpp"
+
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_universe_utils_geometry_alt_geometry);
 
 namespace autoware::universe_utils {
 

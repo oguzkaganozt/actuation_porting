@@ -15,14 +15,16 @@
 #ifndef AUTOWARE__INTERPOLATION__LINEAR_INTERPOLATION_HPP_
 #define AUTOWARE__INTERPOLATION__LINEAR_INTERPOLATION_HPP_
 
-// Standard library
+// Libs
 #include <vector>
+#include "common/common.hpp"
 
 // Autoware
 #include "autoware/interpolation/interpolation_utils.hpp"
 
-// Zephyr App Includes
-#include "common/common.hpp"
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_interpolation_linear_interpolation);
 
 namespace autoware::interpolation
 {

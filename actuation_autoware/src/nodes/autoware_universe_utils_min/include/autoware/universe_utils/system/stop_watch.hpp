@@ -15,9 +15,14 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__SYSTEM__STOP_WATCH_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__SYSTEM__STOP_WATCH_HPP_
 
+// Libs
 #include <chrono>
 #include <string>
 #include <unordered_map>
+
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_universe_utils_system_stop_watch);
 
 namespace autoware::universe_utils
 {

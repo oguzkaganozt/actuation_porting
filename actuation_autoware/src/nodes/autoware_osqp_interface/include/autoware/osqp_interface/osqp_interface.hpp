@@ -15,17 +15,22 @@
 #ifndef AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 #define AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 
-#include "autoware/osqp_interface/csc_matrix_conv.hpp"
-#include "autoware/osqp_interface/visibility_control.hpp"
-#include "osqp/osqp.h"
-
-#include <Eigen/Core>
-
+// Libs
 #include <limits>
 #include <memory>
 #include <string>
 #include <tuple>
 #include <vector>
+#include <Eigen/Core>
+#include "osqp/osqp.h"
+
+// Autoware
+#include "autoware/osqp_interface/csc_matrix_conv.hpp"
+#include "autoware/osqp_interface/visibility_control.hpp"
+
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_osqp_interface_osqp_interface);
 
 namespace autoware::osqp_interface
 {

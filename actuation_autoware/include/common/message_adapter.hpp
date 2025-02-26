@@ -14,7 +14,7 @@
 // Zephyr
 #include <zephyr/logging/log.h>
 #include <zephyr/kernel.h>
-LOG_MODULE_DECLARE(message_adapter, LOG_LEVEL_DBG);
+LOG_MODULE_DECLARE(message_adapter);
 
 template<typename T>
 class OwnedSequence {

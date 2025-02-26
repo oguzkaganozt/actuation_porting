@@ -17,6 +17,10 @@
 
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
 
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_vehicle_info_utils_vehicle_info);
+
 namespace autoware::vehicle_info_utils
 {
 /// Data class for vehicle info

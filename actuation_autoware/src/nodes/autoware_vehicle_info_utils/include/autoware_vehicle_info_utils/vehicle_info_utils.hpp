@@ -17,6 +17,10 @@
 
 #include "autoware_vehicle_info_utils/vehicle_info.hpp"
 
+// Zephyr Utils
+#include <zephyr/logging/log.h>
+LOG_MODULE_DECLARE(autoware_vehicle_info_utils_vehicle_info_utils);
+
 namespace autoware::vehicle_info_utils
 {
 /// This is a convenience class for saving you from declaring all parameters
