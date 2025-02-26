@@ -431,7 +431,6 @@ calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
   const std::vector<TrajectoryPointMsg> & points, const size_t src_idx,
   const size_t dst_idx);
 
-
 /**
  * @brief calculate length of 2D distance between two points, specified by start point and end point
  * index of points container.

@@ -285,6 +285,22 @@ public:
         return sequence->_buffer[sequence->_length - 1];
     }
 
+    reference at(size_type index) {
+        if (index >= sequence->_length) {
+            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[index];
+    }
+
+    const_reference at(size_type index) const {
+        if (index >= sequence->_length) {
+            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[index];
+    }
+
     bool reserve(size_type new_cap) {
         return ensure_capacity(new_cap);
     }
@@ -422,29 +438,22 @@ public:
     bool is_valid() const noexcept {
         return sequence != nullptr && sequence->_buffer != nullptr;
     }
-
-    // Element access with bounds checking
-    reference at(size_type index) {
-        if (index >= sequence->_length) {
-            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
-            return sequence->_buffer[0];
-        }
-        return sequence->_buffer[index];
-    }
-
-    const_reference at(size_type index) const {
-        if (index >= sequence->_length) {
-            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
-            return sequence->_buffer[0];
-        }
-        return sequence->_buffer[index];
-    }
 };
 
-// Helper function template
+// Helper function for wrapping raw sequences
 template<typename T>
 inline SequenceWrapper<T> wrap_sequence(T& seq) {
     return SequenceWrapper<T>(seq);
+}
+
+template<typename T>
+inline SequenceWrapper<T>& wrap_sequence(SequenceWrapper<T>& seq) {
+    return seq;  // Already wrapped, return as-is
+}
+
+template<typename T>
+inline const SequenceWrapper<T>& wrap_sequence(const SequenceWrapper<T>& seq) {
+    return seq;  // Already wrapped, return const ref as-is
 }
 
 // Add logging function for debugging
@@ -468,27 +477,6 @@ void log_sequence(const SequenceWrapper<T>& seq, const char* name = "SequenceWra
     } else {
         printk("  (empty)\n");
     }
-}
-
-// Add a helper to safely initialize a sequence
-template<typename T>
-bool initialize_sequence(T& seq, size_t initial_capacity = 0) {
-    // If already initialized or no capacity requested, just ensure length is 0
-    if (seq._buffer != nullptr || initial_capacity == 0) {
-        seq._length = 0;
-        return true;
-    }
-    
-    // Allocate new buffer
-    using ElementType = typename std::remove_pointer<decltype(T::_buffer)>::type;
-    seq._buffer = static_cast<ElementType*>(k_malloc(initial_capacity * sizeof(ElementType)));
-    if (!seq._buffer) {
-        return false;
-    }
-    
-    seq._maximum = initial_capacity;
-    seq._length = 0;
-    return true;
 }
 
 // Add a helper to safely free a sequence
