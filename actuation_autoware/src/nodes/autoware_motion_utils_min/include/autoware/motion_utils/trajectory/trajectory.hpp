@@ -434,7 +434,7 @@ double calcLongitudinalOffsetToSegment(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      // RCLCPP_DEBUG(get_logger(), "%s", e.what());
+      LOG_ERROR(e.what().c_str());
       return std::nan("");
     }
   }
@@ -444,13 +444,7 @@ double calcLongitudinalOffsetToSegment(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Longitudinal offset calculation is not supported for the same points.");
     // autoware::universe_utils::print_backtrace();
-    if (throw_exception) {
-      throw std::runtime_error(error_message);
-    }
-    // RCLCPP_DEBUG(
-    //   get_logger(),
-    //   "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
-    //   error_message.c_str());
+    LOG_ERROR(error_message.c_str());
     return std::nan("");
   }
 
@@ -593,10 +587,7 @@ double calcLateralOffset(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      // RCLCPP_DEBUG(
-      //   get_logger(),
-      //   "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
-      //   e.what());
+      LOG_ERROR(e.what().c_str());
       return std::nan("");
     }
   }
@@ -605,14 +596,7 @@ double calcLateralOffset(
     const std::string error_message(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Lateral offset calculation is not supported for the same points.");
-    // autoware::universe_utils::print_backtrace();
-    if (throw_exception) {
-      throw std::runtime_error(error_message);
-    }
-    // RCLCPP_DEBUG(
-    //   get_logger(),
-    //   "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
-    //   error_message.c_str());
+    LOG_ERROR(error_message.c_str());
     return std::nan("");
   }
 
@@ -666,10 +650,7 @@ double calcLateralOffset(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      // RCLCPP_DEBUG(
-      //   get_logger(),
-      //   "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
-      //   e.what());
+      LOG_ERROR(e.what().c_str());
       return std::nan("");
     }
   }
@@ -678,14 +659,10 @@ double calcLateralOffset(
     const std::string error_message(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Lateral offset calculation is not supported for the same points.");
-    // autoware::universe_utils::print_backtrace();
     if (throw_exception) {
-      throw std::runtime_error(error_message);
+      LOG_ERROR(error_message.c_str());
+      return;
     }
-    // RCLCPP_DEBUG(
-    //   get_logger(),
-    //   "%s Return NaN since no_throw option is enabled. The maintainer must check the code.",
-    //   error_message.c_str());
     return std::nan("");
   }
 
