@@ -16,14 +16,12 @@
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__INTERPOLATION_HPP_
 
 // Standard library
+#include "common/common.hpp"
 #include <algorithm>
 #include <limits>
 
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
-
-// Zephyr App Includes
-#include "common/common.hpp"
 
 namespace autoware::motion_utils
 {

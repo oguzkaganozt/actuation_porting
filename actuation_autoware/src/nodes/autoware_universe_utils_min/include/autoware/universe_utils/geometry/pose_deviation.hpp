@@ -21,10 +21,6 @@
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-// Zephyr Utils
-#include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(autoware_universe_utils_geometry_pose_deviation);
-
 namespace autoware::universe_utils
 {
 struct PoseDeviation

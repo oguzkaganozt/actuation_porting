@@ -1,7 +1,6 @@
 #ifndef MESSAGE_ADAPTER_HPP_
 #define MESSAGE_ADAPTER_HPP_
 
-// Standard Library
 #include <vector>
 #include <cstddef>
 #include <cstdint>
@@ -11,10 +10,8 @@
 #include <algorithm>
 #include <memory>
 
-// Zephyr
-#include <zephyr/logging/log.h>
 #include <zephyr/kernel.h>
-LOG_MODULE_DECLARE(message_adapter);
+#include <zephyr/sys/printk.h>
 
 template<typename T>
 class OwnedSequence {
@@ -95,7 +92,7 @@ private:
         // Add a cap to prevent excessive allocation attempts
         const size_t max_allowed_capacity = 1024;  // Adjust based on your system constraints
         if (required_capacity > max_allowed_capacity) {
-            LOG_ERR("Requested capacity %zu exceeds maximum allowed (%zu)", 
+            printk("Requested capacity %zu exceeds maximum allowed (%zu)\n", 
                    required_capacity, max_allowed_capacity);
             return false;
         }
@@ -105,13 +102,13 @@ private:
         
         // Add size overflow check
         if (new_capacity > SIZE_MAX / sizeof(ElementType)) {
-            LOG_ERR("Allocation size would overflow");
+            printk("Allocation size would overflow\n");
             return false;
         }
         
         ElementType* new_buffer = static_cast<ElementType*>(k_malloc(new_capacity * sizeof(ElementType)));
         if (!new_buffer) {
-            LOG_ERR("Failed to allocate memory for sequence buffer");
+            printk("Failed to allocate memory for sequence buffer\n");
             return false;
         }
         
@@ -222,7 +219,7 @@ public:
     // Safe element access with error reporting
     bool at(size_type index, reference& out_value) {
         if (index >= sequence->_length) {
-            LOG_ERR("Index %zu out of range (size: %zu)", index, sequence->_length);
+            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
             return false;
         }
         out_value = sequence->_buffer[index];
@@ -257,7 +254,7 @@ public:
 
     reference front() {
         if (empty()) {
-            LOG_ERR("Cannot access front() of empty sequence");
+            printk("Cannot access front() of empty sequence\n");
             return sequence->_buffer[0];
         }
         return sequence->_buffer[0];
@@ -265,7 +262,7 @@ public:
 
     const_reference front() const {
         if (empty()) {
-            LOG_ERR("Cannot access front() of empty sequence");
+            printk("Cannot access front() of empty sequence\n");
             return sequence->_buffer[0];
         }
         return sequence->_buffer[0];
@@ -273,7 +270,7 @@ public:
 
     reference back() {
         if (empty()) {
-            LOG_ERR("Cannot access back() of empty sequence");
+            printk("Cannot access back() of empty sequence\n");
             return sequence->_buffer[0];
         }
         return sequence->_buffer[sequence->_length - 1];
@@ -281,7 +278,7 @@ public:
 
     const_reference back() const {
         if (empty()) {
-            LOG_ERR("Cannot access back() of empty sequence");
+            printk("Cannot access back() of empty sequence\n");
             return sequence->_buffer[0];
         }
         return sequence->_buffer[sequence->_length - 1];
@@ -365,12 +362,12 @@ public:
     // Insert element at position
     bool insert_at(size_type position, const value_type& value) {
         if (position > sequence->_length) {
-            LOG_ERR("Insert position %zu out of range (size: %zu)", position, sequence->_length);
+            printk("Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
             return false;
         }
         
         if (!ensure_capacity(sequence->_length + 1)) {
-            LOG_ERR("Failed to allocate memory for insert operation");
+            printk("Failed to allocate memory for insert operation\n");
             return false;
         }
         
@@ -390,7 +387,7 @@ public:
     // Erase element at position
     bool erase_at(size_type position) {
         if (position >= sequence->_length) {
-            LOG_ERR("Erase position %zu out of range (size: %zu)", position, sequence->_length);
+            printk("Erase position %zu out of range (size: %zu)\n", position, sequence->_length);
             return false;
         }
         
@@ -428,7 +425,7 @@ public:
     // Element access with bounds checking
     reference at(size_type index) {
         if (index >= sequence->_length) {
-            LOG_ERR("Index %zu out of range (size: %zu)", index, sequence->_length);
+            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
             return sequence->_buffer[0];
         }
         return sequence->_buffer[index];
@@ -436,7 +433,7 @@ public:
 
     const_reference at(size_type index) const {
         if (index >= sequence->_length) {
-            LOG_ERR("Index %zu out of range (size: %zu)", index, sequence->_length);
+            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
             return sequence->_buffer[0];
         }
         return sequence->_buffer[index];
@@ -452,23 +449,23 @@ inline SequenceWrapper<T> wrap_sequence(T& seq) {
 // Add logging function for debugging
 template<typename T>
 void log_sequence(const SequenceWrapper<T>& seq, const char* name = "SequenceWrapper") {
-    LOG_INF("%s[size=%zu, capacity=%zu]", name, seq.size(), seq.capacity());
+    printk("%s[size=%zu, capacity=%zu]\n", name, seq.size(), seq.capacity());
     
     if (!seq.empty()) {
-        LOG_INF("Contents:");
+        printk("Contents:\n");
         for (size_t i = 0; i < (seq.size() < 5 ? seq.size() : 5); ++i) {
             if constexpr (std::is_arithmetic_v<typename SequenceWrapper<T>::value_type>) {
-                LOG_INF("  [%zu]: %d", i, static_cast<int>(seq[i]));
+                printk("  [%zu]: %d\n", i, static_cast<int>(seq[i]));
             } else {
-                LOG_INF("  [%zu]: (complex element)", i);
+                printk("  [%zu]: (complex element)\n", i);
             }
         }
         
         if (seq.size() > 5) {
-            LOG_INF("  ... and %zu more elements", seq.size() - 5);
+            printk("  ... and %zu more elements\n", seq.size() - 5);
         }
     } else {
-        LOG_INF("  (empty)");
+        printk("  (empty)\n");
     }
 }
 

@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <vector>
+
 #include "autoware/interpolation/linear_interpolation.hpp"
 
-#include <vector>
+LOG_MODULE_REGISTER(autoware_interpolation);
 
 namespace autoware::interpolation
 {

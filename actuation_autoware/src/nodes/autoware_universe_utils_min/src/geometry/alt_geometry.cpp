@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/universe_utils/geometry/alt_geometry.hpp"
-
+// Libs
 #include <algorithm>
 #include <limits>
 #include <utility>
 #include <vector>
 #include <cmath>
 #include <Eigen/Dense>
+
+// Autoware
+#include "autoware/universe_utils/geometry/alt_geometry.hpp"
+LOG_MODULE_DECLARE(autoware_universe_utils_geometry);
 
 namespace autoware::universe_utils
 {

@@ -15,11 +15,9 @@
 #ifndef AUTOWARE__MOTION_UTILS__VEHICLE__VEHICLE_STATE_CHECKER_HPP_
 #define AUTOWARE__MOTION_UTILS__VEHICLE__VEHICLE_STATE_CHECKER_HPP_
 
-// standard library
-#include <deque>
-
-// Zephyr App Includes
+// Libs
 #include "common/common.hpp"
+#include <deque>
 
 namespace autoware::motion_utils
 {

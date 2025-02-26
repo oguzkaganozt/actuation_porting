@@ -18,4 +18,3 @@ modules/
 *.exe
 *.out
 *.gitignore
-*.log

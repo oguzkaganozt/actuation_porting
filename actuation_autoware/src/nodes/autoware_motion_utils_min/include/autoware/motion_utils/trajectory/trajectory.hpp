@@ -15,9 +15,8 @@
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 
+// Libs
 #include "common/common.hpp"
-
-// standard library
 #include <algorithm>
 #include <limits>
 #include <optional>
@@ -27,14 +26,7 @@
 #include <vector>
 #include <numeric>
 #include <cmath>
-
-// Eigen
-#define EIGEN_MPL2_ONLY
 #include <Eigen/Geometry>
-
-// Zephyr Utils
-#include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(autoware_motion_utils_trajectory, LOG_LEVEL_DBG);
 
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
@@ -51,6 +43,7 @@ namespace autoware::motion_utils
 template <class T>
 void validateNonEmpty(const T & points)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
   if (points.empty()) {
     LOG_ERR("[autoware_motion_utils] validateNonEmpty(): Points is empty.");
     return;
@@ -217,6 +210,8 @@ template <class T>
 std::optional<size_t> searchZeroVelocityIndex(
   const T & points_with_twist, const size_t src_idx, const size_t dst_idx)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
@@ -249,6 +244,8 @@ searchZeroVelocityIndex<std::vector<TrajectoryPointMsg>>(
 template <class T>
 std::optional<size_t> searchZeroVelocityIndex(const T & points_with_twist, const size_t src_idx)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+  
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
@@ -273,7 +270,9 @@ searchZeroVelocityIndex<std::vector<TrajectoryPointMsg>>(
 template <class T>
 std::optional<size_t> searchZeroVelocityIndex(const T & points_with_twist)
 {
-  return searchZeroVelocityIndex(points_with_twist, 0, points_with_twist.size());
+  // Convert trajectory points to vector
+  auto points_with_twist_vec = wrap_sequence(points_with_twist);
+  return searchZeroVelocityIndex(points_with_twist_vec, 0, points_with_twist_vec.size());
 }
 
 extern template std::optional<size_t>
@@ -337,6 +336,8 @@ std::optional<size_t> findNearestIndex(
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -404,6 +405,8 @@ double calcLongitudinalOffsetToSegment(
   const T & points, const size_t seg_idx, const PointMsg & p_target,
   const bool throw_exception = false)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   if (seg_idx >= points.size() - 1) {
     const std::string error_message(
       "[autoware_motion_utils] " + std::string(__func__) +
@@ -463,16 +466,21 @@ calcLongitudinalOffsetToSegment<std::vector<TrajectoryPointMsg>>(
 template <class T>
 size_t findNearestSegmentIndex(const T & points, const PointMsg & point)
 {
-  const size_t nearest_idx = findNearestIndex(points, point);
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
+  // Convert points to vector
+  auto points_vec = wrap_sequence(points);
+
+  const size_t nearest_idx = findNearestIndex(points_vec, point);
 
   if (nearest_idx == 0) {
     return 0;
   }
-  if (nearest_idx == points.size() - 1) {
-    return points.size() - 2;
+  if (nearest_idx == points_vec.size() - 1) {
+    return points_vec.size() - 2;
   }
 
-  const double signed_length = calcLongitudinalOffsetToSegment(points, nearest_idx, point);
+  const double signed_length = calcLongitudinalOffsetToSegment(points_vec, nearest_idx, point);
 
   if (signed_length <= 0) {
     return nearest_idx - 1;
@@ -509,6 +517,8 @@ std::optional<size_t> findNearestSegmentIndex(
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   const auto nearest_idx = findNearestIndex(points, pose, max_dist, max_yaw);
 
   if (!nearest_idx) {
@@ -561,6 +571,8 @@ double calcLateralOffset(
   const T & points, const PointMsg & p_target, const size_t seg_idx,
   const bool throw_exception = false)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   const auto overlap_removed_points = removeOverlapPoints(points, 0);
 
   try {
@@ -620,6 +632,8 @@ template <class T>
 double calcLateralOffset(
   const T & points, const PointMsg & p_target, const bool throw_exception = false)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   const auto overlap_removed_points = removeOverlapPoints(points, 0);
 
   try {
@@ -665,6 +679,8 @@ extern template double calcLateralOffset<std::vector<TrajectoryPointMsg>>(
 template <class T>
 double calcSignedArcLength(const T & points, const size_t src_idx, const size_t dst_idx)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -707,6 +723,8 @@ template <class T>
 std::vector<double> calcSignedArcLengthPartialSum(
   const T & points, const size_t src_idx, const size_t dst_idx)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -759,6 +777,7 @@ template <class T>
 double calcSignedArcLength(
   const T & points, const PointMsg & src_point, const size_t dst_idx)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -801,6 +820,8 @@ template <class T>
 double calcSignedArcLength(
   const T & points, const size_t src_idx, const PointMsg & dst_point)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -839,6 +860,7 @@ double calcSignedArcLength(
   const T & points, const PointMsg & src_point,
   const PointMsg & dst_point)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -878,6 +900,8 @@ calcSignedArcLength<std::vector<TrajectoryPointMsg>>(
 template <class T>
 double calcArcLength(const T & points)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -907,6 +931,8 @@ extern template double calcArcLength<std::vector<TrajectoryPointMsg>>(
 template <class T>
 std::vector<double> calcCurvature(const T & points)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   std::vector<double> curvature_vec(points.size(), 0.0);
   if (points.size() < 3) {
     return curvature_vec;
@@ -948,6 +974,8 @@ template <class T>
 std::vector<std::pair<double, std::pair<double, double>>> calcCurvatureAndSegmentLength(
   const T & points)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   // segment length is pair of segment length between {p1, p2} and {p2, p3}
   std::vector<std::pair<double, std::pair<double, double>>> curvature_and_segment_length_vec;
   curvature_and_segment_length_vec.reserve(points.size());
@@ -1003,6 +1031,8 @@ template <class T>
 std::optional<double> calcDistanceToForwardStopPoint(
   const T & points_with_twist, const size_t src_idx = 0)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
@@ -1037,6 +1067,8 @@ template <class T>
 std::optional<PointMsg> calcLongitudinalOffsetPoint(
   const T & points, const size_t src_idx, const double offset, const bool throw_exception = false)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -1113,6 +1145,8 @@ template <class T>
 std::optional<PointMsg> calcLongitudinalOffsetPoint(
   const T & points, const PointMsg & src_point, const double offset)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -1161,6 +1195,7 @@ std::optional<PoseMsg> calcLongitudinalOffsetPose(
   const T & points, const size_t src_idx, const double offset,
   const bool set_orientation_from_position_direction = true, const bool throw_exception = false)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -1260,6 +1295,7 @@ std::optional<PoseMsg> calcLongitudinalOffsetPose(
   const T & points, const PointMsg & src_point, const double offset,
   const bool set_orientation_from_position_direction = true)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -1306,6 +1342,8 @@ std::optional<size_t> insertTargetPoint(
   const size_t seg_idx, const PointMsg & p_target, T & points,
   const double overlap_threshold = 1e-3)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
@@ -1409,6 +1447,8 @@ std::optional<size_t> insertTargetPoint(
   const double insert_point_length, const PointMsg & p_target, T & points,
   const double overlap_threshold = 1e-3)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   validateNonEmpty(points);
 
   if (insert_point_length < 0.0) {
@@ -1464,6 +1504,8 @@ std::optional<size_t> insertTargetPoint(
   const size_t src_segment_idx, const double insert_point_length, T & points,
   const double overlap_threshold = 1e-3)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   validateNonEmpty(points);
 
   if (src_segment_idx >= points.size() - 1) {
@@ -1541,6 +1583,8 @@ std::optional<size_t> insertTargetPoint(
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max(), const double overlap_threshold = 1e-3)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   validateNonEmpty(points);
 
   if (insert_point_length < 0.0) {
@@ -1592,6 +1636,8 @@ std::optional<size_t> insertStopPoint(
   const size_t src_segment_idx, const double distance_to_stop_point, T & points_with_twist,
   const double overlap_threshold = 1e-3)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   validateNonEmpty(points_with_twist);
 
   if (distance_to_stop_point < 0.0 || src_segment_idx >= points_with_twist.size() - 1) {
@@ -2183,6 +2229,8 @@ std::optional<double> calcDistanceToForwardStopPoint(
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
@@ -2311,6 +2359,7 @@ T cropPoints(
   const T & points, const PointMsg & target_pos, const size_t target_seg_idx,
   const double forward_length, const double backward_length)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
   if (points.empty()) {
     return T{};
   }
@@ -2362,6 +2411,8 @@ template <class T>
 double calcYawDeviation(
   const T & points, const PoseMsg & pose, const bool throw_exception = false)
 {
+  LOG_MODULE_DECLARE(motion_utils_trajectory);
+  
   const auto overlap_removed_points = removeOverlapPoints(points, 0);
 
   try {

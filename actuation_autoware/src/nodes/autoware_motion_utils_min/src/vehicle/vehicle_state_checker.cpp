@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/motion_utils/vehicle/vehicle_state_checker.hpp"
-
-#include "autoware/motion_utils/trajectory/trajectory.hpp"
-
 #include <string>
 #include <chrono>
+
+#include "autoware/motion_utils/vehicle/vehicle_state_checker.hpp"
+#include "autoware/motion_utils/trajectory/trajectory.hpp"
+
+LOG_MODULE_REGISTER(motion_utils_vehicle_state_checker);
 
 namespace autoware::motion_utils
 {

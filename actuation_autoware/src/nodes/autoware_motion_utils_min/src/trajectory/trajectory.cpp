@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/motion_utils/trajectory/trajectory.hpp"
-
 #include <algorithm>
 #include <utility>
 #include <vector>
+
+#include "autoware/motion_utils/trajectory/trajectory.hpp"
+
+LOG_MODULE_REGISTER(motion_utils_trajectory);
 
 namespace autoware::motion_utils
 {

@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/osqp_interface/csc_matrix_conv.hpp"
-
-#include <Eigen/Core>
-#include <Eigen/SparseCore>
-
+// Libs
 #include <exception>
 #include <iostream>
 #include <vector>
+#include <Eigen/Core>
+#include <Eigen/SparseCore>
+
+// Autoware
+#include "autoware/osqp_interface/csc_matrix_conv.hpp"
+
+LOG_MODULE_DECLARE(autoware_osqp_interface);
 
 namespace autoware::osqp_interface
 {

@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/universe_utils/geometry/geometry.hpp"
-#include <Eigen/Geometry>
+// Libs
 #include <string>
+#include <Eigen/Geometry>
+
+// Autoware
+#include "autoware/universe_utils/geometry/geometry.hpp"
+LOG_MODULE_REGISTER(autoware_universe_utils_geometry);
 
 namespace autoware::universe_utils
 {

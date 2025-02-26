@@ -16,20 +16,17 @@
 #define AUTOWARE__INTERPOLATION__INTERPOLATION_UTILS_HPP_
 
 // Libs
+#include "common/common.hpp"
 #include <algorithm>
 #include <array>
 #include <stdexcept>
 #include <vector>
-#include "common/common.hpp"
-
-// Zephyr Utils
-#include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(autoware_interpolation_utils_interpolation_utils);
 
 namespace autoware::interpolation
 {
 inline bool isIncreasing(const std::vector<double> & x)
 {
+  LOG_MODULE_DECLARE(autoware_interpolation);
   if (x.empty()) {
     LOG_ERR("Error: Points is empty.");
     return false;
@@ -46,6 +43,7 @@ inline bool isIncreasing(const std::vector<double> & x)
 
 inline bool isNotDecreasing(const std::vector<double> & x)
 {
+  LOG_MODULE_DECLARE(autoware_interpolation);
   if (x.empty()) {
     LOG_ERR("Error: Points is empty.");
     return false;
@@ -63,6 +61,7 @@ inline bool isNotDecreasing(const std::vector<double> & x)
 inline std::vector<double> validateKeys(
   const std::vector<double> & base_keys, const std::vector<double> & query_keys)
 {
+  LOG_MODULE_DECLARE(autoware_interpolation);
   // when vectors are empty
   if (base_keys.empty() || query_keys.empty()) {
     LOG_ERR("Error: Points is empty.");
@@ -103,6 +102,7 @@ template <class T>
 void validateKeysAndValues(
   const std::vector<double> & base_keys, const std::vector<T> & base_values)
 {
+  LOG_MODULE_DECLARE(autoware_interpolation);
   // when vectors are empty
   if (base_keys.empty() || base_values.empty()) {
     LOG_ERR("Error: Points is empty.");

@@ -16,22 +16,17 @@
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__GEOMETRY_HPP_
 
 // Libs
+#include "common/common.hpp"
 #include <exception>
 #include <string>
 #include <vector>
 #include <cmath>
-#define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
-#include "common/common.hpp"
 
 // Autoware
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
-
-// Zephyr Utils
-#include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(autoware_universe_utils_geometry_geometry);
 
 namespace autoware::universe_utils
 {

@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <vector>
+
 #include "autoware/interpolation/spline_interpolation_points_2d.hpp"
 
-#include <vector>
+LOG_MODULE_DECLARE(autoware_interpolation);
 
 namespace autoware::interpolation
 {

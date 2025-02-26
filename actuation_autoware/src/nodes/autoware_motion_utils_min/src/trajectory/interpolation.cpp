@@ -15,7 +15,8 @@
 #include "autoware/motion_utils/trajectory/interpolation.hpp"
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 #include "autoware/interpolation/linear_interpolation.hpp"
-#include "common/common.hpp"
+
+LOG_MODULE_DECLARE(motion_utils_trajectory);
 
 namespace autoware::motion_utils
 {

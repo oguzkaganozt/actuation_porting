@@ -15,9 +15,11 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__MATH__NORMALIZATION_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__MATH__NORMALIZATION_HPP_
 
-#include "autoware/universe_utils/math/constants.hpp"
-
+// Libs
 #include <cmath>
+
+// Autoware
+#include "autoware/universe_utils/math/constants.hpp"
 
 namespace autoware::universe_utils
 {

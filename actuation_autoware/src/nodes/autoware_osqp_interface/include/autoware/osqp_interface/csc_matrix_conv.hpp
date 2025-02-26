@@ -16,17 +16,13 @@
 #define AUTOWARE__OSQP_INTERFACE__CSC_MATRIX_CONV_HPP_
 
 // Libs
+#include "common/common.hpp"
 #include <vector>
-#define EIGEN_MPL2_ONLY
 #include <Eigen/Core>
 #include "osqp/glob_opts.h"  // for 'c_int' type ('long' or 'long long')
 
 // Autoware
 #include "autoware/osqp_interface/visibility_control.hpp"
-
-// Zephyr Utils
-#include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(autoware_osqp_interface_csc_matrix_conv);
 
 namespace autoware::osqp_interface
 {

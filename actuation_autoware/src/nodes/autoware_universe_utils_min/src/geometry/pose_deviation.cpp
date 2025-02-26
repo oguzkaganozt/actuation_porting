@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Libs
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
 // Autoware
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 
-// Eigen
-#define EIGEN_MPL2_ONLY
-#include <Eigen/Core>
-#include <Eigen/Geometry>
+LOG_MODULE_DECLARE(autoware_universe_utils_geometry);
 
 namespace autoware::universe_utils
 {
