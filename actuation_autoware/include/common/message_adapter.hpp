@@ -68,18 +68,12 @@ public:
 template<typename T>
 class SequenceWrapper {
 private:
-    // Static assertions to verify sequence structure
-    static_assert(std::is_member_object_pointer_v<decltype(&T::_length)>,
-        "Type must have _length member");
-    static_assert(std::is_member_object_pointer_v<decltype(&T::_buffer)>,
-        "Type must have _buffer member");
-    static_assert(std::is_member_object_pointer_v<decltype(&T::_maximum)>,
-        "Type must have _maximum member");
-    static_assert(std::is_trivially_copyable_v<typename std::remove_pointer<decltype(T::_buffer)>::type>,
-        "Buffer element type must be trivially copyable");
+    static_assert(std::is_member_object_pointer_v<decltype(&T::_length)>, "Type must have _length member");
+    static_assert(std::is_member_object_pointer_v<decltype(&T::_buffer)>, "Type must have _buffer member");
+    static_assert(std::is_member_object_pointer_v<decltype(&T::_maximum)>, "Type must have _maximum member");
     static_assert(std::is_pointer_v<decltype(T::_buffer)>,
         "_buffer member must be a pointer type");
-
+    
     T* sequence;
     std::unique_ptr<OwnedSequence<T>> owned_sequence;
     
@@ -93,15 +87,14 @@ private:
         // Add a cap to prevent excessive allocation attempts
         const size_t max_allowed_capacity = 1024;  // Adjust based on your system constraints
         if (required_capacity > max_allowed_capacity) {
-            printk("Requested capacity %zu exceeds maximum allowed (%zu)\n", 
-                   required_capacity, max_allowed_capacity);
+            printk("Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, max_allowed_capacity);
             return false;
         }
         
         size_t new_capacity = required_capacity + 16;  // Growth strategy
         using ElementType = typename std::remove_pointer<decltype(T::_buffer)>::type;
         
-        // Add size overflow check
+        // Size overflow check
         if (new_capacity > SIZE_MAX / sizeof(ElementType)) {
             printk("Allocation size would overflow\n");
             return false;
@@ -131,21 +124,17 @@ private:
     }
 
 public:
-    // Type definitions to make it more STL-compatible
     using value_type = typename std::remove_pointer<decltype(T::_buffer)>::type;
-    using pointer = value_type*;
-    using const_pointer = const value_type*;
     using reference = value_type&;
     using const_reference = const value_type&;
     using size_type = size_t;
-    using iterator = value_type*;
-
-    // Constructor that wraps an existing sequence (non-owning)
+    
+    // Non-owning constructor
     explicit SequenceWrapper(T& seq) : sequence(&seq), owned_sequence(nullptr) {
         assert(sequence != nullptr && "Sequence pointer cannot be null");
     }
     
-    // Default constructor that creates and owns a new sequence
+    // Owning constructors
     SequenceWrapper() : owned_sequence(std::make_unique<OwnedSequence<T>>()) {
         sequence = owned_sequence->get();
     }
@@ -156,13 +145,7 @@ public:
         sequence = owned_sequence->get();
     }
     
-    // Destructor to clean up owned resources
-    ~SequenceWrapper() {
-        // No need to free resources when using OwnedSequence
-        // OwnedSequence manages its own memory through std::vector
-    }
-    
-    // Prevent copying to avoid double-free issues
+    // Prevent copying
     SequenceWrapper(const SequenceWrapper&) = delete;
     SequenceWrapper& operator=(const SequenceWrapper&) = delete;
     
@@ -186,109 +169,22 @@ public:
         return *this;
     }
     
-    // Get the underlying sequence
-    T* get_sequence() {
-        return sequence;
-    }
-    
-    const T* get_sequence() const {
-        return sequence;
-    }
+    T* get_sequence() { return sequence; }
+    const T* get_sequence() const { return sequence; }
 
-    // Basic operations
-    size_type size() const noexcept { 
-        return static_cast<size_type>(sequence->_length); 
-    }
+    // Basic vector-like operations
+    size_type size() const noexcept { return sequence->_length; }
+    bool empty() const noexcept { return sequence->_length == 0; }
+    size_type capacity() const noexcept { return sequence->_maximum; }
 
-    bool empty() const noexcept {
-        return sequence->_length == 0;
-    }
-
-    size_type capacity() const noexcept {
-        return sequence->_maximum;
-    }
-
-    // Element access - unchecked for performance
-    reference operator[](size_type index) {
-        return sequence->_buffer[index];
-    }
-
-    const_reference operator[](size_type index) const {
-        return sequence->_buffer[index];
-    }
-
-    // Safe element access with error reporting
-    bool at(size_type index, reference& out_value) {
-        if (index >= sequence->_length) {
-            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
-            return false;
-        }
-        out_value = sequence->_buffer[index];
-        return true;
-    }
-
-    // Iterator support - basic only
-    pointer begin() { 
-        return sequence->_buffer; 
-    }
-    
-    pointer end() { 
-        return sequence->_buffer + sequence->_length; 
-    }
-
-    const_pointer begin() const { 
-        return sequence->_buffer; 
-    }
-    
-    const_pointer end() const { 
-        return sequence->_buffer + sequence->_length; 
-    }
-
-    // Data access
-    pointer data() noexcept {
-        return sequence->_buffer;
-    }
-
-    const_pointer data() const noexcept {
-        return sequence->_buffer;
-    }
-
-    reference front() {
-        if (empty()) {
-            printk("Cannot access front() of empty sequence\n");
-            return sequence->_buffer[0];
-        }
-        return sequence->_buffer[0];
-    }
-
-    const_reference front() const {
-        if (empty()) {
-            printk("Cannot access front() of empty sequence\n");
-            return sequence->_buffer[0];
-        }
-        return sequence->_buffer[0];
-    }
-
-    reference back() {
-        if (empty()) {
-            printk("Cannot access back() of empty sequence\n");
-            return sequence->_buffer[0];
-        }
-        return sequence->_buffer[sequence->_length - 1];
-    }
-
-    const_reference back() const {
-        if (empty()) {
-            printk("Cannot access back() of empty sequence\n");
-            return sequence->_buffer[0];
-        }
-        return sequence->_buffer[sequence->_length - 1];
-    }
+    // Element access
+    reference operator[](size_type index) { return sequence->_buffer[index]; }
+    const_reference operator[](size_type index) const { return sequence->_buffer[index]; }
 
     reference at(size_type index) {
         if (index >= sequence->_length) {
             printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
-            return sequence->_buffer[0];
+            return sequence->_buffer[0]; // Return first element as fallback
         }
         return sequence->_buffer[index];
     }
@@ -296,14 +192,55 @@ public:
     const_reference at(size_type index) const {
         if (index >= sequence->_length) {
             printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
-            return sequence->_buffer[0];
+            return sequence->_buffer[0]; // Return first element as fallback
         }
         return sequence->_buffer[index];
     }
-
-    bool reserve(size_type new_cap) {
-        return ensure_capacity(new_cap);
+    
+    // Iterators
+    value_type* begin() { return sequence->_buffer; }
+    value_type* end() { return sequence->_buffer + sequence->_length; }
+    const value_type* begin() const { return sequence->_buffer; }
+    const value_type* end() const { return sequence->_buffer + sequence->_length; }
+    
+    // Data access
+    value_type* data() noexcept { return sequence->_buffer; }
+    const value_type* data() const noexcept { return sequence->_buffer; }
+    reference front() {
+        if (empty()) {
+            printk("Cannot access front() of empty sequence\n");
+            // Still problematic but at least logs the error
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[0];
     }
+    const_reference front() const {
+        if (empty()) {
+            printk("Cannot access front() of empty sequence\n");
+            // Still problematic but at least logs the error
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[0];
+    }
+    reference back() {
+        if (empty()) {
+            printk("Cannot access back() of empty sequence\n");
+            // Still problematic but at least logs the error
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[sequence->_length - 1];
+    }
+    const_reference back() const {
+        if (empty()) {
+            printk("Cannot access back() of empty sequence\n");
+            // Still problematic but at least logs the error
+            return sequence->_buffer[0];
+        }
+        return sequence->_buffer[sequence->_length - 1];
+    }
+    
+    // Modification
+    bool reserve(size_type new_cap) { return ensure_capacity(new_cap); }
     
     bool push_back(const value_type& value) {
         if (owned_sequence) {
@@ -314,9 +251,7 @@ public:
             if (!ensure_capacity(sequence->_length + 1)) {
                 return false;
             }
-            
-            sequence->_buffer[sequence->_length] = value;
-            sequence->_length++;
+            sequence->_buffer[sequence->_length++] = value;
             return true;
         }
     }
@@ -335,10 +270,8 @@ public:
             sequence = owned_sequence->get();
             return true;
         } else {
-            if (new_size > sequence->_maximum) {
-                if (!ensure_capacity(new_size)) {
-                    return false;
-                }
+            if (new_size > sequence->_maximum && !ensure_capacity(new_size)) {
+                return false;
             }
             
             // If growing, initialize new elements to default value
@@ -362,85 +295,10 @@ public:
         }
     }
     
-    // Replace contents with count copies of value
-    bool assign(size_type count, const value_type& value) {
-        if (!ensure_capacity(count)) {
-            return false;
-        }
-        
-        for (size_type i = 0; i < count; ++i) {
-            sequence->_buffer[i] = value;
-        }
-        
-        sequence->_length = count;
-        return true;
-    }
-    
-    // Insert element at position
-    bool insert_at(size_type position, const value_type& value) {
-        if (position > sequence->_length) {
-            printk("Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
-            return false;
-        }
-        
-        if (!ensure_capacity(sequence->_length + 1)) {
-            printk("Failed to allocate memory for insert operation\n");
-            return false;
-        }
-        
-        // Shift elements to make room using memmove for safety
-        if (position < sequence->_length) {
-            std::memmove(&sequence->_buffer[position + 1], 
-                        &sequence->_buffer[position], 
-                        (sequence->_length - position) * sizeof(value_type));
-        }
-        
-        sequence->_buffer[position] = value;
-        sequence->_length++;
-        
-        return true;
-    }
-    
-    // Erase element at position
-    bool erase_at(size_type position) {
-        if (position >= sequence->_length) {
-            printk("Erase position %zu out of range (size: %zu)\n", position, sequence->_length);
-            return false;
-        }
-        
-        // Shift elements to fill the gap using memmove for safety
-        if (position < sequence->_length - 1) {
-            std::memmove(&sequence->_buffer[position], 
-                        &sequence->_buffer[position + 1], 
-                        (sequence->_length - position - 1) * sizeof(value_type));
-        }
-        
-        sequence->_length--;
-        return true;
-    }
-
-    // Basic equality comparison
-    bool equals(const SequenceWrapper& other) const {
-        if (size() != other.size()) {
-            return false;
-        }
-        
-        for (size_type i = 0; i < size(); ++i) {
-            if (!(sequence->_buffer[i] == other.sequence->_buffer[i])) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
-    // Add a method to check if the sequence has been properly initialized
-    bool is_valid() const noexcept {
-        return sequence != nullptr && sequence->_buffer != nullptr;
-    }
+    bool is_valid() const noexcept { return sequence != nullptr && sequence->_buffer != nullptr; }
 };
 
-// Helper function for wrapping raw sequences
+// Basic helper
 template<typename T>
 inline SequenceWrapper<T> wrap_sequence(T& seq) {
     return SequenceWrapper<T>(seq);
