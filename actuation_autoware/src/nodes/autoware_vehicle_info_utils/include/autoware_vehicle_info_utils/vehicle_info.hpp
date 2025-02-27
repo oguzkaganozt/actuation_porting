@@ -15,11 +15,8 @@
 #ifndef AUTOWARE_VEHICLE_INFO_UTILS__VEHICLE_INFO_HPP_
 #define AUTOWARE_VEHICLE_INFO_UTILS__VEHICLE_INFO_HPP_
 
+#include "common/common.hpp"
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
-
-// Zephyr Utils
-#include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(autoware_vehicle_info_utils_vehicle_info);
 
 namespace autoware::vehicle_info_utils
 {

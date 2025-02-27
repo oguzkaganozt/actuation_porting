@@ -33,56 +33,56 @@ VehicleStopCheckerBase::VehicleStopCheckerBase(double buffer_duration)
   buffer_duration_ = buffer_duration;
 }
 
+// TODO: implement and check compatibility with ROS2 now()
 void VehicleStopCheckerBase::addTwist(const TwistStampedMsg & twist)
 {
   twist_buffer_.push_front(twist);
 
-  // TODO: implement and check compatibility with now()
-  const auto now = std::chrono::steady_clock::now();
-  while (!twist_buffer_.empty()) {
-    // Check oldest data time
-    const auto time_diff = now - twist_buffer_.back().header.stamp;
+  // const auto now = std::chrono::steady_clock::now();
+  // while (!twist_buffer_.empty()) {
+  //   // Check oldest data time
+  //   const auto time_diff = now - twist_buffer_.back().header.stamp;
 
-    // Finish when oldest data is newer than threshold
-    if (time_diff.seconds() <= buffer_duration_) {
-      break;
-    }
+  //   // Finish when oldest data is newer than threshold
+  //   if (time_diff.seconds() <= buffer_duration_) {
+  //     break;
+  //   }
 
-    // Remove old data
-    twist_buffer_.pop_back();
-  }
+  //   // Remove old data
+  //   twist_buffer_.pop_back();
+  // }
 }
 
+//  TODO: implement and check compatibility with ROS2 now()
 bool VehicleStopCheckerBase::isVehicleStopped(const double stop_duration) const
 {
   if (twist_buffer_.empty()) {
     return false;
   }
 
-  constexpr double squared_stop_velocity = 1e-3 * 1e-3;
-  // TODO: check compatibility with now()
-  const auto now = std::chrono::steady_clock::now();
+  // constexpr double squared_stop_velocity = 1e-3 * 1e-3;
 
-  const auto time_buffer_back = now - twist_buffer_.back().header.stamp;
-  if (time_buffer_back.seconds() < stop_duration) {
-    return false;
-  }
+  // const auto now = std::chrono::steady_clock::now();
+  // // const auto time_buffer_back = now - twist_buffer_.back().header.stamp;
+  // // if (time_buffer_back.seconds() < stop_duration) {
+  // //   return false;
+  // // }
 
-  // Get velocities within stop_duration
-  for (const auto & velocity : twist_buffer_) {
-    double x = velocity.twist.linear.x;
-    double y = velocity.twist.linear.y;
-    double z = velocity.twist.linear.z;
-    double v = (x * x) + (y * y) + (z * z);
-    if (squared_stop_velocity <= v) {
-      return false;
-    }
+  // // Get velocities within stop_duration
+  // for (const auto & velocity : twist_buffer_) {
+  //   double x = velocity.twist.linear.x;
+  //   double y = velocity.twist.linear.y;
+  //   double z = velocity.twist.linear.z;
+  //   double v = (x * x) + (y * y) + (z * z);
+  //   if (squared_stop_velocity <= v) {
+  //     return false;
+  //   }
 
-    const auto time_diff = now - velocity.header.stamp;
-    if (time_diff.seconds() >= stop_duration) {
-      break;
-    }
-  }
+  //   const auto time_diff = now - velocity.header.stamp;
+  //   if (time_diff.seconds() >= stop_duration) {
+  //     break;
+  //   }
+  // }
 
   return true;
 }
@@ -121,21 +121,21 @@ void VehicleStopChecker::onOdom(const OdometryMsg* msg)
 
 
 // TODO: implement with dds_cpp
-VehicleArrivalChecker::VehicleArrivalChecker(rclcpp::Node * node) : VehicleStopChecker(node)
+VehicleArrivalChecker::VehicleArrivalChecker() : VehicleStopChecker()
 {
-  using std::placeholders::_1;
+  // using std::placeholders::_1;
 
   // sub_trajectory_ = node->create_subscription<Trajectory>(
   //   "/planning/scenario_planning/trajectory", rclcpp::QoS(1),
   //   std::bind(&VehicleArrivalChecker::onTrajectory, this, _1));
 }
 
-VehicleArrivalChecker::VehicleArrivalChecker()
-: VehicleStopChecker()
-{
-  // TODO: implement with custom subscription
-  // using std::placeholders::_1;
-}
+// VehicleArrivalChecker::VehicleArrivalChecker()
+// : VehicleStopChecker()
+// {
+//   // TODO: implement with custom subscription
+//   // using std::placeholders::_1;
+// }
 
 bool VehicleArrivalChecker::isVehicleStoppedAtStopPoint(const double stop_duration) const
 {
@@ -148,18 +148,18 @@ bool VehicleArrivalChecker::isVehicleStoppedAtStopPoint(const double stop_durati
   }
 
   const auto & p = odometry_ptr_->pose.pose.position;
-  const auto idx = autoware::motion_utils::searchZeroVelocityIndex(trajectory_ptr_->points);
+  // const auto idx = autoware::motion_utils::searchZeroVelocityIndex(trajectory_ptr_->points);
 
-  if (!idx) {
-    return false;
-  }
+  // if (!idx) {
+  //   return false;
+  // }
 
-  return std::abs(autoware::motion_utils::calcSignedArcLength(
-           trajectory_ptr_->points, p, idx.value())) < th_arrived_distance_m;
+  // return std::abs(autoware::motion_utils::calcSignedArcLength(
+  //          trajectory_ptr_->points, p, idx.value())) < th_arrived_distance_m;
 }
 
 void VehicleArrivalChecker::onTrajectory(const TrajectoryMsg* msg)
 {
-  trajectory_ptr_ = msg;
+  // trajectory_ptr_ = msg;
 }
 }  // namespace autoware::motion_utils

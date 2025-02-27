@@ -15,10 +15,11 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__CONTROL_HORIZON_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__CONTROL_HORIZON_HPP_
 
+#include <vector>
+
+#include "common/common.hpp"
 #include "autoware_control_msgs/msg/lateral.hpp"
 #include "autoware_control_msgs/msg/longitudinal.hpp"
-
-#include <vector>
 
 namespace autoware::motion::control::trajectory_follower
 {

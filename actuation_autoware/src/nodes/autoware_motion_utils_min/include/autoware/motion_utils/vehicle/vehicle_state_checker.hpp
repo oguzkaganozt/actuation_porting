@@ -26,7 +26,6 @@ class VehicleStopCheckerBase
 public:
   // VehicleStopCheckerBase(rclcpp::Node * node, double buffer_duration); // TODO: implement with zephyr threads
   VehicleStopCheckerBase(double buffer_duration);
-  bool getLogger() { return true; } // TODO: implement with zephyr logger
   void addTwist(const TwistStampedMsg & twist);
   bool isVehicleStopped(const double stop_duration = 0.0) const;
 
@@ -55,7 +54,7 @@ protected:
 
 private:
   static constexpr double velocity_buffer_time_sec = 10.0;
-  void onOdom(const void* msg);
+  void onOdom(const OdometryMsg* msg);
 };
 
 class VehicleArrivalChecker : public VehicleStopChecker
@@ -73,13 +72,13 @@ private:
   // rclcpp::Subscription<TrajectoryMsg>::SharedPtr sub_trajectory_;
   void* sub_trajectory_;
 
-  // TODO: check shared pointer vs zephyr pointer
+  // TODO: check compatibility with const shared pointer
   // TrajectoryMsg::ConstSharedPtr trajectory_ptr_;
   const TrajectoryMsg* trajectory_ptr_;
 
   // TODO: implement with custom callback
   // void onTrajectory(const TrajectoryMsg::ConstSharedPtr msg);
-  void onTrajectory(const void* msg);
+  void onTrajectory(const TrajectoryMsg* msg);
 };
 }  // namespace autoware::motion_utils
 
