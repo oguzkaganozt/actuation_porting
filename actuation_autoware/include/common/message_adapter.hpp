@@ -11,6 +11,9 @@
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
 
+#define DEFAULT_SEQUENCE_SIZE 16
+#define MAX_SEQUENCE_SIZE 2048
+
 template<typename T>
 class Sequence {
 private:
@@ -34,15 +37,14 @@ private:
         }
         
         // Need to allocate more memory - use fixed growth to avoid excessive allocations
-        const size_t max_allowed_capacity = 1024;  // Adjust based on your system constraints
-        if (required_capacity > max_allowed_capacity) {
-            printk("Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, max_allowed_capacity);
+        if (required_capacity > MAX_SEQUENCE_SIZE) {
+            printk("Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, MAX_SEQUENCE_SIZE);
             return false;
         }
         
         size_t new_capacity = (sequence->_maximum * 2 > required_capacity) ? 
                                sequence->_maximum * 2 : required_capacity;
-        if (new_capacity == 0) new_capacity = 16;  // Initial capacity
+        if (new_capacity == 0) new_capacity = DEFAULT_SEQUENCE_SIZE;
         
         // Use typed malloc for better type safety
         using ElementType = typename std::remove_pointer<decltype(T::_buffer)>::type;
@@ -88,7 +90,7 @@ public:
     }
     
     // Owning constructor with initial capacity
-    explicit Sequence(size_type initial_capacity=16) : sequence(static_cast<T*>(k_malloc(sizeof(T)))), owns_sequence(true) {
+    explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) : sequence(static_cast<T*>(k_malloc(sizeof(T)))), owns_sequence(true) {
         if (!sequence) {
             printk("Failed to allocate memory for sequence struct\n");
             return;
@@ -158,11 +160,13 @@ public:
     reference operator[](size_type index) { 
         if (!sequence || !sequence->_buffer) {
             printk("Dereferencing invalid sequence\n");
-            return value_type{};
+            static value_type dummy{};
+            return dummy;
         }
         if(index >= sequence->_length) {
             printk("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
-            return value_type{};
+            static value_type dummy{};
+            return dummy;
         }
         return sequence->_buffer[index]; 
     }
@@ -170,11 +174,13 @@ public:
     const_reference operator[](size_type index) const { 
         if (!sequence || !sequence->_buffer) {
             printk("Dereferencing invalid sequence\n");
-            return value_type{};
+            static value_type dummy{};
+            return dummy;
         }
         if(index >= sequence->_length) {
             printk("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
-            return value_type{};
+            static value_type dummy{};
+            return dummy;
         }
         return sequence->_buffer[index]; 
     }
