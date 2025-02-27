@@ -6,7 +6,6 @@
 #include <cstring>
 #include <type_traits>
 #include <utility>
-#include <optional>
 
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
@@ -29,7 +28,7 @@ private:
     bool ensure_capacity(size_t required_capacity) {
         if (!sequence || !sequence->_buffer) {
             printk("Invalid sequence state\n");
-            return false;
+            k_panic();
         }
         
         if (required_capacity <= sequence->_maximum) {
@@ -39,7 +38,7 @@ private:
         // Need to allocate more memory - use fixed growth to avoid excessive allocations
         if (required_capacity > MAX_SEQUENCE_SIZE) {
             printk("Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, MAX_SEQUENCE_SIZE);
-            return false;
+            k_panic();
         }
         
         size_t new_capacity = (sequence->_maximum * 2 > required_capacity) ? 
@@ -52,13 +51,13 @@ private:
         // Size overflow check
         if (new_capacity > SIZE_MAX / sizeof(ElementType)) {
             printk("Allocation size would overflow\n");
-            return false;
+            k_panic();
         }
         
         ElementType* new_buffer = static_cast<ElementType*>(k_malloc(new_capacity * sizeof(ElementType)));
         if (!new_buffer) {
             printk("Failed to allocate memory for sequence buffer\n");
-            return false;
+            k_panic();
         }
         
         // Copy existing elements
@@ -93,7 +92,7 @@ public:
     explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) : sequence(static_cast<T*>(k_malloc(sizeof(T)))), owns_sequence(true) {
         if (!sequence) {
             printk("Failed to allocate memory for sequence struct\n");
-            return;
+            k_panic();
         }
         sequence->_buffer = nullptr;
         sequence->_length = 0;
@@ -160,13 +159,11 @@ public:
     reference operator[](size_type index) { 
         if (!sequence || !sequence->_buffer) {
             printk("Dereferencing invalid sequence\n");
-            static value_type dummy{};
-            return dummy;
+            k_panic();
         }
         if(index >= sequence->_length) {
             printk("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
-            static value_type dummy{};
-            return dummy;
+            k_panic();
         }
         return sequence->_buffer[index]; 
     }
@@ -174,74 +171,74 @@ public:
     const_reference operator[](size_type index) const { 
         if (!sequence || !sequence->_buffer) {
             printk("Dereferencing invalid sequence\n");
-            static value_type dummy{};
-            return dummy;
+            k_panic();
         }
         if(index >= sequence->_length) {
             printk("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
-            static value_type dummy{};
-            return dummy;
+            k_panic();
         }
         return sequence->_buffer[index]; 
     }
 
-    std::optional<value_type*> data() noexcept { 
+    value_type* data() noexcept { 
         if (!sequence || !sequence->_buffer) {
-            return std::nullopt;
+            printk("Invalid sequence\n");
+            k_panic();
         }
         return sequence->_buffer; 
     }
-    std::optional<const value_type*> data() const noexcept { 
+    const value_type* data() const noexcept { 
         if (!sequence || !sequence->_buffer) {
-            return std::nullopt;
+            printk("Invalid sequence\n");
+            k_panic();
         }
         return sequence->_buffer; 
     }
 
-    std::optional<reference> at(size_type index) {
+    reference at(size_type index) {
         if (!sequence || !sequence->_buffer || index >= sequence->_length) {
             printk("Index %zu out of range (size: %zu)\n", index, size());
-            return std::nullopt;
+            k_panic();
         }
         return sequence->_buffer[index];
     }
 
-    std::optional<const_reference> at(size_type index) const {
+    const_reference at(size_type index) const {
         if (!sequence || !sequence->_buffer || index >= sequence->_length) {
             printk("Index %zu out of range (size: %zu)\n", index, size());
-            return std::nullopt;
+            k_panic();
         }
         return sequence->_buffer[index];
     }
     
-    std::optional<reference> front() {
+    reference front() {
         if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access front() of empty sequence\n");
-            return std::nullopt;
+            k_panic();
         }
         return sequence->_buffer[0];
     }
     
-    std::optional<const_reference> front() const {
+    const_reference front() const {
         if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access front() of empty sequence\n");
-            return std::nullopt;
+            k_panic();
         }
         return sequence->_buffer[0];
     }
     
-    std::optional<reference> back() {
+    reference back() {
         if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access back() of empty sequence\n");
-            return std::nullopt;
+            k_panic();
         }
         return sequence->_buffer[sequence->_length - 1];
     }
     
-    std::optional<const_reference> back() const {
+    const_reference back() const {
         if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access back() of empty sequence\n");
-            return std::nullopt;
+            k_panic();
         }
         return sequence->_buffer[sequence->_length - 1];
     }
@@ -252,7 +249,8 @@ public:
     
     bool push_back(const value_type& value) {
         if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-            return false;
+            printk("Failed to push_back() - copy\n");
+            k_panic();
         }
         sequence->_buffer[sequence->_length++] = value;
         return true;
@@ -261,7 +259,8 @@ public:
     // Add move-enabled push_back for better performance with movable types
     bool push_back(value_type&& value) {
         if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-            return false;
+            printk("Failed to push_back() - move\n");
+            k_panic();
         }
         sequence->_buffer[sequence->_length++] = std::move(value);
         return true;
@@ -269,7 +268,8 @@ public:
     
     bool pop_back() {
         if (!sequence || sequence->_length == 0) {
-            return false;
+            printk("Cannot pop_back() from empty sequence\n");
+            k_panic();
         }
         sequence->_length--;
         return true;
@@ -277,11 +277,13 @@ public:
     
     bool resize(size_type new_size) {
         if (!sequence) {
-            return false;
+            printk("Invalid sequence\n");
+            k_panic();
         }
         
         if (new_size > sequence->_maximum && !ensure_capacity(new_size)) {
-            return false;
+            printk("Failed to resize sequence\n");
+            k_panic();
         }
         
         // If growing, initialize new elements to default value
