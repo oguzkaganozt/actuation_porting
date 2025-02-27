@@ -379,6 +379,8 @@ public:
     }
 
     // Utility
+    static Sequence wrap(T& seq) { return Sequence(seq); }
+    static Sequence wrap(T* seq) { return Sequence(seq); }
     T* get_sequence() { return sequence; }
     const T* get_sequence() const { return sequence; }
     bool is_valid() const noexcept { return sequence != nullptr && sequence->_buffer != nullptr; }
