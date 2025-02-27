@@ -79,7 +79,7 @@ include(src/nodes/autoware_osqp_interface/autoware_osqp_interface.cmake)
 include(src/nodes/autoware_universe_utils_min/autoware_universe_utils.cmake)
 include(src/nodes/autoware_interpolation_min/autoware_interpolation.cmake)
 include(src/nodes/autoware_motion_utils_min/autoware_motion_utils.cmake)
-# include(src/nodes/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
+include(src/nodes/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
 # include(src/nodes/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
 # include(src/nodes/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
 

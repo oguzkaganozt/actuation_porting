@@ -29,6 +29,9 @@ public:
   /// Constructor
   // NOTE(soblin): this throws which should be replaced with a factory
   // explicit VehicleInfoUtils(rclcpp::Node & node);
+  
+  /// Default constructor
+  VehicleInfoUtils();
 
   /// Get vehicle info
   VehicleInfo getVehicleInfo() const;

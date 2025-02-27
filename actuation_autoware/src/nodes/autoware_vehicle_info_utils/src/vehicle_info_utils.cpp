@@ -39,7 +39,6 @@
 
 namespace autoware::vehicle_info_utils
 {
-// TODO: implement with custom zephyr parameters
 // VehicleInfoUtils::VehicleInfoUtils(rclcpp::Node & node)
 // {
 //   const auto wheel_radius_m = getParameter<double>(node, "wheel_radius");
@@ -57,6 +56,7 @@ namespace autoware::vehicle_info_utils
 //     left_overhang_m, right_overhang_m, vehicle_height_m, max_steer_angle_rad);
 // }
 
+// TODO: implement with custom zephyr parameters
 VehicleInfoUtils::VehicleInfoUtils()
 {
   double wheel_radius_m = 0.33;
