@@ -246,6 +246,7 @@ double calcLongitudinalOffsetToSegment(
     return std::nan("");
   }
 
+  // TODO: Try with std::move(removeOverlapPoints(points, seg_idx))
   const auto overlap_removed_points = removeOverlapPoints(points, seg_idx);
 
   try {

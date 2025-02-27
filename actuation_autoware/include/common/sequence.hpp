@@ -115,9 +115,90 @@ public:
         }
     }
     
-    // Prevent copying
-    Sequence(const Sequence&) = delete;
-    Sequence& operator=(const Sequence&) = delete;
+    // Copy constructor
+    Sequence(const Sequence& other) : sequence(static_cast<T*>(k_malloc(sizeof(T)))), owns_sequence(true) {
+        if (!sequence) {
+            printk("Failed to allocate memory for sequence struct in copy constructor\n");
+            k_panic();
+        }
+        
+        // Initialize the sequence structure
+        sequence->_buffer = nullptr;
+        sequence->_length = 0;
+        sequence->_maximum = 0;
+        
+        // Allocate and copy the buffer if the source has one
+        if (other.sequence && other.sequence->_buffer && other.sequence->_length > 0) {
+            // Allocate with exact capacity to match original
+            if (!ensure_capacity(other.sequence->_maximum)) {
+                printk("Failed to allocate buffer in copy constructor\n");
+                k_free(sequence);
+                sequence = nullptr;
+                owns_sequence = false;
+                k_panic();
+            }
+            
+            // Copy each element
+            // TODO: Check for trait support within Zephyr
+            if (std::is_trivially_copyable<value_type>::value) {
+                std::memcpy(sequence->_buffer, other.sequence->_buffer, 
+                           sequence->_length * sizeof(value_type));
+            } else {
+                for (size_t i = 0; i < sequence->_length; i++) {
+                    sequence->_buffer[i] = other.sequence->_buffer[i];
+                }
+            }
+        }
+    }
+    
+    // Copy assignment operator
+    Sequence& operator=(const Sequence& other) {
+        if (this != &other) {  // Self-assignment check
+            // Clean up existing resources
+            if (owns_sequence && sequence) {
+                if (sequence->_buffer) {
+                    k_free(sequence->_buffer);
+                    sequence->_buffer = nullptr;
+                }
+            }
+            
+            // If we don't own a sequence structure, create one
+            if (!sequence) {
+                sequence = static_cast<T*>(k_malloc(sizeof(T)));
+                if (!sequence) {
+                    printk("Failed to allocate memory for sequence struct in copy assignment\n");
+                    k_panic();
+                }
+                owns_sequence = true;
+                sequence->_buffer = nullptr;
+                sequence->_length = 0;
+                sequence->_maximum = 0;
+            }
+            
+            // Allocate and copy the buffer
+            if (other.sequence && other.sequence->_buffer && other.sequence->_length > 0) {
+                if (!ensure_capacity(other.sequence->_maximum)) {
+                    printk("Failed to allocate buffer in copy assignment\n");
+                    k_panic();
+                }
+                
+                // Copy each element
+                // TODO: Check for trait support within Zephyr
+                if (std::is_trivially_copyable<value_type>::value) {
+                    std::memcpy(sequence->_buffer, other.sequence->_buffer, 
+                               sequence->_length * sizeof(value_type));
+                } else {
+                    for (size_t i = 0; i < sequence->_length; i++) {
+                        sequence->_buffer[i] = other.sequence->_buffer[i];
+                    }
+                }
+            } else {
+                // Other sequence is empty
+                sequence->_length = 0;
+            }
+        }
+        return *this;
+    }
     
     // Allow moving
     Sequence(Sequence&& other) noexcept : sequence(other.sequence), owns_sequence(other.owns_sequence) {
