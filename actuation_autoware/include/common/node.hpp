@@ -13,7 +13,6 @@ public:
     ~Node();
     void conf_reader();
     
-
 private:
     char name_[64];
     char topic_name_[64];

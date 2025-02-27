@@ -36,6 +36,7 @@
 
 ### Key Notes
 
+- change memory configuration of the cyclonedds with zephyr allocator -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
 - Validate launch structure and synchronization with the native ROS2 nodes
 - Validate the message conversion between ROS2 and Zephyr
 - Validate cycloneDDS <-> ROS2 communication with the native ROS2 nodes

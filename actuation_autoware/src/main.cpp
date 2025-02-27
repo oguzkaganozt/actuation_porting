@@ -12,6 +12,5 @@ static void timer_expiry_function(struct k_timer *timer_id)
 
 int main(void)
 {
-    // dds_write(0, 0, 0);
     return 0;
 }
