@@ -8,7 +8,6 @@
 
 // Logging
 #define LOG_LEVEL LOG_LEVEL_DBG
-LOG_MODULE_REGISTER(message_adapter, LOG_LEVEL_DBG);
 
 // Stack size
 #define ACTUATION_STACK_SIZE 16 * 1024

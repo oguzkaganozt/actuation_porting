@@ -42,7 +42,7 @@
 #include "TrafficSignal.h"
 #include "TrafficSignalArray.h"
 
-#include "common/message_adapter.hpp"
+#include "common/sequence.hpp"
 
 // FROM AUTOWARE_MSGS
 // Message types from autoware_msgs

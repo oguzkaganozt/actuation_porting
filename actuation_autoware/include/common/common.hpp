@@ -8,7 +8,6 @@
 
 // Common base classes
 #include "common/messages.hpp"
-#include "common/message_adapter.hpp"
 #include "common/node.hpp"
 
 // Zephyr Utils
