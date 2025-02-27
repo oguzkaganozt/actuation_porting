@@ -1,15 +1,12 @@
 #ifndef MESSAGE_ADAPTER_HPP_
 #define MESSAGE_ADAPTER_HPP_
 
-#include <vector>
-#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <type_traits>
 #include <utility>
-#include <algorithm>
-#include <memory>
+#include <optional>
 
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
@@ -27,6 +24,11 @@ private:
     
     // Check and potentially grow the buffer
     bool ensure_capacity(size_t required_capacity) {
+        if (!sequence || !sequence->_buffer) {
+            printk("Invalid sequence state\n");
+            return false;
+        }
+        
         if (required_capacity <= sequence->_maximum) {
             return true;  // Already have enough capacity
         }
@@ -38,9 +40,11 @@ private:
             return false;
         }
         
-        size_t new_capacity = std::max(required_capacity, sequence->_maximum * 2);
+        size_t new_capacity = (sequence->_maximum * 2 > required_capacity) ? 
+                               sequence->_maximum * 2 : required_capacity;
         if (new_capacity == 0) new_capacity = 16;  // Initial capacity
         
+        // Use typed malloc for better type safety
         using ElementType = typename std::remove_pointer<decltype(T::_buffer)>::type;
         
         // Size overflow check
@@ -92,7 +96,12 @@ public:
         sequence->_buffer = nullptr;
         sequence->_length = 0;
         sequence->_maximum = 0;
-        ensure_capacity(initial_capacity);
+        if (!ensure_capacity(initial_capacity)) {
+            // If buffer allocation fails, clean up and flag as non-owning
+            k_free(sequence);
+            sequence = nullptr;
+            owns_sequence = false;
+        }
     }
     
     // Destructor
@@ -133,100 +142,138 @@ public:
         }
         return *this;
     }
-    
-    T* get_sequence() { return sequence; }
-    const T* get_sequence() const { return sequence; }
 
     // Basic operations
-    size_type size() const noexcept { return sequence->_length; }
-    bool empty() const noexcept { return sequence->_length == 0; }
-    size_type capacity() const noexcept { return sequence->_maximum; }
+    size_type size() const noexcept { return sequence ? sequence->_length : 0; }
+    bool empty() const noexcept { return !sequence || sequence->_length == 0; }
+    size_type capacity() const noexcept { return sequence ? sequence->_maximum : 0; }
 
     // Iterators
-    value_type* begin() { return sequence->_buffer; }
-    value_type* end() { return sequence->_buffer + sequence->_length; }
-    const value_type* begin() const { return sequence->_buffer; }
-    const value_type* end() const { return sequence->_buffer + sequence->_length; }
+    value_type* begin() { return sequence ? sequence->_buffer : nullptr; }
+    value_type* end() { return sequence ? sequence->_buffer + sequence->_length : nullptr; }
+    const value_type* begin() const { return sequence ? sequence->_buffer : nullptr; }
+    const value_type* end() const { return sequence ? sequence->_buffer + sequence->_length : nullptr; }
 
     // Data access
-    reference operator[](size_type index) { return sequence->_buffer[index]; }
-    const_reference operator[](size_type index) const { return sequence->_buffer[index]; }
+    reference operator[](size_type index) { 
+        if (!sequence || !sequence->_buffer) {
+            printk("Dereferencing invalid sequence\n");
+            return value_type{};
+        }
+        if(index >= sequence->_length) {
+            printk("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
+            return value_type{};
+        }
+        return sequence->_buffer[index]; 
+    }
+    
+    const_reference operator[](size_type index) const { 
+        if (!sequence || !sequence->_buffer) {
+            printk("Dereferencing invalid sequence\n");
+            return value_type{};
+        }
+        if(index >= sequence->_length) {
+            printk("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
+            return value_type{};
+        }
+        return sequence->_buffer[index]; 
+    }
 
-    value_type* data() noexcept { return sequence->_buffer; }
-    const value_type* data() const noexcept { return sequence->_buffer; }
+    std::optional<value_type*> data() noexcept { 
+        if (!sequence || !sequence->_buffer) {
+            return std::nullopt;
+        }
+        return sequence->_buffer; 
+    }
+    std::optional<const value_type*> data() const noexcept { 
+        if (!sequence || !sequence->_buffer) {
+            return std::nullopt;
+        }
+        return sequence->_buffer; 
+    }
 
-    reference at(size_type index) {
-        if (index >= sequence->_length) {
-            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
-            return sequence->_buffer[0]; // Return first element as fallback
+    std::optional<reference> at(size_type index) {
+        if (!sequence || !sequence->_buffer || index >= sequence->_length) {
+            printk("Index %zu out of range (size: %zu)\n", index, size());
+            return std::nullopt;
         }
         return sequence->_buffer[index];
     }
 
-    const_reference at(size_type index) const {
-        if (index >= sequence->_length) {
-            printk("Index %zu out of range (size: %zu)\n", index, sequence->_length);
-            return sequence->_buffer[0]; // Return first element as fallback
+    std::optional<const_reference> at(size_type index) const {
+        if (!sequence || !sequence->_buffer || index >= sequence->_length) {
+            printk("Index %zu out of range (size: %zu)\n", index, size());
+            return std::nullopt;
         }
         return sequence->_buffer[index];
     }
     
-    reference front() {
-        if (empty()) {
+    std::optional<reference> front() {
+        if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access front() of empty sequence\n");
-            // Still problematic but at least logs the error
-            return sequence->_buffer[0];
+            return std::nullopt;
         }
         return sequence->_buffer[0];
     }
     
-    const_reference front() const {
-        if (empty()) {
+    std::optional<const_reference> front() const {
+        if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access front() of empty sequence\n");
-            // Still problematic but at least logs the error
-            return sequence->_buffer[0];
+            return std::nullopt;
         }
         return sequence->_buffer[0];
     }
     
-    reference back() {
-        if (empty()) {
+    std::optional<reference> back() {
+        if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access back() of empty sequence\n");
-            // Still problematic but at least logs the error
-            return sequence->_buffer[0];
+            return std::nullopt;
         }
         return sequence->_buffer[sequence->_length - 1];
     }
     
-    const_reference back() const {
-        if (empty()) {
+    std::optional<const_reference> back() const {
+        if (!sequence || !sequence->_buffer || empty()) {
             printk("Cannot access back() of empty sequence\n");
-            // Still problematic but at least logs the error
-            return sequence->_buffer[0];
+            return std::nullopt;
         }
         return sequence->_buffer[sequence->_length - 1];
     }
     
     // Modification
     bool reserve(size_type new_cap) { return ensure_capacity(new_cap); }
+    void clear() { if (sequence) sequence->_length = 0; }
     
     bool push_back(const value_type& value) {
-        if (!ensure_capacity(sequence->_length + 1)) {
+        if (!sequence || !ensure_capacity(sequence->_length + 1)) {
             return false;
         }
         sequence->_buffer[sequence->_length++] = value;
         return true;
     }
     
-    bool pop_back() {
-        if (sequence->_length > 0) {
-            sequence->_length--;
-            return true;
+    // Add move-enabled push_back for better performance with movable types
+    bool push_back(value_type&& value) {
+        if (!sequence || !ensure_capacity(sequence->_length + 1)) {
+            return false;
         }
-        return false;
+        sequence->_buffer[sequence->_length++] = std::move(value);
+        return true;
+    }
+    
+    bool pop_back() {
+        if (!sequence || sequence->_length == 0) {
+            return false;
+        }
+        sequence->_length--;
+        return true;
     }
     
     bool resize(size_type new_size) {
+        if (!sequence) {
+            return false;
+        }
+        
         if (new_size > sequence->_maximum && !ensure_capacity(new_size)) {
             return false;
         }
@@ -242,21 +289,28 @@ public:
         return true;
     }
 
-    // Utility    
-    void clear() { sequence->_length = 0; }
+    // Utility
+    T* get_sequence() { return sequence; }
+    const T* get_sequence() const { return sequence; }
     bool is_valid() const noexcept { return sequence != nullptr && sequence->_buffer != nullptr; }
-
+    
     void dump(const char* name = "Sequence") const {
-        assert(is_valid() && "Sequence is not valid");
+        if (!is_valid()) {
+            printk("%s: Invalid sequence\n", name);
+            return;
+        }
+        
         printk("%s[size=%zu, capacity=%zu]\n", name, size(), capacity());
         
         if (!empty()) {
             printk("Contents:\n");
             for (size_t i = 0; i < (size() < 20 ? size() : 20); ++i) {
-                if constexpr (std::is_arithmetic_v<value_type>) {
+                if constexpr (std::is_integral_v<value_type>) {
                     printk("  [%zu]: %d\n", i, static_cast<int>((*this)[i]));
+                } else if constexpr (std::is_floating_point_v<value_type>) {
+                    printk("  [%zu]: %f\n", i, static_cast<double>((*this)[i]));
                 } else {
-                    printk("  [%zu]: (complex element)\n", i);
+                    printk("  [%zu]: (unformattable type)\n", i);
                 }
             }
             
