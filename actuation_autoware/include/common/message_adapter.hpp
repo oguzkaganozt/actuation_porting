@@ -66,7 +66,7 @@ public:
 };
 
 template<typename T>
-class SequenceWrapper {
+class Sequence {
 private:
     static_assert(std::is_member_object_pointer_v<decltype(&T::_length)>, "Type must have _length member");
     static_assert(std::is_member_object_pointer_v<decltype(&T::_buffer)>, "Type must have _buffer member");
@@ -130,34 +130,34 @@ public:
     using size_type = size_t;
     
     // Non-owning constructor
-    explicit SequenceWrapper(T& seq) : sequence(&seq), owned_sequence(nullptr) {
+    explicit Sequence(T& seq) : sequence(&seq), owned_sequence(nullptr) {
         assert(sequence != nullptr && "Sequence pointer cannot be null");
     }
     
     // Owning constructors
-    SequenceWrapper() : owned_sequence(std::make_unique<OwnedSequence<T>>()) {
+    Sequence() : owned_sequence(std::make_unique<OwnedSequence<T>>()) {
         sequence = owned_sequence->get();
     }
     
     // Constructor that creates and owns a new sequence with initial capacity
-    explicit SequenceWrapper(size_type initial_capacity) 
+    explicit Sequence(size_type initial_capacity) 
         : owned_sequence(std::make_unique<OwnedSequence<T>>(initial_capacity)) {
         sequence = owned_sequence->get();
     }
     
     // Prevent copying
-    SequenceWrapper(const SequenceWrapper&) = delete;
-    SequenceWrapper& operator=(const SequenceWrapper&) = delete;
+    Sequence(const Sequence&) = delete;
+    Sequence& operator=(const Sequence&) = delete;
     
     // Allow moving
-    SequenceWrapper(SequenceWrapper&& other) noexcept
+    Sequence(Sequence&& other) noexcept
         : sequence(other.sequence), owned_sequence(std::move(other.owned_sequence)) {
         if (other.owned_sequence) {
             other.sequence = nullptr;
         }
     }
     
-    SequenceWrapper& operator=(SequenceWrapper&& other) noexcept {
+    Sequence& operator=(Sequence&& other) noexcept {
         if (this != &other) {
             sequence = other.sequence;
             owned_sequence = std::move(other.owned_sequence);
@@ -300,29 +300,29 @@ public:
 
 // Basic helper
 template<typename T>
-inline SequenceWrapper<T> wrap_sequence(T& seq) {
-    return SequenceWrapper<T>(seq);
+inline Sequence<T> wrap_sequence(T& seq) {
+    return Sequence<T>(seq);
 }
 
 template<typename T>
-inline SequenceWrapper<T>& wrap_sequence(SequenceWrapper<T>& seq) {
+inline Sequence<T>& wrap_sequence(Sequence<T>& seq) {
     return seq;  // Already wrapped, return as-is
 }
 
 template<typename T>
-inline const SequenceWrapper<T>& wrap_sequence(const SequenceWrapper<T>& seq) {
+inline const Sequence<T>& wrap_sequence(const Sequence<T>& seq) {
     return seq;  // Already wrapped, return const ref as-is
 }
 
 // Add logging function for debugging
 template<typename T>
-void log_sequence(const SequenceWrapper<T>& seq, const char* name = "SequenceWrapper") {
+void log_sequence(const Sequence<T>& seq, const char* name = "Sequence") {
     printk("%s[size=%zu, capacity=%zu]\n", name, seq.size(), seq.capacity());
     
     if (!seq.empty()) {
         printk("Contents:\n");
         for (size_t i = 0; i < (seq.size() < 5 ? seq.size() : 5); ++i) {
-            if constexpr (std::is_arithmetic_v<typename SequenceWrapper<T>::value_type>) {
+            if constexpr (std::is_arithmetic_v<typename Sequence<T>::value_type>) {
                 printk("  [%zu]: %d\n", i, static_cast<int>(seq[i]));
             } else {
                 printk("  [%zu]: (complex element)\n", i);
