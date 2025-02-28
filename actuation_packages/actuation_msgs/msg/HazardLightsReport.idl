@@ -1,0 +1,24 @@
+#ifndef HAZARDLIGHTSREPORT_IDL_
+#define HAZARDLIGHTSREPORT_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_vehicle_msgs/msg/HazardLightsReport.msg
+// generated code does not contain a copyright notice
+
+#include "Time.idl"
+
+module autoware_vehicle_msgs {
+  module msg {
+    module HazardLightsReport_Constants {
+      const uint8 DISABLE = 1;
+      const uint8 ENABLE = 2;
+    };
+    struct HazardLightsReport {
+      builtin_interfaces::msg::Time stamp;
+
+      uint8 report;
+    };
+  };
+};
+
+#endif  // HAZARDLIGHTSREPORT_IDL_

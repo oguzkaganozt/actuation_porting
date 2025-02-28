@@ -15,28 +15,22 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__CONTROL_HORIZON_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__CONTROL_HORIZON_HPP_
 
-#include <vector>
-
 #include "common/common.hpp"
-#include "autoware_control_msgs/msg/lateral.hpp"
-#include "autoware_control_msgs/msg/longitudinal.hpp"
+#include <vector>
 
 namespace autoware::motion::control::trajectory_follower
 {
 
-using autoware_control_msgs::msg::Lateral;
-using autoware_control_msgs::msg::Longitudinal;
-
 struct LateralHorizon
 {
   double time_step_ms;
-  std::vector<Lateral> controls;
+  std::vector<LateralMsg> controls;
 };
 
 struct LongitudinalHorizon
 {
   double time_step_ms;
-  std::vector<Longitudinal> controls;
+  std::vector<LongitudinalMsg> controls;
 };
 
 }  // namespace autoware::motion::control::trajectory_follower

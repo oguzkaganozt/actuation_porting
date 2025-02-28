@@ -1,0 +1,40 @@
+#ifndef CONTROLHORIZON_IDL_
+#define CONTROLHORIZON_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_control_msgs/msg/ControlHorizon.msg
+// generated code does not contain a copyright notice
+
+#include "Control.idl"
+#include "Time.idl"
+
+module autoware_control_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "Control messages calculated for a future horizon" "\n"
+      "" "\n"
+      "Control messages are ordered from near to far future [0 to N) with time_step_ms increments." "\n"
+      "" "\n"
+      "First element of the array contains the control signals at the control_time of this message." "\n"
+      "" "\n"
+      "The control_time field in each element of the controls array can be ignored.")
+    struct ControlHorizon {
+      @verbatim (language="comment", text=
+        "Time this message was created")
+      builtin_interfaces::msg::Time stamp;
+
+      @verbatim (language="comment", text=
+        "Time when controls configuration state is expected to be achieved in")
+      @unit (value="0")
+      builtin_interfaces::msg::Time control_time;
+
+      @verbatim (language="comment", text=
+        "Time difference between consecutive elements of the controls array in milliseconds")
+      float time_step_ms;
+
+      sequence<autoware_control_msgs::msg::Control> controls;
+    };
+  };
+};
+
+#endif  // CONTROLHORIZON_IDL_

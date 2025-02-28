@@ -1,0 +1,24 @@
+#ifndef VELOCITYREPORT_IDL_
+#define VELOCITYREPORT_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_vehicle_msgs/msg/VelocityReport.msg
+// generated code does not contain a copyright notice
+
+#include "Header.idl"
+
+module autoware_vehicle_msgs {
+  module msg {
+    struct VelocityReport {
+      std_msgs::msg::Header header;
+
+      float longitudinal_velocity;
+
+      float lateral_velocity;
+
+      float heading_rate;
+    };
+  };
+};
+
+#endif  // VELOCITYREPORT_IDL_

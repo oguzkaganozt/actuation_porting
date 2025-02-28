@@ -1,0 +1,36 @@
+#ifndef CONTROL_IDL_
+#define CONTROL_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_control_msgs/msg/Control.msg
+// generated code does not contain a copyright notice
+
+#include "Lateral.idl"
+#include "Longitudinal.idl"
+#include "Time.idl"
+
+module autoware_control_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "Control message with lateral and longitudinal components")
+    struct Control {
+      @verbatim (language="comment", text=
+        "Time this message was created")
+      builtin_interfaces::msg::Time stamp;
+
+      @verbatim (language="comment", text=
+        "Time this configuration state is expected to be achieved in (optional)")
+      builtin_interfaces::msg::Time control_time;
+
+      @verbatim (language="comment", text=
+        "Lateral control command")
+      autoware_control_msgs::msg::Lateral lateral;
+
+      @verbatim (language="comment", text=
+        "Longitudinal control command")
+      autoware_control_msgs::msg::Longitudinal longitudinal;
+    };
+  };
+};
+
+#endif  // CONTROL_IDL_

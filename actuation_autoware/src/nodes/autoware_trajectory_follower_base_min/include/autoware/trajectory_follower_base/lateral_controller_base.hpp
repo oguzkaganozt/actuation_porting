@@ -15,19 +15,17 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LATERAL_CONTROLLER_BASE_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LATERAL_CONTROLLER_BASE_HPP_
 
+#include "common/common.hpp"
+
 #include "autoware/trajectory_follower_base/control_horizon.hpp"
 #include "autoware/trajectory_follower_base/input_data.hpp"
 #include "autoware/trajectory_follower_base/sync_data.hpp"
-#include "rclcpp/rclcpp.hpp"
-
-#include "autoware_control_msgs/msg/lateral.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {
-using autoware_control_msgs::msg::Lateral;
 struct LateralOutput
 {
-  Lateral control_cmd;
+  LateralMsg control_cmd;
   LateralHorizon control_cmd_horizon;
   LateralSyncData sync_data;
 };

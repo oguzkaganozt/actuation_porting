@@ -1,0 +1,46 @@
+#ifndef LATERAL_IDL_
+#define LATERAL_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_control_msgs/msg/Lateral.msg
+// generated code does not contain a copyright notice
+
+#include "Time.idl"
+
+module autoware_control_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "Lateral control message for Ackermann-style platforms" "\n"
+      "" "\n"
+      "Note regarding tires: If the platform has multiple steering tires, the commands" "\n"
+      "given here are for a virtual tire at the average lateral position of the steering tires." "\n"
+      "" "\n"
+      "Look up Ackermann Bicycle Model for more details" "\n"
+      "" "\n"
+      "Positive values represents left inclination (if forward)" "\n"
+      "Negative values represents right inclination (if forward)")
+    struct Lateral {
+      @verbatim (language="comment", text=
+        "Time this message was created")
+      builtin_interfaces::msg::Time stamp;
+
+      @verbatim (language="comment", text=
+        "Time this configuration state is expected to be achieved in (optional)")
+      builtin_interfaces::msg::Time control_time;
+
+      @verbatim (language="comment", text=
+        "Desired angle of the steering tire in rad (radians)")
+      float steering_tire_angle;
+
+      @verbatim (language="comment", text=
+        "Desired rate of change of the steering tire angle in rad/s")
+      float steering_tire_rotation_rate;
+
+      @verbatim (language="comment", text=
+        "Controller has filled in the steering_tire_rotation_rate value")
+      boolean is_defined_steering_tire_rotation_rate;
+    };
+  };
+};
+
+#endif  // LATERAL_IDL_

@@ -1,9 +1,0 @@
-- std_msgs
-- geometry_msgs
-- builtin_interfaces
-- sensor_msgs/CompressedImage
-- unique_identifier_msgs
-- autoware_planning_msgs
-- autoware_perception_msgs
-- tier4_planning_msgs
-- tier4_debug_msgs

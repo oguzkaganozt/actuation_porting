@@ -1,0 +1,51 @@
+#ifndef LONGITUDINAL_IDL_
+#define LONGITUDINAL_IDL_
+
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from autoware_control_msgs/msg/Longitudinal.msg
+// generated code does not contain a copyright notice
+
+#include "Time.idl"
+
+module autoware_control_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "Longitudinal control message" "\n"
+      "" "\n"
+      "Values are in the base_link frame in X axis" "\n"
+      "" "\n"
+      "Positive values represent forward motion (+X)" "\n"
+      "Negative values represent backward motion (-X)")
+    struct Longitudinal {
+      @verbatim (language="comment", text=
+        "Time this message was created")
+      builtin_interfaces::msg::Time stamp;
+
+      @verbatim (language="comment", text=
+        "Time this configuration state is expected to be achieved in (optional)")
+      builtin_interfaces::msg::Time control_time;
+
+      @verbatim (language="comment", text=
+        "Desired vehicle velocity in in m/s")
+      float velocity;
+
+      @verbatim (language="comment", text=
+        "Desired vehicle acceleration in m/s²")
+      float acceleration;
+
+      @verbatim (language="comment", text=
+        "Desired vehicle jerk in m/s³")
+      float jerk;
+
+      @verbatim (language="comment", text=
+        "Controller has filled in the acceleration value")
+      boolean is_defined_acceleration;
+
+      @verbatim (language="comment", text=
+        "Controller has filled in the jerk value")
+      boolean is_defined_jerk;
+    };
+  };
+};
+
+#endif  // LONGITUDINAL_IDL_

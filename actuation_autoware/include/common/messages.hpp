@@ -41,6 +41,12 @@
 #include "TrafficLightGroupArray.h"
 #include "TrafficSignal.h"
 #include "TrafficSignalArray.h"
+#include "Lateral.h"
+#include "Longitudinal.h"
+#include "AccelWithCovarianceStamped.h"
+#include "SteeringReport.h"
+#include "OperationModeState.h"
+#include "Engage.h"
 
 #include "common/sequence.hpp"
 
@@ -63,6 +69,12 @@ using awfPlanningMsgsTrajectoryPoint = autoware_planning_msgs_msg_TrajectoryPoin
 using awfPlanningMsgsPathPoint = autoware_planning_msgs_msg_PathPoint;
 using awfPlanningMsgsPathWithLaneId = tier4_planning_msgs_msg_PathWithLaneId;
 using tier4PlanningMsgsPathPointWithLaneId = tier4_planning_msgs_msg_PathPointWithLaneId;
+using awfControlMsgsLateral = autoware_control_msgs_msg_Lateral;
+using awfControlMsgsLongitudinal = autoware_control_msgs_msg_Longitudinal;
+using geometryMsgsAccelWithCovarianceStamped = geometry_msgs_msg_AccelWithCovarianceStamped;
+using awfVehicleMsgsSteeringReport = autoware_vehicle_msgs_msg_SteeringReport;
+using awfAdapiV1MsgsOperationModeState = autoware_adapi_v1_msgs_msg_OperationModeState;
+using awfVehicleMsgsEngage = autoware_vehicle_msgs_msg_Engage;
 
 // Sequence types from autoware_msgs
 using awfPlanningMsgsSequenceTrajectoryPoint = dds_sequence_autoware_planning_msgs_msg_TrajectoryPoint;
@@ -106,6 +118,12 @@ using TrajectoryPointMsg = awfPlanningMsgsTrajectoryPoint;
 using PathPointMsg = awfPlanningMsgsPathPoint;
 using PathWithLaneIdMsg = awfPlanningMsgsPathWithLaneId;
 using PathPointWithLaneIdMsg = tier4PlanningMsgsPathPointWithLaneId;
+using LateralMsg = awfControlMsgsLateral;
+using LongitudinalMsg = awfControlMsgsLongitudinal;
+using AccelWithCovarianceStampedMsg = geometryMsgsAccelWithCovarianceStamped;
+using SteeringReportMsg = awfVehicleMsgsSteeringReport;
+using OperationModeStateMsg = awfAdapiV1MsgsOperationModeState;
+using EngageMsg = awfVehicleMsgsEngage;
 
 // Simplified sequence types
 using FloatSeq = Sequence<dds_sequence_float>;

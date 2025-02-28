@@ -15,21 +15,17 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__INPUT_DATA_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__INPUT_DATA_HPP_
 
-#include "autoware_adapi_v1_msgs/msg/operation_mode_state.hpp"
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "autoware_vehicle_msgs/msg/steering_report.hpp"
-#include "geometry_msgs/msg/accel_with_covariance_stamped.hpp"
-#include "nav_msgs/msg/odometry.hpp"
+#include "common/common.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {
 struct InputData
 {
-  autoware_planning_msgs::msg::Trajectory current_trajectory;
-  nav_msgs::msg::Odometry current_odometry;
-  autoware_vehicle_msgs::msg::SteeringReport current_steering;
-  geometry_msgs::msg::AccelWithCovarianceStamped current_accel;
-  autoware_adapi_v1_msgs::msg::OperationModeState current_operation_mode;
+  TrajectoryMsg current_trajectory;
+  OdometryMsg current_odometry;
+  SteeringReportMsg current_steering;
+  AccelWithCovarianceStampedMsg current_accel;
+  OperationModeStateMsg current_operation_mode;
 };
 }  // namespace autoware::motion::control::trajectory_follower
 
