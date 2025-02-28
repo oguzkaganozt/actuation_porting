@@ -43,6 +43,10 @@ public:
     {
         // Allocate stack
         stack_ = k_malloc(stack_size_);
+        if (!stack_) {
+            printk("Failed to allocate stack for node %s\n", name_);
+            return -ENOMEM;
+        }
         
         // Initialize timers
         for (int i = 0; i < MAX_TIMERS; i++) {
@@ -252,7 +256,7 @@ private:
         }
     }
     
-    const char* name_;
+    const char name_[50];
     struct k_thread thread_;
     k_tid_t thread_id_;
     void* stack_;
