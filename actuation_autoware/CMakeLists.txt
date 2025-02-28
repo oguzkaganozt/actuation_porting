@@ -76,11 +76,11 @@ set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Add Autoware components
 include(src/autoware/autoware_osqp_interface/autoware_osqp_interface.cmake)
-include(src/autoware/autoware_universe_utils_min/autoware_universe_utils.cmake)
-include(src/autoware/autoware_interpolation_min/autoware_interpolation.cmake)
-include(src/autoware/autoware_motion_utils_min/autoware_motion_utils.cmake)
+include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
+include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
+include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
 include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-include(src/autoware/autoware_trajectory_follower_base_min/autoware_trajectory_follower_base.cmake)
+include(src/autoware/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
 # include(src/autoware/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
 
 message("=== Build Summary ===")
