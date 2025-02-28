@@ -38,7 +38,7 @@
 | RCL Timers   | Zephyr Timers | ✅ Completed |
 | RCL Publisher | CycloneDDS | ⏳ Pending |
 | RCL Subscriber | CycloneDDS | ⏳ Pending |
-| RCL Callback | Zephyr Callbacks | ⏳ Pending |
+| RCL Callback | Lambda | ⏳ Pending |
 
 ### Development Notes
 
