@@ -50,33 +50,32 @@
 
 #include "common/sequence.hpp"
 
-// FROM AUTOWARE_MSGS
 // Message types from autoware_msgs
-using geometryMsgsPoint = geometry_msgs_msg_Point;
-using geometryMsgsPose = geometry_msgs_msg_Pose;
-using geometryMsgsVector3 = geometry_msgs_msg_Vector3;
-using geometryMsgsPoseStamped = geometry_msgs_msg_PoseStamped;
-using geometryMsgsPoseWithCovarianceStamped = geometry_msgs_msg_PoseWithCovarianceStamped;
-using geometryMsgsQuaternion = geometry_msgs_msg_Quaternion;
-using geometryMsgsTransform = geometry_msgs_msg_Transform;
-using geometryMsgsTransformStamped = geometry_msgs_msg_TransformStamped;
-using geometryMsgsTwist = geometry_msgs_msg_Twist;
-using geometryMsgsTwistStamped = geometry_msgs_msg_TwistStamped;
-using navMsgsOdometry = nav_msgs_msg_Odometry;
-using visualizationMsgsMarkerArray = visualization_msgs_msg_MarkerArray;
-using awfPlanningMsgsTrajectory = autoware_planning_msgs_msg_Trajectory;
-using awfPlanningMsgsTrajectoryPoint = autoware_planning_msgs_msg_TrajectoryPoint;
-using awfPlanningMsgsPathPoint = autoware_planning_msgs_msg_PathPoint;
-using awfPlanningMsgsPathWithLaneId = tier4_planning_msgs_msg_PathWithLaneId;
-using tier4PlanningMsgsPathPointWithLaneId = tier4_planning_msgs_msg_PathPointWithLaneId;
-using awfControlMsgsLateral = autoware_control_msgs_msg_Lateral;
-using awfControlMsgsLongitudinal = autoware_control_msgs_msg_Longitudinal;
-using geometryMsgsAccelWithCovarianceStamped = geometry_msgs_msg_AccelWithCovarianceStamped;
-using awfVehicleMsgsSteeringReport = autoware_vehicle_msgs_msg_SteeringReport;
-using awfAdapiV1MsgsOperationModeState = autoware_adapi_v1_msgs_msg_OperationModeState;
-using awfVehicleMsgsEngage = autoware_vehicle_msgs_msg_Engage;
+using PointMsg = geometry_msgs_msg_Point;
+using PoseMsg = geometry_msgs_msg_Pose;
+using Vector3Msg = geometry_msgs_msg_Vector3;
+using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
+using PoseWithCovarianceStampedMsg = geometry_msgs_msg_PoseWithCovarianceStamped;
+using QuaternionMsg = geometry_msgs_msg_Quaternion;
+using TransformMsg = geometry_msgs_msg_Transform;
+using TransformStampedMsg = geometry_msgs_msg_TransformStamped;
+using TwistMsg = geometry_msgs_msg_Twist;
+using TwistStampedMsg = geometry_msgs_msg_TwistStamped;
+using OdometryMsg = nav_msgs_msg_Odometry;
+using MarkerArrayMsg = visualization_msgs_msg_MarkerArray;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+using PathPointMsg = autoware_planning_msgs_msg_PathPoint;
+using PathWithLaneIdMsg = tier4_planning_msgs_msg_PathWithLaneId;
+using PathPointWithLaneIdMsg = tier4_planning_msgs_msg_PathPointWithLaneId;
+using LateralMsg = autoware_control_msgs_msg_Lateral;
+using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
+using AccelWithCovarianceStampedMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
+using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
+using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
+using EngageMsg = autoware_vehicle_msgs_msg_Engage;
 
-// Sequence types from autoware_msgs
+// Raw Sequence types from autoware_msgs
 using awfPlanningMsgsSequenceTrajectoryPoint = dds_sequence_autoware_planning_msgs_msg_TrajectoryPoint;
 using awfPerceptionMsgsSequenceObjectClassification = dds_sequence_autoware_perception_msgs_msg_ObjectClassification;
 using awfPerceptionMsgsSequenceDetectedObject = dds_sequence_autoware_perception_msgs_msg_DetectedObject;
@@ -99,33 +98,7 @@ using awfPerceptionMsgsSequenceTrafficLightGroup = dds_sequence_autoware_percept
 using awfPerceptionMsgsSequenceTrafficSignalElement = dds_sequence_autoware_perception_msgs_msg_TrafficSignalElement;
 using awfPerceptionMsgsSequenceTrafficSignal = dds_sequence_autoware_perception_msgs_msg_TrafficSignal;
 
-// SIMPLIFIED
-// Simplified message names
-using PointMsg = geometryMsgsPoint;
-using PoseMsg = geometryMsgsPose;
-using Vector3Msg = geometryMsgsVector3;
-using PoseStampedMsg = geometryMsgsPoseStamped;
-using PoseWithCovarianceStampedMsg = geometryMsgsPoseWithCovarianceStamped;
-using QuaternionMsg = geometryMsgsQuaternion;
-using TransformMsg = geometryMsgsTransform;
-using TransformStampedMsg = geometryMsgsTransformStamped;
-using TwistMsg = geometryMsgsTwist;
-using TwistStampedMsg = geometryMsgsTwistStamped;
-using OdometryMsg = navMsgsOdometry;
-using MarkerArrayMsg = visualizationMsgsMarkerArray;
-using TrajectoryMsg = awfPlanningMsgsTrajectory;
-using TrajectoryPointMsg = awfPlanningMsgsTrajectoryPoint;
-using PathPointMsg = awfPlanningMsgsPathPoint;
-using PathWithLaneIdMsg = awfPlanningMsgsPathWithLaneId;
-using PathPointWithLaneIdMsg = tier4PlanningMsgsPathPointWithLaneId;
-using LateralMsg = awfControlMsgsLateral;
-using LongitudinalMsg = awfControlMsgsLongitudinal;
-using AccelWithCovarianceStampedMsg = geometryMsgsAccelWithCovarianceStamped;
-using SteeringReportMsg = awfVehicleMsgsSteeringReport;
-using OperationModeStateMsg = awfAdapiV1MsgsOperationModeState;
-using EngageMsg = awfVehicleMsgsEngage;
-
-// Simplified sequence types
+// Wrapped sequence types
 using FloatSeq = Sequence<dds_sequence_float>;
 using DoubleSeq = Sequence<dds_sequence_double>;
 using UInt8Seq = Sequence<dds_sequence_uint8>;
