@@ -87,10 +87,12 @@ public:
      */
     int start() {
         if (running_) {
-            return 0; // Already running
+            printk("Node %s already running\n", name_);
+            return 0;
         }
         
         if (!stack_) {
+            printk("Failed to allocate stack for node %s\n", name_);
             return -ENOMEM;
         }
         
@@ -106,6 +108,7 @@ public:
             K_NO_WAIT);
         
         if (!thread_id_) {
+            printk("Failed to create thread for node %s\n", name_);
             return -EAGAIN;
         }
         
@@ -158,7 +161,8 @@ public:
         }
         
         if (timer_id < 0) {
-            return -ENOMEM; // No available timer slots
+            printk("No available timer slots, Failed to create timer for node %s\n", name_);
+            return -ENOMEM;
         }
         
         // Store callback info
@@ -173,6 +177,7 @@ public:
         struct timer_user_data* data = static_cast<struct timer_user_data*>(k_malloc(sizeof(struct timer_user_data)));
         if (!data) {
             timer_data_[timer_id].in_use = false;
+            printk("Failed to allocate memory for timer user data for node %s\n", name_);
             return -ENOMEM;
         }
         data->node = this;
@@ -191,6 +196,7 @@ public:
      */
     int cancel_timer(int timer_id) {
         if (timer_id < 0 || timer_id >= MAX_TIMERS || !timer_data_[timer_id].in_use) {
+            printk("Invalid timer ID, Failed to cancel timer for node %s\n", name_);
             return -EINVAL;
         }
         

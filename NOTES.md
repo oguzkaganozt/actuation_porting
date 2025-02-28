@@ -34,13 +34,11 @@
 | ROS Component | Zephyr Target | Status |
 |--------------|---------------|---------|
 | RCL Logging  | Zephyr Logger | ✅ Completed |
-| RCL Node     | POSIX Threads vs k_threads | ⏳ Pending |
-| RCL Timers   | Zephyr Timers | ⏳ Pending |
+| RCL Node     | Zephyr k_threads | ✅ Completed |
+| RCL Timers   | Zephyr Timers | ✅ Completed |
 | RCL Publisher | CycloneDDS | ⏳ Pending |
 | RCL Subscriber | CycloneDDS | ⏳ Pending |
 | RCL Callback | Zephyr Callbacks | ⏳ Pending |
-| RCL Parameter | Custom File Reader | ⏳ Pending |
-
 
 ### Development Notes
 
