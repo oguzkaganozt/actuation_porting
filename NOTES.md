@@ -10,31 +10,40 @@
 | Autoware.Universe | [0.40.0](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0) |
 | Autoware.msgs | [1.3.0](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0) |
 
-## Porting Status
+## Autoware Components Porting
 
-### Completed ✅
-- autoware_msgs
-- autoware_osqp_interface
-- autoware_universe_utils_min
-- autoware_motion_utils_min
-- autoware_interpolation_min
-- autoware_vehicle_info_utils
-- autoware_trajectory_follower_base
+| Component | Status |
+|-----------|---------|
+| autoware_msgs | ✅ Completed |
+| autoware_osqp_interface | ✅ Completed |
+| autoware_universe_utils | ✅ Completed |
+| autoware_motion_utils | ✅ Completed |
+| autoware_interpolation | ✅ Completed |
+| autoware_vehicle_info_utils | ✅ Completed |
+| autoware_trajectory_follower_base | ✅ Completed |
+| autoware_mpc_lateral_controller | ⏳ Pending |
 
-### Pending 🔄
-- autoware_mpc_lateral_controller
-
-## ROS to Zephyr Migration Tasks
+## ROS Utils Migration
 
 | ROS Component | Zephyr Target | Status |
 |--------------|---------------|---------|
-| Node Launch  | POSIX Threads vs k_threads | ✅ Completed |
 | RCL Logging  | Zephyr Logger | ✅ Completed |
-| Parameters   | Configuration File Reader | ⏳ Pending |
+| RCL Node     | POSIX Threads vs k_threads | ⏳ Pending |
+| RCL Parameters | Custom File Reader | ⏳ Pending |
 | RCL Timers   | Zephyr Timers | ⏳ Pending |
+| RCL Subscribers | CycloneDDS | ⏳ Pending |
+| RCL Publishers | CycloneDDS | ⏳ Pending |
 | RCL Callbacks| Zephyr Callbacks | ⏳ Pending |
 
-### Key Notes
+## Node Creation/Launch
+
+| Node | Status |
+|------|--------|
+| vehicle_info | ⏳ Pending |
+| vehicle_state_checker | ⏳ Pending |
+| autoware_mpc_lateral_controller | ⏳ Pending |
+
+### Development Notes
 
 - Validate node functionality with native ROS2 nodes
 - change memory configuration of the cyclonedds with zephyr allocator -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html

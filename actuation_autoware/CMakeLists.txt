@@ -74,14 +74,14 @@ add_dependencies(app actuation_msgs_pkg)
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
-# Add Autoware nodes
-include(src/nodes/autoware_osqp_interface/autoware_osqp_interface.cmake)
-include(src/nodes/autoware_universe_utils_min/autoware_universe_utils.cmake)
-include(src/nodes/autoware_interpolation_min/autoware_interpolation.cmake)
-include(src/nodes/autoware_motion_utils_min/autoware_motion_utils.cmake)
-include(src/nodes/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-include(src/nodes/autoware_trajectory_follower_base_min/autoware_trajectory_follower_base.cmake)
-# include(src/nodes/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
+# Add Autoware components
+include(src/autoware/autoware_osqp_interface/autoware_osqp_interface.cmake)
+include(src/autoware/autoware_universe_utils_min/autoware_universe_utils.cmake)
+include(src/autoware/autoware_interpolation_min/autoware_interpolation.cmake)
+include(src/autoware/autoware_motion_utils_min/autoware_motion_utils.cmake)
+include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
+include(src/autoware/autoware_trajectory_follower_base_min/autoware_trajectory_follower_base.cmake)
+# include(src/autoware/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
 
 message("=== Build Summary ===")
 message("App sources: ${APP_SOURCES}")
