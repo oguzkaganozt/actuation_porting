@@ -21,7 +21,6 @@
 #include "autoware/mpc_lateral_controller/steering_predictor.hpp"
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_interface.hpp"
 #include "autoware/trajectory_follower_base/control_horizon.hpp"
-#include "rclcpp/rclcpp.hpp"
 
 #include "autoware_control_msgs/msg/lateral.hpp"
 #include "autoware_planning_msgs/msg/trajectory.hpp"
@@ -204,8 +203,7 @@ struct ResultWithReason
 class MPC
 {
 private:
-  rclcpp::Logger m_logger = rclcpp::get_logger("mpc_logger");  // ROS logger used for debug logging.
-  rclcpp::Clock::SharedPtr m_clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);  // ROS clock.
+  // rclcpp::Clock::SharedPtr m_clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);  // ROS clock.
 
   // Vehicle model used for MPC.
   std::shared_ptr<VehicleModelInterface> m_vehicle_model_ptr;

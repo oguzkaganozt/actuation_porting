@@ -19,24 +19,24 @@
 - autoware_motion_utils_min
 - autoware_interpolation_min
 - autoware_vehicle_info_utils
+- autoware_trajectory_follower_base
 
 ### Pending 🔄
-- autoware_trajectory_follower_base
 - autoware_mpc_lateral_controller
 
 ## ROS to Zephyr Migration Tasks
 
 | ROS Component | Zephyr Target | Status |
 |--------------|---------------|---------|
-| Node Launch  | POSIX Threads | ✅ Completed |
-| Parameters   | Configuration File Reader | ✅ Completed |
+| Node Launch  | POSIX Threads vs k_threads | ✅ Completed |
 | RCL Logging  | Zephyr Logger | ✅ Completed |
+| Parameters   | Configuration File Reader | ⏳ Pending |
 | RCL Timers   | Zephyr Timers | ⏳ Pending |
 | RCL Callbacks| Zephyr Callbacks | ⏳ Pending |
 
 ### Key Notes
 
-- Valite node functionality with native ROS2 nodes
+- Validate node functionality with native ROS2 nodes
 - change memory configuration of the cyclonedds with zephyr allocator -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
 - Validate launch structure and synchronization with the native ROS2 nodes
 - Validate the message conversion between ROS2 and Zephyr

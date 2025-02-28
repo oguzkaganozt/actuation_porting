@@ -4,9 +4,7 @@
 #ifndef ACTUATION_AUTOWARE_HPP_
 #define ACTUATION_AUTOWARE_HPP_
 
-#include <zephyr/logging/log.h>
-
-// Logging
+// Logging level
 #define LOG_LEVEL LOG_LEVEL_DBG
 
 // Stack size

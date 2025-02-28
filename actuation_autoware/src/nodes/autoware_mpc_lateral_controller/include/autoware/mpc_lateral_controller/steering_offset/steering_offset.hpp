@@ -15,11 +15,12 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__STEERING_OFFSET__STEERING_OFFSET_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__STEERING_OFFSET__STEERING_OFFSET_HPP_
 
-#include <geometry_msgs/msg/twist.hpp>
+#include "common/common.hpp"
 
 #include <cmath>
 #include <deque>
 #include <vector>
+#include <deque>
 
 class SteeringOffsetEstimator
 {
@@ -30,7 +31,7 @@ public:
   ~SteeringOffsetEstimator() = default;
 
   double getOffset() const;
-  void updateOffset(const geometry_msgs::msg::Twist & twist, const double steering);
+  void updateOffset(const TwistMsg & twist, const double steering);
 
 private:
   // parameters

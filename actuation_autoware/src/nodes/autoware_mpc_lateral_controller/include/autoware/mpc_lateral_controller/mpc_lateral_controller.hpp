@@ -20,10 +20,10 @@
 #include "autoware/mpc_lateral_controller/mpc_utils.hpp"
 #include "autoware/mpc_lateral_controller/steering_offset/steering_offset.hpp"
 #include "autoware/trajectory_follower_base/lateral_controller_base.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include "autoware/trajectory_follower_base/control_horizon.hpp"
 
-#include <autoware/trajectory_follower_base/control_horizon.hpp>
-#include <diagnostic_updater/diagnostic_updater.hpp>
+// TODO: ? how to enable same functionality with zephyr?
+// #include <diagnostic_updater/diagnostic_updater.hpp>
 
 #include "autoware_control_msgs/msg/lateral.hpp"
 #include "autoware_planning_msgs/msg/trajectory.hpp"
@@ -56,20 +56,20 @@ class MpcLateralController : public trajectory_follower::LateralControllerBase
 {
 public:
   /// \param node Reference to the node used only for the component and parameter initialization.
-  explicit MpcLateralController(
-    rclcpp::Node & node, std::shared_ptr<diagnostic_updater::Updater> diag_updater);
+  // explicit MpcLateralController(
+  //   rclcpp::Node & node, std::shared_ptr<diagnostic_updater::Updater> diag_updater);
+  explicit MpcLateralController();
   virtual ~MpcLateralController();
 
 private:
-  rclcpp::Clock::SharedPtr clock_;
-  rclcpp::Logger logger_;
+  // rclcpp::Clock::SharedPtr clock_;
 
-  rclcpp::Publisher<Trajectory>::SharedPtr m_pub_predicted_traj;
-  rclcpp::Publisher<Float32MultiArrayStamped>::SharedPtr m_pub_debug_values;
-  rclcpp::Publisher<Float32Stamped>::SharedPtr m_pub_steer_offset;
+  // rclcpp::Publisher<Trajectory>::SharedPtr m_pub_predicted_traj;
+  // rclcpp::Publisher<Float32MultiArrayStamped>::SharedPtr m_pub_debug_values;
+  // rclcpp::Publisher<Float32Stamped>::SharedPtr m_pub_steer_offset;
 
-  std::shared_ptr<diagnostic_updater::Updater>
-    diag_updater_{};  // Diagnostic updater for publishing diagnostic data.
+  // std::shared_ptr<diagnostic_updater::Updater>
+  //   diag_updater_{};  // Diagnostic updater for publishing diagnostic data.
 
   //!< @brief parameters for path smoothing
   TrajectoryFilteringParam m_trajectory_filtering_param;
@@ -101,9 +101,9 @@ private:
   // trajectory buffer for detecting new trajectory
   std::deque<Trajectory> m_trajectory_buffer;
 
-  void setStatus(diagnostic_updater::DiagnosticStatusWrapper & stat);
+  // void setStatus(diagnostic_updater::DiagnosticStatusWrapper & stat);
 
-  void setupDiag();
+  // void setupDiag();
 
   std::unique_ptr<MPC> m_mpc;  // MPC object for trajectory following.
 
@@ -111,13 +111,13 @@ private:
   bool m_is_mpc_history_filled{false};
 
   // store the last mpc outputs for 1 sec
-  std::vector<std::pair<Lateral, rclcpp::Time>> m_mpc_steering_history{};
+  // std::vector<std::pair<Lateral, rclcpp::Time>> m_mpc_steering_history{};
 
   // set the mpc steering output to history
-  void setSteeringToHistory(const Lateral & steering);
+  // void setSteeringToHistory(const Lateral & steering);
 
   // check if the mpc steering output is converged
-  bool isMpcConverged();
+  // bool isMpcConverged();
 
   // measured kinematic state
   Odometry m_current_kinematic_state;

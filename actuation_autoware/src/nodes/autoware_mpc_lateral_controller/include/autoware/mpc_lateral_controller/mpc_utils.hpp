@@ -15,8 +15,6 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_UTILS_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_UTILS_HPP_
 
-#include "rclcpp/rclcpp.hpp"
-
 #include <Eigen/Core>
 
 #include "autoware/mpc_lateral_controller/mpc_trajectory.hpp"
