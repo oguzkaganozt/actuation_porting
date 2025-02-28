@@ -10,7 +10,13 @@
 | Autoware.Universe | [0.40.0](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0) |
 | Autoware.msgs | [1.3.0](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0) |
 
-## Autoware Components Porting
+## Autoware Nodes
+| Node | Subscribed Topics | Published Topics | Status |
+|------|--------------------|-------------------|--------|
+| **vehicle_info** | None | None | ✅ Completed |
+| **autoware_mpc_lateral_controller** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>•`autoware_vehicle_msgs/SteeringReport`<br>Current steering | • `autoware_control_msgs/Lateral`<br>Lateral control command<br>• `LateralSyncData::steer angle convergence`<br>Steer angle convergence<br>• `autoware_planning_msgs::Trajectory`<br>Predicted trajectory.<br>(The trajectory size will be empty when the controller is in an emergency such as too large deviation from the planning trajectory) | ⏳ Pending |
+
+## Autoware Dependencies
 
 | Component | Status |
 |-----------|---------|
@@ -29,19 +35,12 @@
 |--------------|---------------|---------|
 | RCL Logging  | Zephyr Logger | ✅ Completed |
 | RCL Node     | POSIX Threads vs k_threads | ⏳ Pending |
-| RCL Parameters | Custom File Reader | ⏳ Pending |
 | RCL Timers   | Zephyr Timers | ⏳ Pending |
-| RCL Subscribers | CycloneDDS | ⏳ Pending |
-| RCL Publishers | CycloneDDS | ⏳ Pending |
-| RCL Callbacks| Zephyr Callbacks | ⏳ Pending |
+| RCL Publisher | CycloneDDS | ⏳ Pending |
+| RCL Subscriber | CycloneDDS | ⏳ Pending |
+| RCL Callback | Zephyr Callbacks | ⏳ Pending |
+| RCL Parameter | Custom File Reader | ⏳ Pending |
 
-## Node Creation/Launch
-
-| Node | Status |
-|------|--------|
-| vehicle_info | ⏳ Pending |
-| vehicle_state_checker | ⏳ Pending |
-| autoware_mpc_lateral_controller | ⏳ Pending |
 
 ### Development Notes
 

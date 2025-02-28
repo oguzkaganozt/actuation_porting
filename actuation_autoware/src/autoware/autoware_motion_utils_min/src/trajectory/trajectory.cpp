@@ -78,19 +78,6 @@ template TrajectoryPointSeq
 removeOverlapPoints<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points, const size_t start_idx);
 
-// searchZeroVelocityIndex
-template std::optional<size_t>
-searchZeroVelocityIndex<TrajectoryPointSeq>(
-  const TrajectoryPointSeq & points_with_twist,
-  const size_t src_idx, const size_t dst_idx);
-template std::optional<size_t>
-searchZeroVelocityIndex<TrajectoryPointSeq>(
-  const TrajectoryPointSeq & points_with_twist,
-  const size_t src_idx);
-template std::optional<size_t>
-searchZeroVelocityIndex<TrajectoryPointSeq>(
-  const TrajectoryPointSeq & points_with_twist);
-
 // calcLongitudinalOffsetToSegment
 template double
 calcLongitudinalOffsetToSegment<PathPointSeq>(
@@ -129,28 +116,6 @@ template std::optional<size_t>
 findNearestSegmentIndex<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,
   const PoseMsg & pose, const double max_dist, const double max_yaw);
-
-// calcSignedArcLength
-template double calcSignedArcLength<PathPointSeq>(
-  const PathPointSeq & points, const size_t src_idx,
-  const size_t dst_idx);
-template double calcSignedArcLength<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points, const size_t src_idx,
-  const size_t dst_idx);
-template double calcSignedArcLength<TrajectoryPointSeq>(
-  const TrajectoryPointSeq & points, const size_t src_idx,
-  const size_t dst_idx);
-
-// calcSignedArcLength
-template double calcSignedArcLength<PathPointSeq>(
-  const PathPointSeq & points,
-  const PointMsg & src_point, const size_t dst_idx);
-template double calcSignedArcLength<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq &,
-  const PointMsg & src_point, const size_t dst_idx);
-template double calcSignedArcLength<TrajectoryPointSeq>(
-  const TrajectoryPointSeq &,
-  const PointMsg & src_point, const size_t dst_idx);
 
 // calcCurvature
 template std::vector<double> calcCurvature<PathPointSeq>(
