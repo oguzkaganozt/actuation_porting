@@ -16,6 +16,7 @@
 #define AUTOWARE_VEHICLE_INFO_UTILS__VEHICLE_INFO_HPP_
 
 #include "common/common.hpp"
+#include "common/messages.hpp"
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
 
 namespace autoware::vehicle_info_utils

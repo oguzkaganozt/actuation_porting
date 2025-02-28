@@ -17,6 +17,7 @@
 
 // Libs
 #include "common/common.hpp"
+#include "common/messages.hpp"
 #include <vector>
 #include <Eigen/Core>
 #include "osqp/glob_opts.h"  // for 'c_int' type ('long' or 'long long')

@@ -16,6 +16,7 @@
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__INPUT_DATA_HPP_
 
 #include "common/common.hpp"
+#include "common/messages.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {

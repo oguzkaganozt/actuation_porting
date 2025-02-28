@@ -23,6 +23,7 @@
 #include <vector>
 #include <Eigen/Core>
 #include "common/common.hpp"
+#include "common/messages.hpp"
 
 #include "autoware/interpolation/interpolation_utils.hpp"
 #include "autoware/universe_utils/geometry/geometry.hpp"

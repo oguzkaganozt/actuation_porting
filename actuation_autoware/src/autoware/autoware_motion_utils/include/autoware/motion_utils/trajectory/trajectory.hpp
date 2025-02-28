@@ -17,6 +17,7 @@
 
 // Libs
 #include "common/common.hpp"
+#include "common/messages.hpp"
 #include <algorithm>
 #include <limits>
 #include <optional>

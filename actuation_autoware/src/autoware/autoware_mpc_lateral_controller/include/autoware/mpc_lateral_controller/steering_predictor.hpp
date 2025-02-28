@@ -16,6 +16,7 @@
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__STEERING_PREDICTOR_HPP_
 
 #include "common/common.hpp"
+#include "common/messages.hpp"
 
 #include <memory>
 #include <vector>

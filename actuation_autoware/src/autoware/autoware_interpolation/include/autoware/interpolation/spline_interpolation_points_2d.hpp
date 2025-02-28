@@ -17,6 +17,7 @@
 
 // Libs
 #include "common/common.hpp"
+#include "common/messages.hpp"
 #include <vector>
 
 // Autoware

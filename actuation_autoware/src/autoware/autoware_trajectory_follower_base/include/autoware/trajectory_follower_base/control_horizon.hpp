@@ -16,6 +16,7 @@
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__CONTROL_HORIZON_HPP_
 
 #include "common/common.hpp"
+#include "common/messages.hpp"
 #include <vector>
 
 namespace autoware::motion::control::trajectory_follower
