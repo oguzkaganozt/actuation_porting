@@ -5,12 +5,6 @@
 #include <zephyr/logging/log.h>
 #include "config.hpp"
 
-static void timer_expiry_function(struct k_timer *timer_id)
-{
-    static int count = 0;
-    printk("Timer expired %d times\n", ++count);
-}
-
 int main(void)
 {
     return 0;
