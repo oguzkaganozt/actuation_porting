@@ -9,10 +9,9 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/sys/atomic.h>
-#include <dds/dds.h>
 
-#include "common/dds.hpp"
 #include "config.hpp"
+#include "common/dds.hpp"
 
 /**
  * @brief Node class implementation to replicate ROS2 nodes within the Zephyr RTOS
