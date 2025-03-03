@@ -16,7 +16,7 @@
 | **vehicle_info** | None | None | ✅ Completed |
 | **autoware_mpc_lateral_controller** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>•`autoware_vehicle_msgs/SteeringReport`<br>Current steering | • `autoware_control_msgs/Lateral`<br>Lateral control command<br>• `LateralSyncData::steer angle convergence`<br>Steer angle convergence<br>• `autoware_planning_msgs::Trajectory`<br>Predicted trajectory.<br>(The trajectory size will be empty when the controller is in an emergency such as too large deviation from the planning trajectory) | ⏳ Pending |
 
-## Autoware Dependencies
+## Autoware Node Dependencies
 
 | Component | Status |
 |-----------|---------|
