@@ -46,6 +46,28 @@ public:
             timer_data_[i].callback = nullptr;
             timer_data_[i].user_data = nullptr;
         }
+
+        // Initialize DDS settings
+        struct ddsi_config dds_cfg;
+        init_config(dds_cfg);
+
+        // Create a DDS domain
+        dds_entity_t domain = dds_create_domain_with_rawconfig(DDS_DOMAIN_ACTUATION, &dds_cfg);
+        if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
+            printk("dds_create_domain_with_rawconfig: %s\n", dds_strretcode(-domain));
+            k_panic();
+        }
+
+        // Create a DDS participant
+        m_dds_participant = dds_create_participant (DDS_DOMAIN_ACTUATION, NULL, NULL);
+        if (m_dds_participant < 0) {
+            printk("dds_create_participant: %s\n", dds_strretcode(-m_dds_participant));
+            k_panic();
+        }
+
+        // Reliable QoS
+        m_dds_qos = dds_create_qos();
+        dds_qset_reliability(m_dds_qos, DDS_RELIABILITY_RELIABLE, DDS_MSECS(30));
     }
     
     /**
@@ -79,28 +101,6 @@ public:
             printk("Node %s already running\n", name_);
             return 0;
         }
-
-        // Initialize DDS settings
-        struct ddsi_config dds_cfg;
-        init_config(dds_cfg);
-
-        // Create a DDS domain
-        dds_entity_t domain = dds_create_domain_with_rawconfig(DDS_DOMAIN_ACTUATION, &dds_cfg);
-        if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
-            printk("dds_create_domain_with_rawconfig: %s\n", dds_strretcode(-domain));
-            k_panic();
-        }
-
-        // Create a DDS participant
-        m_dds_participant = dds_create_participant (DDS_DOMAIN_ACTUATION, NULL, NULL);
-        if (m_dds_participant < 0) {
-            printk("dds_create_participant: %s\n", dds_strretcode(-m_dds_participant));
-            k_panic();
-        }
-
-        // Reliable QoS
-        m_dds_qos = dds_create_qos();
-        dds_qset_reliability(m_dds_qos, DDS_RELIABILITY_RELIABLE, DDS_MSECS(30));
 
         // Create thread
         thread_id_ = k_thread_create(
@@ -180,7 +180,7 @@ public:
      * @param user_data User data to pass to the callback DEFAULT: nullptr
      */
     template<typename M>
-    bool subscribe(const dds_topic_descriptor_t * desc, const char* name, void (*callback)(void*), void* user_data=nullptr) {
+    bool create_subscription(const dds_topic_descriptor_t * desc, const char* name, void (*callback)(void*), void* user_data=nullptr) {
         dds_entity_t topic = dds_create_topic(m_dds_participant, desc, name, NULL, NULL);
         if (topic < 0) {
             printk("dds_create_topic (%s): %s\n", name, dds_strretcode(-topic));
@@ -208,7 +208,7 @@ public:
      * @return int 0 on success, negative error code on failure
      */
     template<typename M>
-    bool publish(const dds_topic_descriptor_t * desc, const char* name, const M& message) {
+    bool create_publisher(const dds_topic_descriptor_t * desc, const char* name, const M& message) {
         dds_entity_t topic = dds_create_topic(m_dds_participant, desc, name, NULL, NULL);
         if (topic < 0) {
             printk("dds_create_topic (%s): %s\n", name, dds_strretcode(-topic));
@@ -368,7 +368,7 @@ private:
     dds_entity_t m_dds_writer;
     dds_entity_t m_dds_reader;
     dds_qos_t* m_dds_qos;
-    static bool on_data_available(dds_entity_t& reader) {
+    static bool listener_static(dds_entity_t& reader) {
         dds_sample_info_t info;
         static T msg;
 
