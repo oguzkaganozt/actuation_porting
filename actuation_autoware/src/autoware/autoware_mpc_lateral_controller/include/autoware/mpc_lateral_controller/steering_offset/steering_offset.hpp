@@ -15,13 +15,14 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__STEERING_OFFSET__STEERING_OFFSET_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__STEERING_OFFSET__STEERING_OFFSET_HPP_
 
-#include "common/common.hpp"
-#include "common/messages.hpp"
-
 #include <cmath>
 #include <deque>
 #include <vector>
 #include <deque>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 class SteeringOffsetEstimator
 {

@@ -11,7 +11,7 @@
 #include <zephyr/sys/atomic.h>
 
 #include "config.hpp"
-#include "common/dds.hpp"
+#include "node/dds.hpp"
 
 /**
  * @brief Node class implementation to replicate ROS2 nodes within the Zephyr RTOS

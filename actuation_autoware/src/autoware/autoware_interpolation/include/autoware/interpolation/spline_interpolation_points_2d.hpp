@@ -16,9 +16,11 @@
 #define AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_POINTS_2D_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
 #include <vector>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 // Autoware
 #include "autoware/interpolation/spline_interpolation.hpp"

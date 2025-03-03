@@ -16,12 +16,14 @@
 #define AUTOWARE__INTERPOLATION__INTERPOLATION_UTILS_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
 #include <algorithm>
 #include <array>
 #include <stdexcept>
 #include <vector>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 namespace autoware::interpolation
 {

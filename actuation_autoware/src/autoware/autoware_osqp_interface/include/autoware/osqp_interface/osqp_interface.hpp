@@ -16,8 +16,6 @@
 #define AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
 #include <limits>
 #include <memory>
 #include <string>
@@ -25,6 +23,10 @@
 #include <vector>
 #include <Eigen/Core>
 #include "osqp/osqp.h"
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 // Autoware
 #include "autoware/osqp_interface/csc_matrix_conv.hpp"

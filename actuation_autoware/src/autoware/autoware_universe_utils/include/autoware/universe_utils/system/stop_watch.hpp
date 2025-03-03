@@ -16,11 +16,13 @@
 #define AUTOWARE__UNIVERSE_UTILS__SYSTEM__STOP_WATCH_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
 #include <chrono>
 #include <string>
 #include <unordered_map>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 namespace autoware::universe_utils
 {

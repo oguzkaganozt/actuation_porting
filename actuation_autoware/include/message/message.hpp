@@ -1,7 +1,7 @@
-#ifndef ACTUATION_AUTOWARE__MESSAGES_H_
-#define ACTUATION_AUTOWARE__MESSAGES_H_
+#ifndef ACTUATION_AUTOWARE__MESSAGE_H_
+#define ACTUATION_AUTOWARE__MESSAGE_H_
 
-#include "common/sequence.hpp"
+#include "message/sequence.hpp"
 
 #include "Point.h"
 #include "Path.h"
@@ -135,4 +135,4 @@ using TrafficLightGroupSeq = Sequence<TrafficLightGroupSeqRaw>;
 using TrafficSignalElementSeq = Sequence<TrafficSignalElementSeqRaw>;
 using TrafficSignalSeq = Sequence<TrafficSignalSeqRaw>;
 
-#endif  // ACTUATION_AUTOWARE__MESSAGES_H_
+#endif  // ACTUATION_AUTOWARE__MESSAGE_H_

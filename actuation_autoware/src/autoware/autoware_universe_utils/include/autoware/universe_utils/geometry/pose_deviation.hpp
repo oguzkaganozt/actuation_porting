@@ -16,8 +16,9 @@
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"

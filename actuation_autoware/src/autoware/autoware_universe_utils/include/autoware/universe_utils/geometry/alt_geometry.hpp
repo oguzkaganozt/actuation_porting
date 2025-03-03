@@ -16,13 +16,16 @@
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__ALT_GEOMETRY_HPP_
 
 // Libs
-#include "common/common.hpp"
 #include <cmath>
 #include <list>
 #include <optional>
 #include <utility>
 #include <vector>
 #include <Eigen/Core>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 namespace autoware::universe_utils {
 

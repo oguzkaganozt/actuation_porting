@@ -16,9 +16,11 @@
 #define AUTOWARE__INTERPOLATION__LINEAR_INTERPOLATION_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
 #include <vector>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 // Autoware
 #include "autoware/interpolation/interpolation_utils.hpp"

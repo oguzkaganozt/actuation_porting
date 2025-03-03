@@ -15,8 +15,10 @@
 #ifndef AUTOWARE_VEHICLE_INFO_UTILS__VEHICLE_INFO_HPP_
 #define AUTOWARE_VEHICLE_INFO_UTILS__VEHICLE_INFO_HPP_
 
-#include "common/common.hpp"
-#include "common/messages.hpp"
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
+
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
 
 namespace autoware::vehicle_info_utils

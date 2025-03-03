@@ -16,11 +16,13 @@
 #define AUTOWARE__OSQP_INTERFACE__CSC_MATRIX_CONV_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
 #include <vector>
 #include <Eigen/Core>
 #include "osqp/glob_opts.h"  // for 'c_int' type ('long' or 'long long')
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 // Autoware
 #include "autoware/osqp_interface/visibility_control.hpp"

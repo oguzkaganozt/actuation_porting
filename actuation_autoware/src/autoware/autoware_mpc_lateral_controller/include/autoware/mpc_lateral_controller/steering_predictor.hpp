@@ -15,11 +15,12 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__STEERING_PREDICTOR_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__STEERING_PREDICTOR_HPP_
 
-#include "common/common.hpp"
-#include "common/messages.hpp"
-
 #include <memory>
 #include <vector>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {

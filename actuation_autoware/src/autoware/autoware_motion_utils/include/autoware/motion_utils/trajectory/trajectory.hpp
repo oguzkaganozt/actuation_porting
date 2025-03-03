@@ -16,8 +16,6 @@
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 
 // Libs
-#include "common/common.hpp"
-#include "common/messages.hpp"
 #include <algorithm>
 #include <limits>
 #include <optional>
@@ -28,6 +26,10 @@
 #include <numeric>
 #include <cmath>
 #include <Eigen/Geometry>
+
+#include <zephyr/logging/log.h>
+
+#include "message/message.hpp"
 
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
