@@ -14,7 +14,9 @@
 | Node | Subscribed Topics | Published Topics | Status |
 |------|--------------------|-------------------|--------|
 | **vehicle_info** | None | None | ✅ Completed |
-| **autoware_mpc_lateral_controller** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>•`autoware_vehicle_msgs/SteeringReport`<br>Current steering | • `autoware_control_msgs/Lateral`<br>Lateral control command<br>• `LateralSyncData::steer angle convergence`<br>Steer angle convergence<br>• `autoware_planning_msgs::Trajectory`<br>Predicted trajectory.<br>(The trajectory size will be empty when the controller is in an emergency such as too large deviation from the planning trajectory) | ⏳ Pending |
+| **autoware_mpc_lateral_controller** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>•`autoware_vehicle_msgs/SteeringReport`<br>Current steering | • `autoware_control_msgs/Lateral`<br>Lateral control command<br>• `LateralSyncData::steer angle convergence`<br>Steer angle convergence<br>• `lateral/predicted_trajectory`<br>(The trajectory size will be empty when the controller is in an emergency such as too large deviation from the planning trajectory) | ⏳ Pending |
+| **autoware_pid_longitudinal_controller** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>| • `autoware_control_msgs/Longitudinal`<br>Longitudinal control command | ⏳ Pending |
+| **autoware_trajectory_follower_node** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>•`autoware_vehicle_msgs/SteeringReport`<br>Current steering | • `autoware_control_msgs/Control`<br>message containing both lateral and longitudinal commands.<br>• `autoware_control_msgs/ControlHorizon`<br>message containing both lateral and longitudinal horizon commands. this is NOT published by default. by using this, the performance of vehicle control may be improved, and by turning the default on, it can be used as an experimental topic. | ⏳ Pending |
 
 ## Autoware Node Dependencies
 
@@ -28,6 +30,8 @@
 | autoware_vehicle_info_utils | ✅ Completed |
 | autoware_trajectory_follower_base | ✅ Completed |
 | autoware_mpc_lateral_controller | ⏳ Pending |
+| autoware_pid_longitudinal_controller | ⏳ Pending |
+| autoware_trajectory_follower_node | ⏳ Pending |
 
 ## ROS Utils Migration
 
