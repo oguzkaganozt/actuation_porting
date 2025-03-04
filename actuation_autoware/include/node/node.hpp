@@ -3,6 +3,8 @@
 
 #include <string>
 #include <typeinfo>
+#include <unordered_map>
+#include <any>
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/timer/system_timer.h>
@@ -26,13 +28,11 @@ public:
     /**
      * @brief Construct a new Node object
      * @param name Name of the node
-     * @param params Reference to node parameters struct
-     * @param priority Thread priority
+     * @param params Reference to node parameters struct (no longer used directly)
      * @param thread_sleep_ms Sleep time between iterations default 1ms
      */
     Node(const std::string& name, T& params, int thread_sleep_ms = 1, int priority = K_PRIO_PREEMPT(1))
         : name_(name)
-        , parameters_(params)
         , thread_sleep_ms_(thread_sleep_ms)
         , priority_(priority)
     {
@@ -132,36 +132,97 @@ public:
     }
 
     /**
-     * @brief Get the node name
-     * @return const char* Node name
+     * @brief Declare a parameter with a name and default value
+     * @tparam ParamT Type of the parameter
+     * @param name Name of the parameter
+     * @param default_value Default value for the parameter
+     * @return The current value of the parameter (default if not previously set)
      */
-    const char* get_name() const { 
-        return name_; 
+    template<typename ParamT>
+    ParamT declare_parameter(const std::string& name, const ParamT& default_value) {
+        k_mutex_lock(&param_mutex, K_FOREVER);
+        
+        // Check if parameter already exists
+        auto it = parameters_map_.find(name);
+        if (it == parameters_map_.end()) {
+            // Parameter doesn't exist, create it with default value
+            parameters_map_[name] = default_value;
+            k_mutex_unlock(&param_mutex);
+            return default_value;
+        } else {
+            // Parameter exists, try to return its value
+            try {
+                ParamT value = std::any_cast<ParamT>(it->second);
+                k_mutex_unlock(&param_mutex);
+                return value;
+            } catch (const std::bad_any_cast&) {
+                // Type mismatch, overwrite with default value
+                parameters_map_[name] = default_value;
+                k_mutex_unlock(&param_mutex);
+                return default_value;
+            }
+        }
     }
 
     /**
-     * @brief Set a specific parameter field (thread safe)
-     * @tparam U Type of the parameter field
-     * @param field Pointer to member of parameter struct
-     * @param value New value to set
+     * @brief Check if a parameter with the given name exists
+     * @param name Name of the parameter to check
+     * @return true if parameter exists, false otherwise
      */
-    template<typename U>
-    void set_parameter(U T::*field, const U& value) {
+    bool has_parameter(const std::string& name) const {
         k_mutex_lock(&param_mutex, K_FOREVER);
-        parameters_.*field = value;
+        bool exists = parameters_map_.find(name) != parameters_map_.end();
         k_mutex_unlock(&param_mutex);
+        return exists;
     }
-    
+
     /**
-     * @brief Get a constant ref to node parameters
-     * 
-     * @return const T& Constant reference
+     * @brief Get a parameter value by name
+     * @tparam ParamT Type of the parameter
+     * @param name Name of the parameter
+     * @return The parameter value or default-constructed value if not found
      */
-    T parameters() const {
+    template<typename ParamT>
+    ParamT get_parameter(const std::string& name) const {
         k_mutex_lock(&param_mutex, K_FOREVER);
-        T params_copy = parameters_;
+        
+        auto it = parameters_map_.find(name);
+        if (it != parameters_map_.end()) {
+            try {
+                ParamT value = std::any_cast<ParamT>(it->second);
+                k_mutex_unlock(&param_mutex);
+                return value;
+            } catch (const std::bad_any_cast&) {
+                // Type mismatch
+                k_mutex_unlock(&param_mutex);
+                return ParamT{};
+            }
+        }
+        
         k_mutex_unlock(&param_mutex);
-        return params_copy;
+        return ParamT{};
+    }
+
+    /**
+     * @brief Set a parameter value by name
+     * @tparam ParamT Type of the parameter
+     * @param name Name of the parameter
+     * @param value Value to set
+     * @return true if parameter was set, false if parameter doesn't exist
+     */
+    template<typename ParamT>
+    bool set_parameter(const std::string& name, const ParamT& value) {
+        k_mutex_lock(&param_mutex, K_FOREVER);
+        
+        auto it = parameters_map_.find(name);
+        if (it != parameters_map_.end()) {
+            it->second = value;
+            k_mutex_unlock(&param_mutex);
+            return true;
+        }
+        
+        k_mutex_unlock(&param_mutex);
+        return false;
     }
 
     /**
@@ -261,6 +322,14 @@ public:
         
         return true;
     }
+
+    /**
+     * @brief Get the node name
+     * @return const char* Node name
+     */
+    const char* get_name() const { 
+        return name_; 
+    }
     
 private:
     // Thread entry point
@@ -274,21 +343,6 @@ private:
         }
     }
     
-    // Static timer handler that redirects to instance method
-    static void timer_handler_static(struct k_timer* timer) {
-        Node<T>* node = static_cast<Node<T>*>(k_timer_user_data_get(timer));
-        if (node) {
-            node->timer_handler();
-        }
-    }
-    
-    // Instance-specific timer handler
-    void timer_handler() {
-        if (timer_active_ && timer_callback_) {
-            timer_callback_(timer_user_data_);
-        }
-    }
-    
     std::string name_;
     struct k_thread thread_;
     k_tid_t thread_id_;
@@ -296,9 +350,9 @@ private:
     int priority_;
     atomic_t running_;
 
-    // Parameter storage (struct-based)
-    T parameters_;
-    struct k_mutex param_mutex;
+    // Parameter storage (name-based)
+    std::unordered_map<std::string, std::any> parameters_map_;
+    mutable struct k_mutex param_mutex;
 
     // DDS
     dds_entity_t m_dds_participant;
@@ -322,7 +376,21 @@ private:
             return true;
     }
 
-    // Single timer for the node
+    // Node timer
+    // Static timer handler that redirects to instance method
+    static void timer_handler_static(struct k_timer* timer) {
+        Node<T>* node = static_cast<Node<T>*>(k_timer_user_data_get(timer));
+        if (node) {
+            node->timer_handler();
+        }
+    }
+    
+    // Instance-specific timer handler
+    void timer_handler() {
+        if (timer_active_ && timer_callback_) {
+            timer_callback_(timer_user_data_);
+        }
+    }
     struct k_timer node_timer_;
     void (*timer_callback_)(void*);
     void* timer_user_data_;

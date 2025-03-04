@@ -12,7 +12,6 @@ public/
 *.log
 *.cursorignore
 build_log.txt
-asd.txt
 check.sh
 
 zephyr
