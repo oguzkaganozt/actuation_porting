@@ -38,14 +38,15 @@ public:
     {
         // Initialize mutexes
         k_mutex_init(&param_mutex);
-        k_mutex_init(&timer_mutex);
         
-        // Initialize timers
-        for (int i = 0; i < MAX_TIMERS; i++) {
-            timer_data_[i].in_use = false;
-            timer_data_[i].callback = nullptr;
-            timer_data_[i].user_data = nullptr;
-        }
+        // Initialize timer
+        timer_callback_ = nullptr;
+        timer_user_data_ = nullptr;
+        timer_active_ = false;
+        k_timer_init(&node_timer_, timer_handler_static, nullptr);
+        
+        // Store the node pointer in user data
+        k_timer_user_data_set(&node_timer_, this);
 
         // Initialize DDS settings
         struct ddsi_config dds_cfg;
@@ -76,19 +77,10 @@ public:
     ~Node() {
         stop();
         
-        // Cancel and cleanup all timers
-        for (int i = 0; i < MAX_TIMERS; i++) {
-            if (timer_data_[i].in_use) {
-                void* user_data = k_timer_user_data_get(&timer_data_[i].timer);
-                if (user_data) {
-                    if(k_free(user_data)) {
-                        printk("Failed to free timer user data for node %s\n", name_.c_str());
-                        k_panic();
-                    }
-                }
-                k_timer_stop(&timer_data_[i].timer);
-                timer_data_[i].in_use = false;
-            }
+        // Stop timer if active
+        if (timer_active_) {
+            k_timer_stop(&node_timer_);
+            timer_active_ = false;
         }
     }
     
@@ -230,85 +222,44 @@ public:
      * @param interval_ms Interval in milliseconds
      * @param callback Function to call
      * @param user_data User data to pass to the callback DEFAULT: nullptr
-     * @return int Timer ID or negative error code
+     * @return bool true on success, false on failure
      */
-    int create_timer(uint32_t interval_ms, void (*callback)(void*), void* user_data=nullptr) {
-        k_mutex_lock(&timer_mutex, K_FOREVER);
-        
-        // Find an available timer slot
-        int timer_id = -1;
-        for (int i = 0; i < MAX_TIMERS; i++) {
-            if (!timer_data_[i].in_use) {
-                timer_id = i;
-                break;
-            }
-        }
-        
-        if (timer_id < 0) {
-            k_mutex_unlock(&timer_mutex);
-            printk("No available timer slots, Failed to create timer for node %s\n", name_.c_str());
-            k_panic();
+    bool create_timer(uint32_t interval_ms, void (*callback)(void*), void* user_data=nullptr) {
+        // Check if timer is already active
+        if (timer_active_) {
+            printk("Timer already active for node %s\n", name_.c_str());
+            return false;
         }
         
         // Store callback info
-        timer_data_[timer_id].callback = callback;
-        timer_data_[timer_id].user_data = user_data;
-        timer_data_[timer_id].in_use = true;
+        timer_callback_ = callback;
+        timer_user_data_ = user_data;
         
-        // Initialize and start timer
-        k_timer_init(&timer_data_[timer_id].timer, timer_handler_static, nullptr);
+        // Start timer
+        k_timer_start(&node_timer_, K_MSEC(interval_ms), K_MSEC(interval_ms));
+        timer_active_ = true;
         
-        // Store the node pointer and timer_id in user data
-        struct timer_user_data* data = static_cast<struct timer_user_data*>(k_malloc(sizeof(struct timer_user_data)));
-        if (!data) {
-            timer_data_[timer_id].in_use = false;
-            k_mutex_unlock(&timer_mutex);
-            printk("Failed to allocate memory for timer user data for node %s\n", name_.c_str());
-            k_panic();
-        }
-        data->node = this;
-        data->timer_id = timer_id;
-        
-        k_timer_user_data_set(&timer_data_[timer_id].timer, data);
-        k_timer_start(&timer_data_[timer_id].timer, K_MSEC(interval_ms), K_MSEC(interval_ms));
-        
-        k_mutex_unlock(&timer_mutex);
-        return timer_id;
+        return true;
     }
     
     /**
-     * @brief Cancel a timer
-     * @param timer_id Timer ID returned by create_timer
-     * @return int 0 on success, negative error code on failure
+     * @brief Cancel the timer
+     * @return bool true on success, false if no timer was active
      */
-    int cancel_timer(int timer_id) {
-        k_mutex_lock(&timer_mutex, K_FOREVER);
-        
-        if (timer_id < 0 || timer_id >= MAX_TIMERS || !timer_data_[timer_id].in_use) {
-            k_mutex_unlock(&timer_mutex);
-            printk("Invalid timer ID, Failed to cancel timer for node %s\n", name_.c_str());
-            k_panic();
+    bool cancel_timer() {
+        if (!timer_active_) {
+            return false;
         }
         
         // Stop the timer
-        k_timer_stop(&timer_data_[timer_id].timer);
+        k_timer_stop(&node_timer_);
         
-        // Free user data
-        void* user_data = k_timer_user_data_get(&timer_data_[timer_id].timer);
-        if (user_data) {
-            if(k_free(user_data)) {
-                printk("Failed to free timer user data for node %s\n", name_.c_str());
-                k_panic();
-            }
-        }
+        // Clear callback info
+        timer_callback_ = nullptr;
+        timer_user_data_ = nullptr;
+        timer_active_ = false;
         
-        // Mark as unused
-        timer_data_[timer_id].in_use = false;
-        timer_data_[timer_id].callback = nullptr;
-        timer_data_[timer_id].user_data = nullptr;
-        
-        k_mutex_unlock(&timer_mutex);
-        return 0;
+        return true;
     }
     
 private:
@@ -322,34 +273,20 @@ private:
             }
         }
     }
-
-    // Structure to store in timer user data
-    struct timer_user_data {
-        Node<T>* node;
-        int timer_id;
-    };
     
     // Static timer handler that redirects to instance method
     static void timer_handler_static(struct k_timer* timer) {
-        struct timer_user_data* data = static_cast<struct timer_user_data*>(k_timer_user_data_get(timer));
-        if (data && data->node) {
-            data->node->timer_handler(data->timer_id);
+        Node<T>* node = static_cast<Node<T>*>(k_timer_user_data_get(timer));
+        if (node) {
+            node->timer_handler();
         }
     }
     
     // Instance-specific timer handler
-    void timer_handler(int timer_id) {
-        k_mutex_lock(&timer_mutex, K_FOREVER);
-        if (timer_id >= 0 && timer_id < MAX_TIMERS && timer_data_[timer_id].in_use) {
-            if (timer_data_[timer_id].callback) {
-                void (*callback)(void*) = timer_data_[timer_id].callback;
-                void* user_data = timer_data_[timer_id].user_data;
-                k_mutex_unlock(&timer_mutex);
-                callback(user_data);
-                return;
-            }
+    void timer_handler() {
+        if (timer_active_ && timer_callback_) {
+            timer_callback_(timer_user_data_);
         }
-        k_mutex_unlock(&timer_mutex);
     }
     
     std::string name_;
@@ -385,16 +322,11 @@ private:
             return true;
     }
 
-    // Timer
-    struct NodeTimerData {
-        void (*callback)(void*);
-        void* user_data;
-        bool in_use;
-        struct k_timer timer;
-    };
-    static constexpr int MAX_TIMERS = 8;
-    NodeTimerData timer_data_[MAX_TIMERS];
-    struct k_mutex timer_mutex;
+    // Single timer for the node
+    struct k_timer node_timer_;
+    void (*timer_callback_)(void*);
+    void* timer_user_data_;
+    bool timer_active_;
 };
 
 #endif  // ACTUATION_AUTOWARE_NODE_HPP
