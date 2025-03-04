@@ -18,6 +18,7 @@
 | **autoware_pid_longitudinal_controller** |**Input** `autoware_planning_msgs/Trajectory`<br>**Description:** Reference trajectory to follow<hr>**Input** `nav_msgs/Odometry`<br>**Description:** Current odometry|**Output:** `autoware_control_msgs/Longitudinal`<br>**Description:** Longitudinal control command | ⏳ Pending |
 | **autoware_trajectory_follower_node** |**Topic:** `/planning/scenario_planning/trajectory` <br>**Message:** `autoware_planning_msgs/Trajectory`<br>**Description:** Reference trajectory to follow<hr>**Topic:** `/localization/kinematic_state`<br>**Message:** `nav_msgs/Odometry`<br>**Description:** Current odometry<hr>**Topic:**  CHECK! <br>**Message:**`autoware_vehicle_msgs/SteeringReport`<br>**Description:** Current steering |**Topic:** `/vehicle/command/manual_control_cmd` <br>**Message:** `autoware_control_msgs/Control`<br> **Description:** Message containing both lateral and longitudinal commands.<br> | ⏳ Pending |
 
+![trajectory_follower](https://github.com/user-attachments/assets/327f9b8e-e089-4d9b-ada7-621fbcb20e97)
 
 ## Autoware Node Dependencies
 
