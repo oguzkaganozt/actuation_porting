@@ -1,4 +1,4 @@
-# Autoware MPC Lateral Controller Safety Island
+# Autoware Trajectory Follower - Safety Island
 
 ## Components
 
@@ -11,12 +11,13 @@
 | Autoware.msgs | [1.3.0](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0) |
 
 ## Autoware Nodes
-| Node | Subscribed Topics | Published Topics | Status |
+| Node | Input | Output | Status |
 |------|--------------------|-------------------|--------|
 | **vehicle_info** | None | None | ✅ Completed |
-| **autoware_mpc_lateral_controller** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>•`autoware_vehicle_msgs/SteeringReport`<br>Current steering | • `autoware_control_msgs/Lateral`<br>Lateral control command<br>• `LateralSyncData::steer angle convergence`<br>Steer angle convergence<br>• `lateral/predicted_trajectory`<br>(The trajectory size will be empty when the controller is in an emergency such as too large deviation from the planning trajectory) | ⏳ Pending |
-| **autoware_pid_longitudinal_controller** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>| • `autoware_control_msgs/Longitudinal`<br>Longitudinal control command | ⏳ Pending |
-| **autoware_trajectory_follower_node** | • `autoware_planning_msgs/Trajectory`<br>Reference trajectory to follow<br>• `nav_msgs/Odometry`<br>Current odometry<br>•`autoware_vehicle_msgs/SteeringReport`<br>Current steering | • `autoware_control_msgs/Control`<br>message containing both lateral and longitudinal commands.<br>• `autoware_control_msgs/ControlHorizon`<br>message containing both lateral and longitudinal horizon commands. this is NOT published by default. by using this, the performance of vehicle control may be improved, and by turning the default on, it can be used as an experimental topic. | ⏳ Pending |
+| **autoware_mpc_lateral_controller** |**Input:**`autoware_planning_msgs/Trajectory`<br>**Description:** Reference trajectory to follow<hr>**Input:** `nav_msgs/Odometry`<br>**Description:** Current odometry<hr>**Input:** `autoware_vehicle_msgs/SteeringReport`<br>**Description:** Current steering |**Output:**`autoware_control_msgs/Lateral`<br>**Description:** Lateral control command<hr>**Output:**`LateralSyncData::steer angle convergence`<br>**Description:** Steer angle convergence<hr>**Topic:** `lateral/predicted_trajectory`<br>**Message:** `autoware_planning_msgs/Trajectory`<br>**Description:** (The trajectory size will be empty when the controller is in an emergency such as too large deviation from the planning trajectory) | ⏳ Pending |
+| **autoware_pid_longitudinal_controller** |**Input** `autoware_planning_msgs/Trajectory`<br>**Description:** Reference trajectory to follow<hr>**Input** `nav_msgs/Odometry`<br>**Description:** Current odometry|**Output:** `autoware_control_msgs/Longitudinal`<br>**Description:** Longitudinal control command | ⏳ Pending |
+| **autoware_trajectory_follower_node** |**Topic:** `/planning/scenario_planning/trajectory` <br>**Message:** `autoware_planning_msgs/Trajectory`<br>**Description:** Reference trajectory to follow<hr>**Topic:** `/localization/kinematic_state`<br>**Message:** `nav_msgs/Odometry`<br>**Description:** Current odometry<hr>**Topic:**  CHECK! <br>**Message:**`autoware_vehicle_msgs/SteeringReport`<br>**Description:** Current steering |**Topic:** `/vehicle/command/manual_control_cmd` <br>**Message:** `autoware_control_msgs/Control`<br> **Description:** Message containing both lateral and longitudinal commands.<br> | ⏳ Pending |
+
 
 ## Autoware Node Dependencies
 
