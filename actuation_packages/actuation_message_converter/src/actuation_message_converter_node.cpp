@@ -65,6 +65,29 @@ static void on_command_callback(dds_entity_t rd, void * arg)
   }
 }
 
+void MessageConverterNode::on_state_callback(const Odometry::SharedPtr rosidl_msg)
+{
+  autoware_auto_vehicle_msgs_msg_VehicleKinematicState idlc_msg {};
+  copy(*rosidl_msg, idlc_msg);
+  dds_return_t rc = dds_write(m_state_writer, &idlc_msg);
+  if (rc < 0) {
+    RCLCPP_ERROR(get_logger(), "dds_write: %s", dds_strretcode(-rc));
+  }
+}
+
+void MessageConverterNode::on_trajectory_callback(const Trajectory::SharedPtr rosidl_msg)
+{
+  autoware_auto_planning_msgs_msg_Trajectory idlc_msg {};
+  std::vector<autoware_auto_planning_msgs_msg_TrajectoryPoint> buf(
+    autoware_auto_planning_msgs_msg_Trajectory_Constants_CAPACITY);
+  idlc_msg.points._buffer = buf.data();
+  copy(*rosidl_msg, idlc_msg);
+  dds_return_t rc = dds_write(m_trajectory_writer, &idlc_msg);
+  if (rc < 0) {
+    RCLCPP_ERROR(get_logger(), "dds_write: %s", dds_strretcode(-rc));
+  }
+}
+
 MessageConverterNode::MessageConverterNode(const rclcpp::NodeOptions & options)
 : Node("actuation_message_converter", options),
   m_state_sub(create_subscription<Odometry>(
@@ -244,29 +267,6 @@ static void copy(const Trajectory & src, autoware_auto_planning_msgs_msg_Traject
 {
   copy(src.header, dst.header);
   copy(src.points, dst.points);
-}
-
-void MessageConverterNode::on_state_callback(const Odometry::SharedPtr rosidl_msg)
-{
-  autoware_auto_vehicle_msgs_msg_VehicleKinematicState idlc_msg {};
-  copy(*rosidl_msg, idlc_msg);
-  dds_return_t rc = dds_write(m_state_writer, &idlc_msg);
-  if (rc < 0) {
-    RCLCPP_ERROR(get_logger(), "dds_write: %s", dds_strretcode(-rc));
-  }
-}
-
-void MessageConverterNode::on_trajectory_callback(const Trajectory::SharedPtr rosidl_msg)
-{
-  autoware_auto_planning_msgs_msg_Trajectory idlc_msg {};
-  std::vector<autoware_auto_planning_msgs_msg_TrajectoryPoint> buf(
-    autoware_auto_planning_msgs_msg_Trajectory_Constants_CAPACITY);
-  idlc_msg.points._buffer = buf.data();
-  copy(*rosidl_msg, idlc_msg);
-  dds_return_t rc = dds_write(m_trajectory_writer, &idlc_msg);
-  if (rc < 0) {
-    RCLCPP_ERROR(get_logger(), "dds_write: %s", dds_strretcode(-rc));
-  }
 }
 
 }  // namespace actuation_message_converter

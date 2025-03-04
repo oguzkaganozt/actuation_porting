@@ -36,8 +36,8 @@
 | RCL Logging  | Zephyr Logger | ✅ Completed |
 | RCL Node     | Zephyr k_threads | ✅ Completed |
 | RCL Timers   | Zephyr Timers | ✅ Completed |
-| RCL Publisher | CycloneDDS | ⏳ Pending |
-| RCL Subscriber | CycloneDDS | ⏳ Pending |
+| RCL Publisher | CycloneDDS | ✅ Completed |
+| RCL Subscriber | CycloneDDS | ✅ Completed |
 | RCL Callback | Lambda | ⏳ Pending |
 
 ### Development Notes
