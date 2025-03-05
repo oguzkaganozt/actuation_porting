@@ -1,6 +1,9 @@
 ## NODE
 - implement dds mechanism just like ROS2
 - how to implement diagnostic updater that is already existing in ros2 ?
+- Validate the parameter handling with the native ROS2 nodes
+- Validate node functionality with native ROS2 nodes
+- Validate the timer and callback structure with the native ROS2 nodes
 
 ## SEQUENCES
 - find a way to access buffers with a sequenced class including eg. trajectory.points 
@@ -15,15 +18,11 @@ best of both worlds, we can use zephyr alloc for dds allocations and leave memor
 ## DDS
 - do we need message converter ? try building .idl messages with rosidl instead of cyclonedds idlc
 - Validate cycloneDDS <-> ROS2 communication with the native ROS2 nodes
+- Validate the message conversion between ROS2 and Zephyr
+
+## MISC
+- Compare launch structure and synchronization with the native ROS2 nodes
+- Compare the logging and logging structure with the native ROS2 nodes
 
 ## NOTES
 - try-catch should be used in critical functions, because it is hard to port the code without it
-
-## TESTING
-
-- Validate the parameter handling with the native ROS2 nodes
-- Validate the message conversion between ROS2 and Zephyr
-- Validate node functionality with native ROS2 nodes
-- Validate launch structure and synchronization with the native ROS2 nodes
-- Validate the timer and callback structure with the native ROS2 nodes
-- Validate the logging and logging structure with the native ROS2 nodes
