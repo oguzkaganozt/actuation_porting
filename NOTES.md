@@ -45,14 +45,3 @@
 | RCL Publisher | CycloneDDS | ✅ Completed |
 | RCL Subscriber | CycloneDDS | ✅ Completed |
 | RCL Callback | Lambda | ⏳ Pending |
-
-### Development Notes
-
-- Validate node functionality with native ROS2 nodes
-- change memory configuration of the cyclonedds with zephyr allocator -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
-- Validate launch structure and synchronization with the native ROS2 nodes
-- Validate the message conversion between ROS2 and Zephyr
-- Validate cycloneDDS <-> ROS2 communication with the native ROS2 nodes
-- Validate the parameter handling with the native ROS2 nodes
-- Validate the logging and logging structure with the native ROS2 nodes
-- Validate the timer and callback structure with the native ROS2 nodes
