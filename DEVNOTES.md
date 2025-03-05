@@ -1,9 +1,8 @@
+**MAKE ALL CUSTOM CLASSES POSIX COMPATIBLE**
+
 ## NODE
-- implement dds mechanism just like ROS2
 - how to implement diagnostic updater that is already existing in ros2 ?
-- Validate the parameter handling with the native ROS2 nodes
 - Validate node functionality with native ROS2 nodes
-- Validate the timer and callback structure with the native ROS2 nodes
 
 ## SEQUENCES
 - find a way to access buffers with a sequenced class including eg. trajectory.points 

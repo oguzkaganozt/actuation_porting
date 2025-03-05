@@ -1,65 +1,133 @@
-// Copyright (c) 2024-2025, Arm Limited.
-// SPDX-License-Identifier: Apache-2.0
+#ifndef DDS_HPP
+#define DDS_HPP
 
-#ifndef DDS_HPP_
-#define DDS_HPP_
-
-#include <dds/ddsi/ddsi_config.h>
-#include <dds/dds.h>
-
-#include "config.hpp"
-
-#if defined(CONFIG_DDS_NETWORK_INTERFACE)
-static struct ddsi_config_network_interface_listelem cfg_iface
-{
-  nullptr,
-  {
-    0,
-    const_cast<char *>(CONFIG_DDS_NETWORK_INTERFACE),
-    nullptr,
-    0,
-    1,
-    DDSI_BOOLDEF_DEFAULT,
-    {1, 0}
-  }
-};
-#endif
+#include "node/dds_config.hpp"
+#include <memory>
 
 /**
- * @brief Initialize a given DDS configuration structure.
- * @param[out] cfg Configuration structure that will be filled.
+ * @brief Publisher class for DDS communication
+ * @tparam MessageT The message type to publish
  */
-inline static void init_config(struct ddsi_config & cfg)
-{
-  ddsi_config_init_default(&cfg);
+template<typename MessageT>
+class Publisher {
+public:
+    Publisher(dds_entity_t dds_participant, dds_qos_t* dds_qos, 
+             const std::string& topic_name, 
+             const dds_topic_descriptor_t* topic_descriptor, 
+             const std::string& node_name) : m_dds_writer(0) {
+        dds_entity_t topic = dds_create_topic(dds_participant, topic_descriptor, 
+                                            topic_name.c_str(), NULL, NULL);
+        if (topic < 0) {
+            printk("Error: node %s: dds_create_topic (%s): %s\n", 
+                   node_name.c_str(), topic_name.c_str(), dds_strretcode(-topic));
+            k_panic();
+        }
 
-  // Buffers
-  cfg.rbuf_size = 16 * 1024;
-  cfg.rmsg_chunk_size = 2 * 1204;
-  cfg.max_msg_size = 1456;
+        m_dds_writer = dds_create_writer(dds_participant, topic, dds_qos, NULL);
+        if (m_dds_writer < 0) {
+            printk("Error: node %s: dds_create_writer (%s): %s\n", 
+                   node_name.c_str(), topic_name.c_str(), dds_strretcode(-m_dds_writer));
+            k_panic();
+        }
+    }
 
-  // Discovery
-  cfg.participantIndex = DDSI_PARTICIPANT_INDEX_AUTO;
-  cfg.maxAutoParticipantIndex = 60;
-  cfg.allowMulticast = DDSI_AMC_SPDP;
+    /**
+     * @brief Publish a message
+     * @param message The message to publish
+     * @return true if successful, false otherwise
+     */
+    bool publish(const MessageT& message) {
+        dds_return_t rc = dds_write(m_dds_writer, &message);
+        if (rc < 0) {
+            printk("Error: node %s: dds_write (%s): %s\n", node_name_.c_str(), topic_name_.c_str(), dds_strretcode(-rc));
+            return false;
+        }
+        return true;
+    }    
 
-  // Trace
-  cfg.tracefp = NULL;
-  cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR;
-  cfg.tracefile = const_cast<char *>("stderr");
+private:
+    dds_entity_t m_dds_writer;
+};
 
-#if DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP
-  cfg.transport_type = DDSI_TRANS_TCP;
-  cfg.tcp_port = DDS_TCP_PORT;
-#else
-  cfg.transport_type = DDSI_TRANS_UDP;
-#endif
+/**
+ * @brief Main DDS communication class
+ */
+class DDS {
+public:
+    DDS(const std::string& node_name);
+    ~DDS();
 
-#if defined(CONFIG_DDS_NETWORK_INTERFACE)
-  if (sizeof(CONFIG_DDS_NETWORK_INTERFACE) > 1) {
-    cfg.network_interfaces = &cfg_iface;
-  }
-#endif
-}
+    /**
+     * @brief Create a publisher for a specific message type
+     * @param topic_name The name of the topic
+     * @param topic_descriptor The DDS topic descriptor
+     * @return std::unique_ptr<Publisher<MessageT>> Smart pointer to the created publisher
+     */
+    template<typename MessageT>
+    std::unique_ptr<Publisher<MessageT>> create_publisher(
+        const std::string& topic_name, 
+        const dds_topic_descriptor_t* topic_descriptor) {
+        return std::make_unique<Publisher<MessageT>>(
+            m_dds_participant, m_dds_qos, topic_name, topic_descriptor, node_name_);
+    }
 
-#endif  // DDS_HPP_
+    /**
+     * @brief Create a subscription for a specific message type
+     * @tparam T The message type for the subscription
+     * @param topic_name The name of the topic
+     * @param topic_descriptor The DDS topic descriptor
+     * @param callback The callback function to handle received messages
+     * @return bool true if successful, false otherwise
+     */
+    template<typename T>
+    bool create_subscription(const std::string& topic_name, 
+                           const dds_topic_descriptor_t* topic_descriptor, 
+                           void (*callback)(T*)) {
+        dds_entity_t topic = dds_create_topic(m_dds_participant, topic_descriptor, topic_name.c_str(), NULL, NULL);
+        if (topic < 0) {
+            printk("Error: node %s: dds_create_topic (%s): %s\n", node_name_.c_str(), topic_name.c_str(), dds_strretcode(-topic));
+            return false;
+        }
+
+        // Create a listener and pass the callback directly
+        dds_listener_t* listener = dds_create_listener((void*)callback);
+        if (!listener) {
+            return false;
+        }
+        
+        // Capture node_name_ for use in lambda
+        std::string node_name = node_name_;
+        
+        // Set the data available callback
+        dds_lset_data_available(listener, [node_name](dds_entity_t reader, void* arg) {
+            auto typed_callback = reinterpret_cast<void (*)(T*)>(arg);
+            T* msg = nullptr;   // if we need to store the message for longer than the callback, we need to allocate it on the heap dynamically
+            dds_sample_info_t info;
+            
+            dds_return_t rc = dds_take(reader, (void**)&msg, &info, 1, 1);
+            if (rc > 0 && info.valid_data && msg) {
+                typed_callback(msg); // Synchronous call - msg is valid during callback
+            }
+            else if (rc < 0) {
+                printk("Error: node %s: dds_take failed: %s\n", node_name.c_str(), dds_strretcode(-rc));
+            }
+        });
+
+        dds_entity_t reader = dds_create_reader(m_dds_participant, topic, m_dds_qos, listener);
+        if (reader < 0) {
+            printk("Error: node %s: dds_create_reader (%s): %s\n", node_name_.c_str(), topic_name.c_str(), dds_strretcode(-reader));
+            dds_delete_listener(listener);
+            return false;
+        }
+
+        dds_delete_listener(listener); // TODO: Check if we can delete the listener as it is copied into the reader.
+        return true;
+    }
+
+private:
+    std::string node_name_;
+    dds_entity_t m_dds_participant;
+    dds_qos_t* m_dds_qos;
+};
+
+#endif // DDS_HPP
