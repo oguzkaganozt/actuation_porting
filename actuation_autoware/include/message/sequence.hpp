@@ -7,9 +7,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <zephyr/kernel.h>
-#include <zephyr/sys/printk.h>
-
 #define DEFAULT_SEQUENCE_SIZE 128
 #define MAX_SEQUENCE_SIZE 2048
 

@@ -1,15 +1,19 @@
 #ifndef ACTUATION_AUTOWARE_NODE_HPP
 #define ACTUATION_AUTOWARE_NODE_HPP
 
-#include <string>
-#include <typeinfo>
-#include <unordered_map>
-#include <any>
-
-#include <zephyr/kernel.h>
-#include <zephyr/logging/log.h>
+// PORT
+#if defined(NATIVE_LINUX)
+#include <linux/printk.h>
+#elif defined(NATIVE_ZEPHYR)
 #include <zephyr/sys/printk.h>
-#include <zephyr/sys/atomic.h>
+#endif
+
+#include <string>
+#include <any>
+#include <unordered_map>
+#include <pthread.h>
+#include <signal.h>
+#include <time.h>
 
 #include "node/dds.hpp"
 #include "config.hpp"
@@ -37,12 +41,12 @@ public:
     /** 
      * @brief Create a publisher for a topic
      * @param topic_name Topic name
-     * @param topic_descriptor Topic descriptor
+     * @param topic_descriptor Topic descriptor 
      * @return Publisher<MessageT>* Pointer to the publisher
      */
     template<typename MessageT>
     Publisher<MessageT>* create_publisher(const std::string topic_name, const dds_topic_descriptor_t* topic_descriptor) {
-        return dds_.create_publisher<MessageT>(topic_name, topic_descriptor);
+        return dds_->create_publisher<MessageT>(topic_name, topic_descriptor);
     }
 
     /**
@@ -54,7 +58,7 @@ public:
      */
     template<typename T>
     bool create_subscription(const std::string topic_name, const dds_topic_descriptor_t* topic_descriptor, void (*callback)(T*)) {
-        return dds_.create_subscription<T>(topic_name, topic_descriptor, callback);
+        return dds_->create_subscription<T>(topic_name, topic_descriptor, callback);
     }
 
     /**
@@ -66,21 +70,21 @@ public:
      */
     template<typename ParamT>
     ParamT declare_parameter(const std::string& name, const ParamT& default_value) {
-        k_mutex_lock(&param_mutex, K_FOREVER);
+        pthread_mutex_lock(&param_mutex);
         
         auto it = parameters_map_.find(name);
         if (it == parameters_map_.end()) {
             parameters_map_[name] = default_value;
-            k_mutex_unlock(&param_mutex);
+            pthread_mutex_unlock(&param_mutex);
             return default_value;
         } else {
             try {
                 ParamT value = std::any_cast<ParamT>(it->second);
-                k_mutex_unlock(&param_mutex);
+                pthread_mutex_unlock(&param_mutex);
                 return value;
             } catch (const std::bad_any_cast&) {
                 printk("Warning: Parameter '%s' exists with different type. Not overwriting.\n", name.c_str());
-                k_mutex_unlock(&param_mutex);
+                pthread_mutex_unlock(&param_mutex);
                 return default_value;
             }
         }
@@ -94,21 +98,21 @@ public:
      */
     template<typename ParamT>
     ParamT get_parameter(const std::string& name) const {
-        k_mutex_lock(&param_mutex, K_FOREVER);
+        pthread_mutex_lock(&param_mutex);
         
         auto it = parameters_map_.find(name);
         if (it != parameters_map_.end()) {
             try {
                 ParamT value = std::any_cast<ParamT>(it->second);
-                k_mutex_unlock(&param_mutex);
+                pthread_mutex_unlock(&param_mutex);
                 return value;
             } catch (const std::bad_any_cast&) {
-                k_mutex_unlock(&param_mutex);
+                pthread_mutex_unlock(&param_mutex);
                 return ParamT{};
             }
         }
         
-        k_mutex_unlock(&param_mutex);
+        pthread_mutex_unlock(&param_mutex);
         return ParamT{};
     }
 
@@ -121,16 +125,16 @@ public:
      */
     template<typename ParamT>
     bool set_parameter(const std::string& name, const ParamT& value) {
-        k_mutex_lock(&param_mutex, K_FOREVER);
+        pthread_mutex_lock(&param_mutex);
         
         auto it = parameters_map_.find(name);
         if (it != parameters_map_.end()) {
             it->second = value;
-            k_mutex_unlock(&param_mutex);
+            pthread_mutex_unlock(&param_mutex);
             return true;
         }
         
-        k_mutex_unlock(&param_mutex);
+        pthread_mutex_unlock(&param_mutex);
         return false;
     }
 
@@ -142,12 +146,10 @@ public:
     bool has_parameter(const std::string& name) const;
 
     /**
-     * @brief Spin a seperate node thread
-     * @param priority Priority of the thread
-     * @param thread_sleep_ms Sleep time in milliseconds
+     * @brief Spin the node thread
      * @return 0 on success, negative value on failure
      */
-    int spin(int priority = K_PRIO_PREEMPT(1), int thread_sleep_ms = 1);
+    int spin();
     
     /**
      * @brief Stop the node thread
@@ -179,24 +181,22 @@ private:
 
     // Parameter storage
     std::unordered_map<std::string, std::any> parameters_map_;
-    mutable struct k_mutex param_mutex;
+    pthread_mutex_t param_mutex;
 
     // DDS
     DDS dds_;
 
     // Thread
-    struct k_thread thread_;
-    k_tid_t thread_id_;
-    int thread_sleep_ms_;
-    atomic_t running_;
-    K_THREAD_STACK_DEFINE(stack_, THREAD_STACK_SIZE);  // Initilize thread stack
-    static void thread_entry(void* p1, void* p2, void* p3);
+    pthread_t thread_ {};
+    static void* thread_entry(void* arg);
 
     // Timer
-    struct k_timer node_timer_;
     bool timer_active_;
-    static void timer_expiry_handler(struct k_timer *timer_id);
-    static void timer_work_handler(struct k_work *work);
+    timer_t* timer_id_;
+    static void (*timer_callback_)(void*);
+
+    // Make timer_signal_handler a static member function
+    static void timer_signal_handler(int sig, siginfo_t *si, void *uc);
 };
 
 #endif  // ACTUATION_AUTOWARE_NODE_HPP

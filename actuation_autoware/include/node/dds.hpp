@@ -1,8 +1,18 @@
 #ifndef DDS_HPP
 #define DDS_HPP
 
-#include "node/dds_config.hpp"
+// PORT
+#if defined(NATIVE_LINUX)
+#include <linux/printk.h>
+#elif defined(NATIVE_ZEPHYR)
+#include <zephyr/sys/printk.h>
+#endif
+
+#include <stdlib.h>
 #include <memory>
+#include <string>
+
+#include "node/dds_config.hpp"
 
 /**
  * @brief Publisher class for DDS communication
@@ -20,14 +30,14 @@ public:
         if (topic < 0) {
             printk("Error: node %s: dds_create_topic (%s): %s\n", 
                    node_name.c_str(), topic_name.c_str(), dds_strretcode(-topic));
-            k_panic();
+            exit(-1);
         }
 
         m_dds_writer = dds_create_writer(dds_participant, topic, dds_qos, NULL);
         if (m_dds_writer < 0) {
             printk("Error: node %s: dds_create_writer (%s): %s\n", 
                    node_name.c_str(), topic_name.c_str(), dds_strretcode(-m_dds_writer));
-            k_panic();
+            exit(-1);
         }
     }
 

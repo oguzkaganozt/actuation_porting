@@ -13,6 +13,7 @@ public/
 *.cursorignore
 build_log.txt
 check.sh
+linux/
 
 zephyr
 cyclonedds

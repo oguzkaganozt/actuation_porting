@@ -4,10 +4,10 @@
 #ifndef DDS_HPP_
 #define DDS_HPP_
 
+#include "config.hpp"
+
 #include <dds/ddsi/ddsi_config.h>
 #include <dds/dds.h>
-
-#include "config.hpp"
 
 #if defined(CONFIG_DDS_NETWORK_INTERFACE)
 static struct ddsi_config_network_interface_listelem cfg_iface

@@ -11,14 +11,14 @@ DDS::DDS(const std::string& node_name)
     dds_entity_t domain = dds_create_domain_with_rawconfig(DDS_DOMAIN_ID, &dds_cfg);
     if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
         printk("Error: node %s: dds_create_domain_with_rawconfig: %s\n", node_name.c_str(), dds_strretcode(-domain));
-        k_panic();
+        exit(-1);
     }
 
     // Create a DDS participant
     m_dds_participant = dds_create_participant(DDS_DOMAIN_ID, NULL, NULL);
     if (m_dds_participant < 0) {
         printk("Error: node %s: dds_create_participant: %s\n", node_name.c_str(), dds_strretcode(-m_dds_participant));
-        k_panic();
+        exit(-1);
     }
 
     // Reliable QoS
@@ -36,7 +36,7 @@ DDS::~DDS() {
     dds_retcode_t rc = dds_delete(m_dds_participant);
     if (rc != DDS_RETCODE_OK) {
         printk("Error: node %s: dds_delete: %s\n", node_name_.c_str(), dds_strretcode(-rc));
-        k_panic();
+        exit(-1);
     }
     
     // Delete QoS
