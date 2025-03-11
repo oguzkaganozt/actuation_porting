@@ -47,6 +47,8 @@ RUN wget -q --show-progress --progress=bar:force:noscroll \
     ${ZEPHYR_SDK_INSTALL_DIR}/setup.sh -c -t arm-zephyr-eabi && \
     rm "zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz"
 
-COPY ./.devcontainer/entrypoint.sh /entrypoint.sh
+RUN apt-get update && apt-get install -y gcc-multilib
+
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

@@ -1,0 +1,99 @@
+#ifndef COMMON_DDS_IMPL_SUBSCRIBER_HPP
+#define COMMON_DDS_IMPL_SUBSCRIBER_HPP
+
+#include <memory>
+#include <string>
+
+#include "common/dds_impl/message_queue.hpp"
+
+class SubscriberBase {
+public:
+    virtual void process_message() = 0;
+    virtual ~SubscriberBase() = default;
+};
+
+template<typename T>
+using callback_subscriber = void (*)(T& msg);
+
+template<typename T>
+class Subscriber : public SubscriberBase {
+public:
+    Subscriber(const std::string& node_name, const std::string& topic_name, 
+                dds_entity_t dds_participant, dds_qos_t* dds_qos, 
+                const dds_topic_descriptor_t* topic_descriptor,
+                callback_subscriber<T> callback)
+            : node_name_(node_name)
+            , topic_name_(topic_name)
+            , m_dds_participant(dds_participant)
+            , queue_(std::make_unique<MessageQueue<T>>())
+            , callback_(callback)
+    {
+        // Create a DDS topic
+        dds_entity_t topic = dds_create_topic(m_dds_participant, topic_descriptor, 
+                                                topic_name.c_str(), NULL, NULL);
+        if (topic < 0) {
+            fprintf(stderr, "Error: node %s: dds_create_topic (%s): %s\n", 
+                   node_name_.c_str(), topic_name.c_str(), dds_strretcode(-topic));
+            return;
+        }
+
+        // Create a DDS listener
+        dds_listener_t* listener = dds_create_listener(this);
+        if (!listener) {
+            fprintf(stderr, "Error: node %s: dds_create_listener\n", node_name_.c_str());
+            return;
+        }
+        dds_lset_data_available(listener, on_msg_dds);
+
+        // Create a DDS reader
+        dds_entity_t reader = dds_create_reader(m_dds_participant, topic, dds_qos, listener);
+        if (reader < 0) {
+            fprintf(stderr, "Error: node %s: dds_create_reader (%s): %s\n", 
+                   node_name_.c_str(), topic_name.c_str(), dds_strretcode(-reader));
+            dds_delete_listener(listener);
+            return;
+        }
+
+        // Delete the listener explicitly // TODO: check if this is valid
+        dds_delete_listener(listener);
+    }
+
+    /**
+     * @brief Called by the node to process a message from the DDS queue
+     */
+    void process_message() override {
+        // T msg;
+        // if (queue_->pop(msg)) {
+        //     fprintf(stderr, "popped message\n");
+        //     callback_(msg);
+        // }
+    }
+
+private:
+    std::string node_name_;
+    std::string topic_name_;
+    dds_entity_t m_dds_participant;
+    std::unique_ptr<MessageQueue<T>> queue_;
+    callback_subscriber<T> callback_;
+
+    static void on_msg_dds(dds_entity_t reader, void * arg) {
+        Subscriber<T>* subscriber = static_cast<Subscriber<T>*>(arg);
+        static T msg;
+        void* msg_pointer = reinterpret_cast<void *>(&msg);
+        dds_sample_info_t info;
+
+        fprintf(stderr, "Node: %s, Message received topic: %s\n", subscriber->node_name_.c_str(), subscriber->topic_name_.c_str());
+
+        dds_return_t rc = dds_take(reader, &msg_pointer, &info, 1, 1);
+        if (rc > 0 && info.valid_data) {
+            subscriber->callback_(msg);
+        }
+        else if (rc < 0) {
+            // TODO: think about removing this as it is common to fail to take a message in the first place ?
+            fprintf(stderr, "Error: node %s: dds_take failed: %s\n", 
+                    subscriber->node_name_.c_str(), dds_strretcode(-rc));
+        }
+    }
+};
+
+#endif
