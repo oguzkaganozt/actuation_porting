@@ -44,23 +44,40 @@ public:
      * @brief Construct a new Node object
      * @param node_name Name of the node
      */
-    Node(const std::string& node_name);
+    Node(const std::string& node_name)
+    : node_name_(node_name)
+    , param_mutex_(PTHREAD_MUTEX_INITIALIZER)
+    , dds_(node_name)
+    {
+    }
     
     /**
      * @brief Destructor
      */
-    ~Node();
+    ~Node() {
+        stop_timer();
+        stop();
+    }
 
     /**
      * @brief Spin the node thread
      * @return 0 on success, negative value on failure
      */
-    int spin();
+    int Node::spin() {
+        thread_active_ = true;
+        return pthread_create(&thread_, nullptr, thread_entry_, this);
+    }
     
     /**
      * @brief Stop the node thread
      */
-    void stop();
+    void Node::stop() {
+        if (thread_active_) {
+            pthread_cancel(thread_);
+            pthread_join(thread_, nullptr);
+            thread_active_ = false;
+        }
+    }
 
     /** 
      * @brief Create a publisher for a topic
@@ -222,12 +239,53 @@ public:
      * @param callback Callback function
      * @return true if timer was created, false otherwise
      */
-    bool create_timer(uint32_t period_ms, void (*callback)(Node*));
+    bool create_timer(uint32_t period_ms, void (*callback)(Node*)) {
+        if (timer_active_) {
+            return false;
+        }
+
+        struct sigevent sev;
+        memset(&sev, 0, sizeof(struct sigevent));
+        
+        // TODO: Check if SIGEV_THREAD is supported in zephyr
+        sev.sigev_notify = SIGEV_THREAD;
+        sev.sigev_signo = SIGALRM;
+        sev.sigev_value.sival_ptr = this;
+        sev.sigev_notify_function = timer_handler_;
+
+        if (int ret = timer_create(CLOCK_REALTIME, &sev, &timer_id_); ret < 0) {
+            fprintf(stderr, "Node: %s timer creation failed: %s\n", node_name_.c_str(), strerror(errno));
+            return false;
+        }
+        fprintf(stderr, "Node: %s timer has been created\n", node_name_.c_str());
+        
+        struct itimerspec its;
+        its.it_value.tv_sec  = period_ms / 1000;
+        its.it_value.tv_nsec = (period_ms % 1000) * 1000000;
+        its.it_interval.tv_sec  = period_ms / 1000;
+        its.it_interval.tv_nsec = (period_ms % 1000) * 1000000;
+        
+        if (int ret = timer_settime(timer_id_, 0, &its, nullptr); ret < 0) {
+            fprintf(stderr, "Node: %s timer settime failed: %s\n", node_name_.c_str(), strerror(errno));
+            timer_delete(timer_id_);
+            return false;
+        }
+        timer_callback_ = callback;
+        timer_active_ = true;
+
+        fprintf(stderr, "Node: %s timer has been set\n", node_name_.c_str());
+        return true;
+    }
 
     /**
      * @brief Stop the timer
      */
-    void stop_timer();
+    void stop_timer() {
+        if (timer_active_) {
+            timer_delete(timer_id_);
+            timer_active_ = false;
+        }
+    }
 
 private:
     // Node
@@ -240,8 +298,23 @@ private:
     // Thread
     pthread_t thread_;
     bool thread_active_ = false;
-    static void* thread_entry_(void* arg);
-    void run_();
+
+    static void* thread_entry_(void* arg) {
+        Node* node = static_cast<Node*>(arg);
+        node->run_();
+        return nullptr;
+    }
+
+    void run_() {
+        while (thread_active_) {
+            // timer overruns are checked in timer_handler_
+
+            // check subscriptions
+            // for (auto& subscription : subscriptions_) {
+            //     subscription->process_message();
+            // }
+        }
+    }
 
     // DDS
     DDS dds_;
@@ -250,7 +323,12 @@ private:
     // Timer
     timer_t timer_id_;
     bool timer_active_ = false;
-    static void timer_handler_(union sigval val);
+    static void timer_handler_(union sigval val) {
+        Node* node = static_cast<Node*>(val.sival_ptr);
+
+        if (node->thread_active_ && node->timer_active_)
+            node->timer_callback_(node);
+    }
     void (*timer_callback_)(Node*);
 };
 

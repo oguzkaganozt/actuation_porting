@@ -93,16 +93,21 @@ if [ "${PARTIAL_BUILD}" = "0" ] || [ "${HOST_TOOLS_ONLY}" = "1" ]; then
 fi
 
 if [ "${PARTIAL_BUILD}" = "0" ] || [ "${ZEPHYR_ONLY}" = "1" ]; then
-  # Build Zephyr elf
   function build_zephyr() {
-    # Pure pursuit forwards Control Commands to host via dds_write. Use flag
-    # DCONTROL_CMDS_FWD=bsd_socket to override this behaviour to use bsd sockets
     typeset PATH="${ROOT_DIR}"/build/cyclonedds_host/out/bin:$PATH
     typeset LD_LIBRARY_PATH="${ROOT_DIR}"/build/cyclonedds_host/out/lib
     typeset CMAKE_PREFIX_PATH=""
     typeset AMENT_PREFIX_PATH=""
-    west build -p auto -d build/actuation_autoware -b "${ZEPHYR_TARGET}" actuation_autoware/ -- -DCYCLONEDDS_SRC="${ROOT_DIR}"/cyclonedds -DCONTROL_CMDS_FWD=${CONTROL_COMMANDS_CHANNEL} -DEXTRA_CFLAGS="-Wno-error" -DEXTRA_CXXFLAGS="-Wno-error"
+
+    # Build Zephyr elf
+    west build -p auto -d build/actuation_autoware -b "${ZEPHYR_TARGET}" actuation_autoware/ -- \
+      -DZEPHYR_TARGET="${ZEPHYR_TARGET}" \
+      -DCYCLONEDDS_SRC="${ROOT_DIR}"/cyclonedds \
+      -DCONTROL_CMDS_FWD=${CONTROL_COMMANDS_CHANNEL} \
+      -DEXTRA_CFLAGS="-Wno-error" \
+      -DEXTRA_CXXFLAGS="-Wno-error"
   }
+  
   build_zephyr
 fi
 
