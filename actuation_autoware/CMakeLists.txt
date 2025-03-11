@@ -58,24 +58,23 @@ set(CMAKE_ARGS
     "-DCMAKE_C_FLAGS=${external_project_cflags}"
     "-DCMAKE_CXX_FLAGS=${external_project_cxxflags}")
 
-# ### BUILD ACTUATION MESSAGES ###
-# externalproject_add(autoware_cmake_pkg
-#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/autoware_cmake
-#   CMAKE_ARGS ${CMAKE_ARGS}
-# )
-# externalproject_add(actuation_msgs_pkg
-#   DEPENDS autoware_cmake_pkg
-#   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
-#   CMAKE_ARGS ${CMAKE_ARGS}
-# )
-# add_dependencies(app actuation_msgs_pkg)
+### BUILD ACTUATION MESSAGES ###
+externalproject_add(autoware_cmake_pkg
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/autoware_cmake
+  CMAKE_ARGS ${CMAKE_ARGS}
+)
+externalproject_add(actuation_msgs_pkg
+  DEPENDS autoware_cmake_pkg
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_packages/actuation_msgs
+  CMAKE_ARGS ${CMAKE_ARGS}
+)
+add_dependencies(app actuation_msgs_pkg)
 
 ### BUILD ACTUATION-AUTOWARE APPLICATION ###
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Add Autoware components
-# include(src/common/common.cmake)
 # include(src/autoware/autoware_osqp_interface/autoware_osqp_interface.cmake)
 # include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
 # include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
@@ -90,7 +89,7 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 
 # Build
 target_sources(app PRIVATE
-  src/main.cpp
+  test/test.cpp
   ${APP_SOURCES}
 )
 
@@ -104,5 +103,5 @@ target_include_directories(app PRIVATE
 )
 
 # Link actuation messages and CycloneDDS library
-# target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
-# target_link_libraries(app PRIVATE cdds_lib actuation_msgs)
+target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
+target_link_libraries(app PRIVATE cdds_lib actuation_msgs)

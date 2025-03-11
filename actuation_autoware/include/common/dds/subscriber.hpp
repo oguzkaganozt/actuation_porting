@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "common/dds_impl/message_queue.hpp"
+#include "common/dds/message_queue.hpp"
 
 class SubscriberBase {
 public:

@@ -5,9 +5,9 @@
 #include <memory>
 #include <dds/dds.h>
 
-#include "common/dds_impl/dds_config.hpp"
-#include "common/dds_impl/publisher.hpp"
-#include "common/dds_impl/subscriber.hpp"
+#include "common/dds/dds_config.hpp"
+#include "common/dds/publisher.hpp"
+#include "common/dds/subscriber.hpp"
 
 /**
  * @brief Main DDS communication class

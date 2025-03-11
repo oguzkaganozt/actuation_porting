@@ -30,6 +30,7 @@ RUN apt-get update && \
     ninja-build ccache dfu-util device-tree-compiler wget \
     python3-dev python3-pip python3-setuptools python3-tk \ 
     python3-wheel xz-utils file make gcc libsdl2-dev libmagic1 pixz \
+    && apt-get install -y gcc-multilib g++-multilib \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install west
@@ -46,8 +47,6 @@ RUN wget -q --show-progress --progress=bar:force:noscroll \
         zephyr-sdk-${ZSDK_VERSION}/sdk_version && \
     ${ZEPHYR_SDK_INSTALL_DIR}/setup.sh -c -t arm-zephyr-eabi && \
     rm "zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz"
-
-RUN apt-get update && apt-get install -y gcc-multilib
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

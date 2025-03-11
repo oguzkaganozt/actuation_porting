@@ -18,7 +18,7 @@
 #include <signal.h>
 
 // Project headers
-#include "common/dds_impl/dds.hpp"
+#include "common/dds/dds.hpp"
 
 using param_type = std::variant<bool,
                               int64_t,
@@ -63,7 +63,7 @@ public:
      * @brief Spin the node thread
      * @return 0 on success, negative value on failure
      */
-    int Node::spin() {
+    int spin() {
         thread_active_ = true;
         return pthread_create(&thread_, nullptr, thread_entry_, this);
     }
@@ -71,7 +71,7 @@ public:
     /**
      * @brief Stop the node thread
      */
-    void Node::stop() {
+    void stop() {
         if (thread_active_) {
             pthread_cancel(thread_);
             pthread_join(thread_, nullptr);

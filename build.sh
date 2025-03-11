@@ -13,7 +13,7 @@ ZEPHYR_ONLY=0
 PARTIAL_BUILD=0
 
 ZEPHYR_TARGET_LIST=("s32z270dc2_rtu0_r52" "native_sim")
-ZEPHYR_TARGET=${ZEPHYR_TARGET_LIST[1]}
+ZEPHYR_TARGET=${ZEPHYR_TARGET_LIST[0]}
 
 ROOT_DIR=$(dirname "$(realpath "$0")")
 
@@ -60,6 +60,7 @@ while getopts "dzbat:ch" opt; do
       done
       if [ -z "${ZEPHYR_TARGET}" ]; then
         echo -e "Invalid Zephyr target: ${OPTARG}\n" 1>&2
+        echo "Valid targets: ${ZEPHYR_TARGET_LIST[*]}" 1>&2
         exit 1
       fi
       ;;
