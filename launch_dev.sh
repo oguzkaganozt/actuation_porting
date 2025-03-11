@@ -2,13 +2,10 @@
 
 # Run docker with user mapping
 docker run --rm -it \
-    -v "$HOME:/home/$(id -un)" \
+    -v "$HOME/.ccache:/root/.ccache" \
     -v "$(pwd):/actuation" \
-    -v /etc/passwd:/etc/passwd:ro \
-    -v /etc/group:/etc/group:ro \
     --name zephyr-dev \
-    --user "$(id -u):$(id -g)" \
     -w "/actuation" \
-    -e CCACHE_DIR=/home/"$(id -un)"/.ccache \
+    -e CCACHE_DIR=/root/.ccache \
     --net=host \
     zephyr-dev

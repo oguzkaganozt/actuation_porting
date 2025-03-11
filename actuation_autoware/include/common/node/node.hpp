@@ -4,11 +4,13 @@
 // C++ Standard Library
 #include <cstddef>
 #include <string>
+#include <string.h>
 #include <vector>
 #include <unordered_map>
 #include <memory>
 #include <variant>
 #include <optional>
+#include <cstring>
 
 // System headers
 #include <pthread.h>
