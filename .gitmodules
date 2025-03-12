@@ -6,4 +6,6 @@
 	path = zephyr
 	url = https://github.com/zephyrproject-rtos/zephyr
 	branch = 6aeb7a2b96c2b212a34f00c0ad3862ac19e826e8
-
+[submodule "test-tools"]
+	path = test-tools
+	url = https://github.com/zephyrproject-rtos/net-tools.git
