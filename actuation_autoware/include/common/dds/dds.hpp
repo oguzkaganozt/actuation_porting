@@ -20,16 +20,16 @@ public:
     , m_dds_qos(nullptr)
     {
         // Initialize DDS settings
-        struct ddsi_config dds_cfg;
-        init_config(dds_cfg);
+        // struct ddsi_config dds_cfg;
+        // init_config(dds_cfg);
 
         // Create a DDS domain with raw config
-        dds_entity_t domain = dds_create_domain_with_rawconfig(DDS_DOMAIN_ID, &dds_cfg);
-        if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
-            printf("Error: node %s: dds_create_domain_with_rawconfig: %s\n", 
-                node_name_.c_str(), dds_strretcode(-domain));
-            exit(-1);
-        }
+        // dds_entity_t domain = dds_create_domain_with_rawconfig(DDS_DOMAIN_ID, &dds_cfg);
+        // if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
+        //     printf("Error: node %s: dds_create_domain_with_rawconfig: %s\n", 
+        //         node_name_.c_str(), dds_strretcode(-domain));
+        //     exit(-1);
+        // }
 
         // Create a DDS participant
         m_dds_participant = dds_create_participant(DDS_DOMAIN_ID, NULL, NULL);

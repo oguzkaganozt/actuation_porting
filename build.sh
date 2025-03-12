@@ -100,6 +100,19 @@ if [ "${PARTIAL_BUILD}" = "0" ] || [ "${ZEPHYR_ONLY}" = "1" ]; then
     typeset CMAKE_PREFIX_PATH=""
     typeset AMENT_PREFIX_PATH=""
 
+    if [ "${ZEPHYR_TARGET}" = "native_sim" ]; then
+      echo "Building CYCLONEDDS for native simulator"
+      mkdir -p build/cyclonedds_native_sim
+      pushd build/cyclonedds_native_sim
+      cmake_flags="-DCMAKE_C_FLAGS= \
+        -fno-pic \
+        -m32"
+      cmake -DCMAKE_INSTALL_PREFIX="$(pwd)"/out -DENABLE_SECURITY=OFF -DENABLE_SSL=OFF -DBUILD_IDLC=OFF -DBUILD_SHARED_LIBS=OFF -DENABLE_SHM=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DBUILD_DDSPERF=OFF "${cmake_flags}" "${ROOT_DIR}"/cyclonedds
+      cmake --build . --target install -- -j"$(nproc)"
+      popd
+      typeset LD_LIBRARY_PATH="${ROOT_DIR}"/build/cyclonedds_native_sim/out/lib
+    fi
+
     # Build Zephyr elf
     west build -p auto -d build/actuation_autoware -b "${ZEPHYR_TARGET}" actuation_autoware/ -- \
       -DZEPHYR_TARGET="${ZEPHYR_TARGET}" \
