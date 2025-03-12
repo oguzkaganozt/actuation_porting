@@ -47,16 +47,3 @@ macro(create_cdds_lib CYCLONEDDS_ROOT)
 
   target_include_directories(app PUBLIC ${CDDS_INCLUDE_DIR})
 endmacro()
-
-# Populate the include_path argument with the include directory.
-function(cyclonedds_include include_path)
-  # CycloneDDS is a host package, and doesn't care about the architecture of the target platform.
-  # Prevent cmake from checking the architecture by temporarily unsetting CMAKE_SIZEOF_VOID_P.
-  set(TMP_CMAKE_SIZEOF_VOID_P ${CMAKE_SIZEOF_VOID_P})
-  unset(CMAKE_SIZEOF_VOID_P)
-  find_package(CycloneDDS REQUIRED COMPONENTS ddsc)
-  set(CMAKE_SIZEOF_VOID_P ${TMP_CMAKE_SIZEOF_VOID_P})
-
-  get_target_property(CycloneDDS_INCLUDE_DIR CycloneDDS::ddsc INTERFACE_INCLUDE_DIRECTORIES)
-  set(${include_path} ${CycloneDDS_INCLUDE_DIR} PARENT_SCOPE)
-endfunction()

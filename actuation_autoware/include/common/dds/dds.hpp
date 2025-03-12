@@ -22,30 +22,30 @@ public:
         // Initialize DDS settings
         struct ddsi_config dds_cfg;
         init_config(dds_cfg);
-        fprintf(stderr, "Node: %s: Creating DDS domain with raw config\n", node_name_.c_str());
+        fprintf(stderr, "Node: %s -> Creating DDS domain with raw config\n", node_name_.c_str());
 
         // Create a DDS domain with raw config
         dds_entity_t domain = dds_create_domain_with_rawconfig(DDS_DOMAIN_ID, &dds_cfg);
         if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
-            printf("Error: node %s: dds_create_domain_with_rawconfig: %s\n", 
+            printf("Error: Node: %s -> dds_create_domain_with_rawconfig: %s\n", 
                 node_name_.c_str(), dds_strretcode(-domain));
             exit(-1);
         }
-        fprintf(stderr, "Node: %s: DDS domain created with DOMAIN_ID: %d\n", node_name_.c_str(), DDS_DOMAIN_ID);
+        fprintf(stderr, "Node: %s -> DDS domain created with DOMAIN_ID: %d\n", node_name_.c_str(), DDS_DOMAIN_ID);
 
         // Create a DDS participant
         m_dds_participant = dds_create_participant(DDS_DOMAIN_ID, NULL, NULL);
         if (m_dds_participant < 0) {
-            printf("Error: node %s: dds_create_participant: %s\n", 
+            printf("Error: Node: %s -> dds_create_participant: %s\n", 
                 node_name_.c_str(), dds_strretcode(-m_dds_participant));
             exit(-1);
         }
-        fprintf(stderr, "Node: %s: DDS participant created\n", node_name_.c_str());
+        fprintf(stderr, "Node: %s -> DDS participant created\n", node_name_.c_str());
         
         // Reliable QoS
         m_dds_qos = dds_create_qos();
         dds_qset_reliability(m_dds_qos, DDS_RELIABILITY_RELIABLE, DDS_MSECS(30));
-        fprintf(stderr, "Node: %s: DDS QoS created\n", node_name_.c_str());
+        fprintf(stderr, "Node: %s -> DDS QoS created\n", node_name_.c_str());
     }
 
     ~DDS() 
@@ -53,7 +53,7 @@ public:
         // Delete DDS participant (this will clean up all DDS entities)
         dds_return_t rc = dds_delete(m_dds_participant);
         if (rc != DDS_RETCODE_OK) {
-            printf("Error: node %s: dds_delete: %s\n", 
+            printf("Error: Node: %s -> dds_delete: %s\n", 
                 node_name_.c_str(), dds_strretcode(-rc));
             exit(-1);
         }
