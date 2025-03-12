@@ -20,9 +20,10 @@ include(ExternalProject)
 
 ### CYCLONEDDS ###
 if(${ZEPHYR_TARGET} STREQUAL "native_sim")
-  message("Building for native simulator")
+  message("Building native simulator")
+  target_compile_options(app PRIVATE "-DNATIVE_SIM")
 else()
-  message("Building for ${ZEPHYR_TARGET}")
+  message("Building cyclonedds for ${ZEPHYR_TARGET}")
   include(cyclonedds_config.cmake)
   create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 endif()

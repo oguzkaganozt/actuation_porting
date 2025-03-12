@@ -161,11 +161,11 @@ int main() {
     printf("=== Starting Node Test Suite ===\n");
     Node node("test_node");
     
-    // test_parameters(node);
-    // test_timer_operations(node);
-    // test_thread_safety(node);
-    // test_dds_communication(node);
+    test_parameters(node);
+    test_timer_operations(node);
+    test_thread_safety(node);
+    test_dds_communication(node);
 
-    // printf("\n=== All Tests Passed ===\n");
+    printf("\n=== All Tests Passed ===\n");
     return 0;
 }

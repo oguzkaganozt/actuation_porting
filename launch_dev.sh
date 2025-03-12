@@ -7,6 +7,6 @@ docker run --rm -it \
     --name zephyr-dev \
     -w "/actuation" \
     -e CCACHE_DIR=/root/.ccache \
-    --net=host \
     --privileged \
+    --network=host \
     zephyr-dev

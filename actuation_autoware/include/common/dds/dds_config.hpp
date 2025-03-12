@@ -41,9 +41,11 @@ inline static void init_config(struct ddsi_config & cfg)
   cfg.max_msg_size = 1456;
 
   // Discovery
-  cfg.participantIndex = DDSI_PARTICIPANT_INDEX_AUTO;
-  cfg.maxAutoParticipantIndex = 60;
-  cfg.allowMulticast = DDSI_AMC_SPDP;
+#ifndef NATIVE_SIM
+    cfg.participantIndex = DDSI_PARTICIPANT_INDEX_AUTO;
+    cfg.maxAutoParticipantIndex = 60;
+    cfg.allowMulticast = DDSI_AMC_SPDP;
+#endif
 
   // Trace
   cfg.tracefp = NULL;
@@ -60,6 +62,7 @@ inline static void init_config(struct ddsi_config & cfg)
 #if defined(CONFIG_DDS_NETWORK_INTERFACE)
   if (sizeof(CONFIG_DDS_NETWORK_INTERFACE) > 1) {
     cfg.network_interfaces = &cfg_iface;
+    printf("Network interface: %s\n", CONFIG_DDS_NETWORK_INTERFACE);
   }
 #endif
 }
