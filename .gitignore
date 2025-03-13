@@ -11,9 +11,4 @@ public/
 .vscode/
 *.log
 *.cursorignore
-build_log.txt
-check.sh
-linux/
-
-zephyr
-cyclonedds
+TODO
