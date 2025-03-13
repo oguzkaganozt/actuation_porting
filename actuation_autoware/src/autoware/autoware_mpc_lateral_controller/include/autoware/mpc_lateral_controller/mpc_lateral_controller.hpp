@@ -25,15 +25,6 @@
 // TODO: ? how to enable same functionality with zephyr?
 // #include <diagnostic_updater/diagnostic_updater.hpp>
 
-#include "autoware_control_msgs/msg/lateral.hpp"
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "autoware_vehicle_msgs/msg/steering_report.hpp"
-#include "geometry_msgs/msg/pose.hpp"
-#include "geometry_msgs/msg/pose_stamped.hpp"
-#include "nav_msgs/msg/odometry.hpp"
-#include "tier4_debug_msgs/msg/float32_multi_array_stamped.hpp"
-#include "tier4_debug_msgs/msg/float32_stamped.hpp"
-
 #include <deque>
 #include <memory>
 #include <string>
@@ -44,12 +35,6 @@ namespace autoware::motion::control::mpc_lateral_controller
 {
 
 namespace trajectory_follower = ::autoware::motion::control::trajectory_follower;
-using autoware_control_msgs::msg::Lateral;
-using autoware_planning_msgs::msg::Trajectory;
-using autoware_vehicle_msgs::msg::SteeringReport;
-using nav_msgs::msg::Odometry;
-using tier4_debug_msgs::msg::Float32MultiArrayStamped;
-using tier4_debug_msgs::msg::Float32Stamped;
 using trajectory_follower::LateralHorizon;
 
 class MpcLateralController : public trajectory_follower::LateralControllerBase
@@ -64,9 +49,9 @@ public:
 private:
   // rclcpp::Clock::SharedPtr clock_;
 
-  // rclcpp::Publisher<Trajectory>::SharedPtr m_pub_predicted_traj;
-  // rclcpp::Publisher<Float32MultiArrayStamped>::SharedPtr m_pub_debug_values;
-  // rclcpp::Publisher<Float32Stamped>::SharedPtr m_pub_steer_offset;
+  // rclcpp::Publisher<TrajectoryMsg>::SharedPtr m_pub_predicted_traj;
+  // rclcpp::Publisher<Float32MultiArrayStampedMsg>::SharedPtr m_pub_debug_values;
+  // rclcpp::Publisher<Float32StampedMsg>::SharedPtr m_pub_steer_offset;
 
   // std::shared_ptr<diagnostic_updater::Updater>
   //   diag_updater_{};  // Diagnostic updater for publishing diagnostic data.
@@ -99,7 +84,7 @@ private:
   ResultWithReason m_mpc_solved_status{true};
 
   // trajectory buffer for detecting new trajectory
-  std::deque<Trajectory> m_trajectory_buffer;
+  std::deque<TrajectoryMsg> m_trajectory_buffer;
 
   // void setStatus(diagnostic_updater::DiagnosticStatusWrapper & stat);
 
@@ -111,20 +96,20 @@ private:
   bool m_is_mpc_history_filled{false};
 
   // store the last mpc outputs for 1 sec
-  // std::vector<std::pair<Lateral, rclcpp::Time>> m_mpc_steering_history{};
+  // std::vector<std::pair<LateralMsg, rclcpp::Time>> m_mpc_steering_history{};
 
   // set the mpc steering output to history
-  // void setSteeringToHistory(const Lateral & steering);
+  // void setSteeringToHistory(const LateralMsg & steering);
 
   // check if the mpc steering output is converged
   // bool isMpcConverged();
 
   // measured kinematic state
-  Odometry m_current_kinematic_state;
+  OdometryMsg m_current_kinematic_state;
 
-  SteeringReport m_current_steering;  // Measured steering information.
+  SteeringReportMsg m_current_steering;  // Measured steering information.
 
-  Trajectory m_current_trajectory;  // Current reference trajectory for path following.
+  TrajectoryMsg m_current_trajectory;  // Current reference trajectory for path following.
 
   double m_steer_cmd_prev = 0.0;  // MPC output in the previous period.
 
@@ -132,7 +117,7 @@ private:
   bool m_is_ctrl_cmd_prev_initialized = false;
 
   // Previous control command for path following.
-  Lateral m_ctrl_cmd_prev;
+  LateralMsg m_ctrl_cmd_prev;
 
   //  Flag indicating whether the first trajectory has been received.
   bool m_has_received_first_trajectory = false;
@@ -201,7 +186,7 @@ private:
    * @brief Set the current trajectory using the received message.
    * @param msg Received trajectory message.
    */
-  void setTrajectory(const Trajectory & msg, const Odometry & current_kinematics);
+  void setTrajectory(const TrajectoryMsg & msg, const OdometryMsg & current_kinematics);
 
   /**
    * @brief Check if the received data is valid.
@@ -214,7 +199,7 @@ private:
    * @param ctrl_cmd Control command to be created.
    * @return Created control command.
    */
-  Lateral createCtrlCmdMsg(const Lateral & ctrl_cmd);
+  LateralMsg createCtrlCmdMsg(const LateralMsg & ctrl_cmd);
 
   /**
    * @brief Create the control command horizon message.
@@ -227,25 +212,25 @@ private:
    * @brief Publish the predicted future trajectory.
    * @param predicted_traj Predicted future trajectory to be published.
    */
-  void publishPredictedTraj(Trajectory & predicted_traj) const;
+  void publishPredictedTraj(TrajectoryMsg & predicted_traj) const;
 
   /**
    * @brief Publish diagnostic message.
    * @param diagnostic Diagnostic message to be published.
    */
-  void publishDebugValues(Float32MultiArrayStamped & diagnostic) const;
+  void publishDebugValues(Float32MultiArrayStampedMsg & diagnostic) const;
 
   /**
    * @brief Get the stop control command.
    * @return Stop control command.
    */
-  Lateral getStopControlCommand() const;
+  LateralMsg getStopControlCommand() const;
 
   /**
    * @brief Get the control command applied before initialization.
    * @return Initial control command.
    */
-  Lateral getInitialControlCommand() const;
+  LateralMsg getInitialControlCommand() const;
 
   /**
    * @brief Check if the ego car is in a stopped state.
@@ -258,7 +243,7 @@ private:
    * @param traj Trajectory to be checked.
    * @return True if the trajectory is valid, false otherwise.
    */
-  bool isValidTrajectory(const Trajectory & traj) const;
+  bool isValidTrajectory(const TrajectoryMsg & traj) const;
 
   /**
    * @brief Check if the trajectory shape has changed.
@@ -271,23 +256,13 @@ private:
    * @param cmd Steering control command to be checked.
    * @return True if the steering control is converged and stable, false otherwise.
    */
-  bool isSteerConverged(const Lateral & cmd) const;
-
-  rclcpp::Node::OnSetParametersCallbackHandle::SharedPtr m_set_param_res;
+  bool isSteerConverged(const LateralMsg & cmd) const;
 
   /**
    * @brief Declare MPC parameters as ROS parameters to allow tuning on the fly.
    * @param node Reference to the node.
    */
   void declareMPCparameters(rclcpp::Node & node);
-
-  /**
-   * @brief Callback function called when parameters are changed outside of the node.
-   * @param parameters Vector of changed parameters.
-   * @return Result of the parameter callback.
-   */
-  rcl_interfaces::msg::SetParametersResult paramCallback(
-    const std::vector<rclcpp::Parameter> & parameters);
 
   template <typename... Args>
   inline void info_throttle(Args &&... args)

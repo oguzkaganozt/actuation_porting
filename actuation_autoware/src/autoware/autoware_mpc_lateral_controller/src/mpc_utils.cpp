@@ -32,8 +32,8 @@ namespace autoware::motion::control::mpc_lateral_controller
 namespace
 {
 double calcLongitudinalOffset(
-  const geometry_msgs::msg::Point & p_front, const geometry_msgs::msg::Point & p_back,
-  const geometry_msgs::msg::Point & p_target)
+  const PointMsg & p_front, const PointMsg & p_back,
+  const PointMsg & p_target)
 {
   const Eigen::Vector3d segment_vec{p_back.x - p_front.x, p_back.y - p_front.y, 0};
   const Eigen::Vector3d target_vec{p_target.x - p_front.x, p_target.y - p_front.y, 0};
@@ -227,7 +227,7 @@ std::vector<double> calcTrajectoryCurvature(
   std::vector<double> curvature_vec(traj.x.size());
 
   /* calculate curvature by circle fitting from three points */
-  geometry_msgs::msg::Point p1, p2, p3;
+  PointMsg p1, p2, p3;
   const int max_smoothing_num =
     static_cast<int>(std::floor(0.5 * (static_cast<double>(traj.x.size() - 1))));
   const size_t L = static_cast<size_t>(std::min(curvature_smoothing_num, max_smoothing_num));
@@ -368,10 +368,10 @@ bool calcNearestPoseInterp(
       return std::make_pair(traj_size - 2, traj_size - 1);
     }
 
-    geometry_msgs::msg::Point nearest_traj_point;
+    PointMsg nearest_traj_point;
     nearest_traj_point.x = traj.x.at(*nearest_index);
     nearest_traj_point.y = traj.y.at(*nearest_index);
-    geometry_msgs::msg::Point next_nearest_traj_point;
+    PointMsg next_nearest_traj_point;
     next_nearest_traj_point.x = traj.x.at(*nearest_index + 1);
     next_nearest_traj_point.y = traj.y.at(*nearest_index + 1);
 
@@ -383,10 +383,10 @@ bool calcNearestPoseInterp(
     return std::make_pair(*nearest_index, *nearest_index + 1);
   }();
 
-  geometry_msgs::msg::Point next_traj_point;
+  PointMsg next_traj_point;
   next_traj_point.x = traj.x.at(next);
   next_traj_point.y = traj.y.at(next);
-  geometry_msgs::msg::Point prev_traj_point;
+  PointMsg prev_traj_point;
   prev_traj_point.x = traj.x.at(prev);
   prev_traj_point.y = traj.y.at(prev);
   const double traj_seg_length =

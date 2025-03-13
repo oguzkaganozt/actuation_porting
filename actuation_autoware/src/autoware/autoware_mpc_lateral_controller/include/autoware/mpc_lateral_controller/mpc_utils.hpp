@@ -15,28 +15,30 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_UTILS_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_UTILS_HPP_
 
-#include <Eigen/Core>
-
 #include "autoware/mpc_lateral_controller/mpc_trajectory.hpp"
-
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "autoware_planning_msgs/msg/trajectory_point.hpp"
-#include "geometry_msgs/msg/pose_stamped.hpp"
-#include "geometry_msgs/msg/twist_stamped.hpp"
 
 #include <cmath>
 #include <string>
 #include <utility>
 #include <vector>
+#include <Eigen/Core>
+
+//Msgs
+#include "Trajectory.h"
+#include "TrajectoryPoint.h"
+#include "PoseStamped.h"
+#include "Pose.h"
+#include "TwistStamped.h"
+using PoseMsg = geometry_msgs_msg_Pose;
+using TwistStampedMsg = geometry_msgs_msg_TwistStamped;
+using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
 namespace MPCUtils
 {
-
-using autoware_planning_msgs::msg::Trajectory;
-using autoware_planning_msgs::msg::TrajectoryPoint;
-using geometry_msgs::msg::Pose;
 
 /**
  * @brief calculate 2d distance from trajectory[idx1] to trajectory[idx2]
@@ -60,21 +62,21 @@ void convertEulerAngleToMonotonic(std::vector<double> & angle_vector);
  * @param [in] ref_pose reference pose
  * @return lateral distance between the two poses
  */
-double calcLateralError(const Pose & ego_pose, const Pose & ref_pose);
+double calcLateralError(const PoseMsg & ego_pose, const PoseMsg & ref_pose);
 
 /**
  * @brief convert the given Trajectory msg to a MPCTrajectory object
  * @param [in] input trajectory to convert
  * @return resulting MPCTrajectory
  */
-MPCTrajectory convertToMPCTrajectory(const Trajectory & input);
+MPCTrajectory convertToMPCTrajectory(const TrajectoryMsg & input);
 
 /**
  * @brief convert the given MPCTrajectory to a Trajectory msg
  * @param [in] input MPCTrajectory to be converted
  * @return output converted Trajectory msg
  */
-Trajectory convertToAutowareTrajectory(const MPCTrajectory & input);
+TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input);
 
 /**
  * @brief calculate the arc length at each point of the given trajectory
@@ -170,13 +172,13 @@ std::vector<double> calcTrajectoryCurvature(
  * @return false when nearest pose couldn't find for some reasons
  */
 bool calcNearestPoseInterp(
-  const MPCTrajectory & traj, const Pose & self_pose, Pose * nearest_pose, size_t * nearest_index,
-  double * nearest_time, const double max_dist, const double max_yaw);
+  const MPCTrajectory & traj, const PoseMsg & self_pose, PoseMsg * nearest_pose,
+  size_t * nearest_index, double * nearest_time, const double max_dist, const double max_yaw);
 
 /**
  * @brief calculate distance to stopped point
  */
-double calcStopDistance(const Trajectory & current_trajectory, const int origin);
+double calcStopDistance(const TrajectoryMsg & current_trajectory, const int origin);
 
 /**
  * @brief extend terminal points

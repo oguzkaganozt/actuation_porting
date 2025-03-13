@@ -17,10 +17,14 @@
 
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-#include "geometry_msgs/msg/point.hpp"
-
 #include <iostream>
 #include <vector>
+
+//Msgs
+#include "Point.h"
+#include "TrajectoryPoint.h"
+using PointMsg = geometry_msgs_msg_Point;
+using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -96,11 +100,11 @@ public:
    */
   inline bool empty() const { return size() == 0; }
 
-  std::vector<geometry_msgs::msg::Point> toPoints() const
+  std::vector<PointMsg> toPoints() const
   {
-    std::vector<geometry_msgs::msg::Point> points;
+    std::vector<PointMsg> points;
     for (size_t i = 0; i < x.size(); ++i) {
-      geometry_msgs::msg::Point point;
+      PointMsg point;
       point.x = x.at(i);
       point.y = y.at(i);
       point.z = z.at(i);
@@ -109,11 +113,11 @@ public:
     return points;
   }
 
-  std::vector<autoware_planning_msgs::msg::TrajectoryPoint> toTrajectoryPoints() const
+  std::vector<TrajectoryPointMsg> toTrajectoryPoints() const
   {
-    std::vector<autoware_planning_msgs::msg::TrajectoryPoint> points;
+    std::vector<TrajectoryPointMsg> points;
     for (size_t i = 0; i < x.size(); ++i) {
-      autoware_planning_msgs::msg::TrajectoryPoint point;
+      TrajectoryPointMsg point;
       point.pose.position.x = x.at(i);
       point.pose.position.y = y.at(i);
       point.pose.position.z = z.at(i);

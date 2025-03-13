@@ -18,6 +18,10 @@
 #include <iostream>
 #include <numeric>
 
+// Msgs
+#include "Twist.h"
+using TwistMsg = geometry_msgs_msg_Twist;
+
 SteeringOffsetEstimator::SteeringOffsetEstimator(
   double wheelbase, double average_num, double vel_thres, double steer_thres, double offset_limit)
 : wheelbase_(wheelbase),
@@ -30,7 +34,7 @@ SteeringOffsetEstimator::SteeringOffsetEstimator(
 }
 
 void SteeringOffsetEstimator::updateOffset(
-  const geometry_msgs::msg::Twist & twist, const double steering)
+  const TwistMsg & twist, const double steering)
 {
   const bool update_offset =
     (std::abs(twist.linear.x) > update_vel_threshold_ &&

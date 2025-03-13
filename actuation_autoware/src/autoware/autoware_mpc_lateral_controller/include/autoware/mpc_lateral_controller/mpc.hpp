@@ -22,30 +22,30 @@
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_interface.hpp"
 #include "autoware/trajectory_follower_base/control_horizon.hpp"
 
-#include "autoware_control_msgs/msg/lateral.hpp"
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "autoware_vehicle_msgs/msg/steering_report.hpp"
-#include "geometry_msgs/msg/pose.hpp"
-#include "nav_msgs/msg/odometry.hpp"
-#include "tier4_debug_msgs/msg/float32_multi_array_stamped.hpp"
-
 #include <deque>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
+//Msgs
+#include "Lateral.h"
+#include "Trajectory.h"
+#include "SteeringReport.h"
+#include "Pose.h"
+#include "Odometry.h"
+#include "Float32MultiArrayStamped.h"
+using LateralMsg = autoware_control_msgs_msg_Lateral;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
+using PoseMsg = geometry_msgs_msg_Pose;
+using OdometryMsg = nav_msgs_msg_Odometry;
+using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
+
 namespace autoware::motion::control::mpc_lateral_controller
 {
 
 using autoware::motion::control::trajectory_follower::LateralHorizon;
-using autoware_control_msgs::msg::Lateral;
-using autoware_planning_msgs::msg::Trajectory;
-using autoware_vehicle_msgs::msg::SteeringReport;
-using geometry_msgs::msg::Pose;
-using nav_msgs::msg::Odometry;
-using tier4_debug_msgs::msg::Float32MultiArrayStamped;
-
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -153,7 +153,7 @@ struct MPCData
   double nearest_time{};
 
   // Pose (position and orientation) of the nearest point in the trajectory.
-  Pose nearest_pose{};
+  PoseMsg nearest_pose{};
 
   // Current steering angle.
   double steer{};
@@ -225,8 +225,8 @@ private:
 
   bool m_is_forward_shift = true;  // Flag indicating if the shift is in the forward direction.
 
-  rclcpp::Publisher<Trajectory>::SharedPtr m_debug_frenet_predicted_trajectory_pub;
-  rclcpp::Publisher<Trajectory>::SharedPtr m_debug_resampled_reference_trajectory_pub;
+  rclcpp::Publisher<TrajectoryMsg>::SharedPtr m_debug_frenet_predicted_trajectory_pub;
+  rclcpp::Publisher<TrajectoryMsg>::SharedPtr m_debug_resampled_reference_trajectory_pub;
   /**
    * @brief Get variables for MPC calculation.
    * @param trajectory The reference trajectory.
@@ -235,8 +235,8 @@ private:
    * @return A pair of a boolean flag indicating success and the MPC data.
    */
   std::pair<ResultWithReason, MPCData> getData(
-    const MPCTrajectory & trajectory, const SteeringReport & current_steer,
-    const Odometry & current_kinematics);
+    const MPCTrajectory & trajectory, const SteeringReportMsg & current_steer,
+    const OdometryMsg & current_kinematics);
 
   /**
    * @brief Get the initial state for MPC.
@@ -295,7 +295,7 @@ private:
    * @return The filtered trajectory.
    */
   MPCTrajectory applyVelocityDynamicsFilter(
-    const MPCTrajectory & trajectory, const Odometry & current_kinematics) const;
+    const MPCTrajectory & trajectory, const OdometryMsg & current_kinematics) const;
 
   /**
    * @brief Get the prediction time step for MPC. If the trajectory length is shorter than
@@ -307,7 +307,7 @@ private:
    */
   double getPredictionDeltaTime(
     const double start_time, const MPCTrajectory & input,
-    const Odometry & current_kinematics) const;
+    const OdometryMsg & current_kinematics) const;
 
   /**
    * @brief Add weights related to lateral jerk, steering rate, and steering acceleration to the R
@@ -350,7 +350,7 @@ private:
    * "world")
    * @return predicted path
    */
-  Trajectory calculatePredictedTrajectory(
+  TrajectoryMsg calculatePredictedTrajectory(
     const MPCMatrix & mpc_matrix, const Eigen::MatrixXd & x0, const Eigen::MatrixXd & Uex,
     const MPCTrajectory & reference_trajectory, const double dt,
     const std::string & coordinate = "world") const;
@@ -384,10 +384,10 @@ private:
    * @param current_kinematics The current vehicle kinematics.
    * @return The generated diagnostic data.
    */
-  Float32MultiArrayStamped generateDiagData(
+  Float32MultiArrayStampedMsg generateDiagData(
     const MPCTrajectory & reference_trajectory, const MPCData & mpc_data,
-    const MPCMatrix & mpc_matrix, const Lateral & ctrl_cmd, const VectorXd & Uex,
-    const Odometry & current_kinematics) const;
+    const MPCMatrix & mpc_matrix, const LateralMsg & ctrl_cmd, const VectorXd & Uex,
+    const OdometryMsg & current_kinematics) const;
 
   /**
    * @brief calculate steering rate limit along with the target trajectory
@@ -453,24 +453,25 @@ public:
    * @return True if the MPC calculation is successful, false otherwise.
    */
   ResultWithReason calculateMPC(
-    const SteeringReport & current_steer, const Odometry & current_kinematics, Lateral & ctrl_cmd,
-    Trajectory & predicted_trajectory, Float32MultiArrayStamped & diagnostic,
-    LateralHorizon & ctrl_cmd_horizon);
+    const SteeringReportMsg & current_steer, const OdometryMsg & current_kinematics,
+    LateralMsg & ctrl_cmd, TrajectoryMsg & predicted_trajectory,
+    Float32MultiArrayStampedMsg & diagnostic, LateralHorizon & ctrl_cmd_horizon);
 
   /**
    * @brief Set the reference trajectory to be followed.
    * @param trajectory_msg The reference trajectory message.
    * @param param Trajectory filtering parameters.
+   * @param current_kinematics current vehicle kinematics
    */
   void setReferenceTrajectory(
-    const Trajectory & trajectory_msg, const TrajectoryFilteringParam & param,
-    const Odometry & current_kinematics);
+    const TrajectoryMsg & trajectory_msg, const TrajectoryFilteringParam & param,
+    const OdometryMsg & current_kinematics);
 
   /**
    * @brief Reset the previous result of MPC.
    * @param current_steer Current steering report.
    */
-  void resetPrevResult(const SteeringReport & current_steer);
+  void resetPrevResult(const SteeringReportMsg & current_steer);
 
   /**
    * @brief Set the vehicle model for this MPC.
