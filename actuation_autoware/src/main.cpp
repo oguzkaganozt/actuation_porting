@@ -3,15 +3,12 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <vector>
 
 int main(void)
 {   
     while (1) {
-        printf("Hello World\n");
-        printf("Hello World2\n");
-        printf("This is actuation autoware\n");
-        printf("This is actuation autoware2\n");
+        fprintf(stderr, "Hello World\n");
+        fprintf(stderr, "This is actuation autoware\n");
         sleep(1);
     }
 
