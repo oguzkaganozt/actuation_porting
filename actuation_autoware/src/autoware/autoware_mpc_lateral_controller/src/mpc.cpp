@@ -18,7 +18,6 @@
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 #include "autoware/mpc_lateral_controller/mpc_utils.hpp"
 #include "autoware/universe_utils/math/unit_conversion.hpp"
-#include "rclcpp/rclcpp.hpp"
 
 #include <fmt/format.h>
 
@@ -38,9 +37,9 @@ using autoware::universe_utils::rad2deg;
 MPC::MPC(Node & node)
 {
   m_debug_frenet_predicted_trajectory_pub = node.create_publisher<Trajectory>(
-    "~/debug/predicted_trajectory_in_frenet_coordinate", rclcpp::QoS(1));
+    "~/debug/predicted_trajectory_in_frenet_coordinate", "topic_descriptor");
   m_debug_resampled_reference_trajectory_pub =
-    node.create_publisher<Trajectory>("~/debug/resampled_reference_trajectory", rclcpp::QoS(1));
+    node.create_publisher<Trajectory>("~/debug/resampled_reference_trajectory", "topic_descriptor");
 }
 
 ResultWithReason MPC::calculateMPC(

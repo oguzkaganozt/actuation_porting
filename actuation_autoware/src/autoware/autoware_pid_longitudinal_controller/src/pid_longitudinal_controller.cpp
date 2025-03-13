@@ -210,10 +210,10 @@ PidLongitudinalController::PidLongitudinalController(Node & node)
 
   // subscriber, publisher
   m_pub_slope = node.create_publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>(
-    "~/output/slope_angle", rclcpp::QoS{1});
+    "~/output/slope_angle", "topic_descriptor");
   m_pub_debug = node.create_publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>(
-    "~/output/longitudinal_diagnostic", rclcpp::QoS{1});
-  m_pub_stop_reason_marker = node.create_publisher<Marker>("~/output/stop_reason", rclcpp::QoS{1});
+    "~/output/longitudinal_diagnostic", "topic_descriptor");
+  m_pub_stop_reason_marker = node.create_publisher<Marker>("~/output/stop_reason", "topic_descriptor");
 
 }
 

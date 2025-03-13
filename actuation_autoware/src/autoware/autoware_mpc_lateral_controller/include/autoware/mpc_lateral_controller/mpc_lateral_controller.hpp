@@ -38,8 +38,7 @@ class MpcLateralController : public trajectory_follower::LateralControllerBase
 {
 public:
   /// \param node Reference to the node used only for the component and parameter initialization.
-  explicit MpcLateralController(
-    Node & node);
+  explicit MpcLateralController(Node & node);
   explicit MpcLateralController();
   virtual ~MpcLateralController();
 
@@ -84,13 +83,13 @@ private:
   bool m_is_mpc_history_filled{false};
 
   // store the last mpc outputs for 1 sec
-  // std::vector<std::pair<LateralMsg, rclcpp::Time>> m_mpc_steering_history{};
+  std::vector<std::pair<LateralMsg, rclcpp::Time>> m_mpc_steering_history{};
 
   // set the mpc steering output to history
-  // void setSteeringToHistory(const LateralMsg & steering);
+  void setSteeringToHistory(const LateralMsg & steering);
 
   // check if the mpc steering output is converged
-  // bool isMpcConverged();
+  bool isMpcConverged();
 
   // measured kinematic state
   OdometryMsg m_current_kinematic_state;

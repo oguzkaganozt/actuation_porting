@@ -95,17 +95,17 @@ Controller::Controller(const rclcpp::NodeOptions & node_options) : Node("control
   }
 
   control_cmd_pub_ = create_publisher<autoware_control_msgs::msg::Control>(
-    "~/output/control_cmd", rclcpp::QoS{1}.transient_local());
+    "~/output/control_cmd", "topic_descriptor");
   pub_processing_time_lat_ms_ =
-    create_publisher<Float64Stamped>("~/lateral/debug/processing_time_ms", 1);
+    create_publisher<Float64Stamped>("~/lateral/debug/processing_time_ms", "topic_descriptor");
   pub_processing_time_lon_ms_ =
-    create_publisher<Float64Stamped>("~/longitudinal/debug/processing_time_ms", 1);
+    create_publisher<Float64Stamped>("~/longitudinal/debug/processing_time_ms", "topic_descriptor");
   debug_marker_pub_ =
-    create_publisher<visualization_msgs::msg::MarkerArray>("~/output/debug_marker", rclcpp::QoS{1});
+    create_publisher<visualization_msgs::msg::MarkerArray>("~/output/debug_marker", "topic_descriptor");
 
   if (enable_control_cmd_horizon_pub_) {
     control_cmd_horizon_pub_ = create_publisher<autoware_control_msgs::msg::ControlHorizon>(
-      "~/debug/control_cmd_horizon", 1);
+      "~/debug/control_cmd_horizon", "topic_descriptor");
   }
 
   // Timer
