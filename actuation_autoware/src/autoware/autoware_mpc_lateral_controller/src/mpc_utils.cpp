@@ -180,11 +180,11 @@ bool linearInterpMPCTrajectory(
     out_traj.smooth_k = lerp_arc_length(in_traj.smooth_k);
     out_traj.relative_time = lerp_arc_length(in_traj.relative_time);
   } catch (const std::exception & e) {
-    std::cerr << "linearInterpMPCTrajectory error!: " << e.what() << std::endl;
+    fprintf(stderr, "linearInterpMPCTrajectory error!: %s\n", e.what());
   }
 
   if (out_traj.empty()) {
-    std::cerr << "[mpc util] linear interpolation error" << std::endl;
+    fprintf(stderr, "[mpc util] linear interpolation error\n");
     return false;
   }
 
@@ -197,7 +197,7 @@ void calcTrajectoryYawFromXY(MPCTrajectory & traj, const bool is_forward_shift)
     return;
   }
   if (traj.yaw.size() != traj.vx.size()) {
-    fprintf(stderr, "MPC: trajectory size has no consistency.");
+    fprintf(stderr, "MPC: trajectory size has no consistency.\n");
     return;
   }
 
@@ -244,7 +244,7 @@ std::vector<double> calcTrajectoryCurvature(
     try {
       curvature_vec.at(curr_idx) = autoware::universe_utils::calcCurvature(p1, p2, p3);
     } catch (...) {
-      std::cerr << "[MPC] 2 points are too close to calculate curvature." << std::endl;
+      fprintf(stderr, "[MPC] 2 points are too close to calculate curvature.\n");
       curvature_vec.at(curr_idx) = 0.0;
     }
   }

@@ -96,7 +96,7 @@ size_t MPCTrajectory::size() const
     x.size() == relative_time.size()) {
     return x.size();
   } else {
-    std::cerr << "[MPC trajectory] trajectory size is inappropriate" << std::endl;
+    fprintf(stderr, "[MPC trajectory] trajectory size is inappropriate\n");
     return 0;
   }
 }
