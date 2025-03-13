@@ -27,14 +27,25 @@
 #include <cmath>
 #include <Eigen/Geometry>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
+
+// Msgs
+#include "common/sequence/sequence.hpp"
+#include "Point.h"
+#include "Path.h"
+#include "Pose.h"
+#include "PathPoint.h"
+#include "PathPointWithLaneId.h"
+#include "TrajectoryPoint.h"
+#include "Trajectory.h"
+using PointMsg = geometry_msgs_msg_Point;
+using PoseMsg = geometry_msgs_msg_Pose;
+using PathPointSeq = Sequence<dds_sequence_autoware_planning_msgs_msg_PathPoint>;
+using PathPointWithLaneIdSeq = Sequence<dds_sequence_tier4_planning_msgs_msg_PathPointWithLaneId>;
+using TrajectoryPointSeq = Sequence<dds_sequence_autoware_planning_msgs_msg_TrajectoryPoint>;
 
 namespace autoware::motion_utils
 {
@@ -46,9 +57,8 @@ namespace autoware::motion_utils
 template <class T>
 void validateNonEmpty(const T & points)
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
   if (points.empty()) {
-    LOG_ERR("[autoware_motion_utils] validateNonEmpty(): Points is empty.");
+    fprintf(stderr, "[autoware_motion_utils] validateNonEmpty(): Points is empty.");
     return;
   }
 }
@@ -73,8 +83,6 @@ extern template void validateNonEmpty<TrajectoryPointSeq>(
 template <class T>
 size_t findNearestIndex(const T & points, const PointMsg & point)
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
-
   validateNonEmpty(points);
 
   double min_dist = std::numeric_limits<double>::max();
@@ -119,12 +127,10 @@ std::optional<size_t> findNearestIndex(
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
-
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    LOG_ERR("Error: %s", e.what());
+    fprintf(stderr, "Trajectory: Error: %s", e.what());
     return {};
   }
 
@@ -185,8 +191,6 @@ findNearestIndex<TrajectoryPointSeq>(
 template <class T>
 T removeOverlapPoints(const T & points, const size_t start_idx = 0)
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
-
   if (points.size() < start_idx + 1) {
     return points;
   }
@@ -238,14 +242,12 @@ double calcLongitudinalOffsetToSegment(
   const T & points, const size_t seg_idx, const PointMsg & p_target,
   const bool throw_exception = false)
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
-
   if (seg_idx >= points.size() - 1) {
     const std::string error_message(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Failed to calculate longitudinal offset because the given segment index is out of the "
       "points size.");
-    LOG_ERR("Error: %s", error_message.c_str());
+    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
     return std::nan("");
   }
 
@@ -255,7 +257,7 @@ double calcLongitudinalOffsetToSegment(
   try {
     validateNonEmpty(overlap_removed_points);
   } catch (const std::exception & e) {
-    LOG_ERR("Error: %s", e.what());
+    fprintf(stderr, "Trajectory: Error: %s", e.what());
     return std::nan("");
   }
 
@@ -263,7 +265,7 @@ double calcLongitudinalOffsetToSegment(
     const std::string error_message(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Longitudinal offset calculation is not supported for the same points.");
-    LOG_ERR("Error: %s", error_message.c_str());
+    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
     return std::nan("");
   }
 
@@ -300,8 +302,6 @@ calcLongitudinalOffsetToSegment<TrajectoryPointSeq>(
 template <class T>
 size_t findNearestSegmentIndex(const T & points, const PointMsg & point)
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
-
   const size_t nearest_idx = findNearestIndex(points, point);
 
   if (nearest_idx == 0) {
@@ -348,8 +348,6 @@ std::optional<size_t> findNearestSegmentIndex(
   const double max_dist = std::numeric_limits<double>::max(),
   const double max_yaw = std::numeric_limits<double>::max())
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
-
   const auto nearest_idx = findNearestIndex(points, pose, max_dist, max_yaw);
 
   if (!nearest_idx) {
@@ -400,8 +398,6 @@ findNearestSegmentIndex<TrajectoryPointSeq>(
 template <class T>
 std::vector<double> calcCurvature(const T & points)
 {
-  LOG_MODULE_DECLARE(motion_utils_trajectory);
-
   std::vector<double> curvature_vec(points.size(), 0.0);
   if (points.size() < 3) {
     return curvature_vec;

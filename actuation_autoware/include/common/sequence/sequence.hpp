@@ -24,8 +24,8 @@ private:
     // Check and potentially grow the buffer
     bool ensure_capacity(size_t required_capacity) {
         if (!sequence || !sequence->_buffer) {
-            printf("Invalid sequence state\n");
-            k_panic();
+            fprintf(stderr, "Invalid sequence state\n");
+            std::exit(EXIT_FAILURE);
         }
         
         if (required_capacity <= sequence->_maximum) {
@@ -34,8 +34,8 @@ private:
         
         // Need to allocate more memory - use fixed growth to avoid excessive allocations
         if (required_capacity > MAX_SEQUENCE_SIZE) {
-            printf("Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, MAX_SEQUENCE_SIZE);
-            k_panic();
+            fprintf(stderr, "Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, MAX_SEQUENCE_SIZE);
+            std::exit(EXIT_FAILURE);
         }
         
         size_t new_capacity = (sequence->_maximum * 2 > required_capacity) ? 
@@ -47,14 +47,14 @@ private:
         
         // Size overflow check
         if (new_capacity > SIZE_MAX / sizeof(ElementType)) {
-            printf("Allocation size would overflow\n");
-            k_panic();
+            fprintf(stderr, "Allocation size would overflow\n");
+            std::exit(EXIT_FAILURE);
         }
         
-        ElementType* new_buffer = static_cast<ElementType*>(k_malloc(new_capacity * sizeof(ElementType)));
+        ElementType* new_buffer = static_cast<ElementType*>(malloc(new_capacity * sizeof(ElementType)));
         if (!new_buffer) {
-            printf("Failed to allocate memory for sequence buffer\n");
-            k_panic();
+            fprintf(stderr, "Failed to allocate memory for sequence buffer\n");
+            std::exit(EXIT_FAILURE);
         }
         
         // Copy existing elements
@@ -64,7 +64,7 @@ private:
         
         // Free old buffer
         if (sequence->_buffer) {
-            k_free(sequence->_buffer);
+            free(sequence->_buffer);
         }
         
         // Update sequence
@@ -86,17 +86,17 @@ public:
     }
     
     // Owning constructor with initial capacity
-    explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) : sequence(static_cast<T*>(k_malloc(sizeof(T)))), owns_sequence(true) {
+    explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) : sequence(static_cast<T*>(malloc(sizeof(T)))), owns_sequence(true) {
         if (!sequence) {
-            printf("Failed to allocate memory for sequence struct\n");
-            k_panic();
+            fprintf(stderr, "Failed to allocate memory for sequence struct\n");
+            std::exit(EXIT_FAILURE);
         }
         sequence->_buffer = nullptr;
         sequence->_length = 0;
         sequence->_maximum = 0;
         if (!ensure_capacity(initial_capacity)) {
             // If buffer allocation fails, clean up and flag as non-owning
-            k_free(sequence);
+            free(sequence);
             sequence = nullptr;
             owns_sequence = false;
         }
@@ -106,17 +106,17 @@ public:
     ~Sequence() {
         if (owns_sequence && sequence) {
             if (sequence->_buffer) {
-                k_free(sequence->_buffer);
+                free(sequence->_buffer);
             }
-            k_free(sequence);
+            free(sequence);
         }
     }
     
     // Copy constructor
-    Sequence(const Sequence& other) : sequence(static_cast<T*>(k_malloc(sizeof(T)))), owns_sequence(true) {
+    Sequence(const Sequence& other) : sequence(static_cast<T*>(malloc(sizeof(T)))), owns_sequence(true) {
         if (!sequence) {
-            printf("Failed to allocate memory for sequence struct in copy constructor\n");
-            k_panic();
+            fprintf(stderr, "Failed to allocate memory for sequence struct in copy constructor\n");
+            std::exit(EXIT_FAILURE);
         }
         
         // Initialize the sequence structure
@@ -128,11 +128,11 @@ public:
         if (other.sequence && other.sequence->_buffer && other.sequence->_length > 0) {
             // Allocate with exact capacity to match original
             if (!ensure_capacity(other.sequence->_maximum)) {
-                printf("Failed to allocate buffer in copy constructor\n");
-                k_free(sequence);
+                fprintf(stderr, "Failed to allocate buffer in copy constructor\n");
+                free(sequence);
                 sequence = nullptr;
                 owns_sequence = false;
-                k_panic();
+                std::exit(EXIT_FAILURE);
             }
             
             // Copy each element
@@ -154,17 +154,17 @@ public:
             // Clean up existing resources
             if (owns_sequence && sequence) {
                 if (sequence->_buffer) {
-                    k_free(sequence->_buffer);
+                    free(sequence->_buffer);
                     sequence->_buffer = nullptr;
                 }
             }
             
             // If we don't own a sequence structure, create one
             if (!sequence) {
-                sequence = static_cast<T*>(k_malloc(sizeof(T)));
+                sequence = static_cast<T*>(malloc(sizeof(T)));
                 if (!sequence) {
-                    printf("Failed to allocate memory for sequence struct in copy assignment\n");
-                    k_panic();
+                    fprintf(stderr, "Failed to allocate memory for sequence struct in copy assignment\n");
+                    std::exit(EXIT_FAILURE);
                 }
                 owns_sequence = true;
                 sequence->_buffer = nullptr;
@@ -175,8 +175,8 @@ public:
             // Allocate and copy the buffer
             if (other.sequence && other.sequence->_buffer && other.sequence->_length > 0) {
                 if (!ensure_capacity(other.sequence->_maximum)) {
-                    printf("Failed to allocate buffer in copy assignment\n");
-                    k_panic();
+                    fprintf(stderr, "Failed to allocate buffer in copy assignment\n");
+                    std::exit(EXIT_FAILURE);
                 }
                 
                 // Copy each element
@@ -208,9 +208,9 @@ public:
             // Clean up our resources
             if (owns_sequence && sequence) {
                 if (sequence->_buffer) {
-                    k_free(sequence->_buffer);
+                    free(sequence->_buffer);
                 }
-                k_free(sequence);
+                free(sequence);
             }
             
             sequence = other.sequence;
@@ -236,88 +236,88 @@ public:
     // Data access
     reference operator[](size_type index) { 
         if (!sequence || !sequence->_buffer) {
-            printf("Dereferencing invalid sequence\n");
-            k_panic();
+            fprintf(stderr, "Dereferencing invalid sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         if(index >= sequence->_length) {
-            printf("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
-            k_panic();
+            fprintf(stderr, "Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index]; 
     }
     
     const_reference operator[](size_type index) const { 
         if (!sequence || !sequence->_buffer) {
-            printf("Dereferencing invalid sequence\n");
-            k_panic();
+            fprintf(stderr, "Dereferencing invalid sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         if(index >= sequence->_length) {
-            printf("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
-            k_panic();
+            fprintf(stderr, "Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index]; 
     }
 
     value_type* data() noexcept { 
         if (!sequence || !sequence->_buffer) {
-            printf("Invalid sequence\n");
-            k_panic();
+            fprintf(stderr, "Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer; 
     }
     
     const value_type* data() const noexcept { 
         if (!sequence || !sequence->_buffer) {
-            printf("Invalid sequence\n");
-            k_panic();
+            fprintf(stderr, "Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer; 
     }
 
     reference at(size_type index) {
         if (!sequence || !sequence->_buffer || index >= sequence->_length) {
-            printf("Index %zu out of range (size: %zu)\n", index, size());
-            k_panic();
+            fprintf(stderr, "Index %zu out of range (size: %zu)\n", index, size());
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index];
     }
 
     const_reference at(size_type index) const {
         if (!sequence || !sequence->_buffer || index >= sequence->_length) {
-            printf("Index %zu out of range (size: %zu)\n", index, size());
-            k_panic();
+            fprintf(stderr, "Index %zu out of range (size: %zu)\n", index, size());
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index];
     }
     
     reference front() {
         if (!sequence || !sequence->_buffer || empty()) {
-            printf("Cannot access front() of empty sequence\n");
-            k_panic();
+            fprintf(stderr, "Cannot access front() of empty sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[0];
     }
     
     const_reference front() const {
         if (!sequence || !sequence->_buffer || empty()) {
-            printf("Cannot access front() of empty sequence\n");
-            k_panic();
+            fprintf(stderr, "Cannot access front() of empty sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[0];
     }
     
     reference back() {
         if (!sequence || !sequence->_buffer || empty()) {
-            printf("Cannot access back() of empty sequence\n");
-            k_panic();
+            fprintf(stderr, "Cannot access back() of empty sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[sequence->_length - 1];
     }
     
     const_reference back() const {
         if (!sequence || !sequence->_buffer || empty()) {
-            printf("Cannot access back() of empty sequence\n");
-            k_panic();
+            fprintf(stderr, "Cannot access back() of empty sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[sequence->_length - 1];
     }
@@ -328,8 +328,8 @@ public:
     
     bool push_back(const value_type& value) {
         if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-            printf("Failed to push_back() - copy\n");
-            k_panic();
+            fprintf(stderr, "Failed to push_back() - copy\n");
+            std::exit(EXIT_FAILURE);
         }
         sequence->_buffer[sequence->_length++] = value;
         return true;
@@ -338,8 +338,8 @@ public:
     // Add move-enabled push_back for better performance with movable types
     bool push_back(value_type&& value) {
         if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-            printf("Failed to push_back() - move\n");
-            k_panic();
+            fprintf(stderr, "Failed to push_back() - move\n");
+            std::exit(EXIT_FAILURE);
         }
         sequence->_buffer[sequence->_length++] = std::move(value);
         return true;
@@ -347,8 +347,8 @@ public:
     
     bool pop_back() {
         if (!sequence || sequence->_length == 0) {
-            printf("Cannot pop_back() from empty sequence\n");
-            k_panic();
+            fprintf(stderr, "Cannot pop_back() from empty sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         sequence->_length--;
         return true;
@@ -356,13 +356,13 @@ public:
     
     bool resize(size_type new_size) {
         if (!sequence) {
-            printf("Invalid sequence\n");
-            k_panic();
+            fprintf(stderr, "Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         
         if (new_size > sequence->_maximum && !ensure_capacity(new_size)) {
-            printf("Failed to resize sequence\n");
-            k_panic();
+            fprintf(stderr, "Failed to resize sequence\n");
+            std::exit(EXIT_FAILURE);
         }
         
         // If growing, initialize new elements to default value
@@ -385,29 +385,29 @@ public:
     
     void dump(const char* name = "Sequence") const {
         if (!is_valid()) {
-            printf("%s: Invalid sequence\n", name);
+            fprintf(stderr, "%s: Invalid sequence\n", name);
             return;
         }
         
-        printf("%s[size=%zu, capacity=%zu]\n", name, size(), capacity());
+        fprintf(stderr, "%s[size=%zu, capacity=%zu]\n", name, size(), capacity());
         
         if (!empty()) {
-            printf("Contents:\n");
+            fprintf(stderr, "Contents:\n");
             for (size_t i = 0; i < (size() < 20 ? size() : 20); ++i) {
                 if constexpr (std::is_integral_v<value_type>) {
-                    printf("  [%zu]: %d\n", i, static_cast<int>((*this)[i]));
+                    fprintf(stderr, "  [%zu]: %d\n", i, static_cast<int>((*this)[i]));
                 } else if constexpr (std::is_floating_point_v<value_type>) {
-                    printf("  [%zu]: %f\n", i, static_cast<double>((*this)[i]));
+                    fprintf(stderr, "  [%zu]: %f\n", i, static_cast<double>((*this)[i]));
                 } else {
-                    printf("  [%zu]: (unformattable type)\n", i);
+                    fprintf(stderr, "  [%zu]: (unformattable type)\n", i);
                 }
             }
             
             if (size() > 20) {
-                printf("  ... and %zu more elements\n", size() - 20);
+                fprintf(stderr, "  ... and %zu more elements\n", size() - 20);
             }
         } else {
-            printf("  (empty)\n");
+            fprintf(stderr, "  (empty)\n");
         }
     }
 };

@@ -18,8 +18,6 @@
 
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 
-LOG_MODULE_REGISTER(motion_utils_trajectory);
-
 namespace autoware::motion_utils
 {
 
