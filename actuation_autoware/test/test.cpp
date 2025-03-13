@@ -1,5 +1,4 @@
 #include "common/node/node.hpp"
-#include "PoseStamped.h"
 
 #include <cassert>
 #include <chrono>
@@ -7,6 +6,8 @@
 #include <pthread.h>
 #include <time.h>
 
+// Msgs
+#include "PoseStamped.h"
 using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
 
 // Test state with thread-safe access
