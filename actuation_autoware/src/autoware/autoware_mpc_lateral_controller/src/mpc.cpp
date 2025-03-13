@@ -792,9 +792,8 @@ VectorXd MPC::calcSteerRateLimitOnTrajectory(
       }
     }
 
-    std::cerr << "MPC::calcSteerRateLimitOnTrajectory() interpolation logic is broken. Command "
-                 "filter is not working. Please check the code."
-              << std::endl;
+    fprintf(stderr, "MPC::calcSteerRateLimitOnTrajectory() interpolation logic is broken. Command "
+                    "filter is not working. Please check the code.");
     return reference.back();
   };
 
