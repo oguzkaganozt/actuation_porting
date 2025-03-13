@@ -86,7 +86,7 @@ include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
 include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
 include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
 include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-# include(src/autoware/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
+include(src/autoware/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
 # include(src/autoware/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
 
 message("=== Build Summary ===")

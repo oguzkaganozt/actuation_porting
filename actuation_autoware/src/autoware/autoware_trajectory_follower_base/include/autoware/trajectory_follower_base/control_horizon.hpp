@@ -17,9 +17,11 @@
 
 #include <vector>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
+// Msgs
+#include "Lateral.h"
+#include "Longitudinal.h"
+using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
+using LateralMsg = autoware_control_msgs_msg_Lateral;
 
 namespace autoware::motion::control::trajectory_follower
 {

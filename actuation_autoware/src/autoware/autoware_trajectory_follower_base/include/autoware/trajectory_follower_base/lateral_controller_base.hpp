@@ -15,13 +15,13 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LATERAL_CONTROLLER_BASE_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LATERAL_CONTROLLER_BASE_HPP_
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 #include "autoware/trajectory_follower_base/control_horizon.hpp"
 #include "autoware/trajectory_follower_base/input_data.hpp"
 #include "autoware/trajectory_follower_base/sync_data.hpp"
+
+// Msgs
+#include "Lateral.h"
+using LateralMsg = autoware_control_msgs_msg_Lateral;
 
 namespace autoware::motion::control::trajectory_follower
 {
