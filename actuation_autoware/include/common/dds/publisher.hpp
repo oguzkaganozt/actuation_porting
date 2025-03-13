@@ -1,5 +1,5 @@
-#ifndef PUBLISHER_HPP
-#define PUBLISHER_HPP
+#ifndef COMMON__PUBLISHER_HPP_
+#define COMMON__PUBLISHER_HPP_
 
 #include <string>
 #include <dds/dds.h>

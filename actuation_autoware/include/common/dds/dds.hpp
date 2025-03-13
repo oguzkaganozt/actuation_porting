@@ -1,5 +1,5 @@
-#ifndef COMMON_DDS_IMPL_DDS_HPP_
-#define COMMON_DDS_IMPL_DDS_HPP_
+#ifndef COMMON__DDS_HPP_
+#define COMMON__DDS_HPP_
 
 #include <string>
 #include <memory>
@@ -105,4 +105,4 @@ private:
     dds_qos_t* m_dds_qos;
 };
 
-#endif // COMMON_DDS_IMPL_DDS_HPP_
+#endif // COMMON__DDS_HPP_

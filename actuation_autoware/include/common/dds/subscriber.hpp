@@ -1,5 +1,5 @@
-#ifndef COMMON_DDS_IMPL_SUBSCRIBER_HPP
-#define COMMON_DDS_IMPL_SUBSCRIBER_HPP
+#ifndef COMMON__SUBSCRIBER_HPP_
+#define COMMON__SUBSCRIBER_HPP_
 
 #include <memory>
 #include <string>
@@ -81,4 +81,4 @@ private:
     }
 };
 
-#endif
+#endif  // COMMON__SUBSCRIBER_HPP_

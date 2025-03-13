@@ -1,8 +1,8 @@
 // Copyright (c) 2024-2025, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
-#ifndef BASE_DDS_IMPL_DDS_CONFIG_HPP_
-#define BASE_DDS_IMPL_DDS_CONFIG_HPP_
+#ifndef COMMON__DDS_CONFIG_HPP_
+#define COMMON__DDS_CONFIG_HPP_
 
 #include <dds/ddsi/ddsi_config.h>
 #include <dds/dds.h>
@@ -69,4 +69,4 @@ inline static void init_config(struct ddsi_config & cfg)
 
 
 
-#endif  // BASE_DDS_IMPL_DDS_CONFIG_HPP_
+#endif  // COMMON__DDS_CONFIG_HPP_

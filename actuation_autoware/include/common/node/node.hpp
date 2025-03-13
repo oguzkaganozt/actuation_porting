@@ -1,5 +1,5 @@
-#ifndef BASE_NODE_NODE_HPP
-#define BASE_NODE_NODE_HPP
+#ifndef COMMON__NODE_HPP_
+#define COMMON__NODE_HPP_
 
 // C++ Standard Library
 #include <cstddef>
@@ -334,4 +334,4 @@ private:
     void (*timer_callback_)(Node*);
 };
 
-#endif  // BASE_NODE_NODE_HPP
+#endif  // COMMON__NODE_HPP_

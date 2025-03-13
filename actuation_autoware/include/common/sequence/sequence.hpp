@@ -1,5 +1,5 @@
-#ifndef MESSAGE_ADAPTER_HPP_
-#define MESSAGE_ADAPTER_HPP_
+#ifndef COMMON__SEQUENCE_HPP_
+#define COMMON__SEQUENCE_HPP_
 
 #include <cstddef>
 #include <cstdint>
@@ -412,4 +412,4 @@ public:
     }
 };
 
-#endif  // MESSAGE_ADAPTER_HPP_
+#endif  // COMMON__SEQUENCE_HPP_
