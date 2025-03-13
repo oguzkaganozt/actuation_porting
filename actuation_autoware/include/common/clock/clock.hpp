@@ -15,7 +15,7 @@ public:
     Clock() = default;
     ~Clock() = default;
 
-    TimePoint Now() {
+    TimePoint now() {
         return std::chrono::system_clock::now();
     }
 };
