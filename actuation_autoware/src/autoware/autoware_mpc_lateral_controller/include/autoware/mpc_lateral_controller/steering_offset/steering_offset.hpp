@@ -20,10 +20,6 @@
 #include <vector>
 #include <deque>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 class SteeringOffsetEstimator
 {
 public:

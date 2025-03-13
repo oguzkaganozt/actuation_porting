@@ -525,12 +525,6 @@ public:
   inline bool hasQPSolver() const { return m_qpsolver_ptr != nullptr; }
 
   /**
-   * @brief Set the RCLCPP logger to be used for logging.
-   * @param logger The RCLCPP logger object.
-   */
-  inline void setLogger(rclcpp::Logger logger) { m_logger = logger; }
-
-  /**
    * @brief Set the RCLCPP clock to be used for time keeping.
    * @param clock The shared pointer to the RCLCPP clock.
    */

@@ -19,7 +19,7 @@
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
-QPSolverOSQP::QPSolverOSQP(const rclcpp::Logger & logger) : logger_{logger}
+QPSolverOSQP::QPSolverOSQP()
 {
 }
 bool QPSolverOSQP::solve(
@@ -60,13 +60,13 @@ bool QPSolverOSQP::solve(
 
   const int status_val = std::get<3>(result);
   if (status_val != 1) {
-    RCLCPP_WARN(logger_, "optimization failed : %s", osqpsolver_.getStatusMessage().c_str());
+    fprintf(stderr, "QP: optimization failed : %s", osqpsolver_.getStatusMessage().c_str());
     return false;
   }
   const auto has_nan =
     std::any_of(U_osqp.begin(), U_osqp.end(), [](const auto v) { return std::isnan(v); });
   if (has_nan) {
-    RCLCPP_WARN(logger_, "optimization failed: result contains NaN values");
+    fprintf(stderr, "QP: optimization failed: result contains NaN values");
     return false;
   }
 
@@ -75,7 +75,7 @@ bool QPSolverOSQP::solve(
   if (status_polish == -1 || status_polish == 0) {
     const auto s = (status_polish == 0) ? "Polish process is not performed in osqp."
                                         : "Polish process failed in osqp.";
-    RCLCPP_INFO(logger_, "%s The required accuracy is met, but the solution can be inaccurate.", s);
+    fprintf(stderr, "QP: %s The required accuracy is met, but the solution can be inaccurate.", s);
     return true;
   }
   return true;

@@ -197,7 +197,7 @@ void calcTrajectoryYawFromXY(MPCTrajectory & traj, const bool is_forward_shift)
     return;
   }
   if (traj.yaw.size() != traj.vx.size()) {
-    RCLCPP_ERROR(rclcpp::get_logger("mpc_utils"), "trajectory size has no consistency.");
+    fprintf(stderr, "MPC: trajectory size has no consistency.");
     return;
   }
 
@@ -342,7 +342,6 @@ bool calcNearestPoseInterp(
 
   const auto autoware_traj = convertToAutowareTrajectory(traj);
   if (autoware_traj.points.empty()) {
-    const auto logger = rclcpp::get_logger("mpc_util");
     auto clock = rclcpp::Clock(RCL_ROS_TIME);
     RCLCPP_WARN_THROTTLE(logger, clock, 5000, "[calcNearestPoseInterp] input trajectory is empty");
     return false;

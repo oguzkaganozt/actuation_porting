@@ -35,7 +35,7 @@ namespace autoware::motion::control::mpc_lateral_controller
 
 MpcLateralController::MpcLateralController(
   rclcpp::Node & node, std::shared_ptr<diagnostic_updater::Updater> diag_updater)
-: clock_(node.get_clock()), logger_(node.get_logger().get_child("lateral_controller"))
+: clock_(node.get_clock())
 {
   const auto dp_int = [&](const std::string & s) { return node.declare_parameter<int>(s); };
   const auto dp_bool = [&](const std::string & s) { return node.declare_parameter<bool>(s); };
@@ -152,7 +152,6 @@ MpcLateralController::MpcLateralController(
 
   m_mpc->initializeSteeringPredictor();
 
-  m_mpc->setLogger(logger_);
   m_mpc->setClock(clock_);
 
   setupDiag();
@@ -193,7 +192,7 @@ std::shared_ptr<VehicleModelInterface> MpcLateralController::createVehicleModel(
     return vehicle_model_ptr;
   }
 
-  RCLCPP_ERROR(logger_, "vehicle_model_type is undefined");
+  fprintf(stderr, "MPC: vehicle_model_type is undefined");
   return vehicle_model_ptr;
 }
 
@@ -210,11 +209,11 @@ std::shared_ptr<QPSolverInterface> MpcLateralController::createQPSolverInterface
   }
 
   if (qp_solver_type == "osqp") {
-    qpsolver_ptr = std::make_shared<QPSolverOSQP>(logger_);
+    qpsolver_ptr = std::make_shared<QPSolverOSQP>();
     return qpsolver_ptr;
   }
 
-  RCLCPP_ERROR(logger_, "qp_solver_type is undefined");
+  fprintf(stderr, "MPC: qp_solver_type is undefined");
   return qpsolver_ptr;
 }
 
@@ -279,7 +278,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
   if (
     (m_mpc_solved_status.result == true && mpc_solved_status.result == false) ||
     (!mpc_solved_status.result && mpc_solved_status.reason != m_mpc_solved_status.reason)) {
-    RCLCPP_ERROR(logger_, "MPC failed due to %s", mpc_solved_status.reason.c_str());
+    fprintf(stderr, "MPC: failed due to %s", mpc_solved_status.reason.c_str());
   }
   m_mpc_solved_status = mpc_solved_status;  // for diagnostic updater
 
@@ -347,7 +346,7 @@ bool MpcLateralController::isSteerConverged(const Lateral & cmd) const
   // wait for a while to propagate the trajectory shape to the output command when the trajectory
   // shape is changed.
   if (!m_has_received_first_trajectory || isTrajectoryShapeChanged()) {
-    RCLCPP_DEBUG(logger_, "trajectory shaped is changed");
+    fprintf(stderr, "MPC: trajectory shaped is changed");
     return false;
   }
 
@@ -386,12 +385,12 @@ void MpcLateralController::setTrajectory(
   m_current_trajectory = msg;
 
   if (msg.points.size() < 3) {
-    RCLCPP_DEBUG(logger_, "received path size is < 3, not enough.");
+    fprintf(stderr, "MPC: received path size is < 3, not enough.");
     return;
   }
 
   if (!isValidTrajectory(msg)) {
-    RCLCPP_ERROR(logger_, "Trajectory is invalid!! stop computing.");
+    fprintf(stderr, "MPC: Trajectory is invalid!! stop computing.");
     return;
   }
 

@@ -18,10 +18,6 @@
 #include <memory>
 #include <vector>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 namespace autoware::motion::control::mpc_lateral_controller
 {
 
