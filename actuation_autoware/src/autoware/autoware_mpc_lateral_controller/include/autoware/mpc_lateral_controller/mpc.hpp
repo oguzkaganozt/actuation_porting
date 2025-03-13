@@ -397,21 +397,14 @@ private:
   VectorXd calcSteerRateLimitOnTrajectory(
     const MPCTrajectory & trajectory, const double current_velocity) const;
 
-  //!< @brief logging with warn and return false
-  template <typename... Args>
-  inline bool fail_warn_throttle(Args &&... args) const
+  void warn_throttle(const char * msg)
   {
-    RCLCPP_WARN_THROTTLE(m_logger, *m_clock, 3000, "%s", args...);
-    return false;
+    static int counter = 0;
+    if (counter % RCLCPP_THROTTLE_RATE_WARN == 0) {
+      fprintf(stderr, "%s", msg);
+    }
+    counter++;
   }
-
-  //!< @brief logging with warn
-  template <typename... Args>
-  inline void warn_throttle(Args &&... args) const
-  {
-    RCLCPP_WARN_THROTTLE(m_logger, *m_clock, 3000, "%s", args...);
-  }
-
 public:
   MPCTrajectory m_reference_trajectory;  // Reference trajectory to be followed.
   MPCParam m_param;                      // MPC design parameters.

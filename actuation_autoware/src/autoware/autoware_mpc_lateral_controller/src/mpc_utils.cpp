@@ -342,8 +342,7 @@ bool calcNearestPoseInterp(
 
   const auto autoware_traj = convertToAutowareTrajectory(traj);
   if (autoware_traj.points.empty()) {
-    auto clock = rclcpp::Clock(RCL_ROS_TIME);
-    RCLCPP_WARN_THROTTLE(logger, clock, 5000, "[calcNearestPoseInterp] input trajectory is empty");
+    warn_throttle("[calcNearestPoseInterp] input trajectory is empty");
     return false;
   }
 

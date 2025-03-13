@@ -49,4 +49,18 @@ config DDS_NETWORK_INTERFACE
 	  When left undefined, CycloneDDS will automatically select an interface
 	  based on its own criteria.
 
+config RCLCPP_THROTTLE_RATE_INFO
+	int "Throttle rate for rclcpp info"
+	default 500
+	help
+	  This config sets the throttle rate for rclcpp messages.
+	  It is used to limit the rate of messages being published to the console.
+
+config RCLCPP_THROTTLE_RATE_WARN
+	int "Throttle rate for rclcpp warn"
+	default 300
+	help
+	  This config sets the throttle rate for rclcpp messages.
+	  It is used to limit the rate of messages being published to the console.
+
 source "Kconfig.zephyr"

@@ -264,16 +264,22 @@ private:
    */
   void declareMPCparameters(rclcpp::Node & node);
 
-  template <typename... Args>
-  inline void info_throttle(Args &&... args)
+  void info_throttle(const char * msg)
   {
-    RCLCPP_INFO_THROTTLE(logger_, *clock_, 5000, "%s", args...);
+    static int counter = 0;
+    if (counter % RCLCPP_THROTTLE_RATE_INFO == 0) {
+      printf("%s", msg);
+    }
+    counter++;
   }
 
-  template <typename... Args>
-  inline void warn_throttle(Args &&... args)
+  void warn_throttle(const char * msg)
   {
-    RCLCPP_WARN_THROTTLE(logger_, *clock_, 5000, "%s", args...);
+    static int counter = 0;
+    if (counter % RCLCPP_THROTTLE_RATE_WARN == 0) {
+      fprintf(stderr, "%s", msg);
+    }
+    counter++;
   }
 };
 }  // namespace autoware::motion::control::mpc_lateral_controller
