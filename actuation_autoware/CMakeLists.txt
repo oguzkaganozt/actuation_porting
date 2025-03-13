@@ -82,7 +82,7 @@ set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Add Autoware components
 include(src/autoware/autoware_osqp_interface/autoware_osqp_interface.cmake)
-# include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
+include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
 # include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
 # include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
 # include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)

@@ -20,8 +20,6 @@
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 
-LOG_MODULE_DECLARE(autoware_universe_utils_geometry);
-
 namespace autoware::universe_utils
 {
 

@@ -22,14 +22,36 @@
 #include <cmath>
 #include <Eigen/Core>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 // Autoware
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
+
+// Msgs
+#include "Point.h"
+#include "Pose.h"
+#include "PoseStamped.h"
+#include "PoseWithCovarianceStamped.h"
+#include "PathPoint.h"
+#include "Vector3.h"
+#include "Quaternion.h"
+#include "PathPointWithLaneId.h"
+#include "PathWithLaneId.h"
+#include "TrajectoryPoint.h"
+#include "Transform.h"
+#include "TransformStamped.h"
+using PointMsg = geometry_msgs_msg_Point;
+using PoseMsg = geometry_msgs_msg_Pose;
+using Vector3Msg = geometry_msgs_msg_Vector3;
+using QuaternionMsg = geometry_msgs_msg_Quaternion;
+using PathWithLaneIdMsg = tier4_planning_msgs_msg_PathWithLaneId;
+using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
+using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+using PoseWithCovarianceStampedMsg = geometry_msgs_msg_PoseWithCovarianceStamped;
+using PathPointMsg = autoware_planning_msgs_msg_PathPoint;
+using TransformMsg = geometry_msgs_msg_Transform;
+using TransformStampedMsg = geometry_msgs_msg_TransformStamped;
+using PathPointWithLaneIdMsg = tier4_planning_msgs_msg_PathPointWithLaneId;
 
 namespace autoware::universe_utils
 {

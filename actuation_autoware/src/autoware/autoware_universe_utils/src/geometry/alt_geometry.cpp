@@ -22,7 +22,6 @@
 
 // Autoware
 #include "autoware/universe_utils/geometry/alt_geometry.hpp"
-LOG_MODULE_DECLARE(autoware_universe_utils_geometry);
 
 namespace autoware::universe_utils
 {

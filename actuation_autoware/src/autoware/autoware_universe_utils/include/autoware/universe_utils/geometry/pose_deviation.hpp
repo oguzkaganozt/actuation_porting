@@ -15,13 +15,12 @@
 #ifndef AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 #define AUTOWARE__UNIVERSE_UTILS__GEOMETRY__POSE_DEVIATION_HPP_
 
-// Libs
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
+
+// Msgs
+#include "Pose.h"
+using PoseMsg = geometry_msgs_msg_Pose;
 
 namespace autoware::universe_utils
 {

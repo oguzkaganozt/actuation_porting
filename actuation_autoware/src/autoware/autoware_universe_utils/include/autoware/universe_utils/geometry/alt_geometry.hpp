@@ -23,10 +23,6 @@
 #include <vector>
 #include <Eigen/Core>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 namespace autoware::universe_utils {
 
 /**

@@ -20,10 +20,6 @@
 #include <string>
 #include <unordered_map>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 namespace autoware::universe_utils
 {
 template <
