@@ -53,6 +53,7 @@ private:
   // rclcpp::Publisher<Float32MultiArrayStampedMsg>::SharedPtr m_pub_debug_values;
   // rclcpp::Publisher<Float32StampedMsg>::SharedPtr m_pub_steer_offset;
 
+  // TODO: ? how to enable same functionality with zephyr?
   // std::shared_ptr<diagnostic_updater::Updater>
   //   diag_updater_{};  // Diagnostic updater for publishing diagnostic data.
 

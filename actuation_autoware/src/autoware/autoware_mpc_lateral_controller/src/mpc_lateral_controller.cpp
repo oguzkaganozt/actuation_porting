@@ -138,17 +138,12 @@ MpcLateralController::MpcLateralController(
 
   m_mpc->m_publish_debug_trajectories = dp_bool("publish_debug_trajectories");
 
-  m_pub_predicted_traj = node.create_publisher<Trajectory>("~/output/predicted_trajectory", 1);
+  m_pub_predicted_traj = node.create_publisher<TrajectoryMsg>("~/output/predicted_trajectory", 1);
   m_pub_debug_values =
-    node.create_publisher<Float32MultiArrayStamped>("~/output/lateral_diagnostic", 1);
-  m_pub_steer_offset = node.create_publisher<Float32Stamped>("~/output/estimated_steer_offset", 1);
+    node.create_publisher<Float32MultiArrayStampedMsg>("~/output/lateral_diagnostic", 1);
+  m_pub_steer_offset = node.create_publisher<Float32StampedMsg>("~/output/estimated_steer_offset", 1);
 
   declareMPCparameters(node);
-
-  /* get parameter updates */
-  using std::placeholders::_1;
-  m_set_param_res =
-    node.add_on_set_parameters_callback(std::bind(&MpcLateralController::paramCallback, this, _1));
 
   m_mpc->initializeSteeringPredictor();
 
@@ -257,9 +252,9 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     m_current_steering.steering_tire_angle -= steering_offset_->getOffset();
   }
 
-  Lateral ctrl_cmd;
-  Trajectory predicted_traj;
-  Float32MultiArrayStamped debug_values;
+  LateralMsg ctrl_cmd;
+  TrajectoryMsg predicted_traj;
+  Float32MultiArrayStampedMsg debug_values;
 
   const bool is_under_control = input_data.current_operation_mode.is_autoware_control_enabled &&
                                 input_data.current_operation_mode.mode ==
@@ -380,7 +375,7 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
 }
 
 void MpcLateralController::setTrajectory(
-  const Trajectory & msg, const Odometry & current_kinematics)
+  const TrajectoryMsg & msg, const OdometryMsg & current_kinematics)
 {
   m_current_trajectory = msg;
 
@@ -413,17 +408,17 @@ void MpcLateralController::setTrajectory(
   }
 }
 
-Lateral MpcLateralController::getStopControlCommand() const
+LateralMsg MpcLateralController::getStopControlCommand() const
 {
-  Lateral cmd;
+  LateralMsg cmd;
   cmd.steering_tire_angle = static_cast<decltype(cmd.steering_tire_angle)>(m_steer_cmd_prev);
   cmd.steering_tire_rotation_rate = 0.0;
   return cmd;
 }
 
-Lateral MpcLateralController::getInitialControlCommand() const
+LateralMsg MpcLateralController::getInitialControlCommand() const
 {
-  Lateral cmd;
+  LateralMsg cmd;
   cmd.steering_tire_angle = m_current_steering.steering_tire_angle;
   cmd.steering_tire_rotation_rate = 0.0;
   return cmd;
@@ -461,7 +456,7 @@ bool MpcLateralController::isStoppedState() const
   }
 }
 
-Lateral MpcLateralController::createCtrlCmdMsg(const Lateral & ctrl_cmd)
+LateralMsg MpcLateralController::createCtrlCmdMsg(const LateralMsg & ctrl_cmd)
 {
   auto out = ctrl_cmd;
   out.stamp = clock_->now();
@@ -480,25 +475,25 @@ LateralHorizon MpcLateralController::createCtrlCmdHorizonMsg(
   return out;
 }
 
-void MpcLateralController::publishPredictedTraj(Trajectory & predicted_traj) const
+void MpcLateralController::publishPredictedTraj(TrajectoryMsg & predicted_traj) const
 {
   predicted_traj.header.stamp = clock_->now();
   predicted_traj.header.frame_id = m_current_trajectory.header.frame_id;
   m_pub_predicted_traj->publish(predicted_traj);
 }
 
-void MpcLateralController::publishDebugValues(Float32MultiArrayStamped & debug_values) const
+void MpcLateralController::publishDebugValues(Float32MultiArrayStampedMsg & debug_values) const
 {
   debug_values.stamp = clock_->now();
   m_pub_debug_values->publish(debug_values);
 
-  Float32Stamped offset;
+  Float32StampedMsg offset;
   offset.stamp = clock_->now();
   offset.data = steering_offset_->getOffset();
   m_pub_steer_offset->publish(offset);
 }
 
-void MpcLateralController::setSteeringToHistory(const Lateral & steering)
+void MpcLateralController::setSteeringToHistory(const LateralMsg & steering)
 {
   const auto time = clock_->now();
   if (m_mpc_steering_history.empty()) {
@@ -588,73 +583,6 @@ void MpcLateralController::declareMPCparameters(rclcpp::Node & node)
   m_mpc->m_param.min_prediction_length = dp("mpc_min_prediction_length");
 }
 
-rcl_interfaces::msg::SetParametersResult MpcLateralController::paramCallback(
-  const std::vector<rclcpp::Parameter> & parameters)
-{
-  rcl_interfaces::msg::SetParametersResult result;
-  result.successful = true;
-  result.reason = "success";
-
-  // strong exception safety wrt MPCParam
-  MPCParam param = m_mpc->m_param;
-
-  using MPCUtils::update_param;
-  try {
-    auto & nw = param.nominal_weight;
-    auto & lcw = param.low_curvature_weight;
-
-    update_param(parameters, "mpc_prediction_horizon", param.prediction_horizon);
-    update_param(parameters, "mpc_prediction_dt", param.prediction_dt);
-
-    const std::string ns_nw = "mpc_weight_";
-    update_param(parameters, ns_nw + "lat_error", nw.lat_error);
-    update_param(parameters, ns_nw + "heading_error", nw.heading_error);
-    update_param(parameters, ns_nw + "heading_error_squared_vel", nw.heading_error_squared_vel);
-    update_param(parameters, ns_nw + "steering_input", nw.steering_input);
-    update_param(parameters, ns_nw + "steering_input_squared_vel", nw.steering_input_squared_vel);
-    update_param(parameters, ns_nw + "lat_jerk", nw.lat_jerk);
-    update_param(parameters, ns_nw + "steer_rate", nw.steer_rate);
-    update_param(parameters, ns_nw + "steer_acc", nw.steer_acc);
-    update_param(parameters, ns_nw + "terminal_lat_error", nw.terminal_lat_error);
-    update_param(parameters, ns_nw + "terminal_heading_error", nw.terminal_heading_error);
-
-    const std::string ns_lcw = "mpc_low_curvature_weight_";
-    update_param(parameters, ns_lcw + "lat_error", lcw.lat_error);
-    update_param(parameters, ns_lcw + "heading_error", lcw.heading_error);
-    update_param(parameters, ns_lcw + "heading_error_squared_vel", lcw.heading_error_squared_vel);
-    update_param(parameters, ns_lcw + "steering_input", lcw.steering_input);
-    update_param(parameters, ns_lcw + "steering_input_squared_vel", lcw.steering_input_squared_vel);
-    update_param(parameters, ns_lcw + "lat_jerk", lcw.lat_jerk);
-    update_param(parameters, ns_lcw + "steer_rate", lcw.steer_rate);
-    update_param(parameters, ns_lcw + "steer_acc", lcw.steer_acc);
-
-    update_param(
-      parameters, "mpc_low_curvature_thresh_curvature", param.low_curvature_thresh_curvature);
-
-    update_param(parameters, "mpc_zero_ff_steer_deg", param.zero_ff_steer_deg);
-    update_param(parameters, "mpc_acceleration_limit", param.acceleration_limit);
-    update_param(parameters, "mpc_velocity_time_constant", param.velocity_time_constant);
-    update_param(parameters, "mpc_min_prediction_length", param.min_prediction_length);
-
-    // initialize input buffer
-    update_param(parameters, "input_delay", param.input_delay);
-    const double delay_step = std::round(param.input_delay / m_mpc->m_ctrl_period);
-    const double delay = delay_step * m_mpc->m_ctrl_period;
-    if (param.input_delay != delay) {
-      param.input_delay = delay;
-      m_mpc->m_input_buffer = std::deque<double>(static_cast<size_t>(delay_step), 0.0);
-    }
-
-    // transaction succeeds, now assign values
-    m_mpc->m_param = param;
-  } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
-    result.successful = false;
-    result.reason = e.what();
-  }
-
-  return result;
-}
-
 bool MpcLateralController::isTrajectoryShapeChanged() const
 {
   // TODO(Horibe): update implementation to check trajectory shape around ego vehicle.
@@ -669,7 +597,7 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
   return false;
 }
 
-bool MpcLateralController::isValidTrajectory(const Trajectory & traj) const
+bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
 {
   for (const auto & p : traj.points) {
     if (
