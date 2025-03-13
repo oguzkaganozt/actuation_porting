@@ -21,6 +21,7 @@
 
 // Project headers
 #include "common/dds/dds.hpp"
+#include "common/clock/clock.hpp"
 
 using param_type = std::variant<bool,
                               int64_t,
@@ -50,6 +51,7 @@ public:
     : node_name_(node_name)
     , param_mutex_(PTHREAD_MUTEX_INITIALIZER)
     , dds_(node_name)
+    , clock_()
     {
     }
     
@@ -296,6 +298,9 @@ private:
     // Parameter storage
     std::unordered_map<std::string, param_type> parameters_map_;
     mutable pthread_mutex_t param_mutex_;
+
+    // Clock
+    Clock clock_;
 
     // Thread
     pthread_t thread_;
