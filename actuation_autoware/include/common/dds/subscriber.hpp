@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-#include "common/dds/message_queue.hpp"
-
 class SubscriberBase {
 public:
     virtual void process_message() = 0;
@@ -25,7 +23,6 @@ public:
             : node_name_(node_name)
             , topic_name_(topic_name)
             , m_dds_participant(dds_participant)
-            , queue_(std::make_unique<MessageQueue<T>>())
             , callback_(callback)
     {
         // Create a DDS topic
@@ -54,26 +51,14 @@ public:
             return;
         }
 
-        // Delete the listener explicitly // TODO: check if this is valid
+        // Delete the listener explicitly //TODO: check if this is valid
         dds_delete_listener(listener);
-    }
-
-    /**
-     * @brief Called by the node to process a message from the DDS queue
-     */
-    void process_message() override {
-        // T msg;
-        // if (queue_->pop(msg)) {
-        //     fprintf(stderr, "popped message\n");
-        //     callback_(msg);
-        // }
     }
 
 private:
     std::string node_name_;
     std::string topic_name_;
     dds_entity_t m_dds_participant;
-    std::unique_ptr<MessageQueue<T>> queue_;
     callback_subscriber<T> callback_;
 
     static void on_msg_dds(dds_entity_t reader, void * arg) {
