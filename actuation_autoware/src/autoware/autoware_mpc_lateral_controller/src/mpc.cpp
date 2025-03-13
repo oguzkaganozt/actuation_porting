@@ -35,7 +35,7 @@ using autoware::universe_utils::calcDistance2d;
 using autoware::universe_utils::normalizeRadian;
 using autoware::universe_utils::rad2deg;
 
-MPC::MPC(rclcpp::Node & node)
+MPC::MPC(Node & node)
 {
   m_debug_frenet_predicted_trajectory_pub = node.create_publisher<Trajectory>(
     "~/debug/predicted_trajectory_in_frenet_coordinate", rclcpp::QoS(1));
@@ -45,8 +45,7 @@ MPC::MPC(rclcpp::Node & node)
 
 ResultWithReason MPC::calculateMPC(
   const SteeringReport & current_steer, const Odometry & current_kinematics, Lateral & ctrl_cmd,
-  Trajectory & predicted_trajectory, Float32MultiArrayStamped & diagnostic,
-  LateralHorizon & ctrl_cmd_horizon)
+  Trajectory & predicted_trajectory, LateralHorizon & ctrl_cmd_horizon)
 {
   // since the reference trajectory does not take into account the current velocity of the ego
   // vehicle, it needs to calculate the trajectory velocity considering the longitudinal dynamics.
@@ -128,10 +127,6 @@ ResultWithReason MPC::calculateMPC(
     m_debug_frenet_predicted_trajectory_pub->publish(predicted_trajectory_frenet);
   }
 
-  // prepare diagnostic message
-  diagnostic =
-    generateDiagData(reference_trajectory, mpc_data, mpc_matrix, ctrl_cmd, Uex, current_kinematics);
-
   // create LateralHorizon command
   ctrl_cmd_horizon.time_step_ms = prediction_dt * 1000.0;
   ctrl_cmd_horizon.controls.clear();
@@ -146,54 +141,6 @@ ResultWithReason MPC::calculateMPC(
   }
 
   return ResultWithReason{true};
-}
-
-Float32MultiArrayStamped MPC::generateDiagData(
-  const MPCTrajectory & reference_trajectory, const MPCData & mpc_data,
-  const MPCMatrix & mpc_matrix, const Lateral & ctrl_cmd, const VectorXd & Uex,
-  const Odometry & current_kinematics) const
-{
-  Float32MultiArrayStamped diagnostic;
-
-  // prepare diagnostic message
-  const double nearest_k = reference_trajectory.k.at(mpc_data.nearest_idx);
-  const double nearest_smooth_k = reference_trajectory.smooth_k.at(mpc_data.nearest_idx);
-  const double wb = m_vehicle_model_ptr->getWheelbase();
-  const double current_velocity = current_kinematics.twist.twist.linear.x;
-  const double wz_predicted = current_velocity * std::tan(mpc_data.predicted_steer) / wb;
-  const double wz_measured = current_velocity * std::tan(mpc_data.steer) / wb;
-  const double wz_command = current_velocity * std::tan(ctrl_cmd.steering_tire_angle) / wb;
-  const int iteration_num = m_qpsolver_ptr->getTakenIter();
-  const double runtime = m_qpsolver_ptr->getRunTime();
-  const double objective_value = m_qpsolver_ptr->getObjVal();
-
-  typedef decltype(diagnostic.data)::value_type DiagnosticValueType;
-  const auto append_diag = [&](const auto & val) -> void {
-    diagnostic.data.push_back(static_cast<DiagnosticValueType>(val));
-  };
-  append_diag(ctrl_cmd.steering_tire_angle);      // [0] final steering command (MPC + LPF)
-  append_diag(Uex(0));                            // [1] mpc calculation result
-  append_diag(mpc_matrix.Uref_ex(0));             // [2] feed-forward steering value
-  append_diag(std::atan(nearest_smooth_k * wb));  // [3] feed-forward steering value raw
-  append_diag(mpc_data.steer);                    // [4] current steering angle
-  append_diag(mpc_data.lateral_err);              // [5] lateral error
-  append_diag(getYaw(current_kinematics.pose.pose.orientation));  // [6] current_pose yaw
-  append_diag(getYaw(mpc_data.nearest_pose.orientation));         // [7] nearest_pose yaw
-  append_diag(mpc_data.yaw_err);                                       // [8] yaw error
-  append_diag(reference_trajectory.vx.at(mpc_data.nearest_idx));       // [9] reference velocity
-  append_diag(current_velocity);                                       // [10] measured velocity
-  append_diag(wz_command);                           // [11] angular velocity from steer command
-  append_diag(wz_measured);                          // [12] angular velocity from measured steer
-  append_diag(current_velocity * nearest_smooth_k);  // [13] angular velocity from path curvature
-  append_diag(nearest_smooth_k);          // [14] nearest path curvature (used for feed-forward)
-  append_diag(nearest_k);                 // [15] nearest path curvature (not smoothed)
-  append_diag(mpc_data.predicted_steer);  // [16] predicted steer
-  append_diag(wz_predicted);              // [17] angular velocity from predicted steer
-  append_diag(iteration_num);             // [18] iteration number
-  append_diag(runtime);                   // [19] runtime of the latest problem solved
-  append_diag(objective_value);           // [20] objective value of the latest problem solved
-
-  return diagnostic;
 }
 
 void MPC::setReferenceTrajectory(

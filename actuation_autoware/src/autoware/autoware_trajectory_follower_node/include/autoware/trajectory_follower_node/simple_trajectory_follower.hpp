@@ -48,8 +48,7 @@ private:
     this, "~/input/kinematics"};
   autoware::universe_utils::InterProcessPollingSubscriber<Trajectory> sub_trajectory_{
     this, "~/input/trajectory"};
-  rclcpp::Publisher<Control>::SharedPtr pub_cmd_;
-  rclcpp::TimerBase::SharedPtr timer_;
+  std::shared_ptr<Publisher<Control>> pub_cmd_;
 
   Trajectory::ConstSharedPtr trajectory_;
   Odometry::ConstSharedPtr odometry_;

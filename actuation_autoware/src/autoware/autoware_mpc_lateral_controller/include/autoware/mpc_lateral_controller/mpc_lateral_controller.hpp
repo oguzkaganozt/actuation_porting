@@ -22,9 +22,6 @@
 #include "autoware/trajectory_follower_base/lateral_controller_base.hpp"
 #include "autoware/trajectory_follower_base/control_horizon.hpp"
 
-// TODO: ? how to enable same functionality with zephyr?
-// #include <diagnostic_updater/diagnostic_updater.hpp>
-
 #include <deque>
 #include <memory>
 #include <string>
@@ -41,21 +38,15 @@ class MpcLateralController : public trajectory_follower::LateralControllerBase
 {
 public:
   /// \param node Reference to the node used only for the component and parameter initialization.
-  // explicit MpcLateralController(
-  //   rclcpp::Node & node, std::shared_ptr<diagnostic_updater::Updater> diag_updater);
+  explicit MpcLateralController(
+    Node & node);
   explicit MpcLateralController();
   virtual ~MpcLateralController();
 
 private:
-  // rclcpp::Clock::SharedPtr clock_;
-
-  // rclcpp::Publisher<TrajectoryMsg>::SharedPtr m_pub_predicted_traj;
-  // rclcpp::Publisher<Float32MultiArrayStampedMsg>::SharedPtr m_pub_debug_values;
-  // rclcpp::Publisher<Float32StampedMsg>::SharedPtr m_pub_steer_offset;
-
-  // TODO: ? how to enable same functionality with zephyr?
-  // std::shared_ptr<diagnostic_updater::Updater>
-  //   diag_updater_{};  // Diagnostic updater for publishing diagnostic data.
+  std::shared_ptr<Publisher<TrajectoryMsg>> m_pub_predicted_traj;
+  std::shared_ptr<Publisher<Float32MultiArrayStampedMsg>> m_pub_debug_values;
+  std::shared_ptr<Publisher<Float32StampedMsg>> m_pub_steer_offset;
 
   //!< @brief parameters for path smoothing
   TrajectoryFilteringParam m_trajectory_filtering_param;
@@ -86,10 +77,6 @@ private:
 
   // trajectory buffer for detecting new trajectory
   std::deque<TrajectoryMsg> m_trajectory_buffer;
-
-  // void setStatus(diagnostic_updater::DiagnosticStatusWrapper & stat);
-
-  // void setupDiag();
 
   std::unique_ptr<MPC> m_mpc;  // MPC object for trajectory following.
 
@@ -150,14 +137,14 @@ private:
    * @return Pointer to the created vehicle model.
    */
   std::shared_ptr<VehicleModelInterface> createVehicleModel(
-    const double wheelbase, const double steer_lim, const double steer_tau, rclcpp::Node & node);
+    const double wheelbase, const double steer_lim, const double steer_tau, Node & node);
 
   /**
    * @brief Create the quadratic problem solver interface.
    * @param node Reference to the node.
    * @return Pointer to the created QP solver interface.
    */
-  std::shared_ptr<QPSolverInterface> createQPSolverInterface(rclcpp::Node & node);
+  std::shared_ptr<QPSolverInterface> createQPSolverInterface(Node & node);
 
   /**
    * @brief Create the steering offset estimator for offset compensation.
@@ -166,7 +153,7 @@ private:
    * @return Pointer to the created steering offset estimator.
    */
   std::shared_ptr<SteeringOffsetEstimator> createSteerOffsetEstimator(
-    const double wheelbase, rclcpp::Node & node);
+    const double wheelbase, Node & node);
 
   /**
    * @brief Check if all necessary data is received and ready to run the control.
@@ -263,7 +250,7 @@ private:
    * @brief Declare MPC parameters as ROS parameters to allow tuning on the fly.
    * @param node Reference to the node.
    */
-  void declareMPCparameters(rclcpp::Node & node);
+  void declareMPCparameters(Node & node);
 
   void info_throttle(const char * msg)
   {

@@ -289,7 +289,7 @@ void Controller::publishDebugMarker(
 }
 
 void Controller::publishProcessingTime(
-  const double t_ms, const rclcpp::Publisher<Float64Stamped>::SharedPtr pub)
+  const double t_ms, const std::shared_ptr<Publisher<Float64Stamped>> pub)
 {
   Float64Stamped msg{};
   msg.stamp = this->now();

@@ -31,7 +31,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <autoware/universe_utils/ros/published_time_publisher.hpp>
-#include <diagnostic_updater/diagnostic_updater.hpp>
 
 #include "autoware_control_msgs/msg/control.hpp"
 #include "autoware_control_msgs/msg/control_horizon.hpp"
@@ -76,14 +75,9 @@ public:
   virtual ~Controller() {}
 
 private:
-  rclcpp::TimerBase::SharedPtr timer_control_;
   double timeout_thr_sec_;
   bool enable_control_cmd_horizon_pub_{false};
   boost::optional<LongitudinalOutput> longitudinal_output_{boost::none};
-
-  std::shared_ptr<diagnostic_updater::Updater> diag_updater_ =
-    std::make_shared<diagnostic_updater::Updater>(
-      this);  // Diagnostic updater for publishing diagnostic data.
 
   std::shared_ptr<trajectory_follower::LongitudinalControllerBase> longitudinal_controller_;
   std::shared_ptr<trajectory_follower::LateralControllerBase> lateral_controller_;
@@ -107,11 +101,11 @@ private:
     this, "~/input/current_operation_mode"};
 
   // Publishers
-  rclcpp::Publisher<autoware_control_msgs::msg::Control>::SharedPtr control_cmd_pub_;
-  rclcpp::Publisher<Float64Stamped>::SharedPtr pub_processing_time_lat_ms_;
-  rclcpp::Publisher<Float64Stamped>::SharedPtr pub_processing_time_lon_ms_;
-  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr debug_marker_pub_;
-  rclcpp::Publisher<autoware_control_msgs::msg::ControlHorizon>::SharedPtr control_cmd_horizon_pub_;
+  std::shared_ptr<Publisher<autoware_control_msgs::msg::Control>> control_cmd_pub_;
+  std::shared_ptr<Publisher<Float64Stamped>> pub_processing_time_lat_ms_;
+  std::shared_ptr<Publisher<Float64Stamped>> pub_processing_time_lon_ms_;
+  std::shared_ptr<Publisher<visualization_msgs::msg::MarkerArray>> debug_marker_pub_;
+  std::shared_ptr<Publisher<autoware_control_msgs::msg::ControlHorizon>> control_cmd_horizon_pub_;
 
   autoware_planning_msgs::msg::Trajectory::ConstSharedPtr current_trajectory_ptr_;
   nav_msgs::msg::Odometry::ConstSharedPtr current_odometry_ptr_;

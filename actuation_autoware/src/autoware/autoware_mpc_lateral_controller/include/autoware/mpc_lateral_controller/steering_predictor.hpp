@@ -40,8 +40,6 @@ public:
   void storeSteerCmd(const double steer);
 
 private:
-  // rclcpp::Clock::SharedPtr m_clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
-
   // The previously predicted steering value.
   double m_steer_prediction_prev = 0.0;
 

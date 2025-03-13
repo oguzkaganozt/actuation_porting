@@ -15,6 +15,8 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_HPP_
 
+#include "common/node/node.hpp"
+
 #include "autoware/mpc_lateral_controller/lowpass_filter.hpp"
 #include "autoware/mpc_lateral_controller/mpc_trajectory.hpp"
 #include "autoware/mpc_lateral_controller/qp_solver/qp_solver_interface.hpp"
@@ -203,8 +205,6 @@ struct ResultWithReason
 class MPC
 {
 private:
-  // rclcpp::Clock::SharedPtr m_clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);  // ROS clock.
-
   // Vehicle model used for MPC.
   std::shared_ptr<VehicleModelInterface> m_vehicle_model_ptr;
 
@@ -225,8 +225,8 @@ private:
 
   bool m_is_forward_shift = true;  // Flag indicating if the shift is in the forward direction.
 
-  rclcpp::Publisher<TrajectoryMsg>::SharedPtr m_debug_frenet_predicted_trajectory_pub;
-  rclcpp::Publisher<TrajectoryMsg>::SharedPtr m_debug_resampled_reference_trajectory_pub;
+  std::shared_ptr<Publisher<TrajectoryMsg>> m_debug_frenet_predicted_trajectory_pub;
+  std::shared_ptr<Publisher<TrajectoryMsg>> m_debug_resampled_reference_trajectory_pub;
   /**
    * @brief Get variables for MPC calculation.
    * @param trajectory The reference trajectory.
@@ -375,21 +375,6 @@ private:
   }
 
   /**
-   * @brief Generate diagnostic data for debugging purposes.
-   * @param reference_trajectory The reference trajectory.
-   * @param mpc_data The MPC data.
-   * @param mpc_matrix The MPC matrix.
-   * @param ctrl_cmd The control command.
-   * @param Uex The optimized input vector.
-   * @param current_kinematics The current vehicle kinematics.
-   * @return The generated diagnostic data.
-   */
-  Float32MultiArrayStampedMsg generateDiagData(
-    const MPCTrajectory & reference_trajectory, const MPCData & mpc_data,
-    const MPCMatrix & mpc_matrix, const LateralMsg & ctrl_cmd, const VectorXd & Uex,
-    const OdometryMsg & current_kinematics) const;
-
-  /**
    * @brief calculate steering rate limit along with the target trajectory
    * @param reference_trajectory The reference trajectory.
    * @param current_velocity current velocity of ego.
@@ -434,7 +419,7 @@ public:
                                               // resampled reference trajectory for debug purpose
 
   //!< Constructor.
-  explicit MPC(rclcpp::Node & node);
+  explicit MPC(Node & node);
 
   /**
    * @brief Calculate control command using the MPC algorithm.
@@ -442,13 +427,13 @@ public:
    * @param current_kinematics Current vehicle kinematics.
    * @param ctrl_cmd Computed lateral control command.
    * @param predicted_trajectory Predicted trajectory based on MPC result.
-   * @param diagnostic Diagnostic data for debugging purposes.
+   * @param ctrl_cmd_horizon MPC control command horizon.
    * @return True if the MPC calculation is successful, false otherwise.
    */
   ResultWithReason calculateMPC(
     const SteeringReportMsg & current_steer, const OdometryMsg & current_kinematics,
     LateralMsg & ctrl_cmd, TrajectoryMsg & predicted_trajectory,
-    Float32MultiArrayStampedMsg & diagnostic, LateralHorizon & ctrl_cmd_horizon);
+    LateralHorizon & ctrl_cmd_horizon);
 
   /**
    * @brief Set the reference trajectory to be followed.

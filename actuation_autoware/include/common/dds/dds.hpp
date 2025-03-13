@@ -74,11 +74,11 @@ public:
      * @return std::unique_ptr<Publisher<MessageT>> Smart pointer to the created publisher
      */
     template<typename MessageT>
-    std::unique_ptr<Publisher<MessageT>> create_publisher_dds(
+    std::shared_ptr<Publisher<MessageT>> create_publisher_dds(
         const std::string& topic_name, 
         const dds_topic_descriptor_t* topic_descriptor) 
     {
-        return std::make_unique<Publisher<MessageT>>(
+        return std::make_shared<Publisher<MessageT>>(
             node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor);
     }
 

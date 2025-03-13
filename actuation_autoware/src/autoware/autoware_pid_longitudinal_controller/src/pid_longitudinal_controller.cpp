@@ -29,15 +29,9 @@
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
-PidLongitudinalController::PidLongitudinalController(
-  rclcpp::Node & node, std::shared_ptr<diagnostic_updater::Updater> diag_updater)
-: node_parameters_(node.get_node_parameters_interface()),
-  clock_(node.get_clock()),
-  logger_(node.get_logger().get_child("longitudinal_controller"))
+PidLongitudinalController::PidLongitudinalController(Node & node)
 {
   using std::placeholders::_1;
-
-  diag_updater_ = diag_updater;
 
   // parameters timer
   m_longitudinal_ctrl_period = node.get_parameter("ctrl_period").as_double();
@@ -221,12 +215,6 @@ PidLongitudinalController::PidLongitudinalController(
     "~/output/longitudinal_diagnostic", rclcpp::QoS{1});
   m_pub_stop_reason_marker = node.create_publisher<Marker>("~/output/stop_reason", rclcpp::QoS{1});
 
-  // set parameter callback
-  m_set_param_res = node.add_on_set_parameters_callback(
-    std::bind(&PidLongitudinalController::paramCallback, this, _1));
-
-  // diagnostic
-  setupDiagnosticUpdater();
 }
 
 void PidLongitudinalController::setKinematicState(const nav_msgs::msg::Odometry & msg)
@@ -459,9 +447,6 @@ trajectory_follower::LongitudinalOutput PidLongitudinalController::run(
   // publish debug data
   publishDebugData(ctrl_cmd, control_data);
 
-  // diagnostic
-  diag_updater_->force_update();
-
   return output;
 }
 
@@ -492,15 +477,15 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
   auto target_point = current_interpolated_pose.first;
 
   // check if the deviation is worth emergency
-  m_diagnostic_data.trans_deviation =
+  auto trans_deviation =
     autoware::universe_utils::calcDistance2d(current_interpolated_pose.first, current_pose);
   const bool is_dist_deviation_large =
-    m_state_transition_params.emergency_state_traj_trans_dev < m_diagnostic_data.trans_deviation;
-  m_diagnostic_data.rot_deviation = std::abs(autoware::universe_utils::normalizeRadian(
+    m_state_transition_params.emergency_state_traj_trans_dev < trans_deviation;
+  auto rot_deviation = std::abs(autoware::universe_utils::normalizeRadian(
     tf2::getYaw(current_interpolated_pose.first.pose.orientation) -
     tf2::getYaw(current_pose.orientation)));
   const bool is_yaw_deviation_large =
-    m_state_transition_params.emergency_state_traj_rot_dev < m_diagnostic_data.rot_deviation;
+    m_state_transition_params.emergency_state_traj_rot_dev < rot_deviation;
 
   if (is_dist_deviation_large || is_yaw_deviation_large) {
     // return here if nearest index is not found
@@ -1219,44 +1204,6 @@ void PidLongitudinalController::updateDebugVelAcc(const ControlData & control_da
     DebugValues::TYPE::ERROR_VEL,
     control_data.interpolated_traj.points.at(control_data.nearest_idx).longitudinal_velocity_mps -
       control_data.current_motion.vel);
-}
-
-void PidLongitudinalController::setupDiagnosticUpdater()
-{
-  diag_updater_->add("control_state", this, &PidLongitudinalController::checkControlState);
-}
-
-void PidLongitudinalController::checkControlState(
-  diagnostic_updater::DiagnosticStatusWrapper & stat)
-{
-  using diagnostic_msgs::msg::DiagnosticStatus;
-
-  auto level = DiagnosticStatus::OK;
-  std::string msg = "OK";
-
-  if (m_control_state == ControlState::EMERGENCY) {
-    level = DiagnosticStatus::ERROR;
-    msg = "emergency occurred due to ";
-  }
-
-  if (
-    m_state_transition_params.emergency_state_traj_trans_dev < m_diagnostic_data.trans_deviation) {
-    msg += "translation deviation";
-  }
-
-  if (m_state_transition_params.emergency_state_traj_rot_dev < m_diagnostic_data.rot_deviation) {
-    msg += "rotation deviation";
-  }
-
-  stat.add<int32_t>("control_state", static_cast<int32_t>(m_control_state));
-  stat.addf(
-    "translation deviation threshold", "%lf",
-    m_state_transition_params.emergency_state_traj_trans_dev);
-  stat.addf("translation deviation", "%lf", m_diagnostic_data.trans_deviation);
-  stat.addf(
-    "rotation deviation threshold", "%lf", m_state_transition_params.emergency_state_traj_rot_dev);
-  stat.addf("rotation deviation", "%lf", m_diagnostic_data.rot_deviation);
-  stat.summary(level, msg);
 }
 
 double PidLongitudinalController::getTimeUnderControl()

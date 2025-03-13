@@ -23,11 +23,6 @@
 #include "autoware/trajectory_follower_base/longitudinal_controller_base.hpp"
 #include "autoware/universe_utils/ros/marker_helper.hpp"
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
-#include "diagnostic_updater/diagnostic_updater.hpp"
-#include "rclcpp/rclcpp.hpp"
-#include "tf2/utils.h"
-#include "tf2_ros/buffer.h"
-#include "tf2_ros/transform_listener.h"
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -64,8 +59,7 @@ class PidLongitudinalController : public trajectory_follower::LongitudinalContro
 {
 public:
   /// \param node Reference to the node used only for the component and parameter initialization.
-  explicit PidLongitudinalController(
-    rclcpp::Node & node, std::shared_ptr<diagnostic_updater::Updater> diag_updater);
+  explicit PidLongitudinalController(Node & node);
 
 private:
   struct Motion
@@ -98,17 +92,11 @@ private:
     double slope_angle{0.0};
     double dt{0.0};
   };
-  rclcpp::node_interfaces::NodeParametersInterface::SharedPtr node_parameters_;
-  rclcpp::Clock::SharedPtr clock_;
-  rclcpp::Logger logger_;
+  
   // ros variables
-  rclcpp::Publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>::SharedPtr m_pub_slope;
-  rclcpp::Publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>::SharedPtr m_pub_debug;
-  rclcpp::Publisher<Marker>::SharedPtr m_pub_stop_reason_marker;
-
-  rclcpp::Node::OnSetParametersCallbackHandle::SharedPtr m_set_param_res;
-  rcl_interfaces::msg::SetParametersResult paramCallback(
-    const std::vector<rclcpp::Parameter> & parameters);
+  std::shared_ptr<Publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>> m_pub_slope;
+  std::shared_ptr<Publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>> m_pub_debug;
+  std::shared_ptr<Publisher<Marker>> m_pub_stop_reason_marker;
 
   // pointers for ros topic
   nav_msgs::msg::Odometry m_current_kinematic_state;
@@ -241,18 +229,6 @@ private:
   std::optional<bool> m_prev_keep_stopped_condition{std::nullopt};
 
   std::shared_ptr<rclcpp::Time> m_last_running_time{std::make_shared<rclcpp::Time>(clock_->now())};
-
-  // Diagnostic
-  std::shared_ptr<diagnostic_updater::Updater>
-    diag_updater_{};  // Diagnostic updater for publishing diagnostic data.
-  struct DiagnosticData
-  {
-    double trans_deviation{0.0};  // translation deviation between nearest point and current_pose
-    double rot_deviation{0.0};    // rotation deviation between nearest point and current_pose
-  };
-  DiagnosticData m_diagnostic_data;
-  void setupDiagnosticUpdater();
-  void checkControlState(diagnostic_updater::DiagnosticStatusWrapper & stat);
 
   struct ResultWithReason
   {
