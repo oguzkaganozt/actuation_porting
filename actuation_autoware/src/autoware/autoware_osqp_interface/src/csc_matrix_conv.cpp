@@ -22,8 +22,6 @@
 // Autoware
 #include "autoware/osqp_interface/csc_matrix_conv.hpp"
 
-LOG_MODULE_DECLARE(autoware_osqp_interface);
-
 namespace autoware::osqp_interface
 {
 CSC_Matrix calCSCMatrix(const Eigen::MatrixXd & mat)
@@ -135,7 +133,7 @@ void printCSCMatrix(const CSC_Matrix & csc_mat)
   }
   ss << "]\n";
 
-  LOG_INF("%s", ss.str().c_str());
+  fprintf(stderr, "%s", ss.str().c_str());
 }
 
 }  // namespace autoware::osqp_interface

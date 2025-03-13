@@ -24,10 +24,6 @@
 #include <Eigen/Core>
 #include "osqp/osqp.h"
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 // Autoware
 #include "autoware/osqp_interface/csc_matrix_conv.hpp"
 #include "autoware/osqp_interface/visibility_control.hpp"

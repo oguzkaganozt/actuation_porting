@@ -20,10 +20,6 @@
 #include <Eigen/Core>
 #include "osqp/glob_opts.h"  // for 'c_int' type ('long' or 'long long')
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 // Autoware
 #include "autoware/osqp_interface/visibility_control.hpp"
 
