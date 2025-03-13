@@ -17,8 +17,6 @@
 
 #include "autoware/interpolation/spline_interpolation.hpp"
 
-LOG_MODULE_DECLARE(autoware_interpolation);
-
 namespace autoware::interpolation
 {
 Eigen::VectorXd solve_tridiagonal_matrix_algorithm(

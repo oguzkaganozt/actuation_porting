@@ -21,17 +21,12 @@
 #include <stdexcept>
 #include <vector>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 namespace autoware::interpolation
 {
 inline bool isIncreasing(const std::vector<double> & x)
 {
-  LOG_MODULE_DECLARE(autoware_interpolation);
   if (x.empty()) {
-    LOG_ERR("Error: Points is empty.");
+    fprintf(stderr, "Interpolation: Points is empty.");
     return false;
   }
 
@@ -46,9 +41,8 @@ inline bool isIncreasing(const std::vector<double> & x)
 
 inline bool isNotDecreasing(const std::vector<double> & x)
 {
-  LOG_MODULE_DECLARE(autoware_interpolation);
   if (x.empty()) {
-    LOG_ERR("Error: Points is empty.");
+    fprintf(stderr, "Interpolation: Points is empty.");
     return false;
   }
 
@@ -64,22 +58,21 @@ inline bool isNotDecreasing(const std::vector<double> & x)
 inline std::vector<double> validateKeys(
   const std::vector<double> & base_keys, const std::vector<double> & query_keys)
 {
-  LOG_MODULE_DECLARE(autoware_interpolation);
   // when vectors are empty
   if (base_keys.empty() || query_keys.empty()) {
-    LOG_ERR("Error: Points is empty.");
+    fprintf(stderr, "Interpolation: Points is empty.");
     return std::vector<double>();
   }
 
   // when size of vectors are less than 2
   if (base_keys.size() < 2) {
-    LOG_ERR("Error: The size of points is less than 2. base_keys.size() = %d", base_keys.size());
+    fprintf(stderr, "Interpolation: The size of points is less than 2. base_keys.size() = %d", base_keys.size());
     return std::vector<double>();
   }
 
   // when indices are not sorted
   if (!isIncreasing(base_keys) || !isNotDecreasing(query_keys)) {
-    LOG_ERR("Error: Either base_keys or query_keys is not sorted.");
+    fprintf(stderr, "Interpolation: Either base_keys or query_keys is not sorted.");
     return std::vector<double>();
   }
 
@@ -88,7 +81,7 @@ inline std::vector<double> validateKeys(
   if (
     query_keys.front() < base_keys.front() - epsilon ||
     base_keys.back() + epsilon < query_keys.back()) {
-    LOG_ERR("Error: query_keys is out of base_keys");
+    fprintf(stderr, "Interpolation: query_keys is out of base_keys");
     return std::vector<double>();
   }
 
@@ -105,22 +98,21 @@ template <class T>
 void validateKeysAndValues(
   const std::vector<double> & base_keys, const std::vector<T> & base_values)
 {
-  LOG_MODULE_DECLARE(autoware_interpolation);
   // when vectors are empty
   if (base_keys.empty() || base_values.empty()) {
-    LOG_ERR("Error: Points is empty.");
+    fprintf(stderr, "Interpolation: Points is empty.");
     return;
   }
 
   // when size of vectors are less than 2
   if (base_keys.size() < 2 || base_values.size() < 2) {
-    LOG_ERR("Error: The size of points is less than 2. base_keys.size() = %d, base_values.size() = %d", base_keys.size(), base_values.size());
+    fprintf(stderr, "Interpolation: The size of points is less than 2. base_keys.size() = %d, base_values.size() = %d", base_keys.size(), base_values.size());
     return;
   }
 
   // when sizes of indices and values are not same
   if (base_keys.size() != base_values.size()) {
-    LOG_ERR("Error: The size of base_keys and base_values are not the same.");
+    fprintf(stderr, "Interpolation: The size of base_keys and base_values are not the same.");
     return;
   }
 }

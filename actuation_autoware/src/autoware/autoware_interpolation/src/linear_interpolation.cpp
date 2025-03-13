@@ -16,8 +16,6 @@
 
 #include "autoware/interpolation/linear_interpolation.hpp"
 
-LOG_MODULE_REGISTER(autoware_interpolation);
-
 namespace autoware::interpolation
 {
   // TODO: check with other lerp implementation in universe_utils

@@ -23,10 +23,6 @@
 #include <vector>
 #include <Eigen/Core>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 #include "autoware/interpolation/interpolation_utils.hpp"
 #include "autoware/universe_utils/geometry/geometry.hpp"
 

@@ -16,8 +16,6 @@
 
 #include "autoware/interpolation/spline_interpolation_points_2d.hpp"
 
-LOG_MODULE_DECLARE(autoware_interpolation);
-
 namespace autoware::interpolation
 {
 std::vector<double> calcEuclidDist(const std::vector<double> & x, const std::vector<double> & y)
@@ -61,7 +59,7 @@ std::array<std::vector<double>, 4> getBaseValues(
 
   // calculate base_keys, base_values
   if (base_x.size() < 2 || base_y.size() < 2 || base_z.size() < 2) {
-    LOG_ERR("Error: The number of unique points is not enough.");
+    fprintf(stderr, "Interpolation: The number of unique points is not enough.");
     return std::array<std::vector<double>, 4>();
   }
 
@@ -101,7 +99,7 @@ PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
   const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    LOG_ERR("Error: idx is out of range.");
+    fprintf(stderr, "Interpolation: idx is out of range.");
     return PointMsg();
   }
 
@@ -127,7 +125,7 @@ PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
 double SplineInterpolationPoints2d::getSplineInterpolatedYaw(const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    LOG_ERR("Error: idx is out of range.");
+    fprintf(stderr, "Interpolation: idx is out of range.");
     return 0.0;
   }
 
@@ -154,7 +152,7 @@ double SplineInterpolationPoints2d::getSplineInterpolatedCurvature(
   const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    LOG_ERR("Error: idx is out of range.");
+    fprintf(stderr, "Interpolation: idx is out of range.");
     return 0.0;  // Return 0 curvature as fallback when idx is out of range
   }
 
@@ -195,7 +193,7 @@ size_t SplineInterpolationPoints2d::getOffsetIndex(const size_t idx, const doubl
 double SplineInterpolationPoints2d::getAccumulatedLength(const size_t idx) const
 {
   if (base_s_vec_.size() <= idx) {
-    LOG_ERR("Error: idx is out of range.");
+    fprintf(stderr, "Interpolation: idx is out of range.");
     return 0.0;
   }
   return base_s_vec_.at(idx);

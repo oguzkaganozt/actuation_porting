@@ -18,12 +18,14 @@
 // Libs
 #include <vector>
 
-#include <zephyr/logging/log.h>
-
-#include "message/message.hpp"
-
 // Autoware
 #include "autoware/interpolation/spline_interpolation.hpp"
+
+// Msgs
+#include "Point.h"
+#include "Pose.h"
+using PointMsg = geometry_msgs_msg_Point;
+using PoseMsg = geometry_msgs_msg_Pose;
 
 namespace autoware::interpolation
 {
