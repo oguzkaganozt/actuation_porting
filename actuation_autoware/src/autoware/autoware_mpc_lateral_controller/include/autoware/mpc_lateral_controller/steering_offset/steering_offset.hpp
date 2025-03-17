@@ -20,6 +20,10 @@
 #include <vector>
 #include <deque>
 
+// Msgs
+#include "Twist.h"
+using TwistMsg = geometry_msgs_msg_Twist;
+
 class SteeringOffsetEstimator
 {
 public:

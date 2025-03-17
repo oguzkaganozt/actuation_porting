@@ -119,7 +119,7 @@ public:
      * @return The current value of the parameter (default if not previously set)
      */
     template<typename ParamT>
-    ParamT declare_parameter(const std::string& name, const ParamT& default_value) {
+    ParamT declare_parameter(const std::string& name, const ParamT& default_value = ParamT{}) {
         static_assert(std::is_constructible_v<param_type, ParamT>, 
                      "Parameter type must be one of the supported types in param_type variant");
         

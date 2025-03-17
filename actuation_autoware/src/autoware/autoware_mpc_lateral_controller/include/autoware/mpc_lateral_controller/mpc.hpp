@@ -37,12 +37,14 @@
 #include "SteeringReport.h"
 #include "Pose.h"
 #include "Odometry.h"
+#include "Float32Stamped.h"
 #include "Float32MultiArrayStamped.h"
 using LateralMsg = autoware_control_msgs_msg_Lateral;
 using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
 using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
 using PoseMsg = geometry_msgs_msg_Pose;
 using OdometryMsg = nav_msgs_msg_Odometry;
+using Float32StampedMsg = tier4_debug_msgs_msg_Float32Stamped;
 using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
 
 namespace autoware::motion::control::mpc_lateral_controller

@@ -41,29 +41,29 @@ MpcLateralController::MpcLateralController(Node & node)
 
   m_mpc = std::make_unique<MPC>(node);
 
-  m_mpc->m_ctrl_period = node.get_parameter("ctrl_period").as_double();
+  m_mpc->m_ctrl_period = node.get_parameter<double>("ctrl_period");
 
   auto & p_filt = m_trajectory_filtering_param;
-  p_filt.enable_path_smoothing = dp_bool("enable_path_smoothing");
-  p_filt.path_filter_moving_ave_num = dp_int("path_filter_moving_ave_num");
-  p_filt.curvature_smoothing_num_traj = dp_int("curvature_smoothing_num_traj");
-  p_filt.curvature_smoothing_num_ref_steer = dp_int("curvature_smoothing_num_ref_steer");
-  p_filt.traj_resample_dist = dp_double("traj_resample_dist");
-  p_filt.extend_trajectory_for_end_yaw_control = dp_bool("extend_trajectory_for_end_yaw_control");
+  p_filt.enable_path_smoothing = node.declare_parameter<bool>("enable_path_smoothing", false);
+  p_filt.path_filter_moving_ave_num = node.declare_parameter<int>("path_filter_moving_ave_num", 25);
+  p_filt.curvature_smoothing_num_traj = node.declare_parameter<int>("curvature_smoothing_num_traj", 15);
+  p_filt.curvature_smoothing_num_ref_steer = node.declare_parameter<int>("curvature_smoothing_num_ref_steer", 15);
+  p_filt.traj_resample_dist = node.declare_parameter<double>("traj_resample_dist", 0.1);
+  p_filt.extend_trajectory_for_end_yaw_control = node.declare_parameter<bool>("extend_trajectory_for_end_yaw_control", false);
 
-  m_mpc->m_admissible_position_error = dp_double("admissible_position_error");
-  m_mpc->m_admissible_yaw_error_rad = dp_double("admissible_yaw_error_rad");
-  m_mpc->m_use_steer_prediction = dp_bool("use_steer_prediction");
-  m_mpc->m_param.steer_tau = dp_double("vehicle_model_steer_tau");
+  m_mpc->m_admissible_position_error = node.declare_parameter<double>("admissible_position_error", 5.0);
+  m_mpc->m_admissible_yaw_error_rad = node.declare_parameter<double>("admissible_yaw_error_rad", 1.57);
+  m_mpc->m_use_steer_prediction = node.declare_parameter<bool>("use_steer_prediction", false);
+  m_mpc->m_param.steer_tau = node.declare_parameter<double>("vehicle_model_steer_tau", 0.27);
 
   /* stop state parameters */
-  m_stop_state_entry_ego_speed = dp_double("stop_state_entry_ego_speed");
-  m_stop_state_entry_target_speed = dp_double("stop_state_entry_target_speed");
-  m_converged_steer_rad = dp_double("converged_steer_rad");
-  m_keep_steer_control_until_converged = dp_bool("keep_steer_control_until_converged");
-  m_new_traj_duration_time = dp_double("new_traj_duration_time");            // [s]
-  m_new_traj_end_dist = dp_double("new_traj_end_dist");                      // [m]
-  m_mpc_converged_threshold_rps = dp_double("mpc_converged_threshold_rps");  // [rad/s]
+  m_stop_state_entry_ego_speed = node.declare_parameter<double>("stop_state_entry_ego_speed", 0.001);
+  m_stop_state_entry_target_speed = node.declare_parameter<double>("stop_state_entry_target_speed", 0.001);
+  m_converged_steer_rad = node.declare_parameter<double>("converged_steer_rad", 0.1);
+  m_keep_steer_control_until_converged = node.declare_parameter<bool>("keep_steer_control_until_converged", true);
+  m_new_traj_duration_time = node.declare_parameter<double>("new_traj_duration_time", 1.0);            // [s]
+  m_new_traj_end_dist = node.declare_parameter<double>("new_traj_end_dist", 0.3);                      // [m]
+  m_mpc_converged_threshold_rps = node.declare_parameter<double>("mpc_converged_threshold_rps", 0.01);  // [rad/s]
 
   /* mpc parameters */
   const auto vehicle_info = autoware::vehicle_info_utils::VehicleInfoUtils(node).getVehicleInfo();
@@ -103,7 +103,7 @@ MpcLateralController::MpcLateralController(Node & node)
 
   /* delay compensation */
   {
-    const double delay_tmp = dp_double("input_delay");
+    const double delay_tmp = node.declare_parameter<double>("input_delay", 0.0);
     const double delay_step = std::round(delay_tmp / m_mpc->m_ctrl_period);
     m_mpc->m_param.input_delay = delay_step * m_mpc->m_ctrl_period;
     m_mpc->m_input_buffer = std::deque<double>(static_cast<size_t>(delay_step), 0.0);
@@ -111,19 +111,19 @@ MpcLateralController::MpcLateralController(Node & node)
 
   /* steering offset compensation */
   enable_auto_steering_offset_removal_ =
-    dp_bool("steering_offset.enable_auto_steering_offset_removal");
+    node.declare_parameter<bool>("steering_offset.enable_auto_steering_offset_removal", false);
   steering_offset_ = createSteerOffsetEstimator(wheelbase, node);
 
   /* initialize low-pass filter */
   {
-    const double steering_lpf_cutoff_hz = dp_double("steering_lpf_cutoff_hz");
-    const double error_deriv_lpf_cutoff_hz = dp_double("error_deriv_lpf_cutoff_hz");
+    const double steering_lpf_cutoff_hz = node.declare_parameter<double>("steering_lpf_cutoff_hz", 10.0);
+    const double error_deriv_lpf_cutoff_hz = node.declare_parameter<double>("error_deriv_lpf_cutoff_hz", 10.0);
     m_mpc->initializeLowPassFilters(steering_lpf_cutoff_hz, error_deriv_lpf_cutoff_hz);
   }
 
   // ego nearest index search
   const auto check_and_get_param = [&](const auto & param) {
-    return node.has_parameter(param) ? node.get_parameter(param).as_double() : dp_double(param);
+    return node.has_parameter(param) ? node.get_parameter(param).as_double() : node.declare_parameter<double>(param);
   };
   m_ego_nearest_dist_threshold = check_and_get_param("ego_nearest_dist_threshold");
   m_ego_nearest_yaw_threshold = check_and_get_param("ego_nearest_yaw_threshold");
