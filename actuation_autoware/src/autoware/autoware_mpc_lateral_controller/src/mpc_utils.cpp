@@ -71,7 +71,7 @@ void convertEulerAngleToMonotonic(std::vector<double> & angle_vector)
   }
 }
 
-double calcLateralError(const Pose & ego_pose, const Pose & ref_pose)
+double calcLateralError(const PoseMsg & ego_pose, const PoseMsg & ref_pose)
 {
   const double err_x = ego_pose.position.x - ref_pose.position.x;
   const double err_y = ego_pose.position.y - ref_pose.position.y;
@@ -258,10 +258,11 @@ std::vector<double> calcTrajectoryCurvature(
   return curvature_vec;
 }
 
-MPCTrajectory convertToMPCTrajectory(const Trajectory & input)
+MPCTrajectory convertToMPCTrajectory(const TrajectoryMsg & input)
 {
+  auto sequence_input_points = wrap(input.points);
   MPCTrajectory output;
-  for (const TrajectoryPoint & p : input.points) {
+  for (const TrajectoryPoint & p : sequence_input_points) {
     const double x = p.pose.position.x;
     const double y = p.pose.position.y;
     const double z = p.pose.position.z;
@@ -275,9 +276,9 @@ MPCTrajectory convertToMPCTrajectory(const Trajectory & input)
   return output;
 }
 
-Trajectory convertToAutowareTrajectory(const MPCTrajectory & input)
+TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 {
-  Trajectory output;
+  TrajectoryMsg output;
   TrajectoryPoint p;
   for (size_t i = 0; i < input.size(); ++i) {
     p.pose.position.x = input.x.at(i);
@@ -333,7 +334,7 @@ void dynamicSmoothingVelocity(
 }
 
 bool calcNearestPoseInterp(
-  const MPCTrajectory & traj, const Pose & self_pose, Pose * nearest_pose, size_t * nearest_index,
+  const MPCTrajectory & traj, const PoseMsg & self_pose, PoseMsg * nearest_pose, size_t * nearest_index,
   double * nearest_time, const double max_dist, const double max_yaw)
 {
   if (traj.empty() || !nearest_pose || !nearest_index || !nearest_time) {
@@ -412,7 +413,7 @@ bool calcNearestPoseInterp(
   return true;
 }
 
-double calcStopDistance(const Trajectory & current_trajectory, const int origin)
+double calcStopDistance(const TrajectoryMsg & current_trajectory, const int origin)
 {
   constexpr float zero_velocity = std::numeric_limits<float>::epsilon();
   const float origin_velocity =

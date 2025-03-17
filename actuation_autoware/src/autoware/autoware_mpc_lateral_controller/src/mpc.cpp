@@ -36,15 +36,15 @@ using autoware::universe_utils::rad2deg;
 
 MPC::MPC(Node & node)
 {
-  m_debug_frenet_predicted_trajectory_pub = node.create_publisher<Trajectory>(
+  m_debug_frenet_predicted_trajectory_pub = node.create_publisher<TrajectoryMsg>(
     "~/debug/predicted_trajectory_in_frenet_coordinate", &autoware_planning_msgs_msg_Trajectory_desc);
   m_debug_resampled_reference_trajectory_pub =
-    node.create_publisher<Trajectory>("~/debug/resampled_reference_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
+    node.create_publisher<TrajectoryMsg>("~/debug/resampled_reference_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
 }
 
 ResultWithReason MPC::calculateMPC(
-  const SteeringReport & current_steer, const Odometry & current_kinematics, Lateral & ctrl_cmd,
-  Trajectory & predicted_trajectory, LateralHorizon & ctrl_cmd_horizon)
+  const SteeringReportMsg & current_steer, const OdometryMsg & current_kinematics, LateralMsg & ctrl_cmd,
+  TrajectoryMsg & predicted_trajectory, LateralHorizon & ctrl_cmd_horizon)
 {
   // since the reference trajectory does not take into account the current velocity of the ego
   // vehicle, it needs to calculate the trajectory velocity considering the longitudinal dynamics.
@@ -131,7 +131,7 @@ ResultWithReason MPC::calculateMPC(
   ctrl_cmd_horizon.controls.clear();
   ctrl_cmd_horizon.controls.push_back(ctrl_cmd);
   for (auto it = std::next(Uex.begin()); it != Uex.end(); ++it) {
-    Lateral lateral{};
+    LateralMsg lateral{};
     lateral.steering_tire_angle = static_cast<float>(std::clamp(*it, -m_steer_lim, m_steer_lim));
     lateral.steering_tire_rotation_rate =
       (lateral.steering_tire_angle - ctrl_cmd_horizon.controls.back().steering_tire_angle) /
@@ -143,8 +143,8 @@ ResultWithReason MPC::calculateMPC(
 }
 
 void MPC::setReferenceTrajectory(
-  const Trajectory & trajectory_msg, const TrajectoryFilteringParam & param,
-  const Odometry & current_kinematics)
+  const TrajectoryMsg & trajectory_msg, const TrajectoryFilteringParam & param,
+  const OdometryMsg & current_kinematics)
 {
   const size_t nearest_seg_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
@@ -222,7 +222,7 @@ void MPC::setReferenceTrajectory(
   m_reference_trajectory = mpc_traj_smoothed;
 }
 
-void MPC::resetPrevResult(const SteeringReport & current_steer)
+void MPC::resetPrevResult(const SteeringReportMsg & current_steer)
 {
   // Consider limit. The prev value larger than limitation breaks the optimization constraint and
   // results in optimization failure.
@@ -232,8 +232,8 @@ void MPC::resetPrevResult(const SteeringReport & current_steer)
 }
 
 std::pair<ResultWithReason, MPCData> MPC::getData(
-  const MPCTrajectory & traj, const SteeringReport & current_steer,
-  const Odometry & current_kinematics)
+  const MPCTrajectory & traj, const SteeringReportMsg & current_steer,
+  const OdometryMsg & current_kinematics)
 {
   const auto current_pose = current_kinematics.pose.pose;
 
@@ -365,7 +365,7 @@ std::pair<bool, VectorXd> MPC::updateStateForDelayCompensation(
 }
 
 MPCTrajectory MPC::applyVelocityDynamicsFilter(
-  const MPCTrajectory & input, const Odometry & current_kinematics) const
+  const MPCTrajectory & input, const OdometryMsg & current_kinematics) const
 {
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
   if (autoware_traj.points.empty()) {
@@ -653,7 +653,7 @@ void MPC::addSteerWeightF(const double prediction_dt, MatrixXd & f) const
 }
 
 double MPC::getPredictionDeltaTime(
-  const double start_time, const MPCTrajectory & input, const Odometry & current_kinematics) const
+  const double start_time, const MPCTrajectory & input, const OdometryMsg & current_kinematics) const
 {
   // Calculate the time min_prediction_length ahead from current_pose
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
@@ -761,7 +761,7 @@ VectorXd MPC::calcSteerRateLimitOnTrajectory(
   return steer_rate_limits;
 }
 
-Trajectory MPC::calculatePredictedTrajectory(
+TrajectoryMsg MPC::calculatePredictedTrajectory(
   const MPCMatrix & mpc_matrix, const Eigen::MatrixXd & x0, const Eigen::MatrixXd & Uex,
   const MPCTrajectory & reference_trajectory, const double dt, const std::string & coordinate) const
 {

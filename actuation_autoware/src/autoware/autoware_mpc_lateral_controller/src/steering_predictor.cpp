@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "autoware/mpc_lateral_controller/steering_predictor.hpp"
+#include <cmath>
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -28,7 +29,7 @@ double SteeringPredictor::calcSteerPrediction()
   auto t_end = Clock::now();
   m_time_prev = t_end;
 
-  const double duration = (t_end - t_start).seconds();
+  const double duration = t_end - t_start;
   const double time_constant = m_steer_tau;
 
   const double initial_response = std::exp(-duration / time_constant) * m_steer_prediction_prev;
@@ -47,8 +48,8 @@ double SteeringPredictor::calcSteerPrediction()
 void SteeringPredictor::storeSteerCmd(const double steer)
 {
   const auto time_delayed = Clock::now() + m_input_delay;
-  Lateral cmd;
-  cmd.stamp = time_delayed;
+  LateralMsg cmd;
+  cmd.stamp = Clock::toRosTime(time_delayed);
   cmd.steering_tire_angle = static_cast<float>(steer);
 
   // store published ctrl cmd
@@ -66,7 +67,7 @@ void SteeringPredictor::storeSteerCmd(const double steer)
 }
 
 double SteeringPredictor::getSteerCmdSum(
-  const double & t_start, const double & t_end, const double time_constant) const
+  const double t_start, const double t_end, const double time_constant) const
 {
   if (m_ctrl_cmd_vec.size() <= 2) {
     return 0.0;
