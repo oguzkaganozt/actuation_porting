@@ -4,17 +4,11 @@
 #include <memory>
 #include <string>
 
-class SubscriberBase {
-public:
-    virtual void process_message() = 0;
-    virtual ~SubscriberBase() = default;
-};
-
 template<typename T>
 using callback_subscriber = void (*)(T& msg);
 
 template<typename T>
-class Subscriber : public SubscriberBase {
+class Subscriber {
 public:
     Subscriber(const std::string& node_name, const std::string& topic_name, 
                 dds_entity_t dds_participant, dds_qos_t* dds_qos, 

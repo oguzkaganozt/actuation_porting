@@ -95,7 +95,7 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 
 # Build
 target_sources(app PRIVATE
-  src/main.cpp
+  test/test.cpp
   ${APP_SOURCES}
 )
 

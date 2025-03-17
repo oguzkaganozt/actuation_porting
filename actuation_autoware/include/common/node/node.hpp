@@ -88,7 +88,7 @@ public:
      * @return Publisher<MessageT>* Pointer to the publisher
      */
     template<typename MessageT>
-    std::unique_ptr<Publisher<MessageT>> create_publisher(const std::string& topic_name, 
+    std::shared_ptr<Publisher<MessageT>> create_publisher(const std::string& topic_name, 
                                                         const dds_topic_descriptor_t* topic_descriptor) {
         return dds_.create_publisher_dds<MessageT>(topic_name, topic_descriptor);
     }
@@ -106,7 +106,7 @@ public:
                            callback_subscriber<T> callback) {
 
         auto subscription = dds_.create_subscription_dds<T>(topic_name, topic_descriptor, callback);
-        subscriptions_.push_back(std::move(subscription));
+        subscriptions_.push_back(subscription);
         
         return true;
     }
@@ -311,16 +311,13 @@ private:
         while (thread_active_) {
             // timer overruns are checked in timer_handler_
 
-            // check subscriptions
-            // for (auto& subscription : subscriptions_) {
-            //     subscription->process_message();
-            // }
+            // subscriptions are handled in the cyclonedds callback
         }
     }
 
     // DDS
     DDS dds_;
-    std::vector<std::unique_ptr<SubscriberBase>> subscriptions_;
+    std::vector<std::shared_ptr<void>> subscriptions_;
     
     // Timer
     timer_t timer_id_;

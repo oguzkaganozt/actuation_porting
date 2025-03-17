@@ -71,7 +71,7 @@ public:
      * @tparam MessageT The message type for the publisher
      * @param topic_name The name of the topic
      * @param topic_descriptor The DDS topic descriptor
-     * @return std::unique_ptr<Publisher<MessageT>> Smart pointer to the created publisher
+     * @return std::shared_ptr<Publisher<MessageT>> Smart pointer to the created publisher
      */
     template<typename MessageT>
     std::shared_ptr<Publisher<MessageT>> create_publisher_dds(
@@ -88,15 +88,22 @@ public:
      * @param topic_name The name of the topic
      * @param topic_descriptor The DDS topic descriptor
      * @param callback The callback function to be called when a message is received
-     * @return std::unique_ptr<SubscriberBase> Pointer to the created subscriber
+     * @return std::shared_ptr<Subscriber<T>> Pointer to the created subscriber
      */
     template<typename T>
-    std::unique_ptr<SubscriberBase> create_subscription_dds(const std::string& topic_name, 
+    std::shared_ptr<Subscriber<T>> create_subscription_dds(const std::string& topic_name, 
                             const dds_topic_descriptor_t* topic_descriptor, 
                             callback_subscriber<T> callback) 
     {
-        return std::make_unique<Subscriber<T>>(
-            node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor, callback);
+        try {
+            auto subscriber = std::make_shared<Subscriber<T>>(
+                node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor, callback);
+            return subscriber;
+        } catch (const std::exception& e) {
+            fprintf(stderr, "Error: Node: %s -> create_subscription_dds: %s\n", 
+                node_name_.c_str(), e.what());
+            return nullptr;
+        }
     }
 
 private:
