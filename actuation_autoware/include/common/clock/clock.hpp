@@ -6,38 +6,49 @@
 
 //Msgs
 #include "Time.h"
-
 using TimeMsg = builtin_interfaces_msg_Time;
-using TimePoint = std::chrono::time_point<std::chrono::system_clock>;
 
 class Clock {
 public:
+    /* brief: Get current time in seconds
+    * @return current time in seconds
+    */
+    static double now() {
+        auto time_point = std::chrono::system_clock::now();
+        return std::chrono::duration<double>(time_point.time_since_epoch()).count();
+    }
+
+    /* brief: Convert time in seconds to ROS2 time
+    * @param time: time in seconds
+    * @return ROS2 Time Message
+    */
+    static TimeMsg toRosTime(const double time) {
+        const auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::duration<double>(time));
+        constexpr int64_t nano_per_sec = 1'000'000'000;
+        
+        TimeMsg ros_time;
+        const auto count = nanoseconds.count();
+        ros_time.sec = static_cast<int32_t>(count / nano_per_sec);
+        ros_time.nanosec = static_cast<uint32_t>(count % nano_per_sec);
+        
+        return ros_time;
+    }
+
+    /* brief: Convert ROS2 time to time in seconds
+    * @param ros_time: ROS2 Time Message
+    * @return time in seconds
+    */
+    static double toDouble(const TimeMsg& ros_time) {
+        const int64_t total_ns = static_cast<int64_t>(ros_time.sec) * 1'000'000'000LL 
+                                + ros_time.nanosec;
+        return std::chrono::duration_cast<std::chrono::duration<double>>(
+            std::chrono::nanoseconds(total_ns)
+        ).count();
+    }
+private:
     Clock() = default;
     ~Clock() = default;
-
-    TimePoint now() {
-        return std::chrono::system_clock::now();
-    }
 };
-
-// Convert ROS2 time to chrono time point
-TimePoint toTimePoint(const TimeMsg& ros_time) {
-    auto seconds = std::chrono::seconds(ros_time.sec);
-    auto nanoseconds = std::chrono::nanoseconds(ros_time.nanosec);
-    auto duration = seconds + nanoseconds;
-    return TimePoint(duration);
-}
-
-// Convert chrono time point to ROS2 time
-TimeMsg toRosTime(const TimePoint& chrono_time) {        
-    auto duration = chrono_time.time_since_epoch();
-    auto total_nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(duration);
-    
-    TimeMsg ros_time;
-    ros_time.sec = static_cast<int32_t>(total_nanoseconds.count() / 1000000000);
-    ros_time.nanosec = static_cast<uint32_t>(total_nanoseconds.count() % 1000000000);
-    
-    return ros_time;
-}
 
 #endif  // COMMON__CLOCK_HPP_

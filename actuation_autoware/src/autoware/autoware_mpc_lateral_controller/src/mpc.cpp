@@ -121,7 +121,7 @@ ResultWithReason MPC::calculateMPC(
     // Calculate and publish predicted trajectory in Frenet coordinate
     auto predicted_trajectory_frenet = calculatePredictedTrajectory(
       mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "frenet");
-    predicted_trajectory_frenet.header.stamp = m_clock->now();
+    predicted_trajectory_frenet.header.stamp = Clock::toRosTime(Clock::now());
     predicted_trajectory_frenet.header.frame_id = "map";
     m_debug_frenet_predicted_trajectory_pub->publish(predicted_trajectory_frenet);
   }
@@ -288,7 +288,7 @@ std::pair<ResultWithReason, MPCTrajectory> MPC::resampleMPCTrajectoryByTime(
   // Publish resampled reference trajectory for debug purpose.
   if (m_publish_debug_trajectories) {
     auto converted_output = MPCUtils::convertToAutowareTrajectory(output);
-    converted_output.header.stamp = m_clock->now();
+    converted_output.header.stamp = Clock::toRosTime(Clock::now());
     converted_output.header.frame_id = "map";
     m_debug_resampled_reference_trajectory_pub->publish(converted_output);
   }
@@ -565,9 +565,9 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   ubA(0) = m_raw_steer_cmd_prev + steer_rate_limits(0) * m_ctrl_period;
   lbA(0) = m_raw_steer_cmd_prev - steer_rate_limits(0) * m_ctrl_period;
 
-  auto t_start = std::chrono::system_clock::now();
+  auto t_start = Clock::now();
   bool solve_result = m_qpsolver_ptr->solve(H, f.transpose(), A, lb, ub, lbA, ubA, Uex);
-  auto t_end = std::chrono::system_clock::now();
+  auto t_end = Clock::now();
   if (!solve_result) {
     return {ResultWithReason{false, "qp solver error"}, {}};
   }

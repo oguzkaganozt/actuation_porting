@@ -502,12 +502,6 @@ public:
    * @return True if the QP solver is set, false otherwise.
    */
   inline bool hasQPSolver() const { return m_qpsolver_ptr != nullptr; }
-
-  /**
-   * @brief Set the RCLCPP clock to be used for time keeping.
-   * @param clock The shared pointer to the RCLCPP clock.
-   */
-  inline void setClock(rclcpp::Clock::SharedPtr clock) { m_clock = clock; }
 };  // class MPC
 }  // namespace autoware::motion::control::mpc_lateral_controller
 

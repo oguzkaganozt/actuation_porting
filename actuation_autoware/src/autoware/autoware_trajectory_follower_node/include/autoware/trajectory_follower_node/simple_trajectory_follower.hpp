@@ -17,8 +17,6 @@
 
 #include "autoware/universe_utils/ros/polling_subscriber.hpp"
 
-#include <rclcpp/rclcpp.hpp>
-
 #include <autoware_control_msgs/msg/control.hpp>
 #include <autoware_planning_msgs/msg/trajectory.hpp>
 #include <autoware_planning_msgs/msg/trajectory_point.hpp>
@@ -37,10 +35,10 @@ using geometry_msgs::msg::Pose;
 using geometry_msgs::msg::Twist;
 using nav_msgs::msg::Odometry;
 
-class SimpleTrajectoryFollower : public rclcpp::Node
+class SimpleTrajectoryFollower : public Node
 {
 public:
-  explicit SimpleTrajectoryFollower(const rclcpp::NodeOptions & options);
+  explicit SimpleTrajectoryFollower();
   ~SimpleTrajectoryFollower() = default;
 
 private:

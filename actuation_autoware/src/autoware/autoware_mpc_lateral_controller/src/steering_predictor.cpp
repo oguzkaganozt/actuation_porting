@@ -25,7 +25,7 @@ SteeringPredictor::SteeringPredictor(const double steer_tau, const double steer_
 double SteeringPredictor::calcSteerPrediction()
 {
   auto t_start = m_time_prev;
-  auto t_end = m_clock->now();
+  auto t_end = Clock::now();
   m_time_prev = t_end;
 
   const double duration = (t_end - t_start).seconds();
@@ -46,7 +46,7 @@ double SteeringPredictor::calcSteerPrediction()
 
 void SteeringPredictor::storeSteerCmd(const double steer)
 {
-  const auto time_delayed = m_clock->now() + rclcpp::Duration::from_seconds(m_input_delay);
+  const auto time_delayed = Clock::now() + m_input_delay;
   Lateral cmd;
   cmd.stamp = time_delayed;
   cmd.steering_tire_angle = static_cast<float>(steer);
@@ -60,13 +60,13 @@ void SteeringPredictor::storeSteerCmd(const double steer)
 
   // remove unused ctrl cmd
   constexpr double store_time = 0.3;
-  if ((time_delayed - m_ctrl_cmd_vec.at(1).stamp).seconds() > m_input_delay + store_time) {
+  if ((time_delayed - Clock::toDouble(m_ctrl_cmd_vec.at(1).stamp)) > m_input_delay + store_time) {
     m_ctrl_cmd_vec.erase(m_ctrl_cmd_vec.begin());
   }
 }
 
 double SteeringPredictor::getSteerCmdSum(
-  const rclcpp::Time & t_start, const rclcpp::Time & t_end, const double time_constant) const
+  const double & t_start, const double & t_end, const double time_constant) const
 {
   if (m_ctrl_cmd_vec.size() <= 2) {
     return 0.0;
@@ -74,7 +74,7 @@ double SteeringPredictor::getSteerCmdSum(
 
   // Find first index of control command container
   size_t idx = 1;
-  while (t_start > rclcpp::Time(m_ctrl_cmd_vec.at(idx).stamp)) {
+  while (t_start > Clock::toDouble(m_ctrl_cmd_vec.at(idx).stamp)) {
     if ((idx + 1) >= m_ctrl_cmd_vec.size()) {
       return 0.0;
     }
@@ -84,9 +84,9 @@ double SteeringPredictor::getSteerCmdSum(
   // Compute steer command input response
   double steer_sum = 0.0;
   auto t = t_start;
-  while (t_end > rclcpp::Time(m_ctrl_cmd_vec.at(idx).stamp)) {
-    const double duration = (rclcpp::Time(m_ctrl_cmd_vec.at(idx).stamp) - t).seconds();
-    t = rclcpp::Time(m_ctrl_cmd_vec.at(idx).stamp);
+  while (t_end > Clock::toDouble(m_ctrl_cmd_vec.at(idx).stamp)) {
+    const double duration = (Clock::toDouble(m_ctrl_cmd_vec.at(idx).stamp) - t);
+    t = Clock::toDouble(m_ctrl_cmd_vec.at(idx).stamp);
     steer_sum += (1 - std::exp(-duration / time_constant)) *
                  static_cast<double>(m_ctrl_cmd_vec.at(idx - 1).steering_tire_angle);
     ++idx;
@@ -95,7 +95,7 @@ double SteeringPredictor::getSteerCmdSum(
     }
   }
 
-  const double duration = (t_end - t).seconds();
+  const double duration = (t_end - t);
   steer_sum += (1 - std::exp(-duration / time_constant)) *
                static_cast<double>(m_ctrl_cmd_vec.at(idx - 1).steering_tire_angle);
 

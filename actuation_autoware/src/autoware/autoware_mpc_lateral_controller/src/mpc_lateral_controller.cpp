@@ -33,9 +33,7 @@
 namespace autoware::motion::control::mpc_lateral_controller
 {
 
-MpcLateralController::MpcLateralController(
-  Node & node)
-: clock_(node.get_clock())
+MpcLateralController::MpcLateralController(Node & node)
 {
   const auto dp_int = [&](const std::string & s) { return node.declare_parameter<int>(s); };
   const auto dp_bool = [&](const std::string & s) { return node.declare_parameter<bool>(s); };
@@ -144,10 +142,6 @@ MpcLateralController::MpcLateralController(
   declareMPCparameters(node);
 
   m_mpc->initializeSteeringPredictor();
-
-  m_mpc->setClock(clock_);
-
-  setupDiag();
 }
 
 MpcLateralController::~MpcLateralController()
@@ -372,14 +366,14 @@ void MpcLateralController::setTrajectory(
 
   // update trajectory buffer to check the trajectory shape change.
   m_trajectory_buffer.push_back(m_current_trajectory);
-  while (rclcpp::ok()) {
-    const auto time_diff = rclcpp::Time(m_trajectory_buffer.back().header.stamp) -
-                           rclcpp::Time(m_trajectory_buffer.front().header.stamp);
+  while (1) { //TODO: a good replacement for rclcpp::ok() ?
+    const auto time_diff = Clock::toDouble(m_trajectory_buffer.back().header.stamp) -
+                           Clock::toDouble(m_trajectory_buffer.front().header.stamp);
 
     const double first_trajectory_duration_time = 5.0;
     const double duration_time =
       m_has_received_first_trajectory ? m_new_traj_duration_time : first_trajectory_duration_time;
-    if (time_diff.seconds() < duration_time) {
+    if (time_diff < duration_time) {
       m_has_received_first_trajectory = true;
       break;
     }
@@ -438,7 +432,7 @@ bool MpcLateralController::isStoppedState() const
 LateralMsg MpcLateralController::createCtrlCmdMsg(const LateralMsg & ctrl_cmd)
 {
   auto out = ctrl_cmd;
-  out.stamp = clock_->now();
+  out.stamp = Clock::toRosTime(Clock::now());
   m_steer_cmd_prev = out.steering_tire_angle;
   return out;
 }
@@ -447,7 +441,7 @@ LateralHorizon MpcLateralController::createCtrlCmdHorizonMsg(
   const LateralHorizon & ctrl_cmd_horizon) const
 {
   auto out = ctrl_cmd_horizon;
-  const auto now = clock_->now();
+  const auto now = Clock::toRosTime(Clock::now());
   for (auto & cmd : out.controls) {
     cmd.stamp = now;
   }
@@ -456,25 +450,25 @@ LateralHorizon MpcLateralController::createCtrlCmdHorizonMsg(
 
 void MpcLateralController::publishPredictedTraj(TrajectoryMsg & predicted_traj) const
 {
-  predicted_traj.header.stamp = clock_->now();
+  predicted_traj.header.stamp = Clock::toRosTime(Clock::now());
   predicted_traj.header.frame_id = m_current_trajectory.header.frame_id;
   m_pub_predicted_traj->publish(predicted_traj);
 }
 
 void MpcLateralController::publishDebugValues(Float32MultiArrayStampedMsg & debug_values) const
 {
-  debug_values.stamp = clock_->now();
+  debug_values.stamp = Clock::toRosTime(Clock::now());
   m_pub_debug_values->publish(debug_values);
 
   Float32StampedMsg offset;
-  offset.stamp = clock_->now();
+  offset.stamp = Clock::toRosTime(Clock::now());
   offset.data = steering_offset_->getOffset();
   m_pub_steer_offset->publish(offset);
 }
 
 void MpcLateralController::setSteeringToHistory(const LateralMsg & steering)
 {
-  const auto time = clock_->now();
+  const auto time = Clock::now();
   if (m_mpc_steering_history.empty()) {
     m_mpc_steering_history.emplace_back(steering, time);
     m_is_mpc_history_filled = false;
@@ -484,11 +478,11 @@ void MpcLateralController::setSteeringToHistory(const LateralMsg & steering)
   m_mpc_steering_history.emplace_back(steering, time);
 
   // Check the history is filled or not.
-  if (rclcpp::Duration(time - m_mpc_steering_history.begin()->second).seconds() >= 1.0) {
+  if (std::chrono::duration_cast<std::chrono::seconds>(time - m_mpc_steering_history.begin()->second).count() >= 1.0) {
     m_is_mpc_history_filled = true;
     // remove old data that is older than 1 sec
     for (auto itr = m_mpc_steering_history.begin(); itr != m_mpc_steering_history.end(); ++itr) {
-      if (rclcpp::Duration(time - itr->second).seconds() > 1.0) {
+      if (std::chrono::duration_cast<std::chrono::seconds>(time - itr->second).count() > 1.0) {
         m_mpc_steering_history.erase(m_mpc_steering_history.begin());
       } else {
         break;

@@ -44,7 +44,7 @@ private:
   double m_steer_prediction_prev = 0.0;
 
   // Previous computation time.
-  // rclcpp::Time m_time_prev = rclcpp::Time(0, 0, RCL_ROS_TIME);
+  double m_time_prev = Clock::now();
 
   // time constant for the steering dynamics
   double m_steer_tau;
@@ -63,7 +63,7 @@ private:
    * @return The sum of the steering commands.
    */
   double getSteerCmdSum(
-    const rclcpp::Time & t_start, const rclcpp::Time & t_end, const double time_constant) const;
+    const double t_start, const double t_end, const double time_constant) const;
 
   /**
    * @brief Set previously calculated steering

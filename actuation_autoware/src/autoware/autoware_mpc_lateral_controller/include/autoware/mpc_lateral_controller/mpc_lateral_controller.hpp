@@ -83,7 +83,7 @@ private:
   bool m_is_mpc_history_filled{false};
 
   // store the last mpc outputs for 1 sec
-  std::vector<std::pair<LateralMsg, rclcpp::Time>> m_mpc_steering_history{};
+  std::vector<std::pair<LateralMsg, double>> m_mpc_steering_history{};
 
   // set the mpc steering output to history
   void setSteeringToHistory(const LateralMsg & steering);
