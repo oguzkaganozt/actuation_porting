@@ -102,13 +102,13 @@ public:
         }
     }
     
-    // Destructor
+    // Destructor //TODO: Check if this is correct
     ~Sequence() {
         if (owns_sequence && sequence) {
             if (sequence->_buffer) {
-                free(sequence->_buffer);
+                free(const_cast<void*>(static_cast<const void*>(sequence->_buffer)));
             }
-            free(sequence);
+            free(const_cast<void*>(static_cast<const void*>(sequence)));
         }
     }
     
@@ -377,8 +377,6 @@ public:
     }
 
     // Utility
-    static Sequence wrap(T& seq) { return Sequence(seq); }
-    static Sequence wrap(T* seq) { return Sequence(seq); }
     T* get_sequence() { return sequence; }
     const T* get_sequence() const { return sequence; }
     bool is_valid() const noexcept { return sequence != nullptr && sequence->_buffer != nullptr; }
@@ -411,5 +409,10 @@ public:
         }
     }
 };
+
+template<typename T>
+Sequence<T> wrap(T& seq) { return Sequence<T>(seq); }
+template<typename T>
+Sequence<T> wrap(T* seq) { return Sequence<T>(seq); }
 
 #endif  // COMMON__SEQUENCE_HPP_

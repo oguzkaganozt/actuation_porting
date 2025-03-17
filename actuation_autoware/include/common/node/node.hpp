@@ -23,10 +23,12 @@
 #include "common/dds/dds.hpp"
 
 using param_type = std::variant<bool,
+                              int,
                               int64_t,
                               double,
                               std::string,
                               std::vector<bool>,
+                              std::vector<int>,
                               std::vector<int64_t>,
                               std::vector<double>,
                               std::vector<std::string>,
@@ -159,6 +161,7 @@ public:
         }
         
         pthread_mutex_unlock(&param_mutex_);
+        fprintf(stderr, "Node: %s get_parameter failed-3: %s\n", node_name_.c_str(), name.c_str());
         return std::nullopt;
     }
 
@@ -178,9 +181,11 @@ public:
             try {
                 return std::get<ParamT>(*param);
             } catch (const std::bad_variant_access&) {
+                fprintf(stderr, "Node: %s get_parameter failed-1: %s\n", node_name_.c_str(), name.c_str());
                 return ParamT{};
             }
         }
+        fprintf(stderr, "Node: %s get_parameter failed-2: %s\n", node_name_.c_str(), name.c_str());
         return ParamT{};
     }
 

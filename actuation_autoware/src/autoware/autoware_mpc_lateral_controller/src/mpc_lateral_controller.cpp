@@ -359,7 +359,7 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
 void MpcLateralController::setTrajectory(
   const TrajectoryMsg & msg, const OdometryMsg & current_kinematics)
 {
-  auto sequence_points = Sequence<TrajectoryPointMsg>::wrap(msg.points);
+  auto sequence_points = wrap(msg.points);
   m_current_trajectory = msg;
 
   if (sequence_points.size() < 3) {
@@ -409,8 +409,9 @@ LateralMsg MpcLateralController::getInitialControlCommand() const
 
 bool MpcLateralController::isStoppedState() const
 {
+  auto sequence_points = wrap(m_current_trajectory.points);
   // If the nearest index is not found, return false
-  if (m_current_trajectory.points.empty()) {
+  if (sequence_points.empty()) {
     return false;
   }
 
@@ -419,11 +420,11 @@ bool MpcLateralController::isStoppedState() const
   // control was turned off when approaching/exceeding the stop line on a curve or
   // emergency stop situation and it caused large tracking error.
   const size_t nearest = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
-    m_current_trajectory.points, m_current_kinematic_state.pose.pose, m_ego_nearest_dist_threshold,
+    sequence_points, m_current_kinematic_state.pose.pose, m_ego_nearest_dist_threshold,
     m_ego_nearest_yaw_threshold);
 
   const double current_vel = m_current_kinematic_state.twist.twist.linear.x;
-  const double target_vel = m_current_trajectory.points.at(nearest).longitudinal_velocity_mps;
+  const double target_vel = sequence_points.at(nearest).longitudinal_velocity_mps;
 
   const auto latest_published_cmd = m_ctrl_cmd_prev;  // use prev_cmd as a latest published command
   if (m_keep_steer_control_until_converged && !isSteerConverged(latest_published_cmd)) {
@@ -488,11 +489,11 @@ void MpcLateralController::setSteeringToHistory(const LateralMsg & steering)
   m_mpc_steering_history.emplace_back(steering, time);
 
   // Check the history is filled or not.
-  if (std::chrono::duration_cast<std::chrono::seconds>(time - m_mpc_steering_history.begin()->second).count() >= 1.0) {
+  if ((time - m_mpc_steering_history.begin()->second) >= 1.0) {
     m_is_mpc_history_filled = true;
     // remove old data that is older than 1 sec
     for (auto itr = m_mpc_steering_history.begin(); itr != m_mpc_steering_history.end(); ++itr) {
-      if (std::chrono::duration_cast<std::chrono::seconds>(time - itr->second).count() > 1.0) {
+      if ((time - itr->second) >= 1.0) {
         m_mpc_steering_history.erase(m_mpc_steering_history.begin());
       } else {
         break;
@@ -571,8 +572,10 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
   // TODO(Horibe): update implementation to check trajectory shape around ego vehicle.
   // Now temporally check the goal position.
   for (const auto & trajectory : m_trajectory_buffer) {
+    auto sequence_points = wrap(trajectory.points);
+    auto current_points = wrap(m_current_trajectory.points);
     const auto change_distance = autoware::universe_utils::calcDistance2d(
-      trajectory.points.back().pose, m_current_trajectory.points.back().pose);
+      sequence_points.back().pose, current_points.back().pose);
     if (change_distance > m_new_traj_end_dist) {
       return true;
     }
@@ -582,7 +585,7 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
 
 bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
 {
-  auto sequence_points = Sequence<TrajectoryPointMsg>::wrap(traj.points);
+  auto sequence_points = wrap(traj.points);
   for (const auto & p : sequence_points) {
     if (
       !isfinite(p.pose.position.x) || !isfinite(p.pose.position.y) ||
