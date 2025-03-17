@@ -19,6 +19,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include "common/clock/clock.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {

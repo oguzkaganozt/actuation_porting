@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <vector>
+#include "common/clock/clock.hpp"
 
 //Msgs
 #include "Point.h"

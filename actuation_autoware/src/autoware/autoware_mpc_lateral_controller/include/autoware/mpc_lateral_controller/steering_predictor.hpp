@@ -17,6 +17,11 @@
 
 #include <memory>
 #include <vector>
+#include "common/clock/clock.hpp"
+
+// Msgs
+#include "Lateral.h"
+using LateralMsg = autoware_control_msgs_msg_Lateral;
 
 namespace autoware::motion::control::mpc_lateral_controller
 {

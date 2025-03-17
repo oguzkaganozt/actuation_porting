@@ -22,6 +22,7 @@
 #include <utility>
 #include <vector>
 #include <Eigen/Core>
+#include "common/clock/clock.hpp"
 
 //Msgs
 #include "Trajectory.h"

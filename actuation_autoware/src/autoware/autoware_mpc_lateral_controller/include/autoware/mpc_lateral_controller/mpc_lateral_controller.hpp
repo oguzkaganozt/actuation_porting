@@ -27,6 +27,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "common/clock/clock.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -254,7 +255,7 @@ private:
   void info_throttle(const char * msg)
   {
     static int counter = 0;
-    if (counter % RCLCPP_THROTTLE_RATE_INFO == 0) {
+    if (counter % CONFIG_RCLCPP_THROTTLE_RATE_INFO == 0) {
       printf("%s", msg);
     }
     counter++;
@@ -263,7 +264,7 @@ private:
   void warn_throttle(const char * msg)
   {
     static int counter = 0;
-    if (counter % RCLCPP_THROTTLE_RATE_WARN == 0) {
+    if (counter % CONFIG_RCLCPP_THROTTLE_RATE_WARN == 0) {
       fprintf(stderr, "%s", msg);
     }
     counter++;

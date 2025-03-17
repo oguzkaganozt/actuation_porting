@@ -29,6 +29,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "common/clock/clock.hpp"
 
 //Msgs
 #include "Lateral.h"
@@ -385,7 +386,7 @@ private:
   void warn_throttle(const char * msg)
   {
     static int counter = 0;
-    if (counter % RCLCPP_THROTTLE_RATE_WARN == 0) {
+    if (counter % CONFIG_RCLCPP_THROTTLE_RATE_WARN == 0) {
       fprintf(stderr, "%s", msg);
     }
     counter++;
