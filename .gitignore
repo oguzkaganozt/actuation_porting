@@ -12,3 +12,4 @@ public/
 *.log
 *.cursorignore
 TODO
+check.sh

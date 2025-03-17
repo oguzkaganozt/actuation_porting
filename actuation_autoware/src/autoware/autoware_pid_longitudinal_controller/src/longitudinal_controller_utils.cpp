@@ -14,19 +14,8 @@
 
 #include "autoware/pid_longitudinal_controller/longitudinal_controller_utils.hpp"
 
-#include "tf2/LinearMath/Matrix3x3.h"
-#include "tf2/LinearMath/Quaternion.h"
-
 #include <experimental/optional>  // NOLINT
-
 #include <utility>
-
-#ifdef ROS_DISTRO_GALACTIC
-#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
-#else
-#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
-#endif
-
 #include <algorithm>
 #include <limits>
 

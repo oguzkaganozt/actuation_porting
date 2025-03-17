@@ -15,8 +15,6 @@
 #ifndef AUTOWARE__PID_LONGITUDINAL_CONTROLLER__SMOOTH_STOP_HPP_
 #define AUTOWARE__PID_LONGITUDINAL_CONTROLLER__SMOOTH_STOP_HPP_
 
-#include "rclcpp/rclcpp.hpp"
-
 #include <experimental/optional>  // NOLINT
 
 #include <algorithm>

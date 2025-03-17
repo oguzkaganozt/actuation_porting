@@ -32,7 +32,6 @@
 #include "autoware_planning_msgs/msg/trajectory.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "nav_msgs/msg/odometry.hpp"
-#include "tf2_msgs/msg/tf_message.hpp"
 #include "tier4_debug_msgs/msg/float32_multi_array_stamped.hpp"
 #include "visualization_msgs/msg/marker.hpp"
 

@@ -30,6 +30,15 @@
 #include <utility>
 #include <vector>
 
+// Msgs
+#include "OperationModeState.h"
+using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
+#define OPERATION_MODE_STATE_UNKNOWN autoware_adapi_v1_msgs_msg_OperationModeState_Constants_UNKNOWN
+#define OPERATION_MODE_STATE_STOP autoware_adapi_v1_msgs_msg_OperationModeState_Constants_STOP
+#define OPERATION_MODE_STATE_AUTONOMOUS autoware_adapi_v1_msgs_msg_OperationModeState_Constants_AUTONOMOUS
+#define OPERATION_MODE_STATE_LOCAL autoware_adapi_v1_msgs_msg_OperationModeState_Constants_LOCAL
+#define OPERATION_MODE_STATE_REMOTE autoware_adapi_v1_msgs_msg_OperationModeState_Constants_REMOTE
+
 namespace autoware::motion::control::mpc_lateral_controller
 {
 
@@ -231,10 +240,10 @@ trajectory_follower::LateralOutput MpcLateralController::run(
 
   LateralMsg ctrl_cmd;
   TrajectoryMsg predicted_traj;
+  Float32MultiArrayStampedMsg debug_values;
 
   const bool is_under_control = input_data.current_operation_mode.is_autoware_control_enabled &&
-                                input_data.current_operation_mode.mode ==
-                                  autoware_adapi_v1_msgs::msg::OperationModeState::AUTONOMOUS;
+                                input_data.current_operation_mode.mode == OPERATION_MODE_STATE_AUTONOMOUS;
 
   if (!m_is_ctrl_cmd_prev_initialized || !is_under_control) {
     m_ctrl_cmd_prev = getInitialControlCommand();
@@ -309,7 +318,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
   return createLateralOutput(ctrl_cmd, mpc_solved_status.result, ctrl_cmd_horizon);
 }
 
-bool MpcLateralController::isSteerConverged(const Lateral & cmd) const
+bool MpcLateralController::isSteerConverged(const LateralMsg & cmd) const
 {
   // wait for a while to propagate the trajectory shape to the output command when the trajectory
   // shape is changed.
@@ -350,9 +359,10 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
 void MpcLateralController::setTrajectory(
   const TrajectoryMsg & msg, const OdometryMsg & current_kinematics)
 {
+  auto sequence_points = Sequence<TrajectoryPointMsg>::wrap(msg.points);
   m_current_trajectory = msg;
 
-  if (msg.points.size() < 3) {
+  if (sequence_points.size() < 3) {
     fprintf(stderr, "MPC: received path size is < 3, not enough.");
     return;
   }
@@ -572,7 +582,7 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
 
 bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
 {
-  auto sequence_points = wrap_sequence(traj.points);
+  auto sequence_points = Sequence<TrajectoryPointMsg>::wrap(traj.points);
   for (const auto & p : sequence_points) {
     if (
       !isfinite(p.pose.position.x) || !isfinite(p.pose.position.y) ||
