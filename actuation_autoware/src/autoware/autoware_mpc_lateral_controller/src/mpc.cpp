@@ -37,9 +37,9 @@ using autoware::universe_utils::rad2deg;
 MPC::MPC(Node & node)
 {
   m_debug_frenet_predicted_trajectory_pub = node.create_publisher<Trajectory>(
-    "~/debug/predicted_trajectory_in_frenet_coordinate", "topic_descriptor");
+    "~/debug/predicted_trajectory_in_frenet_coordinate", &autoware_planning_msgs_msg_Trajectory_desc);
   m_debug_resampled_reference_trajectory_pub =
-    node.create_publisher<Trajectory>("~/debug/resampled_reference_trajectory", "topic_descriptor");
+    node.create_publisher<Trajectory>("~/debug/resampled_reference_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
 }
 
 ResultWithReason MPC::calculateMPC(

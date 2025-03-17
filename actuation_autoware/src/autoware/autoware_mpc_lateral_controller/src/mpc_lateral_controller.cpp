@@ -123,21 +123,21 @@ MpcLateralController::MpcLateralController(Node & node)
 
   // ego nearest index search
   const auto check_and_get_param = [&](const auto & param) {
-    return node.has_parameter(param) ? node.get_parameter(param).as_double() : node.declare_parameter<double>(param);
+    return node.has_parameter(param) ? node.get_parameter<double>(param) : node.declare_parameter<double>(param);
   };
   m_ego_nearest_dist_threshold = check_and_get_param("ego_nearest_dist_threshold");
   m_ego_nearest_yaw_threshold = check_and_get_param("ego_nearest_yaw_threshold");
   m_mpc->ego_nearest_dist_threshold = m_ego_nearest_dist_threshold;
   m_mpc->ego_nearest_yaw_threshold = m_ego_nearest_yaw_threshold;
 
-  m_mpc->m_use_delayed_initial_state = dp_bool("use_delayed_initial_state");
+  m_mpc->m_use_delayed_initial_state = node.declare_parameter<bool>("use_delayed_initial_state", true);
 
-  m_mpc->m_publish_debug_trajectories = dp_bool("publish_debug_trajectories");
+  m_mpc->m_publish_debug_trajectories = node.declare_parameter<bool>("publish_debug_trajectories", true);
 
-  m_pub_predicted_traj = node.create_publisher<TrajectoryMsg>("~/output/predicted_trajectory", 1);
+  m_pub_predicted_traj = node.create_publisher<TrajectoryMsg>("~/output/predicted_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
   m_pub_debug_values =
-    node.create_publisher<Float32MultiArrayStampedMsg>("~/output/lateral_diagnostic", 1);
-  m_pub_steer_offset = node.create_publisher<Float32StampedMsg>("~/output/estimated_steer_offset", 1);
+    node.create_publisher<Float32MultiArrayStampedMsg>("~/output/lateral_diagnostic", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
+  m_pub_steer_offset = node.create_publisher<Float32StampedMsg>("~/output/estimated_steer_offset", &tier4_debug_msgs_msg_Float32Stamped_desc);
 
   declareMPCparameters(node);
 
@@ -572,7 +572,8 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
 
 bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
 {
-  for (const auto & p : traj.points) {
+  auto sequence_points = wrap_sequence(traj.points);
+  for (const auto & p : sequence_points) {
     if (
       !isfinite(p.pose.position.x) || !isfinite(p.pose.position.y) ||
       !isfinite(p.pose.orientation.w) || !isfinite(p.pose.orientation.x) ||

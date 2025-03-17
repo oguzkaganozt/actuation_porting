@@ -22,7 +22,7 @@ template <class T>
 T getParameter(Node & node, const std::string & name)
 {
   if (node.has_parameter(name)) {
-    return node.get_parameter(name).get_value<T>();
+    return node.get_parameter<T>(name);
   }
 
   try {
