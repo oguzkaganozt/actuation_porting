@@ -4,11 +4,16 @@
 #include <stdio.h>
 #include <unistd.h>
 
+int a = 0;
 int main(void)
 {   
     while (1) {
-        fprintf(stderr, "Hello World\n");
-        fprintf(stderr, "This is actuation autoware\n");
+        a++;
+        int c = a;
+        c++;
+        printf("Hello World\n");
+        printf("a: %d\n", c);
+        printf("a: %d\n", a);
         sleep(1);
     }
 
