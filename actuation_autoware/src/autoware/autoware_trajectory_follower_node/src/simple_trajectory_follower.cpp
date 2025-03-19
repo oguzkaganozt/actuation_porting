@@ -26,8 +26,8 @@ using autoware::motion_utils::findNearestIndex;
 using autoware::universe_utils::calcLateralDeviation;
 using autoware::universe_utils::calcYawDeviation;
 
-SimpleTrajectoryFollower::SimpleTrajectoryFollower(const rclcpp::NodeOptions & options)
-: Node("simple_trajectory_follower", options)
+SimpleTrajectoryFollower::SimpleTrajectoryFollower()
+: Node("simple_trajectory_follower")
 {
   pub_cmd_ = create_publisher<Control>("output/control_cmd", 1);
 
@@ -36,7 +36,7 @@ SimpleTrajectoryFollower::SimpleTrajectoryFollower(const rclcpp::NodeOptions & o
   lateral_deviation_ = declare_parameter<float>("lateral_deviation");
 
   using namespace std::literals::chrono_literals;
-  timer_ = rclcpp::create_timer(
+  timer_ = node.create_timer(
     this, get_clock(), 30ms, std::bind(&SimpleTrajectoryFollower::onTimer, this));
 }
 
@@ -121,5 +121,3 @@ bool SimpleTrajectoryFollower::processData()
 
 }  // namespace simple_trajectory_follower
 
-#include <rclcpp_components/register_node_macro.hpp>
-RCLCPP_COMPONENTS_REGISTER_NODE(simple_trajectory_follower::SimpleTrajectoryFollower)

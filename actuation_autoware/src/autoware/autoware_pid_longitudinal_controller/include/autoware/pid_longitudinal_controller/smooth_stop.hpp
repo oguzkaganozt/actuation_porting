@@ -15,7 +15,7 @@
 #ifndef AUTOWARE__PID_LONGITUDINAL_CONTROLLER__SMOOTH_STOP_HPP_
 #define AUTOWARE__PID_LONGITUDINAL_CONTROLLER__SMOOTH_STOP_HPP_
 
-#include <experimental/optional>  // NOLINT
+#include <optional>  // NOLINT // TODO: check if this is needed
 
 #include <algorithm>
 #include <cmath>
@@ -62,11 +62,11 @@ public:
   /**
    * @brief predict time when car stops by fitting some latest observed velocity history
    *        with linear function (v = at + b)
-   * @param [in] vel_hist history of previous ego velocities as (rclcpp::Time, double[m/s]) pairs
+   * @param [in] vel_hist history of previous ego velocities as (double[s], double[m/s]) pairs
    * @throw std::runtime_error if parameters have not been set
    */
-  std::experimental::optional<double> calcTimeToStop(
-    const std::vector<std::pair<rclcpp::Time, double>> & vel_hist) const;
+  std::optional<double> calcTimeToStop(
+    const std::vector<std::pair<double, double>> & vel_hist) const;
 
   /**
    * @brief calculate accel command while stopping
@@ -77,13 +77,13 @@ public:
    * @param [in] stop_dist distance left to travel before stopping [m]
    * @param [in] current_vel current velocity of ego [m/s]
    * @param [in] current_acc current acceleration of ego [m/s²]
-   * @param [in] vel_hist history of previous ego velocities as (rclcpp::Time, double[m/s]) pairs
+   * @param [in] vel_hist history of previous ego velocities as (double[s], double[m/s]) pairs
    * @param [in] delay_time assumed time delay when the stop command will actually be executed
    * @throw std::runtime_error if parameters have not been set
    */
   double calculate(
     const double stop_dist, const double current_vel, const double current_acc,
-    const std::vector<std::pair<rclcpp::Time, double>> & vel_hist, const double delay_time);
+    const std::vector<std::pair<double, double>> & vel_hist, const double delay_time);
 
 private:
   struct Params
@@ -105,7 +105,7 @@ private:
   Params m_params;
 
   double m_strong_acc;
-  rclcpp::Time m_weak_acc_time;
+  double m_weak_acc_time;
   bool m_is_set_params = false;
 };
 }  // namespace autoware::motion::control::pid_longitudinal_controller

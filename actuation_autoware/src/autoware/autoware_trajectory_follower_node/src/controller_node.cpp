@@ -112,7 +112,7 @@ Controller::Controller() : Node("controller")
   {
     const auto period_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double>(ctrl_period));
-    timer_control_ = rclcpp::create_timer(
+    timer_control_ = node.create_timer( //TODO: check working as expected
       this, get_clock(), period_ns, std::bind(&Controller::callbackTimerControl, this));
   }
 
@@ -139,7 +139,7 @@ Controller::LongitudinalControllerMode Controller::getLongitudinalControllerMode
   return LongitudinalControllerMode::INVALID;
 }
 
-bool Controller::processData(rclcpp::Clock & clock)
+bool Controller::processData()
 {
   bool is_ready = true;
 
@@ -187,7 +187,7 @@ bool Controller::isTimeOut(
   return false;
 }
 
-boost::optional<trajectory_follower::InputData> Controller::createInputData(rclcpp::Clock & clock)
+std::optional<trajectory_follower::InputData> Controller::createInputData()
 {
   if (!processData(clock)) {
     return {};
@@ -299,7 +299,7 @@ void Controller::publishProcessingTime(
 
 std::optional<ControlHorizon> Controller::mergeLatLonHorizon(
   const LateralHorizon & lateral_horizon, const LongitudinalHorizon & longitudinal_horizon,
-  const rclcpp::Time & stamp)
+  const double & stamp)
 {
   if (lateral_horizon.controls.empty() || longitudinal_horizon.controls.empty()) {
     return std::nullopt;
@@ -368,5 +368,3 @@ std::optional<ControlHorizon> Controller::mergeLatLonHorizon(
 
 }  // namespace autoware::motion::control::trajectory_follower_node
 
-#include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(autoware::motion::control::trajectory_follower_node::Controller)

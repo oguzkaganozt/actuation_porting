@@ -15,25 +15,25 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_NODE__SIMPLE_TRAJECTORY_FOLLOWER_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_NODE__SIMPLE_TRAJECTORY_FOLLOWER_HPP_
 
-#include "autoware/universe_utils/ros/polling_subscriber.hpp"
-
-#include <autoware_control_msgs/msg/control.hpp>
-#include <autoware_planning_msgs/msg/trajectory.hpp>
-#include <autoware_planning_msgs/msg/trajectory_point.hpp>
-#include <geometry_msgs/msg/pose.hpp>
-#include <geometry_msgs/msg/twist.hpp>
-#include <nav_msgs/msg/odometry.hpp>
 
 #include <memory>
 
+//Msgs
+#include "Control.h"
+#include "Trajectory.h"
+#include "TrajectoryPoint.h"
+#include "Pose.h"
+#include "Twist.h"
+#include "Odometry.h"
+
 namespace simple_trajectory_follower
 {
-using autoware_control_msgs::msg::Control;
-using autoware_planning_msgs::msg::Trajectory;
-using autoware_planning_msgs::msg::TrajectoryPoint;
-using geometry_msgs::msg::Pose;
-using geometry_msgs::msg::Twist;
-using nav_msgs::msg::Odometry;
+using ControlMsg = autoware_control_msgs_msg_Control;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+using PoseMsg = geometry_msgs_msg_Pose;
+using TwistMsg = geometry_msgs_msg_Twist;
+using OdometryMsg = nav_msgs_msg_Odometry;
 
 class SimpleTrajectoryFollower : public Node
 {
@@ -42,15 +42,13 @@ public:
   ~SimpleTrajectoryFollower() = default;
 
 private:
-  autoware::universe_utils::InterProcessPollingSubscriber<Odometry> sub_kinematics_{
-    this, "~/input/kinematics"};
-  autoware::universe_utils::InterProcessPollingSubscriber<Trajectory> sub_trajectory_{
-    this, "~/input/trajectory"};
-  std::shared_ptr<Publisher<Control>> pub_cmd_;
+  std::shared_ptr<Subscriber<OdometryMsg>> sub_kinematics_;
+  std::shared_ptr<Subscriber<TrajectoryMsg>> sub_trajectory_;
+  std::shared_ptr<Publisher<ControlMsg>> pub_cmd_;
 
-  Trajectory::ConstSharedPtr trajectory_;
-  Odometry::ConstSharedPtr odometry_;
-  TrajectoryPoint closest_traj_point_;
+  std::shared_ptr<TrajectoryMsg> trajectory_;
+  std::shared_ptr<OdometryMsg> odometry_;
+  std::shared_ptr<TrajectoryPointMsg> closest_traj_point_;
   bool use_external_target_vel_;
   double external_target_vel_;
   double lateral_deviation_;

@@ -14,7 +14,7 @@
 
 #include "autoware/pid_longitudinal_controller/longitudinal_controller_utils.hpp"
 
-#include <experimental/optional>  // NOLINT
+#include <optional>  // NOLINT // TODO: check if this is needed
 #include <utility>
 #include <algorithm>
 #include <limits>
@@ -24,7 +24,7 @@ namespace autoware::motion::control::pid_longitudinal_controller
 namespace longitudinal_utils
 {
 
-bool isValidTrajectory(const Trajectory & traj)
+bool isValidTrajectory(const TrajectoryMsg & traj)
 {
   for (const auto & p : traj.points) {
     if (
@@ -47,7 +47,7 @@ bool isValidTrajectory(const Trajectory & traj)
 }
 
 double calcStopDistance(
-  const Pose & current_pose, const Trajectory & traj, const double max_dist, const double max_yaw)
+  const PoseMsg & current_pose, const TrajectoryMsg & traj, const double max_dist, const double max_yaw)
 {
   const auto stop_idx_opt = autoware::motion_utils::searchZeroVelocityIndex(traj.points);
 
@@ -64,18 +64,19 @@ double calcStopDistance(
   return signed_length_on_traj;
 }
 
-double getPitchByPose(const Quaternion & quaternion_msg)
+double getPitchByPose(const QuaternionMsg & quaternion_msg)
 {
   double roll, pitch, yaw;
-  tf2::Quaternion quaternion;
-  tf2::fromMsg(quaternion_msg, quaternion);
-  tf2::Matrix3x3{quaternion}.getRPY(roll, pitch, yaw);
+  // TODO: implement this
+  // tf2::Quaternion quaternion;
+  // tf2::fromMsg(quaternion_msg, quaternion);
+  // tf2::Matrix3x3{quaternion}.getRPY(roll, pitch, yaw);
 
   return pitch;
 }
 
 double getPitchByTraj(
-  const Trajectory & trajectory, const size_t start_idx, const double wheel_base)
+  const TrajectoryMsg & trajectory, const size_t start_idx, const double wheel_base)
 {
   // cannot calculate pitch
   if (trajectory.points.size() <= 1) {
@@ -100,8 +101,8 @@ double getPitchByTraj(
     trajectory.points.at(prev_idx).pose.position, trajectory.points.at(next_idx).pose.position);
 }
 
-Pose calcPoseAfterTimeDelay(
-  const Pose & current_pose, const double delay_time, const double current_vel,
+PoseMsg calcPoseAfterTimeDelay(
+  const PoseMsg & current_pose, const double delay_time, const double current_vel,
   const double current_acc)
 {
   if (delay_time <= 0.0) {
@@ -150,12 +151,12 @@ double applyDiffLimitFilter(
   return applyDiffLimitFilter(input_val, prev_val, dt, max_val, min_val);
 }
 
-geometry_msgs::msg::Pose findTrajectoryPoseAfterDistance(
+PoseMsg findTrajectoryPoseAfterDistance(
   const size_t src_idx, const double distance,
-  const autoware_planning_msgs::msg::Trajectory & trajectory)
+  const TrajectoryMsg & trajectory)
 {
   double remain_dist = distance;
-  geometry_msgs::msg::Pose p = trajectory.points.back().pose;
+  PoseMsg p = trajectory.points.back().pose;
   for (size_t i = src_idx; i < trajectory.points.size() - 1; ++i) {
     const double dist = autoware::universe_utils::calcDistance3d(
       trajectory.points.at(i).pose, trajectory.points.at(i + 1).pose);

@@ -192,12 +192,54 @@ template <class T>
 T removeOverlapPoints(const T & points, const size_t start_idx = 0)
 {
   if (points.size() < start_idx + 1) {
-    return points;
+    // Create a new empty sequence but with the same capacity as the original
+    T result(points.size());
+    // Copy all data from the original points
+    for (size_t i = 0; i < points.size(); ++i) {
+      result.push_back(points.at(i));
+    }
+    return result;
   }
 
-  T dst;
-  dst.reserve(points.size());
+  T dst(points.size());  // Create with capacity
+  
+  for (size_t i = 0; i <= start_idx; ++i) {
+    dst.push_back(points.at(i));
+  }
 
+  constexpr double eps = 1.0E-08;
+  for (size_t i = start_idx + 1; i < points.size(); ++i) {
+    const auto prev_p = autoware::universe_utils::getPoint(dst.back());
+    const auto curr_p = autoware::universe_utils::getPoint(points.at(i));
+    if (std::abs(prev_p.x - curr_p.x) < eps && std::abs(prev_p.y - curr_p.y) < eps) {
+      continue;
+    }
+    dst.push_back(points.at(i));
+  }
+
+  return dst;
+}
+
+// Specialization for Sequence<const T> types
+template <class T>
+auto removeOverlapPoints(const Sequence<const T> & points, const size_t start_idx = 0)
+{
+  // For const sequences, convert to a non-const sequence type
+  using NonConstType = typename std::remove_const<T>::type;
+  using ResultType = Sequence<NonConstType>;
+  
+  if (points.size() < start_idx + 1) {
+    // Create a new empty sequence but with the same capacity as the original
+    ResultType result(points.size());
+    // Copy all data from the original points
+    for (size_t i = 0; i < points.size(); ++i) {
+      result.push_back(points.at(i));
+    }
+    return result;
+  }
+
+  ResultType dst(points.size());  // Create with capacity
+  
   for (size_t i = 0; i <= start_idx; ++i) {
     dst.push_back(points.at(i));
   }
@@ -251,7 +293,47 @@ double calcLongitudinalOffsetToSegment(
     return std::nan("");
   }
 
-  // TODO: Try with std::move(removeOverlapPoints(points, seg_idx))
+  const auto overlap_removed_points = removeOverlapPoints(points, seg_idx);
+
+  try {
+    validateNonEmpty(overlap_removed_points);
+  } catch (const std::exception & e) {
+    fprintf(stderr, "Trajectory: Error: %s", e.what());
+    return std::nan("");
+  }
+
+  if (seg_idx >= overlap_removed_points.size() - 1) {
+    const std::string error_message(
+      "[autoware_motion_utils] " + std::string(__func__) +
+      ": Longitudinal offset calculation is not supported for the same points.");
+    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    return std::nan("");
+  }
+
+  const auto p_front = autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx));
+  const auto p_back = autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx + 1));
+
+  const Eigen::Vector3d segment_vec{p_back.x - p_front.x, p_back.y - p_front.y, 0};
+  const Eigen::Vector3d target_vec{p_target.x - p_front.x, p_target.y - p_front.y, 0};
+
+  return segment_vec.dot(target_vec) / segment_vec.norm();
+}
+
+// Specialization for Sequence<const T> types
+template <class T>
+double calcLongitudinalOffsetToSegment(
+  const Sequence<const T> & points, const size_t seg_idx, const PointMsg & p_target,
+  const bool throw_exception = false)
+{
+  if (seg_idx >= points.size() - 1) {
+    const std::string error_message(
+      "[autoware_motion_utils] " + std::string(__func__) +
+      ": Failed to calculate longitudinal offset because the given segment index is out of the "
+      "points size.");
+    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    return std::nan("");
+  }
+
   const auto overlap_removed_points = removeOverlapPoints(points, seg_idx);
 
   try {

@@ -24,17 +24,6 @@
 #include "autoware/universe_utils/ros/marker_helper.hpp"
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
 
-#include <Eigen/Core>
-#include <Eigen/Geometry>
-
-#include "autoware_adapi_v1_msgs/msg/operation_mode_state.hpp"
-#include "autoware_control_msgs/msg/longitudinal.hpp"
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "geometry_msgs/msg/pose_stamped.hpp"
-#include "nav_msgs/msg/odometry.hpp"
-#include "tier4_debug_msgs/msg/float32_multi_array_stamped.hpp"
-#include "visualization_msgs/msg/marker.hpp"
-
 #include <deque>
 #include <memory>
 #include <optional>
@@ -42,13 +31,27 @@
 #include <utility>
 #include <vector>
 
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
+// Msgs
+#include "Trajectory.h"
+#include "OperationModeState.h"
+#include "Marker.h"
+#include "Odometry.h"
+#include "Longitudinal.h"
+#include "Float32MultiArrayStamped.h"
+#include "PoseStamped.h"
+
 namespace autoware::motion::control::pid_longitudinal_controller
 {
-using autoware::universe_utils::createDefaultMarker;
-using autoware::universe_utils::createMarkerColor;
-using autoware::universe_utils::createMarkerScale;
-using autoware_adapi_v1_msgs::msg::OperationModeState;
-using visualization_msgs::msg::Marker;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
+using MarkerMsg = visualization_msgs_msg_Marker;
+using OdometryMsg = nav_msgs_msg_Odometry;
+using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
+using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
+using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
 
 namespace trajectory_follower = ::autoware::motion::control::trajectory_follower;
 
@@ -93,22 +96,22 @@ private:
   };
   
   // ros variables
-  std::shared_ptr<Publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>> m_pub_slope;
-  std::shared_ptr<Publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>> m_pub_debug;
-  std::shared_ptr<Publisher<Marker>> m_pub_stop_reason_marker;
+  std::shared_ptr<Publisher<Float32MultiArrayStampedMsg>> m_pub_slope;
+  std::shared_ptr<Publisher<Float32MultiArrayStampedMsg>> m_pub_debug;
+  std::shared_ptr<Publisher<MarkerMsg>> m_pub_stop_reason_marker;
 
   // pointers for ros topic
-  nav_msgs::msg::Odometry m_current_kinematic_state;
-  geometry_msgs::msg::AccelWithCovarianceStamped m_current_accel;
-  autoware_planning_msgs::msg::Trajectory m_trajectory;
-  OperationModeState m_current_operation_mode;
+  OdometryMsg m_current_kinematic_state;
+  AccelWithCovarianceStampedMsg m_current_accel;
+  TrajectoryMsg m_trajectory;
+  OperationModeStateMsg m_current_operation_mode;
 
   // vehicle info
   double m_wheel_base{0.0};
   double m_vehicle_width{0.0};
   double m_front_overhang{0.0};
   bool m_prev_vehicle_is_under_control{false};
-  std::shared_ptr<rclcpp::Time> m_under_control_starting_time{nullptr};
+  double m_under_control_starting_time{0.0};
 
   // control state
   enum class ControlState { DRIVE = 0, STOPPING, STOPPED, EMERGENCY };
@@ -209,10 +212,10 @@ private:
   double m_ego_nearest_yaw_threshold;
 
   // buffer of send command
-  std::vector<autoware_control_msgs::msg::Longitudinal> m_ctrl_cmd_vec;
+  std::vector<LongitudinalMsg> m_ctrl_cmd_vec;
 
   // for calculating dt
-  std::shared_ptr<rclcpp::Time> m_prev_control_time{nullptr};
+  double m_prev_control_time{0.0};
 
   // shift mode
   Shift m_prev_shift{Shift::Forward};
@@ -220,14 +223,14 @@ private:
   // diff limit
   Motion m_prev_ctrl_cmd{};      // with slope compensation
   Motion m_prev_raw_ctrl_cmd{};  // without slope compensation
-  std::vector<std::pair<rclcpp::Time, double>> m_vel_hist;
+  std::vector<std::pair<double, double>> m_vel_hist;
 
   // debug values
   DebugValues m_debug_values;
 
   std::optional<bool> m_prev_keep_stopped_condition{std::nullopt};
 
-  std::shared_ptr<rclcpp::Time> m_last_running_time{std::make_shared<rclcpp::Time>(clock_->now())};
+  double m_last_running_time{0.0};
 
   struct ResultWithReason
   {
@@ -239,25 +242,25 @@ private:
    * @brief set current and previous velocity with received message
    * @param [in] msg current state message
    */
-  void setKinematicState(const nav_msgs::msg::Odometry & msg);
+  void setKinematicState(const OdometryMsg & msg);
 
   /**
    * @brief set current acceleration with received message
    * @param [in] msg trajectory message
    */
-  void setCurrentAcceleration(const geometry_msgs::msg::AccelWithCovarianceStamped & msg);
+  void setCurrentAcceleration(const AccelWithCovarianceStampedMsg & msg);
 
   /**
    * @brief set current operation mode with received message
    * @param [in] msg operation mode report message
    */
-  void setCurrentOperationMode(const OperationModeState & msg);
+  void setCurrentOperationMode(const OperationModeStateMsg & msg);
 
   /**
    * @brief set reference trajectory with received message
    * @param [in] msg trajectory message
    */
-  void setTrajectory(const autoware_planning_msgs::msg::Trajectory & msg);
+  void setTrajectory(const TrajectoryMsg & msg);
 
   bool isReady(const trajectory_follower::InputData & input_data) override;
 
@@ -271,7 +274,7 @@ private:
    * @brief calculate data for controllers whose type is ControlData
    * @param [in] current_pose current ego pose
    */
-  ControlData getControlData(const geometry_msgs::msg::Pose & current_pose);
+  ControlData getControlData(const PoseMsg & current_pose);
 
   /**
    * @brief calculate control command in emergency state
@@ -367,8 +370,8 @@ private:
    */
   std::pair<autoware_planning_msgs::msg::TrajectoryPoint, size_t>
   calcInterpolatedTrajPointAndSegment(
-    const autoware_planning_msgs::msg::Trajectory & traj,
-    const geometry_msgs::msg::Pose & pose) const;
+    const TrajectoryMsg & traj,
+    const PoseMsg & pose) const;
 
   /**
    * @brief calculate predicted velocity after time delay based on past control commands

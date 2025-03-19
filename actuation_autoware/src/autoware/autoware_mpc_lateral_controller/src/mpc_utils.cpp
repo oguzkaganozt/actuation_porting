@@ -279,7 +279,10 @@ MPCTrajectory convertToMPCTrajectory(const TrajectoryMsg & input)
 TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 {
   TrajectoryMsg output;
+  auto sequence_output_points = wrap(output.points);
+  sequence_output_points.reserve(input.size()/2);
   TrajectoryPointMsg p;
+  
   for (size_t i = 0; i < input.size(); ++i) {
     p.pose.position.x = input.x.at(i);
     p.pose.position.y = input.y.at(i);
@@ -287,8 +290,8 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
     p.pose.orientation = autoware::universe_utils::createQuaternionFromYaw(input.yaw.at(i));
     p.longitudinal_velocity_mps =
       static_cast<decltype(p.longitudinal_velocity_mps)>(input.vx.at(i));
-    output.points.push_back(p);
-    if (output.points.size() == output.points.max_size()) {
+    sequence_output_points.push_back(p);
+    if (sequence_output_points.size() == sequence_output_points.max_size()) {
       break;
     }
   }
@@ -342,13 +345,14 @@ bool calcNearestPoseInterp(
   }
 
   const auto autoware_traj = convertToAutowareTrajectory(traj);
-  if (autoware_traj.points.empty()) {
+  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  if (sequence_autoware_traj_points.empty()) {
     warn_throttle("[calcNearestPoseInterp] input trajectory is empty");
     return false;
   }
 
   *nearest_index = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
-    autoware_traj.points, self_pose, max_dist, max_yaw);
+    sequence_autoware_traj_points, self_pose, max_dist, max_yaw);
   const size_t traj_size = traj.size();
 
   if (traj.size() == 1) {
@@ -415,16 +419,18 @@ bool calcNearestPoseInterp(
 
 double calcStopDistance(const TrajectoryMsg & current_trajectory, const int origin)
 {
+  auto sequence_current_trajectory_points = wrap(current_trajectory.points);
+
   constexpr float zero_velocity = std::numeric_limits<float>::epsilon();
   const float origin_velocity =
-    current_trajectory.points.at(static_cast<size_t>(origin)).longitudinal_velocity_mps;
+    sequence_current_trajectory_points.at(static_cast<size_t>(origin)).longitudinal_velocity_mps;
   double stop_dist = 0.0;
 
   // search forward
   if (std::fabs(origin_velocity) > zero_velocity) {
-    for (int i = origin + 1; i < static_cast<int>(current_trajectory.points.size()) - 1; ++i) {
-      const auto & p0 = current_trajectory.points.at(i);
-      const auto & p1 = current_trajectory.points.at(i - 1);
+    for (int i = origin + 1; i < static_cast<int>(sequence_current_trajectory_points.size()) - 1; ++i) {
+      const auto & p0 = sequence_current_trajectory_points.at(i);
+      const auto & p1 = sequence_current_trajectory_points.at(i - 1);
       stop_dist += calcDistance2d(p0, p1);
       if (std::fabs(p0.longitudinal_velocity_mps) < zero_velocity) {
         break;
@@ -435,8 +441,8 @@ double calcStopDistance(const TrajectoryMsg & current_trajectory, const int orig
 
   // search backward
   for (int i = origin - 1; 0 < i; --i) {
-    const auto & p0 = current_trajectory.points.at(i);
-    const auto & p1 = current_trajectory.points.at(i + 1);
+    const auto & p0 = sequence_current_trajectory_points.at(i);
+    const auto & p1 = sequence_current_trajectory_points.at(i + 1);
     if (std::fabs(p0.longitudinal_velocity_mps) > zero_velocity) {
       break;
     }
@@ -453,7 +459,8 @@ void extendTrajectoryInYawDirection(
 
   // get terminal pose
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(traj);
-  auto extended_pose = autoware_traj.points.back().pose;
+  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  auto extended_pose = sequence_autoware_traj_points.back().pose;
 
   constexpr double extend_dist = 10.0;
   constexpr double extend_vel = 10.0;
@@ -483,6 +490,24 @@ MPCTrajectory clipTrajectoryByLength(const MPCTrajectory & trajectory, const dou
   }
 
   return clipped_trajectory;
+}
+
+void info_throttle(const char * msg)
+{
+  static int counter = 0;
+  if (counter % CONFIG_RCLCPP_THROTTLE_RATE_INFO == 0) {
+    printf("%s", msg);
+  }
+  counter++;
+}
+
+void warn_throttle(const char * msg)
+{
+  static int counter = 0;
+  if (counter % CONFIG_RCLCPP_THROTTLE_RATE_WARN == 0) {
+    fprintf(stderr, "%s", msg);
+  }
+  counter++;
 }
 
 }  // namespace MPCUtils

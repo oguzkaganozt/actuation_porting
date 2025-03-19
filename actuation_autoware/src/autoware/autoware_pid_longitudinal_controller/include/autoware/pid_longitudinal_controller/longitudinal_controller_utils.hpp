@@ -20,27 +20,30 @@
 #include "autoware/motion_utils/trajectory/conversion.hpp"
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 
-#include <Eigen/Core>
-#include <Eigen/Geometry>
-#include <experimental/optional>  // NOLINT
-
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "geometry_msgs/msg/pose.hpp"
-
 #include <cmath>
 #include <limits>
 #include <utility>
+
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <optional>  // NOLINT // TODO: check if this is needed
+
+// Msgs
+#include "Trajectory.h"
+#include "Pose.h"
+#include "Point.h"
+#include "Quaternion.h"
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
 namespace longitudinal_utils
 {
 
-using autoware_planning_msgs::msg::Trajectory;
-using autoware_planning_msgs::msg::TrajectoryPoint;
-using geometry_msgs::msg::Point;
-using geometry_msgs::msg::Pose;
-using geometry_msgs::msg::Quaternion;
+using PointMsg = geometry_msgs_msg_Point;
+using PoseMsg = geometry_msgs_msg_Pose;
+using QuaternionMsg = geometry_msgs_msg_Quaternion;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
 
 /**
  * @brief check if trajectory is invalid or not
@@ -51,12 +54,12 @@ bool isValidTrajectory(const Trajectory & traj);
  * @brief calculate distance to stopline from current vehicle position where velocity is 0
  */
 double calcStopDistance(
-  const Pose & current_pose, const Trajectory & traj, const double max_dist, const double max_yaw);
+  const PoseMsg & current_pose, const TrajectoryMsg & traj, const double max_dist, const double max_yaw);
 
 /**
  * @brief calculate pitch angle from estimated current pose
  */
-double getPitchByPose(const Quaternion & quaternion);
+double getPitchByPose(const QuaternionMsg & quaternion);
 
 /**
  * @brief calculate pitch angle from trajectory on map
@@ -66,14 +69,14 @@ double getPitchByPose(const Quaternion & quaternion);
  * @param [in] wheel_base length of wheel base
  */
 double getPitchByTraj(
-  const Trajectory & trajectory, const size_t start_idx, const double wheel_base);
+  const TrajectoryMsg & trajectory, const size_t start_idx, const double wheel_base);
 
 /**
  * @brief calculate vehicle pose after time delay by moving the vehicle at current velocity and
  * acceleration for delayed time
  */
-Pose calcPoseAfterTimeDelay(
-  const Pose & current_pose, const double delay_time, const double current_vel,
+PoseMsg calcPoseAfterTimeDelay(
+  const PoseMsg & current_pose, const double delay_time, const double current_vel,
   const double current_acc);
 
 /**
@@ -83,7 +86,7 @@ Pose calcPoseAfterTimeDelay(
  */
 template <class T>
 std::pair<TrajectoryPoint, size_t> lerpTrajectoryPoint(
-  const T & points, const Pose & pose, const double max_dist, const double max_yaw)
+  const T & points, const PoseMsg & pose, const double max_dist, const double max_yaw)
 {
   TrajectoryPoint interpolated_point;
   const size_t seg_idx = autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
@@ -148,9 +151,9 @@ double applyDiffLimitFilter(
  * @param [in] distance distance to project
  * @param [in] trajectory reference trajectory
  */
-geometry_msgs::msg::Pose findTrajectoryPoseAfterDistance(
+PoseMsg findTrajectoryPoseAfterDistance(
   const size_t src_idx, const double distance,
-  const autoware_planning_msgs::msg::Trajectory & trajectory);
+  const TrajectoryMsg & trajectory);
 
 }  // namespace longitudinal_utils
 }  // namespace autoware::motion::control::pid_longitudinal_controller

@@ -146,12 +146,13 @@ void MPC::setReferenceTrajectory(
   const TrajectoryMsg & trajectory_msg, const TrajectoryFilteringParam & param,
   const OdometryMsg & current_kinematics)
 {
+  auto sequence_trajectory_msg_points = wrap(trajectory_msg.points);
   const size_t nearest_seg_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
-      trajectory_msg.points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
+      sequence_trajectory_msg_points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
       ego_nearest_yaw_threshold);
   const double ego_offset_to_segment = autoware::motion_utils::calcLongitudinalOffsetToSegment(
-    trajectory_msg.points, nearest_seg_idx, current_kinematics.pose.pose.position);
+    sequence_trajectory_msg_points, nearest_seg_idx, current_kinematics.pose.pose.position);
 
   const auto mpc_traj_raw = MPCUtils::convertToMPCTrajectory(trajectory_msg);
 
@@ -368,13 +369,14 @@ MPCTrajectory MPC::applyVelocityDynamicsFilter(
   const MPCTrajectory & input, const OdometryMsg & current_kinematics) const
 {
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
-  if (autoware_traj.points.empty()) {
+  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  if (sequence_autoware_traj_points.empty()) {
     return input;
   }
 
   const size_t nearest_seg_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
-      autoware_traj.points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
+      sequence_autoware_traj_points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
       ego_nearest_yaw_threshold);
 
   MPCTrajectory output = input;
@@ -573,7 +575,7 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   }
 
   {
-    auto t = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start).count();
+    auto t = t_end - t_start;
     fprintf(stderr, "MPC: qp solver calculation time = %ld [ms]", t);
   }
 
@@ -657,8 +659,9 @@ double MPC::getPredictionDeltaTime(
 {
   // Calculate the time min_prediction_length ahead from current_pose
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
+  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
   const size_t nearest_idx = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
-    autoware_traj.points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
+    sequence_autoware_traj_points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
     ego_nearest_yaw_threshold);
   double sum_dist = 0;
   const double target_time = [&]() {

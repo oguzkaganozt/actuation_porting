@@ -23,10 +23,11 @@ private:
     static_assert(std::is_pointer_v<decltype(T::_buffer)>, "_buffer member must be a pointer type");
     
     T* sequence;
+    bool owns_sequence;
     
     // Check and potentially grow the buffer
     bool ensure_capacity(size_t required_capacity) {
-        if (!sequence) {
+        if (!sequence || !sequence->_buffer) {
             fprintf(stderr, "Invalid sequence state\n");
             std::exit(EXIT_FAILURE);
         }
@@ -83,27 +84,71 @@ public:
     using const_reference = const value_type&;
     using size_type = size_t;
     
-    // Constructor that wraps an existing sequence
-    explicit Sequence(T& seq) : sequence(&seq) {
-        // Just wrap the sequence, no ownership
+    // Non-owning constructor
+    explicit Sequence(T& seq) : sequence(&seq), owns_sequence(false) {
+        assert(sequence != nullptr && "Sequence pointer cannot be null");
     }
     
-    // Constructor that wraps an existing sequence pointer
-    explicit Sequence(T* seq) : sequence(seq) {
+    // Owning constructor with initial capacity
+    explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) : sequence(static_cast<T*>(malloc(sizeof(T)))), owns_sequence(true) {
         if (!sequence) {
-            fprintf(stderr, "Cannot wrap a null sequence pointer\n");
+            fprintf(stderr, "Failed to allocate memory for sequence struct\n");
             std::exit(EXIT_FAILURE);
+        }
+        sequence->_buffer = nullptr;
+        sequence->_length = 0;
+        sequence->_maximum = 0;
+        if (!ensure_capacity(initial_capacity)) {
+            // If buffer allocation fails, clean up and flag as non-owning
+            free(sequence);
+            sequence = nullptr;
+            owns_sequence = false;
         }
     }
     
-    // Deleted copy and move operations to avoid ownership confusion
-    Sequence(const Sequence&) = delete;
-    Sequence& operator=(const Sequence&) = delete;
-    Sequence(Sequence&&) = delete;
-    Sequence& operator=(Sequence&&) = delete;
+    // Destructor //TODO: Check if this is correct
+    ~Sequence() {
+        if (owns_sequence && sequence) {
+            if (sequence->_buffer) {
+                free(const_cast<void*>(static_cast<const void*>(sequence->_buffer)));
+            }
+            free(const_cast<void*>(static_cast<const void*>(sequence)));
+        }
+    }
+    
+    // Delete copy operations
+    Sequence(const Sequence& other) = delete;
+    Sequence& operator=(const Sequence& other) = delete;
 
+    // Add move operations
+    Sequence(Sequence&& other) noexcept : sequence(other.sequence), owns_sequence(other.owns_sequence) {
+        // Transfer ownership
+        other.sequence = nullptr;
+        other.owns_sequence = false;
+    }
+
+    Sequence& operator=(Sequence&& other) noexcept {
+        if (this != &other) {
+            // Clean up our resources first
+            if (owns_sequence && sequence) {
+                if (sequence->_buffer) {
+                    free(sequence->_buffer);
+                }
+                free(sequence);
+            }
+            
+            // Transfer ownership
+            sequence = other.sequence;
+            owns_sequence = other.owns_sequence;
+            other.sequence = nullptr;
+            other.owns_sequence = false;
+        }
+        return *this;
+    }
+    
     // Basic operations
     size_type size() const noexcept { return sequence ? sequence->_length : 0; }
+    size_type max_size() const noexcept { return MAX_SEQUENCE_SIZE; }
     bool empty() const noexcept { return !sequence || sequence->_length == 0; }
     size_type capacity() const noexcept { return sequence ? sequence->_maximum : 0; }
 
@@ -207,35 +252,52 @@ public:
     void clear() { if (sequence) sequence->_length = 0; }
     
     bool push_back(const value_type& value) {
-        if (!sequence) {
-            fprintf(stderr, "Invalid sequence\n");
-            std::exit(EXIT_FAILURE);
-        }
-        
-        // Ensure we have capacity - will allocate if needed
-        if (!ensure_capacity(sequence->_length + 1)) {
+        if (!sequence || !ensure_capacity(sequence->_length + 1)) {
             fprintf(stderr, "Failed to push_back() - copy\n");
             std::exit(EXIT_FAILURE);
         }
-        
         sequence->_buffer[sequence->_length++] = value;
         return true;
     }
     
     // Add move-enabled push_back for better performance with movable types
     bool push_back(value_type&& value) {
+        if (!sequence || !ensure_capacity(sequence->_length + 1)) {
+            fprintf(stderr, "Failed to push_back() - move\n");
+            std::exit(EXIT_FAILURE);
+        }
+        sequence->_buffer[sequence->_length++] = std::move(value);
+        return true;
+    }
+    
+    bool pop_back() {
+        if (!sequence || sequence->_length == 0) {
+            fprintf(stderr, "Cannot pop_back() from empty sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        sequence->_length--;
+        return true;
+    }
+    
+    bool resize(size_type new_size) {
         if (!sequence) {
             fprintf(stderr, "Invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         
-        // Ensure we have capacity - will allocate if needed
-        if (!ensure_capacity(sequence->_length + 1)) {
-            fprintf(stderr, "Failed to push_back() - move\n");
+        if (new_size > sequence->_maximum && !ensure_capacity(new_size)) {
+            fprintf(stderr, "Failed to resize sequence\n");
             std::exit(EXIT_FAILURE);
         }
         
-        sequence->_buffer[sequence->_length++] = std::move(value);
+        // If growing, initialize new elements to default value
+        if (new_size > sequence->_length) {
+            for (size_type i = sequence->_length; i < new_size; ++i) {
+                sequence->_buffer[i] = value_type{};
+            }
+        }
+        
+        sequence->_length = new_size;
         return true;
     }
 
@@ -273,9 +335,178 @@ public:
     }
 };
 
+// Specialization for const types
+template<typename T>
+class Sequence<const T> {
+private:
+    const T* sequence;
+    bool owns_sequence;
+
+public:
+    using value_type = typename std::remove_pointer<decltype(T::_buffer)>::type;
+    using reference = const value_type&;
+    using const_reference = const value_type&;
+    using size_type = size_t;
+    
+    // Non-owning constructor
+    explicit Sequence(const T& seq) : sequence(&seq), owns_sequence(false) {
+        assert(sequence != nullptr && "Sequence pointer cannot be null");
+    }
+    
+    // Owning constructor with initial capacity - NOT supported for const types
+    explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) : sequence(nullptr), owns_sequence(false) {
+        fprintf(stderr, "Cannot create owning Sequence with const type\n");
+        std::exit(EXIT_FAILURE);
+    }
+    
+    // Destructor - only delete non-const data
+    ~Sequence() {
+        // No memory management for const types
+    }
+    
+    // Delete copy operations
+    Sequence(const Sequence& other) = delete;
+    Sequence& operator=(const Sequence& other) = delete;
+
+    // Add move operations
+    Sequence(Sequence&& other) noexcept : sequence(other.sequence), owns_sequence(other.owns_sequence) {
+        // Transfer ownership
+        other.sequence = nullptr;
+        other.owns_sequence = false;
+    }
+
+    Sequence& operator=(Sequence&& other) noexcept {
+        if (this != &other) {
+            // Transfer ownership
+            sequence = other.sequence;
+            owns_sequence = other.owns_sequence;
+            other.sequence = nullptr;
+            other.owns_sequence = false;
+        }
+        return *this;
+    }
+    
+    // Read-only access methods
+    size_type size() const noexcept { return sequence ? sequence->_length : 0; }
+    size_type max_size() const noexcept { return MAX_SEQUENCE_SIZE; }
+    bool empty() const noexcept { return !sequence || sequence->_length == 0; }
+    size_type capacity() const noexcept { return sequence ? sequence->_maximum : 0; }
+
+    // Iterators - const only
+    const value_type* begin() const { return sequence ? sequence->_buffer : nullptr; }
+    const value_type* end() const { return sequence ? sequence->_buffer + sequence->_length : nullptr; }
+
+    // Data access - const only
+    const_reference operator[](size_type index) const { 
+        if (!sequence || !sequence->_buffer) {
+            fprintf(stderr, "Dereferencing invalid sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        if(index >= sequence->_length) {
+            fprintf(stderr, "Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
+            std::exit(EXIT_FAILURE);
+        }
+        return sequence->_buffer[index]; 
+    }
+    
+    const value_type* data() const noexcept { 
+        if (!sequence || !sequence->_buffer) {
+            fprintf(stderr, "Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        return sequence->_buffer; 
+    }
+
+    const_reference at(size_type index) const {
+        if (!sequence || !sequence->_buffer || index >= sequence->_length) {
+            fprintf(stderr, "Index %zu out of range (size: %zu)\n", index, size());
+            std::exit(EXIT_FAILURE);
+        }
+        return sequence->_buffer[index];
+    }
+    
+    const_reference front() const {
+        if (!sequence || !sequence->_buffer || empty()) {
+            fprintf(stderr, "Cannot access front() of empty sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        return sequence->_buffer[0];
+    }
+    
+    const_reference back() const {
+        if (!sequence || !sequence->_buffer || empty()) {
+            fprintf(stderr, "Cannot access back() of empty sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        return sequence->_buffer[sequence->_length - 1];
+    }
+    
+    // For const specialization, modification methods return a new sequence with copied data
+    Sequence<value_type> copy() const {
+        Sequence<value_type> result(size());
+        for (size_type i = 0; i < size(); ++i) {
+            result.push_back((*this)[i]);
+        }
+        return result;
+    }
+    
+    // These methods are maintained for API compatibility but create a new non-const sequence
+    Sequence<value_type> removeOverlapPoints(size_t start_idx = 0) const {
+        Sequence<value_type> result(size());
+        
+        // Implementation based on original removeOverlapPoints
+        for (size_t i = 0; i <= start_idx && i < size(); ++i) {
+            result.push_back(at(i));
+        }
+        
+        constexpr double eps = 1.0E-08;
+        for (size_t i = start_idx + 1; i < size(); ++i) {
+            const auto prev_p = autoware::universe_utils::getPoint(result.back());
+            const auto curr_p = autoware::universe_utils::getPoint(at(i));
+            if (std::abs(prev_p.x - curr_p.x) < eps && std::abs(prev_p.y - curr_p.y) < eps) {
+                continue;
+            }
+            result.push_back(at(i));
+        }
+        
+        return result;
+    }
+
+    // Utility
+    const T* get_sequence() const { return sequence; }
+    bool is_valid() const noexcept { return sequence != nullptr && sequence->_buffer != nullptr; }
+    
+    void dump(const char* name = "Sequence") const {
+        if (!is_valid()) {
+            fprintf(stderr, "%s: Invalid sequence\n", name);
+            return;
+        }
+        
+        fprintf(stderr, "%s[size=%zu, capacity=%zu]\n", name, size(), capacity());
+        
+        if (!empty()) {
+            fprintf(stderr, "Contents:\n");
+            for (size_t i = 0; i < (size() < 20 ? size() : 20); ++i) {
+                if constexpr (std::is_integral_v<value_type>) {
+                    fprintf(stderr, "  [%zu]: %d\n", i, static_cast<int>((*this)[i]));
+                } else if constexpr (std::is_floating_point_v<value_type>) {
+                    fprintf(stderr, "  [%zu]: %f\n", i, static_cast<double>((*this)[i]));
+                } else {
+                    fprintf(stderr, "  [%zu]: (unformattable type)\n", i);
+                }
+            }
+            
+            if (size() > 20) {
+                fprintf(stderr, "  ... and %zu more elements\n", size() - 20);
+            }
+        } else {
+            fprintf(stderr, "  (empty)\n");
+        }
+    }
+};
+
 template<typename T>
 Sequence<T> wrap(T& seq) { return Sequence<T>(seq); }
-
 template<typename T>
 Sequence<T> wrap(T* seq) { return Sequence<T>(seq); }
 

@@ -26,24 +26,39 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <autoware/universe_utils/ros/published_time_publisher.hpp>
-
-#include "autoware_control_msgs/msg/control.hpp"
-#include "autoware_control_msgs/msg/control_horizon.hpp"
-#include "autoware_control_msgs/msg/longitudinal.hpp"
-#include "autoware_planning_msgs/msg/trajectory.hpp"
-#include "geometry_msgs/msg/accel_stamped.hpp"
-#include "geometry_msgs/msg/accel_with_covariance_stamped.hpp"
-#include "geometry_msgs/msg/pose_stamped.hpp"
-#include "nav_msgs/msg/odometry.hpp"
-#include "visualization_msgs/msg/marker_array.hpp"
-#include <autoware_control_msgs/msg/detail/control_horizon__struct.hpp>
-#include <tier4_debug_msgs/msg/float64_stamped.hpp>
 
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+//Msgs
+// #include <autoware_control_msgs/msg/detail/control_horizon__struct.hpp> //TODO: check if we are using this
+#include "Control.h"
+#include "ControlHorizon.h"
+#include "Longitudinal.h"
+#include "Trajectory.h"
+#include "AccelStamped.h"
+#include "AccelWithCovarianceStamped.h"
+#include "PoseStamped.h"
+#include "Odometry.h"
+#include "MarkerArray.h"
+#include "Float64Stamped.h"
+#include "OperationModeState.h"
+#include "SteeringReport.h"
+#include "TrajectoryPoint.h"
+#include "OperationModeState.h"
+using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
+using ControlHorizonMsg = autoware_control_msgs_msg_ControlHorizon;
+using Float64StampedMsg = tier4_debug_msgs_msg_Float64Stamped;
+using MarkerArrayMsg = visualization_msgs_msg_MarkerArray;
+using ControlMsg = autoware_control_msgs_msg_Control;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using OdometryMsg = nav_msgs_msg_Odometry;
+using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
+using AccelWithCovarianceStampedMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
+using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
 
 namespace autoware::motion::control
 {
@@ -55,58 +70,53 @@ namespace trajectory_follower_node
 {
 
 using autoware::universe_utils::StopWatch;
-using autoware_adapi_v1_msgs::msg::OperationModeState;
-using autoware_control_msgs::msg::ControlHorizon;
-using tier4_debug_msgs::msg::Float64Stamped;
 
 namespace trajectory_follower = ::autoware::motion::control::trajectory_follower;
 
 /// \classController
 /// \brief The node class used for generating longitudinal control commands (velocity/acceleration)
-class TRAJECTORY_FOLLOWER_PUBLIC Controller : public rclcpp::Node
+class TRAJECTORY_FOLLOWER_PUBLIC Controller : public Node
 {
 public:
-  explicit Controller(const rclcpp::NodeOptions & node_options);
+  explicit Controller();
   virtual ~Controller() {}
 
 private:
   double timeout_thr_sec_;
   bool enable_control_cmd_horizon_pub_{false};
-  boost::optional<LongitudinalOutput> longitudinal_output_{boost::none};
+  std::optional<LongitudinalOutput> longitudinal_output_{std::nullopt};
 
   std::shared_ptr<trajectory_follower::LongitudinalControllerBase> longitudinal_controller_;
   std::shared_ptr<trajectory_follower::LateralControllerBase> lateral_controller_;
 
   // Subscribers
-  autoware::universe_utils::InterProcessPollingSubscriber<autoware_planning_msgs::msg::Trajectory>
-    sub_ref_path_{this, "~/input/reference_trajectory"};
+  Subscriber<TrajectoryMsg> sub_ref_path_{
+    this, "~/input/reference_trajectory"};
 
-  autoware::universe_utils::InterProcessPollingSubscriber<nav_msgs::msg::Odometry> sub_odometry_{
+  Subscriber<OdometryMsg> sub_odometry_{
     this, "~/input/current_odometry"};
 
-  autoware::universe_utils::InterProcessPollingSubscriber<
-    autoware_vehicle_msgs::msg::SteeringReport>
-    sub_steering_{this, "~/input/current_steering"};
+  Subscriber<SteeringReportMsg> sub_steering_{
+    this, "~/input/current_steering"};
 
-  autoware::universe_utils::InterProcessPollingSubscriber<
-    geometry_msgs::msg::AccelWithCovarianceStamped>
-    sub_accel_{this, "~/input/current_accel"};
+  Subscriber<AccelWithCovarianceStampedMsg> sub_accel_{
+    this, "~/input/current_accel"};
 
-  autoware::universe_utils::InterProcessPollingSubscriber<OperationModeState> sub_operation_mode_{
+  Subscriber<OperationModeStateMsg> sub_operation_mode_{
     this, "~/input/current_operation_mode"};
 
   // Publishers
-  std::shared_ptr<Publisher<autoware_control_msgs::msg::Control>> control_cmd_pub_;
-  std::shared_ptr<Publisher<Float64Stamped>> pub_processing_time_lat_ms_;
-  std::shared_ptr<Publisher<Float64Stamped>> pub_processing_time_lon_ms_;
-  std::shared_ptr<Publisher<visualization_msgs::msg::MarkerArray>> debug_marker_pub_;
-  std::shared_ptr<Publisher<autoware_control_msgs::msg::ControlHorizon>> control_cmd_horizon_pub_;
+  std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
+  std::shared_ptr<Publisher<Float64StampedMsg>> pub_processing_time_lat_ms_;
+  std::shared_ptr<Publisher<Float64StampedMsg>> pub_processing_time_lon_ms_;
+  std::shared_ptr<Publisher<MarkerArrayMsg>> debug_marker_pub_;
+  std::shared_ptr<Publisher<ControlHorizonMsg>> control_cmd_horizon_pub_;
 
-  autoware_planning_msgs::msg::Trajectory::ConstSharedPtr current_trajectory_ptr_;
-  nav_msgs::msg::Odometry::ConstSharedPtr current_odometry_ptr_;
-  autoware_vehicle_msgs::msg::SteeringReport::ConstSharedPtr current_steering_ptr_;
-  geometry_msgs::msg::AccelWithCovarianceStamped::ConstSharedPtr current_accel_ptr_;
-  OperationModeState::ConstSharedPtr current_operation_mode_ptr_;
+  std::shared_ptr<TrajectoryMsg> current_trajectory_ptr_;
+  std::shared_ptr<OdometryMsg> current_odometry_ptr_;
+  std::shared_ptr<SteeringReportMsg> current_steering_ptr_;
+  std::shared_ptr<AccelWithCovarianceStampedMsg> current_accel_ptr_;
+  std::shared_ptr<OperationModeStateMsg> current_operation_mode_ptr_;
 
   enum class LateralControllerMode {
     INVALID = 0,
@@ -121,9 +131,9 @@ private:
   /**
    * @brief compute control command, and publish periodically
    */
-  boost::optional<trajectory_follower::InputData> createInputData(rclcpp::Clock & clock);
+  std::optional<trajectory_follower::InputData> createInputData();
   void callbackTimerControl();
-  bool processData(rclcpp::Clock & clock);
+  bool processData();
   bool isTimeOut(const LongitudinalOutput & lon_out, const LateralOutput & lat_out);
   LateralControllerMode getLateralControllerMode(const std::string & algorithm_name) const;
   LongitudinalControllerMode getLongitudinalControllerMode(
@@ -143,14 +153,14 @@ private:
    */
   static std::optional<ControlHorizon> mergeLatLonHorizon(
     const LateralHorizon & lateral_horizon, const LongitudinalHorizon & longitudinal_horizon,
-    const rclcpp::Time & stamp);
+    const double & stamp);
 
   std::unique_ptr<autoware::universe_utils::LoggerLevelConfigure> logger_configure_;
 
   std::unique_ptr<autoware::universe_utils::PublishedTimePublisher> published_time_publisher_;
 
   void publishProcessingTime(
-    const double t_ms, const rclcpp::Publisher<Float64Stamped>::SharedPtr pub);
+    const double t_ms, const std::shared_ptr<Publisher<Float64StampedMsg>> pub);
   StopWatch<std::chrono::milliseconds> stop_watch_;
 
   static constexpr double logger_throttle_interval = 5000;

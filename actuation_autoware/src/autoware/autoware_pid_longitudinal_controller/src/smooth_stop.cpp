@@ -14,7 +14,7 @@
 
 #include "autoware/pid_longitudinal_controller/smooth_stop.hpp"
 
-#include <experimental/optional>  // NOLINT
+#include <optional>  // NOLINT
 
 #include <algorithm>
 #include <cmath>
@@ -26,7 +26,7 @@ namespace autoware::motion::control::pid_longitudinal_controller
 {
 void SmoothStop::init(const double pred_vel_in_target, const double pred_stop_dist)
 {
-  m_weak_acc_time = rclcpp::Clock{RCL_ROS_TIME}.now();
+  m_weak_acc_time = Clock::now();
 
   // when distance to stopline is near the car
   if (pred_stop_dist < std::numeric_limits<double>::epsilon()) {
@@ -60,8 +60,8 @@ void SmoothStop::setParams(
   m_is_set_params = true;
 }
 
-std::experimental::optional<double> SmoothStop::calcTimeToStop(
-  const std::vector<std::pair<rclcpp::Time, double>> & vel_hist) const
+std::optional<double> SmoothStop::calcTimeToStop(
+  const std::vector<std::pair<double, double>> & vel_hist) const
 {
   if (!m_is_set_params) {
     throw std::runtime_error("Trying to calculate uninitialized SmoothStop");
@@ -74,13 +74,13 @@ std::experimental::optional<double> SmoothStop::calcTimeToStop(
   }
 
   // calculate some variables for fitting
-  const rclcpp::Time current_ros_time = rclcpp::Clock{RCL_ROS_TIME}.now();
+  const double current_ros_time = Clock::now();
   double mean_t = 0.0;
   double mean_v = 0.0;
   double sum_tv = 0.0;
   double sum_tt = 0.0;
   for (const auto & vel : vel_hist) {
-    const double t = (vel.first - current_ros_time).seconds();
+    const double t = vel.first - current_ros_time;
     const double v = vel.second;
 
     mean_t += t / vel_hist_size;
@@ -116,7 +116,7 @@ std::experimental::optional<double> SmoothStop::calcTimeToStop(
 
 double SmoothStop::calculate(
   const double stop_dist, const double current_vel, const double current_acc,
-  const std::vector<std::pair<rclcpp::Time, double>> & vel_hist, const double delay_time)
+  const std::vector<std::pair<double, double>> & vel_hist, const double delay_time)
 {
   if (!m_is_set_params) {
     throw std::runtime_error("Trying to calculate uninitialized SmoothStop");
@@ -146,12 +146,12 @@ double SmoothStop::calculate(
       return m_strong_acc;
     }
 
-    m_weak_acc_time = rclcpp::Clock{RCL_ROS_TIME}.now();
+    m_weak_acc_time = Clock::now();
     return m_params.weak_acc;
   }
 
   // for 0.5 seconds after the car stopped
-  if ((rclcpp::Clock{RCL_ROS_TIME}.now() - m_weak_acc_time).seconds() < 0.5) {
+  if ((Clock::now() - m_weak_acc_time) < 0.5) {
     return m_params.weak_acc;
   }
 
