@@ -10,6 +10,10 @@
 #define DEFAULT_SEQUENCE_SIZE 128
 #define MAX_SEQUENCE_SIZE 2048
 
+/**
+ * @brief Sequence class as a wrapper for DDS sequences
+ * @tparam T Type of the sequence
+ */
 template<typename T>
 class Sequence {
 private:
@@ -19,11 +23,10 @@ private:
     static_assert(std::is_pointer_v<decltype(T::_buffer)>, "_buffer member must be a pointer type");
     
     T* sequence;
-    bool owns_sequence;
     
     // Check and potentially grow the buffer
     bool ensure_capacity(size_t required_capacity) {
-        if (!sequence || !sequence->_buffer) {
+        if (!sequence) {
             fprintf(stderr, "Invalid sequence state\n");
             std::exit(EXIT_FAILURE);
         }
@@ -80,147 +83,24 @@ public:
     using const_reference = const value_type&;
     using size_type = size_t;
     
-    // Non-owning constructor
-    explicit Sequence(T& seq) : sequence(&seq), owns_sequence(false) {
-        assert(sequence != nullptr && "Sequence pointer cannot be null");
+    // Constructor that wraps an existing sequence
+    explicit Sequence(T& seq) : sequence(&seq) {
+        // Just wrap the sequence, no ownership
     }
     
-    // Owning constructor with initial capacity
-    explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) : sequence(static_cast<T*>(malloc(sizeof(T)))), owns_sequence(true) {
+    // Constructor that wraps an existing sequence pointer
+    explicit Sequence(T* seq) : sequence(seq) {
         if (!sequence) {
-            fprintf(stderr, "Failed to allocate memory for sequence struct\n");
+            fprintf(stderr, "Cannot wrap a null sequence pointer\n");
             std::exit(EXIT_FAILURE);
         }
-        sequence->_buffer = nullptr;
-        sequence->_length = 0;
-        sequence->_maximum = 0;
-        if (!ensure_capacity(initial_capacity)) {
-            // If buffer allocation fails, clean up and flag as non-owning
-            free(sequence);
-            sequence = nullptr;
-            owns_sequence = false;
-        }
     }
     
-    // Destructor //TODO: Check if this is correct
-    ~Sequence() {
-        if (owns_sequence && sequence) {
-            if (sequence->_buffer) {
-                free(const_cast<void*>(static_cast<const void*>(sequence->_buffer)));
-            }
-            free(const_cast<void*>(static_cast<const void*>(sequence)));
-        }
-    }
-    
-    // Copy constructor
-    Sequence(const Sequence& other) : sequence(static_cast<T*>(malloc(sizeof(T)))), owns_sequence(true) {
-        if (!sequence) {
-            fprintf(stderr, "Failed to allocate memory for sequence struct in copy constructor\n");
-            std::exit(EXIT_FAILURE);
-        }
-        
-        // Initialize the sequence structure
-        sequence->_buffer = nullptr;
-        sequence->_length = 0;
-        sequence->_maximum = 0;
-        
-        // Allocate and copy the buffer if the source has one
-        if (other.sequence && other.sequence->_buffer && other.sequence->_length > 0) {
-            // Allocate with exact capacity to match original
-            if (!ensure_capacity(other.sequence->_maximum)) {
-                fprintf(stderr, "Failed to allocate buffer in copy constructor\n");
-                free(sequence);
-                sequence = nullptr;
-                owns_sequence = false;
-                std::exit(EXIT_FAILURE);
-            }
-            
-            // Copy each element
-            // TODO: Check for trait support within Zephyr
-            if (std::is_trivially_copyable<value_type>::value) {
-                std::memcpy(sequence->_buffer, other.sequence->_buffer, 
-                           sequence->_length * sizeof(value_type));
-            } else {
-                for (size_t i = 0; i < sequence->_length; i++) {
-                    sequence->_buffer[i] = other.sequence->_buffer[i];
-                }
-            }
-        }
-    }
-    
-    // Copy assignment operator
-    Sequence& operator=(const Sequence& other) {
-        if (this != &other) {  // Self-assignment check
-            // Clean up existing resources
-            if (owns_sequence && sequence) {
-                if (sequence->_buffer) {
-                    free(sequence->_buffer);
-                    sequence->_buffer = nullptr;
-                }
-            }
-            
-            // If we don't own a sequence structure, create one
-            if (!sequence) {
-                sequence = static_cast<T*>(malloc(sizeof(T)));
-                if (!sequence) {
-                    fprintf(stderr, "Failed to allocate memory for sequence struct in copy assignment\n");
-                    std::exit(EXIT_FAILURE);
-                }
-                owns_sequence = true;
-                sequence->_buffer = nullptr;
-                sequence->_length = 0;
-                sequence->_maximum = 0;
-            }
-            
-            // Allocate and copy the buffer
-            if (other.sequence && other.sequence->_buffer && other.sequence->_length > 0) {
-                if (!ensure_capacity(other.sequence->_maximum)) {
-                    fprintf(stderr, "Failed to allocate buffer in copy assignment\n");
-                    std::exit(EXIT_FAILURE);
-                }
-                
-                // Copy each element
-                // TODO: Check for trait support within Zephyr
-                if (std::is_trivially_copyable<value_type>::value) {
-                    std::memcpy(sequence->_buffer, other.sequence->_buffer, 
-                               sequence->_length * sizeof(value_type));
-                } else {
-                    for (size_t i = 0; i < sequence->_length; i++) {
-                        sequence->_buffer[i] = other.sequence->_buffer[i];
-                    }
-                }
-            } else {
-                // Other sequence is empty
-                sequence->_length = 0;
-            }
-        }
-        return *this;
-    }
-    
-    // Allow moving
-    Sequence(Sequence&& other) noexcept : sequence(other.sequence), owns_sequence(other.owns_sequence) {
-        other.sequence = nullptr;
-        other.owns_sequence = false;
-    }
-    
-    Sequence& operator=(Sequence&& other) noexcept {
-        if (this != &other) {
-            // Clean up our resources
-            if (owns_sequence && sequence) {
-                if (sequence->_buffer) {
-                    free(sequence->_buffer);
-                }
-                free(sequence);
-            }
-            
-            sequence = other.sequence;
-            owns_sequence = other.owns_sequence;
-            
-            other.sequence = nullptr;
-            other.owns_sequence = false;
-        }
-        return *this;
-    }
+    // Deleted copy and move operations to avoid ownership confusion
+    Sequence(const Sequence&) = delete;
+    Sequence& operator=(const Sequence&) = delete;
+    Sequence(Sequence&&) = delete;
+    Sequence& operator=(Sequence&&) = delete;
 
     // Basic operations
     size_type size() const noexcept { return sequence ? sequence->_length : 0; }
@@ -327,52 +207,35 @@ public:
     void clear() { if (sequence) sequence->_length = 0; }
     
     bool push_back(const value_type& value) {
-        if (!sequence || !ensure_capacity(sequence->_length + 1)) {
+        if (!sequence) {
+            fprintf(stderr, "Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        
+        // Ensure we have capacity - will allocate if needed
+        if (!ensure_capacity(sequence->_length + 1)) {
             fprintf(stderr, "Failed to push_back() - copy\n");
             std::exit(EXIT_FAILURE);
         }
+        
         sequence->_buffer[sequence->_length++] = value;
         return true;
     }
     
     // Add move-enabled push_back for better performance with movable types
     bool push_back(value_type&& value) {
-        if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-            fprintf(stderr, "Failed to push_back() - move\n");
-            std::exit(EXIT_FAILURE);
-        }
-        sequence->_buffer[sequence->_length++] = std::move(value);
-        return true;
-    }
-    
-    bool pop_back() {
-        if (!sequence || sequence->_length == 0) {
-            fprintf(stderr, "Cannot pop_back() from empty sequence\n");
-            std::exit(EXIT_FAILURE);
-        }
-        sequence->_length--;
-        return true;
-    }
-    
-    bool resize(size_type new_size) {
         if (!sequence) {
             fprintf(stderr, "Invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         
-        if (new_size > sequence->_maximum && !ensure_capacity(new_size)) {
-            fprintf(stderr, "Failed to resize sequence\n");
+        // Ensure we have capacity - will allocate if needed
+        if (!ensure_capacity(sequence->_length + 1)) {
+            fprintf(stderr, "Failed to push_back() - move\n");
             std::exit(EXIT_FAILURE);
         }
         
-        // If growing, initialize new elements to default value
-        if (new_size > sequence->_length) {
-            for (size_type i = sequence->_length; i < new_size; ++i) {
-                sequence->_buffer[i] = value_type{};
-            }
-        }
-        
-        sequence->_length = new_size;
+        sequence->_buffer[sequence->_length++] = std::move(value);
         return true;
     }
 
@@ -412,6 +275,7 @@ public:
 
 template<typename T>
 Sequence<T> wrap(T& seq) { return Sequence<T>(seq); }
+
 template<typename T>
 Sequence<T> wrap(T* seq) { return Sequence<T>(seq); }
 
