@@ -1,7 +1,9 @@
 #include "common/node/node.hpp"
+#include "common/clock/clock.hpp"
 
 #include <cassert>
 #include <chrono>
+#include <cmath>
 #include <functional>
 #include <pthread.h>
 #include <time.h>
@@ -32,16 +34,27 @@ struct TestState {
 
 static TestState g_state;  // Global test state
 
+// Add color definitions for terminal output
+#define COLOR_RED     "\033[31m"
+#define COLOR_GREEN   "\033[32m"
+#define COLOR_RESET   "\033[0m"
+
 // Helper macros for test readability
 #define TEST_START(name) \
     printf("\n=== Testing " #name " ===\n"); \
     g_state.reset();
 
 #define TEST_END(name) \
-    printf(#name " tests passed\n");
+    printf(COLOR_GREEN #name " tests passed" COLOR_RESET "\n");
 
 #define ASSERT_MSG(condition, message) \
-    assert((condition) && message)
+    do { \
+        if (!(condition)) { \
+            printf(COLOR_RED "Assertion failed: %s" COLOR_RESET "\n", message); \
+            fflush(stdout); /* Ensure the reset code is output before abort */ \
+            assert(false && message); \
+        } \
+    } while (0)
 
 // Callback handlers
 static void handle_pose(PoseStampedMsg& msg) {
@@ -158,15 +171,56 @@ void test_dds_communication(Node& node) {
     TEST_END(DDS Communication)
 }
 
+void test_clock_utils() {
+    TEST_START(Clock Utilities)
+    
+    // Test Clock::now() returns valid time
+    double now = Clock::now();
+    ASSERT_MSG(now > 0, "Current time should be positive");
+    
+    // Test round-trip conversion: double -> ROS time -> double
+    const double test_time = 1234.567;
+    TimeMsg ros_time = Clock::toRosTime(test_time);
+    
+    // Verify conversion to ROS time
+    ASSERT_MSG(ros_time.sec == 1234, "Seconds conversion error");
+    ASSERT_MSG(ros_time.nanosec == 567000000, "Nanoseconds conversion error");
+    
+    // Verify round-trip conversion
+    double converted_back = Clock::toDouble(ros_time);
+    ASSERT_MSG(fabs(converted_back - test_time) < 1e-9, "Round-trip conversion error");
+    
+    // Test boundary/edge cases
+    const double zero_time = 0.0;
+    TimeMsg zero_ros_time = Clock::toRosTime(zero_time);
+    ASSERT_MSG(zero_ros_time.sec == 0, "Zero seconds conversion error");
+    ASSERT_MSG(zero_ros_time.nanosec == 0, "Zero nanoseconds conversion error");
+    
+    // Test very large time values
+    const double large_time = 1e9;  // ~31.7 years
+    TimeMsg large_ros_time = Clock::toRosTime(large_time);
+    ASSERT_MSG(large_ros_time.sec == 1000000000, "Large time seconds conversion error");
+    ASSERT_MSG(large_ros_time.nanosec == 0, "Large time nanoseconds conversion error");
+    
+    // Test very precise time values
+    const double precise_time = 12.000000008;  // 12 seconds + 8 nanosecond
+    TimeMsg precise_ros_time = Clock::toRosTime(precise_time);
+    ASSERT_MSG(precise_ros_time.sec == 12, "Precise time seconds conversion error");
+    ASSERT_MSG(precise_ros_time.nanosec == 8, "Precise time nanoseconds conversion error");
+    
+    TEST_END(Clock Utilities)
+}
+
 int main() {
-    printf("=== Starting Node Test Suite ===\n");
+    printf(COLOR_GREEN "=== Starting Node Test Suite ===\n" COLOR_RESET);
     Node node("test_node");
     
+    test_clock_utils();
     test_parameters(node);
     test_timer_operations(node);
     test_thread_safety(node);
     test_dds_communication(node);
 
-    printf("\n=== All Tests Passed ===\n");
-    return 0;
+    printf(COLOR_GREEN "=== All Tests Passed ===\n" COLOR_RESET);
+    exit(0);
 }
