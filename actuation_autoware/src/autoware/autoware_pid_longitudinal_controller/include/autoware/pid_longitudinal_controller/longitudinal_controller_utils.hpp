@@ -17,7 +17,6 @@
 
 #include "autoware/interpolation/linear_interpolation.hpp"
 #include "autoware/interpolation/spherical_linear_interpolation.hpp"
-#include "autoware/motion_utils/trajectory/conversion.hpp"
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 
 #include <cmath>
@@ -48,7 +47,7 @@ using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
 /**
  * @brief check if trajectory is invalid or not
  */
-bool isValidTrajectory(const Trajectory & traj);
+bool isValidTrajectory(const TrajectoryMsg & traj);
 
 /**
  * @brief calculate distance to stopline from current vehicle position where velocity is 0
@@ -85,10 +84,10 @@ PoseMsg calcPoseAfterTimeDelay(
  * @param [in] point Interpolated point is nearest to this point.
  */
 template <class T>
-std::pair<TrajectoryPoint, size_t> lerpTrajectoryPoint(
+std::pair<TrajectoryPointMsg, size_t> lerpTrajectoryPoint(
   const T & points, const PoseMsg & pose, const double max_dist, const double max_yaw)
 {
-  TrajectoryPoint interpolated_point;
+  TrajectoryPointMsg interpolated_point;
   const size_t seg_idx = autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
     points, pose, max_dist, max_yaw);
 

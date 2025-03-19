@@ -18,6 +18,7 @@
 #include <utility>
 #include <algorithm>
 #include <limits>
+#include <math.h> // isfinite // TODO: check if this is valid
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
@@ -26,7 +27,8 @@ namespace longitudinal_utils
 
 bool isValidTrajectory(const TrajectoryMsg & traj)
 {
-  for (const auto & p : traj.points) {
+  auto sequence_points = wrap(traj.points);
+  for (const auto & p : sequence_points) {
     if (
       !isfinite(p.pose.position.x) || !isfinite(p.pose.position.y) ||
       !isfinite(p.pose.position.z) || !isfinite(p.pose.orientation.w) ||
@@ -39,7 +41,7 @@ bool isValidTrajectory(const TrajectoryMsg & traj)
   }
 
   // when trajectory is empty
-  if (traj.points.empty()) {
+  if (sequence_points.empty()) {
     return false;
   }
 
@@ -49,14 +51,15 @@ bool isValidTrajectory(const TrajectoryMsg & traj)
 double calcStopDistance(
   const PoseMsg & current_pose, const TrajectoryMsg & traj, const double max_dist, const double max_yaw)
 {
-  const auto stop_idx_opt = autoware::motion_utils::searchZeroVelocityIndex(traj.points);
+  auto sequence_points = wrap(traj.points);
+  const auto stop_idx_opt = autoware::motion_utils::searchZeroVelocityIndex(sequence_points);
 
-  const size_t end_idx = stop_idx_opt ? *stop_idx_opt : traj.points.size() - 1;
+  const size_t end_idx = stop_idx_opt ? *stop_idx_opt : sequence_points.size() - 1;
   const size_t seg_idx = autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
-    traj.points, current_pose, max_dist, max_yaw);
+    sequence_points, current_pose, max_dist, max_yaw);
   const double signed_length_on_traj = autoware::motion_utils::calcSignedArcLength(
-    traj.points, current_pose.position, seg_idx, traj.points.at(end_idx).pose.position,
-    std::min(end_idx, traj.points.size() - 2));
+    sequence_points, current_pose.position, seg_idx, sequence_points.at(end_idx).pose.position,
+    std::min(end_idx, sequence_points.size() - 2));
 
   if (std::isnan(signed_length_on_traj)) {
     return 0.0;
@@ -79,14 +82,15 @@ double getPitchByTraj(
   const TrajectoryMsg & trajectory, const size_t start_idx, const double wheel_base)
 {
   // cannot calculate pitch
-  if (trajectory.points.size() <= 1) {
+  auto sequence_points = wrap(trajectory.points);
+  if (sequence_points.size() <= 1) {
     return 0.0;
   }
 
   const auto [prev_idx, next_idx] = [&]() {
-    for (size_t i = start_idx + 1; i < trajectory.points.size(); ++i) {
+    for (size_t i = start_idx + 1; i < sequence_points.size(); ++i) {
       const double dist = autoware::universe_utils::calcDistance3d(
-        trajectory.points.at(start_idx), trajectory.points.at(i));
+        sequence_points.at(start_idx), sequence_points.at(i));
       if (dist > wheel_base) {
         // calculate pitch from trajectory between rear wheel (nearest) and front center (i)
         return std::make_pair(start_idx, i);
@@ -94,11 +98,11 @@ double getPitchByTraj(
     }
     // NOTE: The ego pose is close to the goal.
     return std::make_pair(
-      std::min(start_idx, trajectory.points.size() - 2), trajectory.points.size() - 1);
+      std::min(start_idx, sequence_points.size() - 2), sequence_points.size() - 1);
   }();
 
   return autoware::universe_utils::calcElevationAngle(
-    trajectory.points.at(prev_idx).pose.position, trajectory.points.at(next_idx).pose.position);
+    sequence_points.at(prev_idx).pose.position, sequence_points.at(next_idx).pose.position);
 }
 
 PoseMsg calcPoseAfterTimeDelay(
@@ -156,18 +160,20 @@ PoseMsg findTrajectoryPoseAfterDistance(
   const TrajectoryMsg & trajectory)
 {
   double remain_dist = distance;
-  PoseMsg p = trajectory.points.back().pose;
-  for (size_t i = src_idx; i < trajectory.points.size() - 1; ++i) {
+  auto sequence_points = wrap(trajectory.points);
+  PoseMsg p = sequence_points.back().pose;
+
+  for (size_t i = src_idx; i < sequence_points.size() - 1; ++i) {
     const double dist = autoware::universe_utils::calcDistance3d(
-      trajectory.points.at(i).pose, trajectory.points.at(i + 1).pose);
+      sequence_points.at(i).pose, sequence_points.at(i + 1).pose);
     if (remain_dist < dist) {
       if (remain_dist <= 0.0) {
-        return trajectory.points.at(i).pose;
+        return sequence_points.at(i).pose;
       }
       double ratio = remain_dist / dist;
-      const auto p0 = trajectory.points.at(i).pose;
-      const auto p1 = trajectory.points.at(i + 1).pose;
-      p = trajectory.points.at(i).pose;
+      const auto p0 = sequence_points.at(i).pose;
+      const auto p1 = sequence_points.at(i + 1).pose;
+      p = sequence_points.at(i).pose;
       p.position.x = autoware::interpolation::lerp(p0.position.x, p1.position.x, ratio);
       p.position.y = autoware::interpolation::lerp(p0.position.y, p1.position.y, ratio);
       p.position.z = autoware::interpolation::lerp(p0.position.z, p1.position.z, ratio);

@@ -59,7 +59,7 @@ void validateNonEmpty(const T & points)
 {
   if (points.empty()) {
     fprintf(stderr, "[autoware_motion_utils] validateNonEmpty(): Points is empty.");
-    return;
+    throw std::invalid_argument("[autoware_motion_utils] validateNonEmpty(): Points is empty.");
   }
 }
 
@@ -685,6 +685,153 @@ extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<Trajector
   const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
+
+
+
+/**
+ * @brief search through points container from specified start and end indices about first matching
+ * index of a zero longitudinal velocity point.
+ * @param points_with_twist points of trajectory, path, ... (with velocity)
+ * @param src_idx start index of the search
+ * @param dst_idx end index of the search
+ * @return first matching index of a zero velocity point inside the points container.
+ */
+template <class T>
+std::optional<size_t> searchZeroVelocityIndex(
+  const T & points_with_twist, const size_t src_idx, const size_t dst_idx)
+{
+  try {
+    validateNonEmpty(points_with_twist);
+  } catch (const std::exception & e) {
+    fprintf(stderr, "%s", e.what());
+    return {};
+  }
+
+  constexpr double epsilon = 1e-3;
+  for (size_t i = src_idx; i < dst_idx; ++i) {
+    if (std::fabs(points_with_twist.at(i).longitudinal_velocity_mps) < epsilon) {
+      return i;
+    }
+  }
+
+  return {};
+}
+
+extern template std::optional<size_t>
+searchZeroVelocityIndex<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points_with_twist,
+  const size_t src_idx, const size_t dst_idx);
+
+/**
+ * @brief search through points container from specified start index till end of points container
+ * about first matching index of a zero longitudinal velocity point.
+ * @param points_with_twist points of trajectory, path, ... (with velocity)
+ * @param src_idx start index of the search
+ * @return first matching index of a zero velocity point inside the points container.
+ */
+template <class T>
+std::optional<size_t> searchZeroVelocityIndex(const T & points_with_twist, const size_t src_idx)
+{
+  try {
+    validateNonEmpty(points_with_twist);
+  } catch (const std::exception & e) {
+    fprintf(stderr, "%s", e.what());
+    return {};
+  }
+
+  return searchZeroVelocityIndex(points_with_twist, src_idx, points_with_twist.size());
+}
+
+extern template std::optional<size_t>
+searchZeroVelocityIndex<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points_with_twist,
+  const size_t src_idx);
+
+/**
+ * @brief search through points container from its start to end about first matching index of a zero
+ * longitudinal velocity point.
+ * @param points_with_twist points of trajectory, path, ... (with velocity)
+ * @return first matching index of a zero velocity point inside the points container.
+ */
+template <class T>
+std::optional<size_t> searchZeroVelocityIndex(const T & points_with_twist)
+{
+  return searchZeroVelocityIndex(points_with_twist, 0, points_with_twist.size());
+}
+
+extern template std::optional<size_t>
+searchZeroVelocityIndex<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points_with_twist);
+
+/**
+ * @brief calculate length of 2D distance between two points, specified by start and end points
+ * indicies through points container.
+ * @param points points of trajectory, path, ...
+ * @param src_idx index of start point
+ * @param dst_idx index of end point
+ * @return length of distance between two points.
+ * Length is positive if dst_idx is greater that src_idx (i.e. after it in trajectory, path, ...)
+ * and negative otherwise.
+ */
+template <class T>
+double calcSignedArcLength(const T & points, const size_t src_idx, const size_t dst_idx)
+{
+  try {
+    validateNonEmpty(points);
+  } catch (const std::exception & e) {
+    fprintf(stderr, "%s", e.what());
+    return 0.0;
+  }
+
+  if (src_idx > dst_idx) {
+    return -calcSignedArcLength(points, dst_idx, src_idx);
+  }
+
+  double dist_sum = 0.0;
+  for (size_t i = src_idx; i < dst_idx; ++i) {
+    dist_sum += autoware::universe_utils::calcDistance2d(points.at(i), points.at(i + 1));
+  }
+  return dist_sum;
+}
+
+extern template double
+calcSignedArcLength<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points, const size_t src_idx,
+  const size_t dst_idx);
+
+/**
+ * @brief calculate length of 2D distance between two points, specified by start point and end
+ * point with their segment indices in points container
+ * @param points points of trajectory, path, ...
+ * @param src_point start point
+ * @param src_seg_idx index of start point segment
+ * @param dst_point end point
+ * @param dst_seg_idx index of end point segment
+ * @return length of distance between two points.
+ * Length is positive if destination point is greater that source point (i.e. after it in
+ * trajectory, path, ...) and negative otherwise.
+ */
+template <class T>
+double calcSignedArcLength(
+  const T & points, const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx)
+{
+  validateNonEmpty(points);
+
+  const double signed_length_on_traj = calcSignedArcLength(points, src_seg_idx, dst_seg_idx);
+  const double signed_length_src_offset =
+    calcLongitudinalOffsetToSegment(points, src_seg_idx, src_point);
+  const double signed_length_dst_offset =
+    calcLongitudinalOffsetToSegment(points, dst_seg_idx, dst_point);
+
+  return signed_length_on_traj - signed_length_src_offset + signed_length_dst_offset;
+}
+
+extern template double
+calcSignedArcLength<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points,
+  const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
 
 }  // namespace autoware::motion_utils
 

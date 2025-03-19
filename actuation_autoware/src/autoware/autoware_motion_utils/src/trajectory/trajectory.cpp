@@ -152,4 +152,27 @@ template size_t findFirstNearestSegmentIndexWithSoftConstraints<
   const TrajectoryPointSeq & points,
   const PoseMsg & pose, const double dist_threshold, const double yaw_threshold);
 
+
+// searchZeroVelocityIndex
+template std::optional<size_t>
+searchZeroVelocityIndex<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points_with_twist,
+  const size_t src_idx, const size_t dst_idx);
+template std::optional<size_t>
+searchZeroVelocityIndex<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points_with_twist,
+  const size_t src_idx);
+template std::optional<size_t>
+searchZeroVelocityIndex<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points_with_twist);
+
+// calcSignedArcLength
+template double calcSignedArcLength<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points, const size_t src_idx,
+  const size_t dst_idx);
+template double calcSignedArcLength<TrajectoryPointSeq>(
+  const TrajectoryPointSeq & points,
+  const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
+
 }  // namespace autoware::motion_utils
