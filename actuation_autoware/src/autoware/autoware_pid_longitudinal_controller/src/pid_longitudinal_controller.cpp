@@ -18,8 +18,6 @@
 #include "autoware/universe_utils/geometry/geometry.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 
-#include <fmt/format.h>
-
 #include <algorithm>
 #include <limits>
 #include <memory>

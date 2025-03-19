@@ -23,10 +23,10 @@
 #include <cmath>
 #include <limits>
 #include <utility>
+#include <optional>  // NOLINT // TODO: check if this is needed
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <optional>  // NOLINT // TODO: check if this is needed
 
 // Msgs
 #include "Trajectory.h"

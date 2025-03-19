@@ -21,6 +21,9 @@
 #include <limits>
 #include <utility>
 #include <vector>
+#include <cstdio>
+
+#include "common/clock/clock.hpp"
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
@@ -64,7 +67,8 @@ std::optional<double> SmoothStop::calcTimeToStop(
   const std::vector<std::pair<double, double>> & vel_hist) const
 {
   if (!m_is_set_params) {
-    throw std::runtime_error("Trying to calculate uninitialized SmoothStop");
+    fprintf(stderr, "SmoothStop: Error: Trying to calculate uninitialized SmoothStop");
+    std::exit(EXIT_FAILURE);
   }
 
   // return when vel_hist is empty
@@ -119,7 +123,8 @@ double SmoothStop::calculate(
   const std::vector<std::pair<double, double>> & vel_hist, const double delay_time)
 {
   if (!m_is_set_params) {
-    throw std::runtime_error("Trying to calculate uninitialized SmoothStop");
+    fprintf(stderr, "SmoothStop: Error: Trying to calculate uninitialized SmoothStop");
+    std::exit(EXIT_FAILURE);
   }
 
   // predict time to stop
