@@ -88,6 +88,7 @@ include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
 include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
 include(src/autoware/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
 include(src/autoware/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
+include(src/autoware/autoware_pid_longitudinal_controller/autoware_pid_longitudinal_controller.cmake)
 
 message("=== Build Summary ===")
 message("App sources: ${APP_SOURCES}")

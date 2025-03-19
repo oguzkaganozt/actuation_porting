@@ -1,10 +1,11 @@
 
 # Add source files
 list(APPEND APP_SOURCES
-  src/autoware/autoware_trajectory_follower_base/src/lateral_controller_base.cpp
+  src/autoware/autoware_pid_longitudinal_controller/src/pid.cpp
+  src/autoware/autoware_pid_longitudinal_controller/src/smooth_stop.cpp
 )
 
 # Add include directories
 list(APPEND APP_INCLUDE_DIRS
-  src/autoware/autoware_trajectory_follower_base/include
+  src/autoware/autoware_pid_longitudinal_controller/include
 )
