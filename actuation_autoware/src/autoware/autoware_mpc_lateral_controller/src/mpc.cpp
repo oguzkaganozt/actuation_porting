@@ -248,7 +248,7 @@ std::pair<ResultWithReason, MPCData> MPC::getData(
   data.steer = static_cast<double>(current_steer.steering_tire_angle);
   data.lateral_err = MPCUtils::calcLateralError(current_pose, data.nearest_pose);
   data.yaw_err = normalizeRadian(
-    getYaw(current_pose.orientation) - getYaw(data.nearest_pose.orientation));
+    autoware::universe_utils::getYaw(current_pose.orientation) - autoware::universe_utils::getYaw(data.nearest_pose.orientation));
 
   // get predicted steer
   data.predicted_steer = m_steering_predictor->calcSteerPrediction();

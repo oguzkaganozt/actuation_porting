@@ -482,8 +482,8 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
   const bool is_dist_deviation_large =
     m_state_transition_params.emergency_state_traj_trans_dev < trans_deviation;
   auto rot_deviation = std::abs(autoware::universe_utils::normalizeRadian(
-    tf2::getYaw(current_interpolated_pose.first.pose.orientation) -
-    tf2::getYaw(current_pose.orientation)));
+    autoware::universe_utils::getYaw(current_interpolated_pose.first.pose.orientation) -
+    autoware::universe_utils::getYaw(current_pose.orientation)));
   const bool is_yaw_deviation_large =
     m_state_transition_params.emergency_state_traj_rot_dev < rot_deviation;
 

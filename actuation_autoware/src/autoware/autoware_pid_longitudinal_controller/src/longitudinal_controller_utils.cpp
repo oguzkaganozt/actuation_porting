@@ -114,7 +114,7 @@ Pose calcPoseAfterTimeDelay(
   const double delay_time_calculation =
     time_to_stop > 0.0 && time_to_stop < delay_time ? time_to_stop : delay_time;
   // simple linear prediction
-  const double yaw = tf2::getYaw(current_pose.orientation);
+  const double yaw = autoware::universe_utils::getYaw(current_pose.orientation);
   const double running_distance = delay_time_calculation * current_vel + 0.5 * current_acc *
                                                                            delay_time_calculation *
                                                                            delay_time_calculation;
