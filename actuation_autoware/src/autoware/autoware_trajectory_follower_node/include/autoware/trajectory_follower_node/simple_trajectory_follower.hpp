@@ -15,8 +15,9 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_NODE__SIMPLE_TRAJECTORY_FOLLOWER_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_NODE__SIMPLE_TRAJECTORY_FOLLOWER_HPP_
 
-
 #include <memory>
+
+#include "common/node/node.hpp"
 
 //Msgs
 #include "Control.h"

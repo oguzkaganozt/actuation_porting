@@ -30,6 +30,8 @@
 #include <utility>
 #include <vector>
 
+#include "common/node/node.hpp"
+
 //Msgs
 // #include <autoware_control_msgs/msg/detail/control_horizon__struct.hpp> //TODO: check if we are using this
 #include "Control.h"
@@ -64,6 +66,7 @@ using trajectory_follower::LateralHorizon;
 using trajectory_follower::LateralOutput;
 using trajectory_follower::LongitudinalHorizon;
 using trajectory_follower::LongitudinalOutput;
+
 namespace trajectory_follower_node
 {
 
@@ -88,20 +91,11 @@ private:
   std::shared_ptr<trajectory_follower::LateralControllerBase> lateral_controller_;
 
   // Subscribers
-  Subscriber<TrajectoryMsg> sub_ref_path_{
-    this, "~/input/reference_trajectory"};
-
-  Subscriber<OdometryMsg> sub_odometry_{
-    this, "~/input/current_odometry"};
-
-  Subscriber<SteeringReportMsg> sub_steering_{
-    this, "~/input/current_steering"};
-
-  Subscriber<AccelWithCovarianceStampedMsg> sub_accel_{
-    this, "~/input/current_accel"};
-
-  Subscriber<OperationModeStateMsg> sub_operation_mode_{
-    this, "~/input/current_operation_mode"};
+  std::shared_ptr<Subscriber<TrajectoryMsg>> sub_ref_path_;
+  std::shared_ptr<Subscriber<OdometryMsg>> sub_odometry_;
+  std::shared_ptr<Subscriber<SteeringReportMsg>> sub_steering_;
+  std::shared_ptr<Subscriber<AccelWithCovarianceStampedMsg>> sub_accel_;
+  std::shared_ptr<Subscriber<OperationModeStateMsg>> sub_operation_mode_;
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
@@ -109,7 +103,8 @@ private:
   std::shared_ptr<Publisher<Float64StampedMsg>> pub_processing_time_lon_ms_;
   std::shared_ptr<Publisher<MarkerArrayMsg>> debug_marker_pub_;
   std::shared_ptr<Publisher<ControlHorizonMsg>> control_cmd_horizon_pub_;
-
+  
+  // State
   std::shared_ptr<TrajectoryMsg> current_trajectory_ptr_;
   std::shared_ptr<OdometryMsg> current_odometry_ptr_;
   std::shared_ptr<SteeringReportMsg> current_steering_ptr_;
@@ -130,15 +125,29 @@ private:
    * @brief compute control command, and publish periodically
    */
   std::optional<trajectory_follower::InputData> createInputData();
-  void callbackTimerControl();
+
+  //
+  static void callbackTimerControl(Node* node);
+
+  //
   bool processData();
+
+  //
   bool isTimeOut(const LongitudinalOutput & lon_out, const LateralOutput & lat_out);
+
+  //
   LateralControllerMode getLateralControllerMode(const std::string & algorithm_name) const;
+
+  //
   LongitudinalControllerMode getLongitudinalControllerMode(
     const std::string & algorithm_name) const;
+
+  //
   void publishDebugMarker(
     const trajectory_follower::InputData & input_data,
     const trajectory_follower::LateralOutput & lat_out) const;
+
+  //
   /**
    * @brief merge lateral and longitudinal horizons
    * @details If one of the commands has only one control, repeat the control to match the other
@@ -149,20 +158,38 @@ private:
    * @param stamp stamp
    * @return merged control horizon
    */
-  static std::optional<ControlHorizon> mergeLatLonHorizon(
+  static std::optional<ControlHorizonMsg> mergeLatLonHorizon(
     const LateralHorizon & lateral_horizon, const LongitudinalHorizon & longitudinal_horizon,
     const double & stamp);
 
-  std::unique_ptr<autoware::universe_utils::LoggerLevelConfigure> logger_configure_;
-
-  std::unique_ptr<autoware::universe_utils::PublishedTimePublisher> published_time_publisher_;
-
+  //
   void publishProcessingTime(
     const double t_ms, const std::shared_ptr<Publisher<Float64StampedMsg>> pub);
+
+  //
   StopWatch<std::chrono::milliseconds> stop_watch_;
 
   static constexpr double logger_throttle_interval = 5000;
 };
+
+inline void info_throttle(const char * msg)
+{
+  static int counter = 0;
+  if (counter % CONFIG_RCLCPP_THROTTLE_RATE_INFO == 0) {
+    printf("%s", msg);
+  }
+  counter++;
+}
+
+inline void warn_throttle(const char * msg)
+{
+  static int counter = 0;
+  if (counter % CONFIG_RCLCPP_THROTTLE_RATE_WARN == 0) {
+    fprintf(stderr, "%s", msg);
+  }
+  counter++;
+}
+
 }  // namespace trajectory_follower_node
 }  // namespace autoware::motion::control
 
