@@ -328,9 +328,7 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
 
   // Insert the interpolated point
   auto sequence_points = wrap(control_data.interpolated_traj.points);
-  sequence_points.insert(
-    sequence_points.begin() + current_interpolated_pose.second + 1,
-    current_interpolated_pose.first);
+  sequence_points.insert(current_interpolated_pose.second + 1, current_interpolated_pose.first);
   control_data.nearest_idx = current_interpolated_pose.second + 1;
   control_data.target_idx = control_data.nearest_idx;
   const auto nearest_point = current_interpolated_pose.first;
@@ -361,8 +359,9 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
   // calculate the target motion for delay compensation
   constexpr double min_running_dist = 0.01;
   if (control_data.state_after_delay.running_distance > min_running_dist) {
-    control_data.interpolated_traj.points =
-      autoware::motion_utils::removeOverlapPoints(control_data.interpolated_traj.points);
+    // TODO: check if this is correct
+    sequence_points =
+      autoware::motion_utils::removeOverlapPoints(sequence_points);
 
     const auto target_pose = longitudinal_utils::findTrajectoryPoseAfterDistance(
       control_data.nearest_idx, control_data.state_after_delay.running_distance,
@@ -373,9 +372,7 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
 
     control_data.target_idx = target_interpolated_point.second + 1;
     
-    control_data.interpolated_traj.points.insert(
-      control_data.interpolated_traj.points.begin() + control_data.target_idx,
-      target_interpolated_point.first);
+    sequence_points.insert(control_data.target_idx, target_interpolated_point.first);
 
     target_point = target_interpolated_point.first;
   }
@@ -388,20 +385,21 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
   // to tell if our `control_data.target_idx` point still exists or removed.
   // ==========================================================================================
   // Remove overlapped points after inserting the interpolated points
-  control_data.interpolated_traj.points =
-    autoware::motion_utils::removeOverlapPoints(control_data.interpolated_traj.points);
+  // TODO: check if this is correct
+  sequence_points =
+    autoware::motion_utils::removeOverlapPoints(sequence_points);
   control_data.nearest_idx = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
-    control_data.interpolated_traj.points, nearest_point.pose, m_ego_nearest_dist_threshold,
+    sequence_points, nearest_point.pose, m_ego_nearest_dist_threshold,
     m_ego_nearest_yaw_threshold);
   control_data.target_idx = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
-    control_data.interpolated_traj.points, target_point.pose, m_ego_nearest_dist_threshold,
+    sequence_points, target_point.pose, m_ego_nearest_dist_threshold,
     m_ego_nearest_yaw_threshold);
 
   // send debug values
   m_debug_values.setValues(DebugValues::TYPE::PREDICTED_VEL, control_data.state_after_delay.vel);
   m_debug_values.setValues(
     DebugValues::TYPE::TARGET_VEL,
-    control_data.interpolated_traj.points.at(control_data.target_idx).longitudinal_velocity_mps);
+    sequence_points.at(control_data.target_idx).longitudinal_velocity_mps);
 
   // shift
   control_data.shift = getCurrentShift(control_data);
@@ -412,7 +410,7 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
 
   // distance to stopline
   control_data.stop_dist = longitudinal_utils::calcStopDistance(
-    control_data.interpolated_traj.points.at(control_data.nearest_idx).pose,
+    sequence_points.at(control_data.nearest_idx).pose,
     control_data.interpolated_traj, m_ego_nearest_dist_threshold, m_ego_nearest_yaw_threshold);
 
   // pitch
@@ -514,33 +512,35 @@ void PidLongitudinalController::updateControlState(const ControlData & control_d
   }
   const bool stopped_condition =
     m_last_running_time
-      : false;
       ? (Clock::now() - m_last_running_time) > p.stopped_state_entry_duration_time
+      : false;
 
   // ==========================================================================================
   // NOTE: due to removeOverlapPoints() in getControlData() m_trajectory and
   // control_data.interpolated_traj have different size.
   // ==========================================================================================
+  auto sequence_points = wrap(control_data.interpolated_traj.points);
   const double current_vel_cmd = std::fabs(
-    control_data.interpolated_traj.points.at(control_data.nearest_idx).longitudinal_velocity_mps);
+    sequence_points.at(control_data.nearest_idx).longitudinal_velocity_mps);
   const auto emergency_condition = [&]() {
     if (
       m_enable_overshoot_emergency && stop_dist < -p.emergency_state_overshoot_stop_dist &&
       current_vel_cmd < vel_epsilon) {
       return ResultWithReason{
-        true, fmt::format("the target velocity {} is less than {}", current_vel_cmd, vel_epsilon)};
+        true, std::string("the target velocity ") + std::to_string(current_vel_cmd) +
+              std::string(" is less than ") + std::to_string(vel_epsilon)};
     }
     return ResultWithReason{false};
   }();
   const bool has_nonzero_target_vel = std::abs(current_vel_cmd) > 1.0e-5;
 
   const bool is_under_control = m_current_operation_mode.is_autoware_control_enabled &&
-                                m_current_operation_mode.mode == OperationModeState::AUTONOMOUS;
+                                m_current_operation_mode.mode == OPERATION_MODE_STATE_AUTONOMOUS;
 
   if (is_under_control != m_prev_vehicle_is_under_control) {
     m_prev_vehicle_is_under_control = is_under_control;
-    m_under_control_starting_time =
-      is_under_control ? Clock::now() : nullptr;
+    m_under_control_starting_time = // TODO: check if this is correct
+      is_under_control ? Clock::now() : 0.0;
   }
 
   if (m_control_state != ControlState::STOPPED) {
@@ -618,15 +618,16 @@ void PidLongitudinalController::updateControlState(const ControlData & control_d
           printf("target speed > 0, but keep stop condition is met. Keep STOPPED.\n");
         }
 
-        // publish debug marker
-        auto marker = createDefaultMarker(
-          "map", Clock::now(), "stop_reason", 0, Marker::TEXT_VIEW_FACING,
-          createMarkerScale(0.0, 0.0, 1.0), createMarkerColor(1.0, 1.0, 1.0, 0.999));
-        marker.pose = autoware::universe_utils::calcOffsetPose(
-          m_current_kinematic_state.pose.pose, m_wheel_base + m_front_overhang,
-          m_vehicle_width / 2 + 2.0, 1.5);
-        marker.text = "steering not\nconverged";
-        m_pub_stop_reason_marker->publish(marker);
+        // TODO: we can enable this again
+        // // publish debug marker
+        // auto marker = createDefaultMarker(
+        //   "map", Clock::now(), "stop_reason", 0, Marker::TEXT_VIEW_FACING,
+        //   createMarkerScale(0.0, 0.0, 1.0), createMarkerColor(1.0, 1.0, 1.0, 0.999));
+        // marker.pose = autoware::universe_utils::calcOffsetPose(
+        //   m_current_kinematic_state.pose.pose, m_wheel_base + m_front_overhang,
+        //   m_vehicle_width / 2 + 2.0, 1.5);
+        // marker.text = "steering not\nconverged";
+        // m_pub_stop_reason_marker->publish(marker);
 
         // keep STOPPED
         return;
@@ -666,9 +667,10 @@ PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
   const size_t target_idx = control_data.target_idx;
 
   // velocity and acceleration command
+  auto sequence_points = wrap(control_data.interpolated_traj.points);
   Motion ctrl_cmd_as_pedal_pos{
-    control_data.interpolated_traj.points.at(target_idx).longitudinal_velocity_mps,
-    control_data.interpolated_traj.points.at(target_idx).acceleration_mps2};
+    sequence_points.at(target_idx).longitudinal_velocity_mps,
+    sequence_points.at(target_idx).acceleration_mps2};
 
   if (m_control_state == ControlState::STOPPED) {
     const auto & p = m_stopped_state_params;
@@ -685,13 +687,13 @@ PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
     printf("[Stopped]. vel: %3.3f, acc: %3.3f\n", ctrl_cmd_as_pedal_pos.vel, ctrl_cmd_as_pedal_pos.acc);
   } else {
     Motion raw_ctrl_cmd{
-      control_data.interpolated_traj.points.at(target_idx).longitudinal_velocity_mps,
-      control_data.interpolated_traj.points.at(target_idx).acceleration_mps2};
+      sequence_points.at(target_idx).longitudinal_velocity_mps,
+      sequence_points.at(target_idx).acceleration_mps2};
     if (m_control_state == ControlState::EMERGENCY) {
       raw_ctrl_cmd = calcEmergencyCtrlCmd(control_data.dt);
     } else {
       if (m_control_state == ControlState::DRIVE) {
-        raw_ctrl_cmd.vel = control_data.interpolated_traj.points.at(control_data.target_idx)
+        raw_ctrl_cmd.vel = sequence_points.at(control_data.target_idx)
                              .longitudinal_velocity_mps;
         raw_ctrl_cmd.acc = applyVelocityFeedback(control_data);
         raw_ctrl_cmd = keepBrakeBeforeStop(control_data, raw_ctrl_cmd, target_idx);
@@ -700,8 +702,7 @@ PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
           "[feedback control]  vel: %3.3f, acc: %3.3f, dt: %3.3f, v_curr: %3.3f, v_ref: %3.3f "
           "feedback_ctrl_cmd.ac: %3.3f\n",
           raw_ctrl_cmd.vel, raw_ctrl_cmd.acc, control_data.dt, control_data.current_motion.vel,
-          control_data.interpolated_traj.points.at(control_data.target_idx)
-            .longitudinal_velocity_mps,
+          sequence_points.at(control_data.target_idx).longitudinal_velocity_mps,
           raw_ctrl_cmd.acc);
       } else if (m_control_state == ControlState::STOPPING) {
         raw_ctrl_cmd.acc = m_smooth_stop.calculate(
@@ -760,7 +761,7 @@ LongitudinalMsg PidLongitudinalController::createCtrlCmdMsg(
 {
   // publish control command
   LongitudinalMsg cmd{};
-  cmd.stamp = Clock::now();
+  cmd.stamp = Clock::toRosTime(Clock::now());
   cmd.velocity = static_cast<decltype(cmd.velocity)>(ctrl_cmd.vel);
   cmd.acceleration = static_cast<decltype(cmd.acceleration)>(ctrl_cmd.acc);
 
@@ -776,31 +777,33 @@ LongitudinalMsg PidLongitudinalController::createCtrlCmdMsg(
   return cmd;
 }
 
+// TODO: we can enable this again
 void PidLongitudinalController::publishDebugData(
   const Motion & ctrl_cmd, const ControlData & control_data)
 {
-  // set debug values
-  m_debug_values.setValues(DebugValues::TYPE::DT, control_data.dt);
-  m_debug_values.setValues(DebugValues::TYPE::CALCULATED_ACC, control_data.current_motion.acc);
-  m_debug_values.setValues(DebugValues::TYPE::SHIFT, static_cast<double>(control_data.shift));
-  m_debug_values.setValues(DebugValues::TYPE::STOP_DIST, control_data.stop_dist);
-  m_debug_values.setValues(DebugValues::TYPE::CONTROL_STATE, static_cast<double>(m_control_state));
-  m_debug_values.setValues(DebugValues::TYPE::ACC_CMD_PUBLISHED, ctrl_cmd.acc);
+  // // set debug values
+  // m_debug_values.setValues(DebugValues::TYPE::DT, control_data.dt);
+  // m_debug_values.setValues(DebugValues::TYPE::CALCULATED_ACC, control_data.current_motion.acc);
+  // m_debug_values.setValues(DebugValues::TYPE::SHIFT, static_cast<double>(control_data.shift));
+  // m_debug_values.setValues(DebugValues::TYPE::STOP_DIST, control_data.stop_dist);
+  // m_debug_values.setValues(DebugValues::TYPE::CONTROL_STATE, static_cast<double>(m_control_state));
+  // m_debug_values.setValues(DebugValues::TYPE::ACC_CMD_PUBLISHED, ctrl_cmd.acc);
 
-  // publish debug values
-  Float32MultiArrayStampedMsg debug_msg{};
-  debug_msg.stamp = Clock::now();
-  for (const auto & v : m_debug_values.getValues()) {
-    debug_msg.data.push_back(static_cast<decltype(debug_msg.data)::value_type>(v));
-  }
-  m_pub_debug->publish(debug_msg);
+  // // publish debug values
+  // Float32MultiArrayStampedMsg debug_msg{};
+  // debug_msg.stamp = Clock::toRosTime(Clock::now());
+  // auto debug_msg_data = debug_msg.data;
+  // for (const auto & v : m_debug_values.getValues()) {
+  //   debug_msg_data.push_back(static_cast<decltype(debug_msg.data)::value_type>(v));
+  // }
+  // m_pub_debug->publish(debug_msg);
 
-  // slope angle
-  Float32MultiArrayStampedMsg slope_msg{};
-  slope_msg.stamp = Clock::now();
-  slope_msg.data.push_back(
-    static_cast<decltype(slope_msg.data)::value_type>(control_data.slope_angle));
-  m_pub_slope->publish(slope_msg);
+  // // slope angle
+  // Float32MultiArrayStampedMsg slope_msg{};
+  // slope_msg.stamp = Clock::toRosTime(Clock::now());
+  // slope_msg.data.push_back(
+  //   static_cast<decltype(slope_msg.data)::value_type>(control_data.slope_angle));
+  // m_pub_slope->publish(slope_msg);
 }
 
 double PidLongitudinalController::getDt()
@@ -823,8 +826,9 @@ enum PidLongitudinalController::Shift PidLongitudinalController::getCurrentShift
 {
   constexpr double epsilon = 1e-5;
 
+  auto sequence_points = wrap(control_data.interpolated_traj.points);
   const double target_vel =
-    control_data.interpolated_traj.points.at(control_data.target_idx).longitudinal_velocity_mps;
+    sequence_points.at(control_data.target_idx).longitudinal_velocity_mps;
 
   if (target_vel > epsilon) {
     return Shift::Forward;
@@ -840,7 +844,7 @@ void PidLongitudinalController::storeAccelCmd(const double accel)
   if (m_control_state == ControlState::DRIVE) {
     // convert format
     LongitudinalMsg cmd;
-    cmd.stamp = Clock::now();
+    cmd.stamp = Clock::toRosTime(Clock::now());
     cmd.acceleration = static_cast<decltype(cmd.acceleration)>(accel);
 
     // store published ctrl cmd
@@ -882,8 +886,9 @@ PidLongitudinalController::Motion PidLongitudinalController::keepBrakeBeforeStop
     return output_motion;
   }
   const auto traj = control_data.interpolated_traj;
+  auto sequence_points = wrap(traj.points);
 
-  const auto stop_idx = autoware::motion_utils::searchZeroVelocityIndex(traj.points);
+  const auto stop_idx = autoware::motion_utils::searchZeroVelocityIndex(sequence_points);
   if (!stop_idx) {
     return output_motion;
   }
@@ -892,10 +897,10 @@ PidLongitudinalController::Motion PidLongitudinalController::keepBrakeBeforeStop
   size_t min_acc_idx = std::numeric_limits<size_t>::max();
   for (int i = static_cast<int>(*stop_idx); i >= 0; --i) {
     const auto ui = static_cast<size_t>(i);
-    if (traj.points.at(ui).acceleration_mps2 > static_cast<float>(min_acc_before_stop)) {
+    if (sequence_points.at(ui).acceleration_mps2 > static_cast<float>(min_acc_before_stop)) {
       break;
     }
-    min_acc_before_stop = traj.points.at(ui).acceleration_mps2;
+    min_acc_before_stop = sequence_points.at(ui).acceleration_mps2;
     min_acc_idx = ui;
   }
 
@@ -911,8 +916,9 @@ std::pair<TrajectoryPointMsg, size_t>
 PidLongitudinalController::calcInterpolatedTrajPointAndSegment(
   const TrajectoryMsg & traj, const PoseMsg & pose) const
 {
-  if (traj.points.size() == 1) {
-    return std::make_pair(traj.points.at(0), 0);
+  auto sequence_points = wrap(traj.points);
+  if (sequence_points.size() == 1) {
+    return std::make_pair(sequence_points.at(0), 0);
   }
 
   // apply linear interpolation
@@ -929,7 +935,7 @@ PidLongitudinalController::StateAfterDelay PidLongitudinalController::predictedS
   double pred_vel = current_vel;
   double pred_acc = current_acc;
 
-  if (m_ctrl_cmd_vec.empty() || m_current_operation_mode.mode != OperationModeState::AUTONOMOUS) {
+  if (m_ctrl_cmd_vec.empty() || m_current_operation_mode.mode != OPERATION_MODE_STATE_AUTONOMOUS) {
     // check time to stop
     const double time_to_stop = -current_vel / current_acc;
     const double delay_time_calculation =
@@ -974,17 +980,18 @@ PidLongitudinalController::StateAfterDelay PidLongitudinalController::predictedS
 
 double PidLongitudinalController::applyVelocityFeedback(const ControlData & control_data)
 {
+  auto sequence_points = wrap(control_data.interpolated_traj.points);
   // NOTE: Acceleration command is always positive even if the ego drives backward.
   const double vel_sign = (control_data.shift == Shift::Forward)
                             ? 1.0
                             : (control_data.shift == Shift::Reverse ? -1.0 : 0.0);
   const double current_vel = control_data.current_motion.vel;
   const auto target_motion = Motion{
-    control_data.interpolated_traj.points.at(control_data.target_idx).longitudinal_velocity_mps,
-    control_data.interpolated_traj.points.at(control_data.target_idx).acceleration_mps2};
+    sequence_points.at(control_data.target_idx).longitudinal_velocity_mps,
+    sequence_points.at(control_data.target_idx).acceleration_mps2};
   const double diff_vel = (target_motion.vel - current_vel) * vel_sign;
   const bool is_under_control = m_current_operation_mode.is_autoware_control_enabled &&
-                                m_current_operation_mode.mode == OperationModeState::AUTONOMOUS;
+                                m_current_operation_mode.mode == OPERATION_MODE_STATE_AUTONOMOUS;
 
   const bool vehicle_is_moving = std::abs(current_vel) > m_current_vel_threshold_pid_integrate;
   const double time_under_control = getTimeUnderControl();
@@ -1011,7 +1018,7 @@ double PidLongitudinalController::applyVelocityFeedback(const ControlData & cont
   const double ff_scale = std::clamp(
     std::abs(current_vel) / std::max(std::abs(target_motion.vel), 0.1), ff_scale_min, ff_scale_max);
   const double ff_acc =
-    control_data.interpolated_traj.points.at(control_data.target_idx).acceleration_mps2 * ff_scale;
+    sequence_points.at(control_data.target_idx).acceleration_mps2 * ff_scale;
 
   const double feedback_acc = ff_acc + pid_acc;
 
@@ -1040,22 +1047,23 @@ void PidLongitudinalController::updatePitchDebugValues(
 
 void PidLongitudinalController::updateDebugVelAcc(const ControlData & control_data)
 {
+  auto sequence_points = wrap(control_data.interpolated_traj.points);
   m_debug_values.setValues(DebugValues::TYPE::CURRENT_VEL, control_data.current_motion.vel);
   m_debug_values.setValues(
     DebugValues::TYPE::TARGET_VEL,
-    control_data.interpolated_traj.points.at(control_data.target_idx).longitudinal_velocity_mps);
+    sequence_points.at(control_data.target_idx).longitudinal_velocity_mps);
   m_debug_values.setValues(
     DebugValues::TYPE::TARGET_ACC,
-    control_data.interpolated_traj.points.at(control_data.target_idx).acceleration_mps2);
+    sequence_points.at(control_data.target_idx).acceleration_mps2);
   m_debug_values.setValues(
     DebugValues::TYPE::NEAREST_VEL,
-    control_data.interpolated_traj.points.at(control_data.nearest_idx).longitudinal_velocity_mps);
+    sequence_points.at(control_data.nearest_idx).longitudinal_velocity_mps);
   m_debug_values.setValues(
     DebugValues::TYPE::NEAREST_ACC,
-    control_data.interpolated_traj.points.at(control_data.nearest_idx).acceleration_mps2);
+    sequence_points.at(control_data.nearest_idx).acceleration_mps2);
   m_debug_values.setValues(
     DebugValues::TYPE::ERROR_VEL,
-    control_data.interpolated_traj.points.at(control_data.nearest_idx).longitudinal_velocity_mps -
+    sequence_points.at(control_data.nearest_idx).longitudinal_velocity_mps -
       control_data.current_motion.vel);
 }
 

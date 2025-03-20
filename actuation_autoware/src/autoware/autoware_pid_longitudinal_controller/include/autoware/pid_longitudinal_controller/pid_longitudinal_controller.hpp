@@ -42,6 +42,11 @@
 #include "Longitudinal.h"
 #include "Float32MultiArrayStamped.h"
 #include "PoseStamped.h"
+#define OPERATION_MODE_STATE_UNKNOWN autoware_adapi_v1_msgs_msg_OperationModeState_Constants_UNKNOWN
+#define OPERATION_MODE_STATE_STOP autoware_adapi_v1_msgs_msg_OperationModeState_Constants_STOP
+#define OPERATION_MODE_STATE_AUTONOMOUS autoware_adapi_v1_msgs_msg_OperationModeState_Constants_AUTONOMOUS
+#define OPERATION_MODE_STATE_LOCAL autoware_adapi_v1_msgs_msg_OperationModeState_Constants_LOCAL
+#define OPERATION_MODE_STATE_REMOTE autoware_adapi_v1_msgs_msg_OperationModeState_Constants_REMOTE
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
@@ -53,14 +58,6 @@ using OdometryMsg = nav_msgs_msg_Odometry;
 using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
 using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
 using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
-
-// Topic Descriptors
-// using Float32MultiArrayStampedDesc = tier4_debug_msgs_msg_Float32MultiArrayStamped_desc;
-// using MarkerDesc = visualization_msgs_msg_Marker_desc;
-// using OdometryDesc = nav_msgs_msg_Odometry_desc;
-// using LongitudinalDesc = autoware_control_msgs_msg_Longitudinal_desc;
-// using OperationModeStateDesc = autoware_adapi_v1_msgs_msg_OperationModeState_desc;
-// using TrajectoryDesc = autoware_planning_msgs_msg_Trajectory_desc;
 
 namespace trajectory_follower = ::autoware::motion::control::trajectory_follower;
 
