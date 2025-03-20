@@ -45,6 +45,7 @@
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
+// Msgs
 using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
 using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
 using MarkerMsg = visualization_msgs_msg_Marker;
@@ -52,6 +53,14 @@ using OdometryMsg = nav_msgs_msg_Odometry;
 using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
 using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
 using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
+
+// Topic Descriptors
+// using Float32MultiArrayStampedDesc = tier4_debug_msgs_msg_Float32MultiArrayStamped_desc;
+// using MarkerDesc = visualization_msgs_msg_Marker_desc;
+// using OdometryDesc = nav_msgs_msg_Odometry_desc;
+// using LongitudinalDesc = autoware_control_msgs_msg_Longitudinal_desc;
+// using OperationModeStateDesc = autoware_adapi_v1_msgs_msg_OperationModeState_desc;
+// using TrajectoryDesc = autoware_planning_msgs_msg_Trajectory_desc;
 
 namespace trajectory_follower = ::autoware::motion::control::trajectory_follower;
 
@@ -84,7 +93,7 @@ private:
   struct ControlData
   {
     bool is_far_from_trajectory{false};
-    autoware_planning_msgs::msg::Trajectory interpolated_traj{};
+    TrajectoryMsg interpolated_traj{};
     size_t nearest_idx{0};  // nearest_idx = 0 when nearest_idx is not found with findNearestIdx
     size_t target_idx{0};
     StateAfterDelay state_after_delay{0.0, 0.0, 0.0};
@@ -306,7 +315,7 @@ private:
    * @param [in] ctrl_cmd calculated control command to control velocity
    * @param [in] current_vel current velocity of the vehicle
    */
-  autoware_control_msgs::msg::Longitudinal createCtrlCmdMsg(
+  LongitudinalMsg createCtrlCmdMsg(
     const Motion & ctrl_cmd, const double & current_vel);
 
   /**
@@ -368,7 +377,7 @@ private:
    * @param [in] point vehicle position
    * @param [in] nearest_idx index of the trajectory point nearest to the vehicle position
    */
-  std::pair<autoware_planning_msgs::msg::TrajectoryPoint, size_t>
+  std::pair<TrajectoryPointMsg, size_t>
   calcInterpolatedTrajPointAndSegment(
     const TrajectoryMsg & traj,
     const PoseMsg & pose) const;

@@ -209,38 +209,40 @@ PidLongitudinalController::PidLongitudinalController(Node & node)
       : node.declare_parameter<double>("ego_nearest_yaw_threshold");  // [rad]
 
   // subscriber, publisher
-  m_pub_slope = node.create_publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>(
-    "~/output/slope_angle", "topic_descriptor");
-  m_pub_debug = node.create_publisher<tier4_debug_msgs::msg::Float32MultiArrayStamped>(
-    "~/output/longitudinal_diagnostic", "topic_descriptor");
-  m_pub_stop_reason_marker = node.create_publisher<Marker>("~/output/stop_reason", "topic_descriptor");
+  m_pub_slope = node.create_publisher<Float32MultiArrayStampedMsg>(
+    "~/output/slope_angle", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
+  m_pub_debug = node.create_publisher<Float32MultiArrayStampedMsg>(
+    "~/output/longitudinal_diagnostic", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
+  m_pub_stop_reason_marker = node.create_publisher<MarkerMsg>(
+    "~/output/stop_reason", &visualization_msgs_msg_Marker_desc);
 
 }
 
-void PidLongitudinalController::setKinematicState(const nav_msgs::msg::Odometry & msg)
+void PidLongitudinalController::setKinematicState(const OdometryMsg & msg)
 {
   m_current_kinematic_state = msg;
 }
 
 void PidLongitudinalController::setCurrentAcceleration(
-  const geometry_msgs::msg::AccelWithCovarianceStamped & msg)
+  const AccelWithCovarianceStampedMsg & msg)
 {
   m_current_accel = msg;
 }
 
-void PidLongitudinalController::setCurrentOperationMode(const OperationModeState & msg)
+void PidLongitudinalController::setCurrentOperationMode(const OperationModeStateMsg & msg)
 {
   m_current_operation_mode = msg;
 }
 
-void PidLongitudinalController::setTrajectory(const autoware_planning_msgs::msg::Trajectory & msg)
+void PidLongitudinalController::setTrajectory(const TrajectoryMsg & msg)
 {
   if (!longitudinal_utils::isValidTrajectory(msg)) {
     // RCLCPP_ERROR_THROTTLE(logger_, *clock_, 3000, "received invalid trajectory. ignore.");
     return;
   }
 
-  if (msg.points.size() < 2) {
+  auto sequence_points = wrap(msg.points);
+  if (sequence_points.size() < 2) {
     // RCLCPP_WARN_THROTTLE(logger_, *clock_, 3000, "Unexpected trajectory size < 2. Ignored.");
     return;
   }
@@ -308,7 +310,7 @@ trajectory_follower::LongitudinalOutput PidLongitudinalController::run(
 }
 
 PidLongitudinalController::ControlData PidLongitudinalController::getControlData(
-  const geometry_msgs::msg::Pose & current_pose)
+  const PoseMsg & current_pose)
 {
   ControlData control_data{};
 
@@ -325,8 +327,9 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
     calcInterpolatedTrajPointAndSegment(control_data.interpolated_traj, current_pose);
 
   // Insert the interpolated point
-  control_data.interpolated_traj.points.insert(
-    control_data.interpolated_traj.points.begin() + current_interpolated_pose.second + 1,
+  auto sequence_points = wrap(control_data.interpolated_traj.points);
+  sequence_points.insert(
+    sequence_points.begin() + current_interpolated_pose.second + 1,
     current_interpolated_pose.first);
   control_data.nearest_idx = current_interpolated_pose.second + 1;
   control_data.target_idx = control_data.nearest_idx;
@@ -360,15 +363,20 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
   if (control_data.state_after_delay.running_distance > min_running_dist) {
     control_data.interpolated_traj.points =
       autoware::motion_utils::removeOverlapPoints(control_data.interpolated_traj.points);
+
     const auto target_pose = longitudinal_utils::findTrajectoryPoseAfterDistance(
       control_data.nearest_idx, control_data.state_after_delay.running_distance,
       control_data.interpolated_traj);
+
     const auto target_interpolated_point =
       calcInterpolatedTrajPointAndSegment(control_data.interpolated_traj, target_pose);
+
     control_data.target_idx = target_interpolated_point.second + 1;
+    
     control_data.interpolated_traj.points.insert(
       control_data.interpolated_traj.points.begin() + control_data.target_idx,
       target_interpolated_point.first);
+
     target_point = target_interpolated_point.first;
   }
 
@@ -747,11 +755,11 @@ PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
 }
 
 // Do not use nearest_idx here
-autoware_control_msgs::msg::Longitudinal PidLongitudinalController::createCtrlCmdMsg(
+LongitudinalMsg PidLongitudinalController::createCtrlCmdMsg(
   const Motion & ctrl_cmd, const double & current_vel)
 {
   // publish control command
-  autoware_control_msgs::msg::Longitudinal cmd{};
+  LongitudinalMsg cmd{};
   cmd.stamp = Clock::now();
   cmd.velocity = static_cast<decltype(cmd.velocity)>(ctrl_cmd.vel);
   cmd.acceleration = static_cast<decltype(cmd.acceleration)>(ctrl_cmd.acc);
@@ -780,7 +788,7 @@ void PidLongitudinalController::publishDebugData(
   m_debug_values.setValues(DebugValues::TYPE::ACC_CMD_PUBLISHED, ctrl_cmd.acc);
 
   // publish debug values
-  tier4_debug_msgs::msg::Float32MultiArrayStamped debug_msg{};
+  Float32MultiArrayStampedMsg debug_msg{};
   debug_msg.stamp = Clock::now();
   for (const auto & v : m_debug_values.getValues()) {
     debug_msg.data.push_back(static_cast<decltype(debug_msg.data)::value_type>(v));
@@ -788,7 +796,7 @@ void PidLongitudinalController::publishDebugData(
   m_pub_debug->publish(debug_msg);
 
   // slope angle
-  tier4_debug_msgs::msg::Float32MultiArrayStamped slope_msg{};
+  Float32MultiArrayStampedMsg slope_msg{};
   slope_msg.stamp = Clock::now();
   slope_msg.data.push_back(
     static_cast<decltype(slope_msg.data)::value_type>(control_data.slope_angle));
@@ -831,7 +839,7 @@ void PidLongitudinalController::storeAccelCmd(const double accel)
 {
   if (m_control_state == ControlState::DRIVE) {
     // convert format
-    autoware_control_msgs::msg::Longitudinal cmd;
+    LongitudinalMsg cmd;
     cmd.stamp = Clock::now();
     cmd.acceleration = static_cast<decltype(cmd.acceleration)>(accel);
 
@@ -899,9 +907,9 @@ PidLongitudinalController::Motion PidLongitudinalController::keepBrakeBeforeStop
   return output_motion;
 }
 
-std::pair<autoware_planning_msgs::msg::TrajectoryPoint, size_t>
+std::pair<TrajectoryPointMsg, size_t>
 PidLongitudinalController::calcInterpolatedTrajPointAndSegment(
-  const autoware_planning_msgs::msg::Trajectory & traj, const geometry_msgs::msg::Pose & pose) const
+  const TrajectoryMsg & traj, const PoseMsg & pose) const
 {
   if (traj.points.size() == 1) {
     return std::make_pair(traj.points.at(0), 0);

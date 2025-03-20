@@ -6,7 +6,9 @@
 
 //Msgs
 #include "Time.h"
+#include "Duration.h"
 using TimeMsg = builtin_interfaces_msg_Time;
+using DurationMsg = builtin_interfaces_msg_Duration;
 
 class Clock {
 public:
@@ -33,6 +35,23 @@ public:
         ros_time.nanosec = static_cast<uint32_t>(count % nano_per_sec);
         
         return ros_time;
+    }
+
+    /* brief: Convert time in seconds to ROS2 duration
+    * @param time: time in seconds
+    * @return ROS2 Duration Message
+    */
+    static DurationMsg toRosDuration(const double time) {
+        const auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::duration<double>(time));
+        constexpr int64_t nano_per_sec = 1'000'000'000;
+        
+        DurationMsg ros_duration;
+        const auto count = nanoseconds.count();
+        ros_duration.sec = static_cast<int32_t>(count / nano_per_sec);
+        ros_duration.nanosec = static_cast<uint32_t>(count % nano_per_sec);
+        
+        return ros_duration;
     }
 
     /* brief: Convert ROS2 time to time in seconds

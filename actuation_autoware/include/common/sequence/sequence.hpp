@@ -333,6 +333,35 @@ public:
             fprintf(stderr, "  (empty)\n");
         }
     }
+
+    bool insert(size_type position, const value_type& value) {
+        if (!sequence) {
+            fprintf(stderr, "Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        
+        if (position > sequence->_length) {
+            fprintf(stderr, "Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
+            std::exit(EXIT_FAILURE);
+        }
+        
+        // Ensure we have enough capacity for one more element
+        if (!ensure_capacity(sequence->_length + 1)) {
+            fprintf(stderr, "Failed to insert - couldn't resize sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        
+        // Shift elements after the insertion point
+        for (size_type i = sequence->_length; i > position; --i) {
+            sequence->_buffer[i] = sequence->_buffer[i-1];
+        }
+        
+        // Insert the new element
+        sequence->_buffer[position] = value;
+        sequence->_length++;
+        
+        return true;
+    }
 };
 
 // Specialization for const types
@@ -502,6 +531,36 @@ public:
         } else {
             fprintf(stderr, "  (empty)\n");
         }
+    }
+
+    // For const specialization, insertion creates a new sequence
+    Sequence<value_type> insert(size_type position, const value_type& value) const {
+        if (!sequence) {
+            fprintf(stderr, "Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        
+        if (position > sequence->_length) {
+            fprintf(stderr, "Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
+            std::exit(EXIT_FAILURE);
+        }
+        
+        Sequence<value_type> result(size() + 1);
+        
+        // Copy elements before insertion point
+        for (size_type i = 0; i < position; ++i) {
+            result.push_back((*this)[i]);
+        }
+        
+        // Insert the new element
+        result.push_back(value);
+        
+        // Copy remaining elements
+        for (size_type i = position; i < size(); ++i) {
+            result.push_back((*this)[i]);
+        }
+        
+        return result;
     }
 };
 
