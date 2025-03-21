@@ -240,24 +240,31 @@ public:
         return node_name_;
     }
 
+    struct handler_data_t {
+        void (*callback)(void*);
+        void* arg;
+    };
+
     /**
      * @brief Create a timer
      * @param period_ms Period in milliseconds
      * @param callback Callback function
      * @return true if timer was created, false otherwise
      */
-    bool create_timer(uint32_t period_ms, void (*callback)(Node*)) {
+    bool create_timer(uint32_t period_ms, void (*callback)(void*), void* arg = nullptr) {
         if (timer_active_) {
             return false;
         }
 
         struct sigevent sev;
         memset(&sev, 0, sizeof(struct sigevent));
+
+        timer_handler_data_ = new handler_data_t{callback, arg};
         
         // TODO: Check if SIGEV_THREAD is supported in zephyr
         sev.sigev_notify = SIGEV_THREAD;
         sev.sigev_signo = SIGALRM;
-        sev.sigev_value.sival_ptr = this;
+        sev.sigev_value.sival_ptr = timer_handler_data_;
         sev.sigev_notify_function = timer_handler_;
 
         if (int ret = timer_create(CLOCK_REALTIME, &sev, &timer_id_); ret < 0) {
@@ -277,7 +284,6 @@ public:
             timer_delete(timer_id_);
             return false;
         }
-        timer_callback_ = callback;
         timer_active_ = true;
 
         fprintf(stderr, "Node: %s timer has been set\n", node_name_.c_str());
@@ -291,6 +297,8 @@ public:
         if (timer_active_) {
             timer_delete(timer_id_);
             timer_active_ = false;
+            delete timer_handler_data_;
+            timer_handler_data_ = nullptr;
         }
     }
 
@@ -315,7 +323,6 @@ private:
     void run_() {
         while (thread_active_) {
             // timer overruns are checked in timer_handler_
-
             // subscriptions are handled in the cyclonedds callback
         }
     }
@@ -327,13 +334,13 @@ private:
     // Timer
     timer_t timer_id_;
     bool timer_active_ = false;
-    static void timer_handler_(union sigval val) {
-        Node* node = static_cast<Node*>(val.sival_ptr);
+    handler_data_t* timer_handler_data_ = nullptr;
 
-        if (node->thread_active_ && node->timer_active_)
-            node->timer_callback_(node);
+    static void timer_handler_(union sigval val) {
+        handler_data_t* handler_data = static_cast<handler_data_t*>(val.sival_ptr);
+        void (*callback)(void*) = handler_data->callback;
+        callback(handler_data->arg);
     }
-    void (*timer_callback_)(Node*);
 };
 
 #endif  // COMMON__NODE_HPP_

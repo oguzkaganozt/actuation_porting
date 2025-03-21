@@ -104,7 +104,7 @@ Controller::Controller() : Node("controller")
   //TODO: check working as expected 
   {
     const auto period_ns = ctrl_period; //TODO: check if giving ms works
-    create_timer(period_ns, &Controller::callbackTimerControl);
+    create_timer(period_ns, &Controller::callbackTimerControl, this);
   }
 
   // published_time_publisher_ =
@@ -127,29 +127,30 @@ Controller::LongitudinalControllerMode Controller::getLongitudinalControllerMode
   return LongitudinalControllerMode::INVALID;
 }
 
+//TODO: we are getting data from direct callbacks, maybe we can keep track of get data within each callback function
 bool Controller::processData()
 {
   bool is_ready = true;
 
-  const auto & logData = [this](const std::string & data_type) {
-    info_throttle(("Waiting for " + data_type + " data").c_str());
-  };
+  // const auto & logData = [this](const std::string & data_type) {
+  //   info_throttle(("Waiting for " + data_type + " data").c_str());
+  // };
 
-  const auto & getData = [&logData](auto & dest, auto & sub, const std::string & data_type = "") {
-    const auto temp = sub.takeData();
-    if (temp) {
-      dest = temp;
-      return true;
-    }
-    if (!data_type.empty()) logData(data_type);
-    return false;
-  };
+  // const auto & getData = [&logData](auto & dest, auto & sub, const std::string & data_type = "") {
+  //   const auto temp = sub.takeData();
+  //   if (temp) {
+  //     dest = temp;
+  //     return true;
+  //   }
+  //   if (!data_type.empty()) logData(data_type);
+  //   return false;
+  // };
 
-  is_ready &= getData(current_accel_ptr_, sub_accel_, "acceleration");
-  is_ready &= getData(current_steering_ptr_, sub_steering_, "steering");
-  is_ready &= getData(current_trajectory_ptr_, sub_ref_path_, "trajectory");
-  is_ready &= getData(current_odometry_ptr_, sub_odometry_, "odometry");
-  is_ready &= getData(current_operation_mode_ptr_, sub_operation_mode_, "operation mode");
+  // is_ready &= getData(current_accel_ptr_, sub_accel_, "acceleration");
+  // is_ready &= getData(current_steering_ptr_, sub_steering_, "steering");
+  // is_ready &= getData(current_trajectory_ptr_, sub_ref_path_, "trajectory");
+  // is_ready &= getData(current_odometry_ptr_, sub_odometry_, "odometry");
+  // is_ready &= getData(current_operation_mode_ptr_, sub_operation_mode_, "operation mode");
 
   return is_ready;
 }
@@ -186,45 +187,47 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
   return input_data;
 }
 
-void Controller::callbackTimerControl(Node* node)
+void Controller::callbackTimerControl(void* arg)
 {
+  Controller* controller = static_cast<Controller*>(arg);
+
   // 1. create input data
-  const auto input_data = node->createInputData();
+  const auto input_data = controller->createInputData();
   if (!input_data) {
     info_throttle("Control is skipped since input data is not ready.");
     return;
   }
 
   // 2. check if controllers are ready
-  const bool is_lat_ready = node->lateral_controller_->isReady(*input_data);
-  const bool is_lon_ready = node->longitudinal_controller_->isReady(*input_data);
+  const bool is_lat_ready = controller->lateral_controller_->isReady(*input_data);
+  const bool is_lon_ready = controller->longitudinal_controller_->isReady(*input_data);
   if (!is_lat_ready || !is_lon_ready) {
     info_throttle("Control is skipped since lateral and/or longitudinal controllers are not ready to run.");
     return;
   }
 
   // 3. run controllers
-  node->stop_watch_.tic("lateral");
-  const auto lat_out = node->lateral_controller_->run(*input_data);
-  node->publishProcessingTime(node->stop_watch_.toc("lateral"), node->pub_processing_time_lat_ms_);
+  controller->stop_watch_.tic("lateral");
+  const auto lat_out = controller->lateral_controller_->run(*input_data);
+  controller->publishProcessingTime(controller->stop_watch_.toc("lateral"), controller->pub_processing_time_lat_ms_);
 
-  node->stop_watch_.tic("longitudinal");
-  const auto lon_out = node->longitudinal_controller_->run(*input_data);
-  node->publishProcessingTime(node->stop_watch_.toc("longitudinal"), node->pub_processing_time_lon_ms_);
+  controller->stop_watch_.tic("longitudinal");
+  const auto lon_out = controller->longitudinal_controller_->run(*input_data);
+  controller->publishProcessingTime(controller->stop_watch_.toc("longitudinal"), controller->pub_processing_time_lon_ms_);
 
   // 4. sync with each other controllers
-  node->longitudinal_controller_->sync(lat_out.sync_data);
-  node->lateral_controller_->sync(lon_out.sync_data);
+  controller->longitudinal_controller_->sync(lat_out.sync_data);
+  controller->lateral_controller_->sync(lon_out.sync_data);
 
   // TODO(Horibe): Think specification. This comes from the old implementation.
-  if (isTimeOut(lon_out, lat_out)) return;
+  if (controller->isTimeOut(lon_out, lat_out)) return;
 
   // 5. publish control command
   ControlMsg out;
   out.stamp = Clock::toRosTime(Clock::now());
   out.lateral = lat_out.control_cmd;
   out.longitudinal = lon_out.control_cmd;
-  node->control_cmd_pub_->publish(out);
+  controller->control_cmd_pub_->publish(out);
 
   //TODO: we can enable this again
   // // 6. publish debug

@@ -29,40 +29,43 @@ using autoware::universe_utils::calcYawDeviation;
 SimpleTrajectoryFollower::SimpleTrajectoryFollower()
 : Node("simple_trajectory_follower")
 {
-  pub_cmd_ = create_publisher<Control>("output/control_cmd", 1);
+  pub_cmd_ = create_publisher<ControlMsg>("output/control_cmd", &autoware_control_msgs_msg_Control_desc);
 
   use_external_target_vel_ = declare_parameter<bool>("use_external_target_vel");
-  external_target_vel_ = declare_parameter<float>("external_target_vel");
-  lateral_deviation_ = declare_parameter<float>("lateral_deviation");
+  external_target_vel_ = declare_parameter<double>("external_target_vel");  //TODO: changed from float to double
+  lateral_deviation_ = declare_parameter<double>("lateral_deviation");  //TODO: changed from float to double
 
-  using namespace std::literals::chrono_literals;
-  timer_ = node.create_timer(
-    this, get_clock(), 30ms, std::bind(&SimpleTrajectoryFollower::onTimer, this));
+  //TODO: check for 30ms correctness
+  create_timer(0.03, &SimpleTrajectoryFollower::onTimer, this);
 }
 
-void SimpleTrajectoryFollower::onTimer()
+void SimpleTrajectoryFollower::onTimer(void* arg)
 {
-  if (!processData()) {
+  printf("onTimer\n");  //TODO: remove
+  auto self = static_cast<SimpleTrajectoryFollower*>(arg);
+
+  if (!self->processData()) {
     printf("data not ready\n");
     return;
   }
 
-  updateClosest();
+  self->updateClosest();
 
-  Control cmd;
-  cmd.stamp = cmd.lateral.stamp = cmd.longitudinal.stamp = get_clock()->now();
-  cmd.lateral.steering_tire_angle = static_cast<float>(calcSteerCmd());
-  cmd.longitudinal.velocity = use_external_target_vel_
-                                ? static_cast<float>(external_target_vel_)
-                                : closest_traj_point_.longitudinal_velocity_mps;
-  cmd.longitudinal.acceleration = static_cast<float>(calcAccCmd());
-  pub_cmd_->publish(cmd);
+  ControlMsg cmd;
+  cmd.stamp = cmd.lateral.stamp = cmd.longitudinal.stamp = Clock::toRosTime(Clock::now());
+  cmd.lateral.steering_tire_angle = static_cast<float>(self->calcSteerCmd());
+  cmd.longitudinal.velocity = self->use_external_target_vel_
+                                ? static_cast<float>(self->external_target_vel_)
+                                : self->closest_traj_point_.longitudinal_velocity_mps;
+  cmd.longitudinal.acceleration = static_cast<float>(self->calcAccCmd());
+  self->pub_cmd_->publish(cmd);
 }
 
 void SimpleTrajectoryFollower::updateClosest()
 {
-  const auto closest = findNearestIndex(trajectory_->points, odometry_->pose.pose.position);
-  closest_traj_point_ = trajectory_->points.at(closest);
+  auto sequence_traj_points_ = wrap(trajectory_->points);
+  const auto closest = findNearestIndex(sequence_traj_points_, odometry_->pose.pose.position);
+  closest_traj_point_ = sequence_traj_points_.at(closest);
 }
 
 double SimpleTrajectoryFollower::calcSteerCmd()
@@ -103,17 +106,18 @@ double SimpleTrajectoryFollower::calcAccCmd()
   return acc;
 }
 
+//TODO: check as with other processData methods
 bool SimpleTrajectoryFollower::processData()
 {
   bool is_ready = true;
-  const auto & getData = [](auto & dest, auto & sub) {
-    const auto temp = sub.takeData();
-    if (!temp) return false;
-    dest = temp;
-    return true;
-  };
-  is_ready &= getData(odometry_, sub_kinematics_);
-  is_ready &= getData(trajectory_, sub_trajectory_);
+  // const auto & getData = [](auto & dest, auto & sub) {
+  //   const auto temp = sub.takeData();
+  //   if (!temp) return false;
+  //   dest = temp;
+  //   return true;
+  // };
+  // is_ready &= getData(odometry_, sub_kinematics_);
+  // is_ready &= getData(trajectory_, sub_trajectory_);
   return is_ready;
 }
 

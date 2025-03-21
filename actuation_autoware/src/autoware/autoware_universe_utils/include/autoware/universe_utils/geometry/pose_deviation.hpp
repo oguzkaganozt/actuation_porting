@@ -20,7 +20,9 @@
 
 // Msgs
 #include "Pose.h"
+#include "Point.h"
 using PoseMsg = geometry_msgs_msg_Pose;
+using PointMsg = geometry_msgs_msg_Point;
 
 namespace autoware::universe_utils
 {
@@ -39,6 +41,15 @@ struct PoseDeviation
  */
 double calcYawDeviation(
   const PoseMsg & base_pose, const PoseMsg & target_pose);
+
+/**
+ * @brief Calculate the lateral deviation between a pose and a point
+ * @param base_pose The base pose
+ * @param target_point The target point
+ * @return The lateral deviation
+ */
+double calcLateralDeviation(
+  const PoseMsg & base_pose, const PointMsg & target_point);
 
 }  // namespace autoware::universe_utils
 

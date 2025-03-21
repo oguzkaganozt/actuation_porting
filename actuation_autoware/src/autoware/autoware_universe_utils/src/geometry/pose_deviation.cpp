@@ -31,4 +31,21 @@ double calcYawDeviation(
   return normalizeRadian(target_yaw - base_yaw);
 }
 
+double calcLateralDeviation(
+  const PoseMsg & base_pose, const PointMsg & target_point)
+{
+  const auto & base_point = base_pose.position;
+
+  const auto yaw = autoware::universe_utils::getYaw(base_pose.orientation); //TODO: changed from tf2::getYaw to autoware::universe_utils::getYaw
+  const Eigen::Vector3d base_unit_vec{std::cos(yaw), std::sin(yaw), 0};
+
+  const auto dx = target_point.x - base_point.x;
+  const auto dy = target_point.y - base_point.y;
+  const Eigen::Vector3d diff_vec{dx, dy, 0};
+
+  const Eigen::Vector3d cross_vec = base_unit_vec.cross(diff_vec);
+
+  return cross_vec.z();
+}
+
 }  // namespace autoware::universe_utils

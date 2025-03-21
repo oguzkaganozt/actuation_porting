@@ -127,7 +127,7 @@ private:
   std::optional<trajectory_follower::InputData> createInputData();
 
   //
-  static void callbackTimerControl(Node* node);
+  static void callbackTimerControl(void* arg);
 
   //
   bool processData();

@@ -18,6 +18,7 @@
 #include <memory>
 
 #include "common/node/node.hpp"
+#include "common/clock/clock.hpp"
 
 //Msgs
 #include "Control.h"
@@ -26,15 +27,15 @@
 #include "Pose.h"
 #include "Twist.h"
 #include "Odometry.h"
-
-namespace simple_trajectory_follower
-{
 using ControlMsg = autoware_control_msgs_msg_Control;
 using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
 using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
 using PoseMsg = geometry_msgs_msg_Pose;
 using TwistMsg = geometry_msgs_msg_Twist;
 using OdometryMsg = nav_msgs_msg_Odometry;
+
+namespace simple_trajectory_follower
+{
 
 class SimpleTrajectoryFollower : public Node
 {
@@ -49,12 +50,12 @@ private:
 
   std::shared_ptr<TrajectoryMsg> trajectory_;
   std::shared_ptr<OdometryMsg> odometry_;
-  std::shared_ptr<TrajectoryPointMsg> closest_traj_point_;
+  TrajectoryPointMsg closest_traj_point_;
   bool use_external_target_vel_;
   double external_target_vel_;
   double lateral_deviation_;
 
-  void onTimer();
+  static void onTimer(void* arg);
   bool processData();
   void updateClosest();
   double calcSteerCmd();
