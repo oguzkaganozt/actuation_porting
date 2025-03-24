@@ -161,7 +161,6 @@ public:
         }
         
         pthread_mutex_unlock(&param_mutex_);
-        fprintf(stderr, "Node: %s get_parameter failed-3: %s\n", node_name_.c_str(), name.c_str());
         return std::nullopt;
     }
 
@@ -185,7 +184,6 @@ public:
                 return ParamT{};
             }
         }
-        fprintf(stderr, "Node: %s get_parameter failed-2: %s\n", node_name_.c_str(), name.c_str());
         return ParamT{};
     }
 

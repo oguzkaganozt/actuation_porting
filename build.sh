@@ -12,7 +12,7 @@ AUTOWARE_ONLY=0
 ZEPHYR_ONLY=0
 PARTIAL_BUILD=0
 
-ZEPHYR_TARGET_LIST=("s32z270dc2_rtu0_r52" "native_sim" "fvp_baser_aemv8r")
+ZEPHYR_TARGET_LIST=("s32z270dc2_rtu0_r52" "native_sim" "fvp_baser_aemv8r_smp")
 ZEPHYR_TARGET=${ZEPHYR_TARGET_LIST[0]}
 
 ROOT_DIR=$(dirname "$(realpath "$0")")
