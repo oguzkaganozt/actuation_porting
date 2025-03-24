@@ -41,11 +41,13 @@ RUN wget -q --show-progress --progress=bar:force:noscroll \
     https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz && \
     tar --use-compress-program="pixz" -xf zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz -C /opt \
         zephyr-sdk-${ZSDK_VERSION}/arm-zephyr-eabi/ \
+        zephyr-sdk-${ZSDK_VERSION}/aarch64-zephyr-elf/ \
         zephyr-sdk-${ZSDK_VERSION}/setup.sh \
         zephyr-sdk-${ZSDK_VERSION}/cmake \
         zephyr-sdk-${ZSDK_VERSION}/sdk_toolchains \
         zephyr-sdk-${ZSDK_VERSION}/sdk_version && \
     ${ZEPHYR_SDK_INSTALL_DIR}/setup.sh -c -t arm-zephyr-eabi && \
+    ${ZEPHYR_SDK_INSTALL_DIR}/setup.sh -c -t aarch64-zephyr-elf && \
     rm "zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz"
 
 COPY entrypoint.sh /entrypoint.sh

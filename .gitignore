@@ -9,6 +9,7 @@ modules/
 tools/
 public/
 .vscode/
+anan/
 *.log
 *.cursorignore
 TODO
