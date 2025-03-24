@@ -65,7 +65,7 @@ double calcDistance3d(const MPCTrajectory & trajectory, const size_t idx1, const
 
 void convertEulerAngleToMonotonic(std::vector<double> & angle_vector)
 {
-  for (uint i = 1; i < angle_vector.size(); ++i) {
+  for (unsigned int i = 1; i < angle_vector.size(); ++i) {
     const double da = angle_vector.at(i) - angle_vector.at(i - 1);
     angle_vector.at(i) = angle_vector.at(i - 1) + normalizeRadian(da);
   }
@@ -85,7 +85,7 @@ void calcMPCTrajectoryArcLength(const MPCTrajectory & trajectory, std::vector<do
   double dist = 0.0;
   arc_length.clear();
   arc_length.push_back(dist);
-  for (uint i = 1; i < trajectory.size(); ++i) {
+  for (unsigned int i = 1; i < trajectory.size(); ++i) {
     dist += calcDistance2d(trajectory, i, i - 1);
     arc_length.push_back(dist);
   }

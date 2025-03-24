@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "autoware/mpc_lateral_controller/lowpass_filter.hpp"
+#include "autoware/universe_utils/math/constants.hpp"
 
 #include <algorithm>
 #include <vector>

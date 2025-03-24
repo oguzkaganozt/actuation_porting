@@ -19,8 +19,6 @@
 #include "autoware/mpc_lateral_controller/mpc_utils.hpp"
 #include "autoware/universe_utils/math/unit_conversion.hpp"
 
-#include <fmt/format.h>
-
 #include <algorithm>
 #include <iostream>
 #include <limits>
@@ -55,7 +53,7 @@ ResultWithReason MPC::calculateMPC(
   const auto [get_data_result, mpc_data] =
     getData(reference_trajectory, current_steer, current_kinematics);
   if (!get_data_result.result) {
-    return ResultWithReason{false, fmt::format("getting MPC Data ({}).", get_data_result.reason)};
+    return ResultWithReason{false, std::string("getting MPC Data (") + get_data_result.reason + std::string(").")};
   }
 
   // calculate initial state of the error dynamics
@@ -65,7 +63,7 @@ ResultWithReason MPC::calculateMPC(
   const auto [success_delay, x0_delayed] =
     updateStateForDelayCompensation(reference_trajectory, mpc_data.nearest_time, x0);
   if (!success_delay) {
-    return ResultWithReason{false, "delay compensation."};
+    return ResultWithReason{false, std::string("delay compensation.")};
   }
 
   // resample reference trajectory with mpc sampling time
@@ -77,7 +75,7 @@ ResultWithReason MPC::calculateMPC(
     resampleMPCTrajectoryByTime(mpc_start_time, prediction_dt, reference_trajectory);
   if (!resample_result.result) {
     return ResultWithReason{
-      false, fmt::format("trajectory resampling ({}).", resample_result.reason)};
+      false, std::string("trajectory resampling (") + resample_result.reason + std::string(").")};
   }
 
   // generate mpc matrix : predict equation Xec = Aex * x0 + Bex * Uex + Wex
@@ -88,7 +86,7 @@ ResultWithReason MPC::calculateMPC(
     mpc_matrix, x0_delayed, prediction_dt, mpc_resampled_ref_trajectory,
     current_kinematics.twist.twist.linear.x);
   if (!opt_result.result) {
-    return ResultWithReason{false, fmt::format("optimization failure ({}).", opt_result.reason)};
+    return ResultWithReason{false, std::string("optimization failure (") + opt_result.reason + std::string(").")};
   }
 
   // apply filters for the input limitation and low pass filter

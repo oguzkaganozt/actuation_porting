@@ -31,7 +31,8 @@
 #define TRAJECTORY_FOLLOWER_PUBLIC __attribute__((visibility("default")))
 #define TRAJECTORY_FOLLOWER_LOCAL __attribute__((visibility("hidden")))
 #else
-#error "Unsupported Build Configuration"
+#define TRAJECTORY_FOLLOWER_PUBLIC __attribute__((visibility("default")))
+#define TRAJECTORY_FOLLOWER_LOCAL __attribute__((visibility("hidden")))
 #endif
 
 #endif  // AUTOWARE__TRAJECTORY_FOLLOWER_NODE__VISIBILITY_CONTROL_HPP_
