@@ -110,9 +110,9 @@ public:
         } else {
             sequence = static_cast<raw_type*>(malloc(sizeof(raw_type)));
             owns_sequence = true;
-            sequence->_buffer = nullptr;
+            sequence->_buffer = static_cast<value_type*>(malloc(initial_capacity * sizeof(value_type)));
             sequence->_length = 0;
-            sequence->_maximum = 0;
+            sequence->_maximum = initial_capacity;
             if (!ensure_capacity(initial_capacity)) {
                 // If buffer allocation fails, clean up and flag as non-owning
                 free(sequence);
@@ -397,17 +397,11 @@ public:
     }
 };
 
-// Helper functions to wrap sequences
+// Helper functions to wrap sequences - only reference versions for better type safety
 template<typename T>
 Sequence<T> wrap(T& seq) { return Sequence<T>(seq); }
 
 template<typename T>
-Sequence<T> wrap(T* seq) { return Sequence<T>(*seq); }
-
-template<typename T>
 Sequence<const T> wrap_const(const T& seq) { return Sequence<const T>(const_cast<T&>(seq)); }
-
-template<typename T>
-Sequence<const T> wrap_const(const T* seq) { return Sequence<const T>(*const_cast<T*>(seq)); }
 
 #endif  // COMMON__SEQUENCE_HPP_
