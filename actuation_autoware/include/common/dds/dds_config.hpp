@@ -49,20 +49,22 @@ inline static void init_config(struct ddsi_config & cfg)
 
   // Trace
   cfg.tracefp = NULL;
-  cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR;
+  cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR; // DDS_LC_ALL
   cfg.tracefile = const_cast<char *>("stderr");
 
-#if DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP
-  cfg.transport_selector = DDSI_TRANS_TCP;
-  cfg.tcp_port = DDS_TCP_PORT;
-#else
-  cfg.transport_type = DDSI_TRANS_UDP;
-#endif
+  // if (DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP) {
+  //   cfg.transport_selector = DDSI_TRANS_TCP;
+  //   cfg.tcp_port = DDS_TCP_PORT;
+  //   fprintf(stderr, "Transport type: TCP, port: %d\n", DDS_TCP_PORT);
+  // } else {
+  //   cfg.transport_selector = DDSI_TRANS_UDP;
+  //   fprintf(stderr, "Transport type: UDP\n");
+  // }
 
 #if defined(CONFIG_DDS_NETWORK_INTERFACE)
   if (sizeof(CONFIG_DDS_NETWORK_INTERFACE) > 1) {
     cfg.network_interfaces = &cfg_iface;
-    printf("Network interface: %s\n", CONFIG_DDS_NETWORK_INTERFACE);
+    fprintf(stderr, "Network interface: %s\n", CONFIG_DDS_NETWORK_INTERFACE);
   }
 #endif
 }

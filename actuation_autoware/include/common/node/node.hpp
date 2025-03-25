@@ -48,11 +48,16 @@ public:
      * @brief Construct a new Node object
      * @param node_name Name of the node
      */
-    Node(const std::string& node_name)
+    Node(const std::string& node_name, void* stack_area, size_t stack_size, void* timer_stack_area, size_t timer_stack_size)
     : node_name_(node_name)
     , param_mutex_(PTHREAD_MUTEX_INITIALIZER)
     , dds_(node_name)
     {
+        pthread_attr_init(&thread_attr_);
+        pthread_attr_setstack(&thread_attr_, stack_area, stack_size);
+
+        pthread_attr_init(&timer_attr_);
+        pthread_attr_setstack(&timer_attr_, timer_stack_area, timer_stack_size);
     }
     
     /**
@@ -69,7 +74,7 @@ public:
      */
     int spin() {
         thread_active_ = true;
-        return pthread_create(&thread_, nullptr, thread_entry_, this);
+        return pthread_create(&thread_, &thread_attr_, thread_entry_, this);
     }
     
     /**
@@ -264,6 +269,7 @@ public:
         sev.sigev_signo = SIGALRM;
         sev.sigev_value.sival_ptr = timer_handler_data_;
         sev.sigev_notify_function = timer_handler_;
+        sev.sigev_notify_attributes = &timer_attr_;
 
         if (int ret = timer_create(CLOCK_REALTIME, &sev, &timer_id_); ret < 0) {
             fprintf(stderr, "Node: %s timer creation failed: %s\n", node_name_.c_str(), strerror(errno));
@@ -310,6 +316,8 @@ private:
 
     // Thread
     pthread_t thread_;
+    pthread_attr_t thread_attr_;
+    pthread_attr_t timer_attr_;
     bool thread_active_ = false;
 
     static void* thread_entry_(void* arg) {

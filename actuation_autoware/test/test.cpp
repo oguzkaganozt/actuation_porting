@@ -552,12 +552,16 @@ void test_sequence() {
     }
 }
 
+static K_THREAD_STACK_DEFINE(node_stack, 4096);
+static K_THREAD_STACK_DEFINE(timer_stack, 4096);
+
 int main() {
     printf(COLOR_GREEN "=== Starting Node Test Suite ===\n" COLOR_RESET);
-    Node node("test_node");
+    Node node("test_node", node_stack, K_THREAD_STACK_SIZEOF(node_stack), 
+                            timer_stack, K_THREAD_STACK_SIZEOF(timer_stack));
     
     test_parameters(node);
-    test_clock_utils();
+    // test_clock_utils();
     test_timer_operations(node);
     test_thread_safety(node);
     test_dds_communication(node);

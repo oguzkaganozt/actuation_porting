@@ -4,16 +4,11 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int a = 0;
 int main(void)
 {   
+    printf("Hello World\n");
+    
     while (1) {
-        a++;
-        int c = a;
-        c++;
-        printf("Hello World\n");
-        printf("a: %d\n", c);
-        printf("a: %d\n", a);
         sleep(1);
     }
 
