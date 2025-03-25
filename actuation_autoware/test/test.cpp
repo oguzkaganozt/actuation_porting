@@ -186,6 +186,7 @@ void test_clock_utils() {
     
     // Test Clock::now() returns valid time
     double now = Clock::now();
+    printf("Current time: %f\n", now);
     ASSERT_MSG(now > 0, "Current time should be positive");
     
     // Test round-trip conversion: double -> ROS time -> double
@@ -567,11 +568,11 @@ int main() {
     Node node("test_node", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
     
     test_parameters(node);
-    // test_clock_utils();
     test_timer_operations(node);
     test_thread_safety(node);
     test_dds_communication(node);
     test_sequence();
+    test_clock_utils();
 
     printf(COLOR_GREEN "\n=== All Tests Passed ===\n" COLOR_RESET);
     exit(0);
