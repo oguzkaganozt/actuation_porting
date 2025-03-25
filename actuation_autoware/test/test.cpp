@@ -552,13 +552,19 @@ void test_sequence() {
     }
 }
 
+#if defined(NATIVE_SIM)
+#define STACK_SIZE (4096)
+static unsigned char node_stack[STACK_SIZE];
+static unsigned char timer_stack[STACK_SIZE];
+#else
 static K_THREAD_STACK_DEFINE(node_stack, 4096);
 static K_THREAD_STACK_DEFINE(timer_stack, 4096);
+#define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
+#endif
 
 int main() {
     printf(COLOR_GREEN "=== Starting Node Test Suite ===\n" COLOR_RESET);
-    Node node("test_node", node_stack, K_THREAD_STACK_SIZEOF(node_stack), 
-                            timer_stack, K_THREAD_STACK_SIZEOF(timer_stack));
+    Node node("test_node", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
     
     test_parameters(node);
     // test_clock_utils();
