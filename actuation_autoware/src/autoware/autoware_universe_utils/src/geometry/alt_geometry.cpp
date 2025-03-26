@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Autoware
+#include "autoware/universe_utils/geometry/alt_geometry.hpp"
+
 // Libs
 #include <algorithm>
 #include <limits>
 #include <utility>
 #include <vector>
 #include <cmath>
+
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Dense>
-
-// Autoware
-#include "autoware/universe_utils/geometry/alt_geometry.hpp"
 
 namespace autoware::universe_utils
 {
@@ -64,30 +65,6 @@ std::optional<Polygon2d> Polygon2d::create(
   return poly;
 }
 
-// autoware::universe_utils::Polygon2d  ??
-std::optional<Polygon2d> Polygon2d::create(
-  const Polygon2d & polygon) noexcept
-{
-  PointList2d outer;
-  for (const auto & point : polygon.outer()) {
-    outer.push_back(Point2d(point));
-  }
-
-  std::vector<PointList2d> inners;
-  for (const auto & inner : polygon.inners()) {
-    PointList2d _inner;
-    if (inner.empty()) {
-      continue;
-    }
-    for (const auto & point : inner) {
-      _inner.push_back(Point2d(point));
-    }
-    inners.push_back(_inner);
-  }
-
-  return Polygon2d::create(outer, inners);
-}
-
 std::optional<ConvexPolygon2d> ConvexPolygon2d::create(const PointList2d & vertices) noexcept
 {
   ConvexPolygon2d poly(vertices);
@@ -118,18 +95,6 @@ std::optional<ConvexPolygon2d> ConvexPolygon2d::create(PointList2d && vertices) 
   }
 
   return poly;
-}
-
-// autoware::universe_utils::Polygon2d  ??
-std::optional<ConvexPolygon2d> ConvexPolygon2d::create(
-  const Polygon2d & polygon) noexcept
-{
-  PointList2d vertices;
-  for (const auto & point : polygon.outer()) {
-    vertices.push_back(Point2d(point));
-  }
-
-  return ConvexPolygon2d::create(vertices);
 }
 
 double area(const ConvexPolygon2d & poly)

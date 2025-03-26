@@ -416,7 +416,6 @@ PoseMsg calcInterpolatedPose(
       output_pose.orientation = createQuaternionFromRPY(0.0, pitch, yaw);
     }
   } else {
-    // TODO: replace with eigen
     // Get orientation by spherical linear interpolation
     // tf2::Transform src_tf;
     // tf2::Transform dst_tf;
@@ -424,11 +423,27 @@ PoseMsg calcInterpolatedPose(
     // tf2::fromMsg(getPose(dst_pose), dst_tf);
     // const auto & quaternion = tf2::slerp(src_tf.getRotation(), dst_tf.getRotation(), clamped_ratio);
     // output_pose.orientation = tf2::toMsg(quaternion);
-
-    // Quaterniond qa, qb, qres;
-    // // initialize qa, qb;
-    // qres = qa.slerp(clamped_ratio, qb);
-    // output_pose.orientation = toMsg(qres);
+    // TODO: validate slerp implementation
+    Eigen::Quaternion src_quat(
+      getPose(src_pose).orientation.w,
+      getPose(src_pose).orientation.x,
+      getPose(src_pose).orientation.y,
+      getPose(src_pose).orientation.z);
+    
+    Eigen::Quaternion dst_quat(
+      getPose(dst_pose).orientation.w,
+      getPose(dst_pose).orientation.x,
+      getPose(dst_pose).orientation.y,
+      getPose(dst_pose).orientation.z);
+    
+    // Perform spherical linear interpolation with Eigen
+    Eigen::Quaternion result_quat = src_quat.slerp(clamped_ratio, dst_quat);
+    
+    // Convert back to ROS message type
+    output_pose.orientation.x = result_quat.x();
+    output_pose.orientation.y = result_quat.y();
+    output_pose.orientation.z = result_quat.z();
+    output_pose.orientation.w = result_quat.w();
   }
 
   return output_pose;

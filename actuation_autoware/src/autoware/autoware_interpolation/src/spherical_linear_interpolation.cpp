@@ -31,7 +31,29 @@ QuaternionMsg slerp(
   // tf2::fromMsg(dst_quat, dst_tf);
   // const auto interpolated_quat = tf2::slerp(src_tf, dst_tf, ratio);
   // return tf2::toMsg(interpolated_quat);
-  return QuaternionMsg();
+  // TODO: validate slerp implementation
+  Eigen::Quaternion src_quat(
+    src_quat.w,
+    src_quat.x,
+    src_quat.y,
+    src_quat.z);
+    
+  Eigen::Quaternion dst_quat(
+    dst_quat.w,
+    dst_quat.x,
+    dst_quat.y,
+    dst_quat.z);
+
+  // Perform spherical linear interpolation with Eigen
+  Eigen::Quaternion result_quat = src_quat.slerp(ratio, dst_quat);
+    
+  // Convert back to ROS message type
+  QuaternionMsg result_quat_msg;
+  result_quat_msg.x = result_quat.x();
+  result_quat_msg.y = result_quat.y();
+  result_quat_msg.z = result_quat.z();
+  result_quat_msg.w = result_quat.w();
+  return result_quat_msg;
 }
 
 std::vector<QuaternionMsg> slerp(

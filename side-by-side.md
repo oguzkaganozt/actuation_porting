@@ -2,9 +2,12 @@
 - remove throws use printfs instead
 - Eigen: replace fabsl with fabs
 
-
-
-# MPC
-
-# PID
-
+## UNIVERSE UTILS
+- alt_geometry:
+    -- We can also use eigen vector2d and  vector3d for point2d and point3d representation. Right now it is custom implementation.
+    -- removed alt namespace as we are using it for main geometry
+- geometry:
+    -- tf2::getYaw vs getYaw(custom)
+    -- tf2::lerp vs lerp(custom)
+    -- tf2::slerp vs slerp(custom)
+    -- tf2::getRPY vs getRPY(custom)

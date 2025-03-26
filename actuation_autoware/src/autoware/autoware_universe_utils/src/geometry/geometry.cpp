@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Libs
-#include <string>
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
-#include <Eigen/Geometry>
-
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
+
+// Libs
+#include <string>
+
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
+#include <Eigen/Geometry>
 
 namespace autoware::universe_utils
 {
@@ -28,6 +29,21 @@ Vector3Msg getRPY(const QuaternionMsg & quat)
   Vector3Msg rpy;
   // tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
   // tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
+  
+  // TODO: validate this
+  // Convert QuaternionMsg to Eigen::Quaterniond
+  Eigen::Quaterniond eigen_quat(quat.w, quat.x, quat.y, quat.z);
+  
+  // Convert quaternion to rotation matrix
+  Eigen::Matrix3d rotation_matrix = eigen_quat.toRotationMatrix();
+  
+  // Extract roll, pitch, yaw from rotation matrix
+  // Using Eigen's eulerAngles with the XYZ convention
+  // Note: Eigen uses different order than ROS, so we extract separately
+  rpy.x = atan2(rotation_matrix(2,1), rotation_matrix(2,2));  // roll
+  rpy.y = asin(-rotation_matrix(2,0));                        // pitch
+  rpy.z = atan2(rotation_matrix(1,0), rotation_matrix(0,0));  // yaw
+  
   return rpy;
 }
 Vector3Msg getRPY(const PoseMsg & pose)
@@ -164,7 +180,10 @@ std::optional<PointMsg> intersect(
   return intersect_point;
 }
 
-// TODO: replace with eigen
+/**
+ * @brief Calculate offset pose. The offset values are defined in the local coordinate of the input
+ * pose.
+ */
 PoseMsg calcOffsetPose(
   const PoseMsg & p, const double x, const double y, const double z,
   const double yaw)
@@ -173,21 +192,42 @@ PoseMsg calcOffsetPose(
   TransformMsg transform;
   transform.translation = createTranslation(x, y, z);
   transform.rotation = createQuaternionFromYaw(yaw);
-  // replace tf2 with eigen
   // tf2::Transform tf_pose;
   // tf2::Transform tf_offset;
   // tf2::fromMsg(transform, tf_offset);
   // tf2::fromMsg(p, tf_pose);
   // tf2::toMsg(tf_pose * tf_offset, pose);
-  // Eigen::Translation3d T(x, y, z);
-  // Eigen::Quaterniond R(createQuaternionFromYaw(yaw));
-  // Eigen::Matrix4d transform_matrix = (T * R).matrix();
-  // Eigen::Matrix4d pose_matrix = p.position.x, p.position.y, p.position.z, 1.0);
-  // Eigen::Matrix4d result_matrix = transform_matrix * pose_matrix;
-  // pose.position.x = result_matrix(0, 3);
-  // pose.position.y = result_matrix(1, 3);
-  // pose.position.z = result_matrix(2, 3);
-  // pose.orientation = createQuaternionFromRPY(0, 0, yaw);
+
+  // TODO: validate this
+  // Convert pose to Eigen
+  Eigen::Vector3d pose_translation(p.position.x, p.position.y, p.position.z);
+  Eigen::Quaterniond pose_rotation(p.orientation.w, p.orientation.x, p.orientation.y, p.orientation.z);
+  
+  // Convert transform to Eigen
+  Eigen::Vector3d offset_translation(transform.translation.x, transform.translation.y, transform.translation.z);
+  Eigen::Quaterniond offset_rotation(transform.rotation.w, transform.rotation.x, transform.rotation.y, transform.rotation.z);
+  
+  // Apply transformation (equivalent to tf_pose * tf_offset)
+  // First rotate the offset translation by the pose rotation
+  Eigen::Vector3d rotated_offset = pose_rotation * offset_translation;
+  
+  // Then combine translations
+  Eigen::Vector3d result_translation = pose_translation + rotated_offset;
+  
+  // Combine rotations (quaternion multiplication)
+  Eigen::Quaterniond result_rotation = pose_rotation * offset_rotation;
+  result_rotation.normalize();  // Normalize to ensure unit quaternion
+  
+  // Set the result pose
+  pose.position.x = result_translation.x();
+  pose.position.y = result_translation.y();
+  pose.position.z = result_translation.z();
+  
+  pose.orientation.x = result_rotation.x();
+  pose.orientation.y = result_rotation.y();
+  pose.orientation.z = result_rotation.z();
+  pose.orientation.w = result_rotation.w();
+
   return pose;
 }
 
@@ -204,28 +244,28 @@ Vector3Msg lerp(
   return result;
 }
 
-QuaternionMsg operator+(QuaternionMsg a, QuaternionMsg b) noexcept
-{
-  // tf2::Quaternion quat_a;
-  // tf2::Quaternion quat_b;
-  // tf2::fromMsg(a, quat_a);
-  // tf2::fromMsg(b, quat_b);
-  // return tf2::toMsg(quat_a + quat_b);
-}
+// QuaternionMsg operator+(QuaternionMsg a, QuaternionMsg b) noexcept
+// {
+//   // tf2::Quaternion quat_a;
+//   // tf2::Quaternion quat_b;
+//   // tf2::fromMsg(a, quat_a);
+//   // tf2::fromMsg(b, quat_b);
+//   // return tf2::toMsg(quat_a + quat_b);
+// }
 
-QuaternionMsg operator-(QuaternionMsg a) noexcept
-{
-  // tf2::Quaternion quat_a;
-  // tf2::fromMsg(a, quat_a);
-  // return tf2::toMsg(quat_a * -1.0);
-}
+// QuaternionMsg operator-(QuaternionMsg a) noexcept
+// {
+//   // tf2::Quaternion quat_a;
+//   // tf2::fromMsg(a, quat_a);
+//   // return tf2::toMsg(quat_a * -1.0);
+// }
 
-QuaternionMsg operator-(QuaternionMsg a, QuaternionMsg b) noexcept
-{
-  // tf2::Quaternion quat_a;
-  // tf2::Quaternion quat_b;
-  // tf2::fromMsg(a, quat_a);
-  // tf2::fromMsg(b, quat_b);
-  // return tf2::toMsg(quat_a * quat_b.inverse());
-}
+// QuaternionMsg operator-(QuaternionMsg a, QuaternionMsg b) noexcept
+// {
+//   // tf2::Quaternion quat_a;
+//   // tf2::Quaternion quat_b;
+//   // tf2::fromMsg(a, quat_a);
+//   // tf2::fromMsg(b, quat_b);
+//   // return tf2::toMsg(quat_a * quat_b.inverse());
+// }
 }  // namespace autoware::universe_utils

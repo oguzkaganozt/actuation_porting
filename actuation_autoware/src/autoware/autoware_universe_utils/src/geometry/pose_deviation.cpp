@@ -12,32 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Libs
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
-#include <Eigen/Core>
-#include <Eigen/Geometry>
-
 // Autoware
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 
+// Libs
+#define EIGEN_MPL2_ONLY
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
 namespace autoware::universe_utils
 {
-
-double calcYawDeviation(
-  const PoseMsg & base_pose, const PoseMsg & target_pose)
-{
-  const auto base_yaw = getYaw(base_pose.orientation);
-  const auto target_yaw = getYaw(target_pose.orientation);
-  return normalizeRadian(target_yaw - base_yaw);
-}
 
 double calcLateralDeviation(
   const PoseMsg & base_pose, const PointMsg & target_point)
 {
   const auto & base_point = base_pose.position;
 
-  const auto yaw = autoware::universe_utils::getYaw(base_pose.orientation); //TODO: changed from tf2::getYaw to autoware::universe_utils::getYaw
+  const auto yaw = getYaw(base_pose.orientation); //TODO: changed from tf2::getYaw to autoware::universe_utils::getYaw
   const Eigen::Vector3d base_unit_vec{std::cos(yaw), std::sin(yaw), 0};
 
   const auto dx = target_point.x - base_point.x;
@@ -47,6 +40,14 @@ double calcLateralDeviation(
   const Eigen::Vector3d cross_vec = base_unit_vec.cross(diff_vec);
 
   return cross_vec.z();
+}
+
+double calcYawDeviation(
+  const PoseMsg & base_pose, const PoseMsg & target_pose)
+{
+  const auto base_yaw = getYaw(base_pose.orientation);
+  const auto target_yaw = getYaw(target_pose.orientation);
+  return normalizeRadian(target_yaw - base_yaw);
 }
 
 }  // namespace autoware::universe_utils
