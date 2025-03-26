@@ -24,7 +24,6 @@ QuaternionMsg slerp(
   const QuaternionMsg & src_quat, const QuaternionMsg & dst_quat,
   const double ratio)
 {
-  // TODO: implement slerp
   // tf2::Quaternion src_tf;
   // tf2::Quaternion dst_tf;
   // tf2::fromMsg(src_quat, src_tf);
@@ -61,43 +60,60 @@ std::vector<QuaternionMsg> slerp(
   const std::vector<QuaternionMsg> & base_values,
   const std::vector<double> & query_keys)
 {
-  // TODO: implement slerp
-  // // throw exception for invalid arguments
-  // const auto validated_query_keys = validateKeys(base_keys, query_keys);
-  // validateKeysAndValues(base_keys, base_values);
+  TODO: implement slerp
+  // throw exception for invalid arguments
+  const auto validated_query_keys = validateKeys(base_keys, query_keys);
+  validateKeysAndValues(base_keys, base_values);
 
-  // // calculate linear interpolation
-  // std::vector<QuaternionMsg> query_values;
-  // size_t key_index = 0;
-  // for (const auto query_key : validated_query_keys) {
-  //   while (base_keys.at(key_index + 1) < query_key) {
-  //     ++key_index;
-  //   }
+  // calculate linear interpolation
+  std::vector<QuaternionMsg> query_values;
+  size_t key_index = 0;
+  for (const auto query_key : validated_query_keys) {
+    while (base_keys.at(key_index + 1) < query_key) {
+      ++key_index;
+    }
 
-  //   const auto src_quat = base_values.at(key_index);
-  //   const auto dst_quat = base_values.at(key_index + 1);
-  //   const double ratio = (query_key - base_keys.at(key_index)) /
-  //                        (base_keys.at(key_index + 1) - base_keys.at(key_index));
+    const auto src_quat = base_values.at(key_index);
+    const auto dst_quat = base_values.at(key_index + 1);
+    const double ratio = (query_key - base_keys.at(key_index)) /
+                         (base_keys.at(key_index + 1) - base_keys.at(key_index));
 
-  //   const auto interpolated_quat = slerp(src_quat, dst_quat, ratio);
-  //   query_values.push_back(interpolated_quat);
-  // }
+    const auto interpolated_quat = slerp(src_quat, dst_quat, ratio);
+    query_values.push_back(interpolated_quat);
+  }
 
-  // return query_values;
-  return std::vector<QuaternionMsg>();
+  return query_values;
 }
 
 QuaternionMsg lerpOrientation(
   const QuaternionMsg & o_from, const QuaternionMsg & o_to,
   const double ratio)
 {
-  // TODO: implement lerpOrientation
   // tf2::Quaternion q_from, q_to;
   // tf2::fromMsg(o_from, q_from);
   // tf2::fromMsg(o_to, q_to);
-
   // const auto q_interpolated = q_from.slerp(q_to, ratio);
   // return tf2::toMsg(q_interpolated);
-  return QuaternionMsg();
+  // TODO: validate this implementation
+  Eigen::Quaternion src_quat(
+    src_quat.w,
+    src_quat.x,
+    src_quat.y,
+    src_quat.z);
+    
+  Eigen::Quaternion dst_quat(
+    dst_quat.w,
+    dst_quat.x,
+    dst_quat.y,
+    dst_quat.z);
+
+  Eigen::Quaternion result_quat = src_quat.slerp(ratio, dst_quat);
+
+  QuaternionMsg result_quat_msg;
+  result_quat_msg.x = result_quat.x();
+  result_quat_msg.y = result_quat.y();
+  result_quat_msg.z = result_quat.z();
+  result_quat_msg.w = result_quat.w();
+  return result_quat_msg;
 }
 }  // namespace autoware::interpolation

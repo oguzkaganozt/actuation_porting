@@ -27,7 +27,7 @@ inline bool isIncreasing(const std::vector<double> & x)
 {
   if (x.empty()) {
     fprintf(stderr, "Interpolation: Points is empty.");
-    return false;
+    std::exit(1);
   }
 
   for (size_t i = 0; i < x.size() - 1; ++i) {
@@ -43,7 +43,7 @@ inline bool isNotDecreasing(const std::vector<double> & x)
 {
   if (x.empty()) {
     fprintf(stderr, "Interpolation: Points is empty.");
-    return false;
+    std::exit(1);
   }
 
   for (size_t i = 0; i < x.size() - 1; ++i) {
@@ -61,19 +61,19 @@ inline std::vector<double> validateKeys(
   // when vectors are empty
   if (base_keys.empty() || query_keys.empty()) {
     fprintf(stderr, "Interpolation: Points is empty.");
-    return std::vector<double>();
+    std::exit(1);
   }
 
   // when size of vectors are less than 2
   if (base_keys.size() < 2) {
     fprintf(stderr, "Interpolation: The size of points is less than 2. base_keys.size() = %d", base_keys.size());
-    return std::vector<double>();
+    std::exit(1);
   }
 
   // when indices are not sorted
   if (!isIncreasing(base_keys) || !isNotDecreasing(query_keys)) {
     fprintf(stderr, "Interpolation: Either base_keys or query_keys is not sorted.");
-    return std::vector<double>();
+    std::exit(1);
   }
 
   // when query_keys is out of base_keys (This function does not allow exterior division.)
@@ -82,7 +82,7 @@ inline std::vector<double> validateKeys(
     query_keys.front() < base_keys.front() - epsilon ||
     base_keys.back() + epsilon < query_keys.back()) {
     fprintf(stderr, "Interpolation: query_keys is out of base_keys");
-    return std::vector<double>();
+    std::exit(1);
   }
 
   // NOTE: Due to calculation error of double, a query key may be slightly out of base keys.
@@ -101,19 +101,19 @@ void validateKeysAndValues(
   // when vectors are empty
   if (base_keys.empty() || base_values.empty()) {
     fprintf(stderr, "Interpolation: Points is empty.");
-    return;
+    std::exit(1);
   }
 
   // when size of vectors are less than 2
   if (base_keys.size() < 2 || base_values.size() < 2) {
     fprintf(stderr, "Interpolation: The size of points is less than 2. base_keys.size() = %d, base_values.size() = %d", base_keys.size(), base_values.size());
-    return;
+    std::exit(1);
   }
 
   // when sizes of indices and values are not same
   if (base_keys.size() != base_values.size()) {
     fprintf(stderr, "Interpolation: The size of base_keys and base_values are not the same.");
-    return;
+    std::exit(1);
   }
 }
 }  // namespace autoware::interpolation

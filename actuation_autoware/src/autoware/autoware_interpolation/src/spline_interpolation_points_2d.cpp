@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <vector>
-
 #include "autoware/interpolation/spline_interpolation_points_2d.hpp"
+
+#include <vector>
 
 namespace autoware::interpolation
 {
@@ -60,7 +60,7 @@ std::array<std::vector<double>, 4> getBaseValues(
   // calculate base_keys, base_values
   if (base_x.size() < 2 || base_y.size() < 2 || base_z.size() < 2) {
     fprintf(stderr, "Interpolation: The number of unique points is not enough.");
-    return std::array<std::vector<double>, 4>();
+    std::exit(1);
   }
 
   const std::vector<double> base_s = calcEuclidDist(base_x, base_y);
@@ -100,7 +100,7 @@ PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
 {
   if (base_s_vec_.size() <= idx) {
     fprintf(stderr, "Interpolation: idx is out of range.");
-    return PointMsg();
+    std::exit(1);
   }
 
   double whole_s = base_s_vec_.at(idx) + s;
@@ -126,7 +126,7 @@ double SplineInterpolationPoints2d::getSplineInterpolatedYaw(const size_t idx, c
 {
   if (base_s_vec_.size() <= idx) {
     fprintf(stderr, "Interpolation: idx is out of range.");
-    return 0.0;
+    std::exit(1);
   }
 
   const double whole_s =
@@ -153,7 +153,7 @@ double SplineInterpolationPoints2d::getSplineInterpolatedCurvature(
 {
   if (base_s_vec_.size() <= idx) {
     fprintf(stderr, "Interpolation: idx is out of range.");
-    return 0.0;  // Return 0 curvature as fallback when idx is out of range
+    std::exit(1);
   }
 
   const double whole_s =
@@ -194,7 +194,7 @@ double SplineInterpolationPoints2d::getAccumulatedLength(const size_t idx) const
 {
   if (base_s_vec_.size() <= idx) {
     fprintf(stderr, "Interpolation: idx is out of range.");
-    return 0.0;
+    std::exit(1);
   }
   return base_s_vec_.at(idx);
 }
