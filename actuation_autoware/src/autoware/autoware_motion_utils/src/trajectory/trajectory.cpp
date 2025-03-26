@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "autoware/motion_utils/trajectory/trajectory.hpp"
+
 #include <algorithm>
 #include <utility>
 #include <vector>
-
-#include "autoware/motion_utils/trajectory/trajectory.hpp"
 
 namespace autoware::motion_utils
 {

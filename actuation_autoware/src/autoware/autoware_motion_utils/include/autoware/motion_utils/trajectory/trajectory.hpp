@@ -15,6 +15,11 @@
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 
+// Autoware
+#include "autoware/universe_utils/geometry/geometry.hpp"
+#include "autoware/universe_utils/geometry/pose_deviation.hpp"
+#include "autoware/universe_utils/math/constants.hpp"
+
 // Libs
 #include <algorithm>
 #include <limits>
@@ -23,15 +28,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+
 #include <numeric>
 #include <cmath>
+
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Geometry>
-
-// Autoware
-#include "autoware/universe_utils/geometry/geometry.hpp"
-#include "autoware/universe_utils/geometry/pose_deviation.hpp"
-#include "autoware/universe_utils/math/constants.hpp"
 
 // Msgs
 #include "common/sequence/sequence.hpp"
@@ -192,6 +194,7 @@ findNearestIndex<TrajectoryPointSeq>(
 template <class T>
 T removeOverlapPoints(const T & points, const size_t start_idx = 0)
 {
+  // TODO: !!! Validate this implementation, especially check if sequence wrapper works as expected
   if (points.size() < start_idx + 1) {
     // Create a new empty sequence but with the same capacity as the original
     T result(points.size());
@@ -222,6 +225,7 @@ T removeOverlapPoints(const T & points, const size_t start_idx = 0)
 }
 
 // Specialization for Sequence<const T> types
+// TODO: !!! Validate this implementation, especially check if sequence wrapper works as expected
 template <class T>
 auto removeOverlapPoints(const Sequence<const T> & points, const size_t start_idx = 0)
 {
@@ -291,23 +295,34 @@ double calcLongitudinalOffsetToSegment(
       ": Failed to calculate longitudinal offset because the given segment index is out of the "
       "points size.");
     fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    if (throw_exception) {
+      std::exit(1);
+    }
+    fprintf(stderr, "Trajectory: Return NaN since no_throw option is enabled. The maintainer must check the code.");
     return std::nan("");
   }
 
   const auto overlap_removed_points = removeOverlapPoints(points, seg_idx);
 
-  try {
+  if (throw_exception) {
     validateNonEmpty(overlap_removed_points);
-  } catch (const std::exception & e) {
-    fprintf(stderr, "Trajectory: Error: %s", e.what());
-    return std::nan("");
+  } else {
+    try {
+      validateNonEmpty(overlap_removed_points);
+    } catch (const std::exception & e) {
+      fprintf(stderr, "Trajectory: Error: %s", e.what());
+      return std::nan("");
+    }
   }
 
   if (seg_idx >= overlap_removed_points.size() - 1) {
     const std::string error_message(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Longitudinal offset calculation is not supported for the same points.");
-    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    if (throw_exception) {
+      std::exit(1);
+    }
+    fprintf(stderr, "Trajectory: %s Return NaN since no_throw option is enabled. The maintainer must check the code.", error_message.c_str());
     return std::nan("");
   }
 
@@ -332,16 +347,24 @@ double calcLongitudinalOffsetToSegment(
       ": Failed to calculate longitudinal offset because the given segment index is out of the "
       "points size.");
     fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    if (throw_exception) {
+      std::exit(1);
+    }
+    fprintf(stderr, "Trajectory: Return NaN since no_throw option is enabled. The maintainer must check the code.");
     return std::nan("");
   }
 
   const auto overlap_removed_points = removeOverlapPoints(points, seg_idx);
 
-  try {
+  if (throw_exception) {
     validateNonEmpty(overlap_removed_points);
-  } catch (const std::exception & e) {
-    fprintf(stderr, "Trajectory: Error: %s", e.what());
-    return std::nan("");
+  } else {
+    try {
+      validateNonEmpty(overlap_removed_points);
+    } catch (const std::exception & e) {
+      fprintf(stderr, "Trajectory: Error: %s", e.what());
+      return std::nan("");
+    }
   }
 
   if (seg_idx >= overlap_removed_points.size() - 1) {
@@ -796,6 +819,14 @@ double calcSignedArcLength(const T & points, const size_t src_idx, const size_t 
 }
 
 extern template double
+calcSignedArcLength<PathPointSeq>(
+  const PathPointSeq & points, const size_t src_idx,
+  const size_t dst_idx);
+extern template double
+calcSignedArcLength<PathPointWithLaneIdSeq>(
+  const PathPointWithLaneIdSeq & points, const size_t src_idx,
+  const size_t dst_idx);
+extern template double
 calcSignedArcLength<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points, const size_t src_idx,
   const size_t dst_idx);
@@ -828,6 +859,16 @@ double calcSignedArcLength(
   return signed_length_on_traj - signed_length_src_offset + signed_length_dst_offset;
 }
 
+extern template double
+calcSignedArcLength<PathPointSeq>(
+  const PathPointSeq & points,
+  const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
+extern template double
+calcSignedArcLength<PathPointWithLaneIdSeq>(
+  const PathPointWithLaneIdSeq & points,
+  const PointMsg & src_point, const size_t src_seg_idx,
+  const PointMsg & dst_point, const size_t dst_seg_idx);
 extern template double
 calcSignedArcLength<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,
