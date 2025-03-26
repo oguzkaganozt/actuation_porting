@@ -21,6 +21,7 @@
 #include <iostream>
 #include <numeric>
 #include <vector>
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 
 #include "autoware/interpolation/interpolation_utils.hpp"

@@ -15,18 +15,21 @@
 #ifndef AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 #define AUTOWARE__OSQP_INTERFACE__OSQP_INTERFACE_HPP_
 
+// Autoware
+#include "autoware/osqp_interface/csc_matrix_conv.hpp"
+#include "autoware/osqp_interface/visibility_control.hpp"
+
+#include "osqp/osqp.h"
+
 // Libs
 #include <limits>
 #include <memory>
 #include <string>
 #include <tuple>
 #include <vector>
-#include <Eigen/Core>
-#include "osqp/osqp.h"
 
-// Autoware
-#include "autoware/osqp_interface/csc_matrix_conv.hpp"
-#include "autoware/osqp_interface/visibility_control.hpp"
+#define fabsl(x) fabs(x)
+#include <Eigen/Core>
 
 namespace autoware::osqp_interface
 {

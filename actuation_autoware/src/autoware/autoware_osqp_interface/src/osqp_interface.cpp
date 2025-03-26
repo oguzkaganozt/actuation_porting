@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Autoware
+#include "autoware/osqp_interface/osqp_interface.hpp"
+#include "autoware/osqp_interface/csc_matrix_conv.hpp"
+
+#include "osqp/osqp.h"
+
 // Libs
 #include <chrono>
 #include <limits>
@@ -19,11 +25,6 @@
 #include <string>
 #include <tuple>
 #include <vector>
-#include "osqp/osqp.h"
-
-// Autoware
-#include "autoware/osqp_interface/osqp_interface.hpp"
-#include "autoware/osqp_interface/csc_matrix_conv.hpp"
 
 namespace autoware::osqp_interface
 {

@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Autoware
+#include "autoware/osqp_interface/csc_matrix_conv.hpp"
+
 // Libs
 #include <exception>
 #include <iostream>
 #include <vector>
+
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
-
-// Autoware
-#include "autoware/osqp_interface/csc_matrix_conv.hpp"
 
 namespace autoware::osqp_interface
 {

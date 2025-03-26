@@ -26,6 +26,16 @@
 #include <utility>
 #include <vector>
 
+#if defined(NATIVE_SIM)
+#define STACK_SIZE (4096)
+static unsigned char node_stack[STACK_SIZE];
+static unsigned char timer_stack[STACK_SIZE];
+#else
+static K_THREAD_STACK_DEFINE(node_stack, 4096);
+static K_THREAD_STACK_DEFINE(timer_stack, 4096);
+#define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
+#endif
+
 namespace
 {
 template <typename T>
@@ -48,7 +58,7 @@ std::vector<T> resampleHorizonByZeroOrderHold(
 
 namespace autoware::motion::control::trajectory_follower_node
 {
-Controller::Controller() : Node("controller")
+Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stack, STACK_SIZE)
 {
   using std::placeholders::_1;
 

@@ -24,6 +24,7 @@
 #include <utility>
 #include <optional>  // NOLINT // TODO: check if this is needed
 
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 

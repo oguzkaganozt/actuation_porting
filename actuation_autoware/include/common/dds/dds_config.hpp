@@ -49,7 +49,7 @@ inline static void init_config(struct ddsi_config & cfg)
 
   // Trace
   cfg.tracefp = NULL;
-  cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR; // DDS_LC_ALL
+  cfg.tracemask = DDS_LC_ALL; // DDS_LC_FATAL | DDS_LC_ERROR; // DDS_LC_ALL
   cfg.tracefile = const_cast<char *>("stderr");
 
   // if (DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP) {

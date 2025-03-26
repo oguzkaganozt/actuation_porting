@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // Libs
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 

@@ -21,6 +21,7 @@
 #include <optional>
 #include <utility>
 #include <vector>
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 
 namespace autoware::universe_utils {

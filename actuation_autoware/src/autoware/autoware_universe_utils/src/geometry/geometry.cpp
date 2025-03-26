@@ -14,6 +14,7 @@
 
 // Libs
 #include <string>
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Geometry>
 
 // Autoware

@@ -17,7 +17,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <signal.h> //TODO: Check for SIGEV_THREAD availability in zephyr
+#include <signal.h>
 
 // Project headers
 #include "common/dds/dds.hpp"

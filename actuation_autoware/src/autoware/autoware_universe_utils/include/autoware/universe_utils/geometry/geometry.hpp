@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 
 // Autoware
