@@ -47,13 +47,13 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__VEHICLE_MODEL__VEHICLE_MODEL_BICYCLE_DYNAMICS_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__VEHICLE_MODEL__VEHICLE_MODEL_BICYCLE_DYNAMICS_HPP_
 
+#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_interface.hpp"
+
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include <Eigen/LU>
 
 #include <string>
-
-#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_interface.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {

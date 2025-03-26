@@ -18,7 +18,6 @@
 #include <cmath>
 #include <deque>
 #include <vector>
-#include <deque>
 
 // Msgs
 #include "Twist.h"
