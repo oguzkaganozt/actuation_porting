@@ -22,7 +22,7 @@
 #include <cmath>
 #include <limits>
 #include <utility>
-#include <optional>  // NOLINT // TODO: check if this is needed
+#include <optional>
 
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
@@ -33,17 +33,16 @@
 #include "Pose.h"
 #include "Point.h"
 #include "Quaternion.h"
-
-namespace autoware::motion::control::pid_longitudinal_controller
-{
-namespace longitudinal_utils
-{
-
 using PointMsg = geometry_msgs_msg_Point;
 using PoseMsg = geometry_msgs_msg_Pose;
 using QuaternionMsg = geometry_msgs_msg_Quaternion;
 using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
 using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+
+namespace autoware::motion::control::pid_longitudinal_controller
+{
+namespace longitudinal_utils
+{
 
 /**
  * @brief check if trajectory is invalid or not
@@ -91,6 +90,7 @@ std::pair<TrajectoryPointMsg, size_t> lerpTrajectoryPoint(
   TrajectoryPointMsg interpolated_point;
   auto points_seq = wrap(points);
 
+  // TODO: check sequence wrapper validity
   const size_t seg_idx = autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
     points_seq, pose, max_dist, max_yaw);
 

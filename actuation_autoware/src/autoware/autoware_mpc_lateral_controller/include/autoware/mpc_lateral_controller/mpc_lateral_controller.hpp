@@ -41,7 +41,7 @@ class MpcLateralController : public trajectory_follower::LateralControllerBase
 public:
   /// \param node Reference to the node used only for the component and parameter initialization.
   explicit MpcLateralController(Node & node);
-  explicit MpcLateralController();
+  // explicit MpcLateralController();
   virtual ~MpcLateralController();
 
 private:

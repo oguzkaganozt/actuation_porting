@@ -451,6 +451,7 @@ double calcStopDistance(const TrajectoryMsg & current_trajectory, const int orig
   return stop_dist;
 }
 
+//TODO: check sequence validity in extend operation
 void extendTrajectoryInYawDirection(
   const double yaw, const double interval, const bool is_forward_shift, MPCTrajectory & traj)
 {

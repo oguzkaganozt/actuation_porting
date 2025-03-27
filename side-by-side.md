@@ -15,3 +15,19 @@
     -- tf2::lerp vs lerp(custom)
     -- tf2::slerp vs slerp(custom)
     -- tf2::getRPY vs getRPY(custom)
+
+## MPC LATERAL CONTROLLER
+- generateDiagData removed for the simplicity
+- Clock are now using chrono clock with Clock::now() instead of ros clock
+- removed param callbacks as we are not using ros2
+- Eigen: replaced fabsl with fabs
+- Eliminate fmt::format
+- Use wrap for wrapping the dds sequences prior manipulation
+- replace warn_throttle and error_throttle with round_robin_logger
+- removed publishDebugValues for the simplicity
+- replaced rclcpp::ok() with while(1)
+- some math constants not available in the zephyr toolchain, so added them to the universe_utils
+
+## PID LONGITUDINAL CONTROLLER
+- removed #include "autoware/motion_utils/trajectory/conversion.hpp"
+

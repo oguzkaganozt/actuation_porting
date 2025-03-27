@@ -35,6 +35,8 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#include "common/clock/clock.hpp"
+
 // Msgs
 #include "Trajectory.h"
 #include "OperationModeState.h"
@@ -43,6 +45,13 @@
 #include "Longitudinal.h"
 #include "Float32MultiArrayStamped.h"
 #include "PoseStamped.h"
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
+using MarkerMsg = visualization_msgs_msg_Marker;
+using OdometryMsg = nav_msgs_msg_Odometry;
+using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
+using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
+using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
 #define OPERATION_MODE_STATE_UNKNOWN autoware_adapi_v1_msgs_msg_OperationModeState_Constants_UNKNOWN
 #define OPERATION_MODE_STATE_STOP autoware_adapi_v1_msgs_msg_OperationModeState_Constants_STOP
 #define OPERATION_MODE_STATE_AUTONOMOUS autoware_adapi_v1_msgs_msg_OperationModeState_Constants_AUTONOMOUS
@@ -51,14 +60,6 @@
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
-// Msgs
-using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
-using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
-using MarkerMsg = visualization_msgs_msg_Marker;
-using OdometryMsg = nav_msgs_msg_Odometry;
-using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
-using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
-using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
 
 namespace trajectory_follower = ::autoware::motion::control::trajectory_follower;
 
@@ -237,7 +238,8 @@ private:
 
   std::optional<bool> m_prev_keep_stopped_condition{std::nullopt};
 
-  double m_last_running_time{0.0};
+  // TODO: check clock::now() validity
+  double m_last_running_time{Clock::now()};
 
   struct ResultWithReason
   {

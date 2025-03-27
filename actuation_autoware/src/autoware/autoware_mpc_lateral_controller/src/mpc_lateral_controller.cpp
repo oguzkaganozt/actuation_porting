@@ -280,7 +280,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
   }
 
   publishPredictedTraj(predicted_traj);
-  publishDebugValues(debug_values);
+  // publishDebugValues(debug_values);  //TODO: removed sake of simplicity
 
   const auto createLateralOutput =
     [this](

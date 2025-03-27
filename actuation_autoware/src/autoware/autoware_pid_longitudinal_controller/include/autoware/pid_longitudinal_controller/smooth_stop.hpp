@@ -15,8 +15,7 @@
 #ifndef AUTOWARE__PID_LONGITUDINAL_CONTROLLER__SMOOTH_STOP_HPP_
 #define AUTOWARE__PID_LONGITUDINAL_CONTROLLER__SMOOTH_STOP_HPP_
 
-#include <optional>  // NOLINT // TODO: check if this is needed
-
+#include <optional>
 #include <algorithm>
 #include <cmath>
 #include <limits>
