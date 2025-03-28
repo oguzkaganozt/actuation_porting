@@ -237,13 +237,13 @@ void PidLongitudinalController::setCurrentOperationMode(const OperationModeState
 void PidLongitudinalController::setTrajectory(const TrajectoryMsg & msg)
 {
   if (!longitudinal_utils::isValidTrajectory(msg)) {
-    // RCLCPP_ERROR_THROTTLE(logger_, *clock_, 3000, "received invalid trajectory. ignore.");
+    warn_throttle("received invalid trajectory. ignore.");
     return;
   }
 
   auto sequence_points = wrap(msg.points);
   if (sequence_points.size() < 2) {
-    // RCLCPP_WARN_THROTTLE(logger_, *clock_, 3000, "Unexpected trajectory size < 2. Ignored.");
+    warn_throttle("Unexpected trajectory size < 2. Ignored.");
     return;
   }
 
@@ -433,8 +433,7 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
       control_data.slope_angle = m_lpf_pitch->filter(raw_pitch);
     }
   } else {
-    // RCLCPP_ERROR_THROTTLE(
-    //   logger_, *clock_, 3000, "Slope source is not valid. Using raw_pitch option as default");
+    warn_throttle("Slope source is not valid. Using raw_pitch option as default");
     control_data.slope_angle = m_lpf_pitch->filter(raw_pitch);
   }
 
@@ -657,8 +656,8 @@ void PidLongitudinalController::updateControlState(const ControlData & control_d
     return;
   }
 
-  fprintf(stderr, "invalid state found.\n");
-  std::exit(EXIT_FAILURE);
+  fprintf(stderr, "FATAL: invalid state found.\n");
+  return;
 }
 
 PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
@@ -667,6 +666,7 @@ PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
   const size_t target_idx = control_data.target_idx;
 
   // velocity and acceleration command
+  //TODO: check wrapping
   auto sequence_points = wrap(control_data.interpolated_traj.points);
   Motion ctrl_cmd_as_pedal_pos{
     sequence_points.at(target_idx).longitudinal_velocity_mps,
@@ -747,6 +747,7 @@ PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
     ctrl_cmd_as_pedal_pos.acc, m_prev_ctrl_cmd.acc, control_data.dt, m_max_acc_cmd_diff);
 
   // update debug visualization
+  //TODO: check if this is available
   updateDebugVelAcc(control_data);
 
   printf("[final output]: acc: %3.3f, v_curr: %3.3f\n", ctrl_cmd_as_pedal_pos.acc,
@@ -858,6 +859,7 @@ void PidLongitudinalController::storeAccelCmd(const double accel)
   if (m_ctrl_cmd_vec.size() <= 2) {
     return;
   }
+  //TODO: check if this is valid
   if ((Clock::now() - Clock::toDouble(m_ctrl_cmd_vec.at(1).stamp)) > m_delay_compensation_time) {
     m_ctrl_cmd_vec.erase(m_ctrl_cmd_vec.begin());
   }
@@ -953,6 +955,7 @@ PidLongitudinalController::StateAfterDelay PidLongitudinalController::predictedS
   for (std::size_t i = 0; i < m_ctrl_cmd_vec.size(); ++i) {
     if ((Clock::now() - Clock::toDouble(m_ctrl_cmd_vec.at(i).stamp)) < delay_compensation_time) {
       // add velocity to accel * dt
+      //TODO: check if clock utils working correctly
       const double time_to_next_acc =
         (i == m_ctrl_cmd_vec.size() - 1)
           ? std::min(
@@ -1069,6 +1072,7 @@ void PidLongitudinalController::updateDebugVelAcc(const ControlData & control_da
 
 double PidLongitudinalController::getTimeUnderControl()
 {
+  //TODO: check if this is valid
   if (!m_under_control_starting_time) return 0.0;
   return Clock::now() - m_under_control_starting_time;
 }

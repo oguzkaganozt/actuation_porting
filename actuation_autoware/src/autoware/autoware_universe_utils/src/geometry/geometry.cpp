@@ -29,8 +29,8 @@ Vector3Msg getRPY(const QuaternionMsg & quat)
   Vector3Msg rpy;
   // tf2::Quaternion q(quat.x, quat.y, quat.z, quat.w);
   // tf2::Matrix3x3(q).getRPY(rpy.x, rpy.y, rpy.z);
-  
   // TODO: validate this
+  
   // Convert QuaternionMsg to Eigen::Quaterniond
   Eigen::Quaterniond eigen_quat(quat.w, quat.x, quat.y, quat.z);
   

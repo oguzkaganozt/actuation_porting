@@ -412,6 +412,24 @@ private:
   void updateDebugVelAcc(const ControlData & control_data);
 
   double getTimeUnderControl();
+
+  inline void info_throttle(const char * msg)
+  {
+    static int counter = 0;
+    if (counter % CONFIG_RCLCPP_THROTTLE_RATE_INFO == 0) {
+      printf("%s", msg);
+    }
+    counter++;
+  }
+
+  inline void warn_throttle(const char * msg)
+  {
+    static int counter = 0;
+    if (counter % CONFIG_RCLCPP_THROTTLE_RATE_WARN == 0) {
+      fprintf(stderr, "%s", msg);
+    }
+    counter++;
+  }
 };
 }  // namespace autoware::motion::control::pid_longitudinal_controller
 

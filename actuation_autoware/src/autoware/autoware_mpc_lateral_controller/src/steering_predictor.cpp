@@ -47,6 +47,7 @@ double SteeringPredictor::calcSteerPrediction()
 
 void SteeringPredictor::storeSteerCmd(const double steer)
 {
+  // TODO: validity check with const auto time_delayed = m_clock->now() + rclcpp::Duration::from_seconds(m_input_delay);
   const auto time_delayed = Clock::now() + m_input_delay;
   LateralMsg cmd;
   cmd.stamp = Clock::toRosTime(time_delayed);
@@ -86,6 +87,7 @@ double SteeringPredictor::getSteerCmdSum(
   double steer_sum = 0.0;
   auto t = t_start;
   while (t_end > Clock::toDouble(m_ctrl_cmd_vec.at(idx).stamp)) {
+    // TODO: CHECK THIS
     const double duration = (Clock::toDouble(m_ctrl_cmd_vec.at(idx).stamp) - t);
     t = Clock::toDouble(m_ctrl_cmd_vec.at(idx).stamp);
     steer_sum += (1 - std::exp(-duration / time_constant)) *

@@ -30,4 +30,6 @@
 
 ## PID LONGITUDINAL CONTROLLER
 - removed #include "autoware/motion_utils/trajectory/conversion.hpp"
+- diag_updater_ removed as we are not using ros2
+- removed param callbacks as we are not using ros2
 

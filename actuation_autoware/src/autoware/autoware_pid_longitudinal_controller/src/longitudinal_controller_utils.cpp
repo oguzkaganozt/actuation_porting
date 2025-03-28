@@ -14,7 +14,7 @@
 
 #include "autoware/pid_longitudinal_controller/longitudinal_controller_utils.hpp"
 
-#include <optional>  // NOLINT // TODO: check if this is needed
+#include <optional>
 #include <utility>
 #include <algorithm>
 #include <limits>
@@ -70,11 +70,24 @@ double calcStopDistance(
 double getPitchByPose(const QuaternionMsg & quaternion_msg)
 {
   double roll, pitch, yaw;
-  // TODO: implement this
   // tf2::Quaternion quaternion;
   // tf2::fromMsg(quaternion_msg, quaternion);
   // tf2::Matrix3x3{quaternion}.getRPY(roll, pitch, yaw);
+  // TODO: check if this is valid
 
+  // Convert QuaternionMsg to Eigen::Quaterniond
+  Eigen::Quaterniond eigen_quat(quaternion_msg.w, quaternion_msg.x, quaternion_msg.y, quaternion_msg.z);
+  
+  // Convert quaternion to rotation matrix
+  Eigen::Matrix3d rotation_matrix = eigen_quat.toRotationMatrix();
+  
+  // Extract roll, pitch, yaw from rotation matrix
+  // Using Eigen's eulerAngles with the XYZ convention
+  // Note: Eigen uses different order than ROS, so we extract separately
+  roll = atan2(rotation_matrix(2,1), rotation_matrix(2,2));  // roll
+  pitch = asin(-rotation_matrix(2,0));                        // pitch
+  yaw = atan2(rotation_matrix(1,0), rotation_matrix(0,0));  // yaw
+  
   return pitch;
 }
 
@@ -119,6 +132,7 @@ PoseMsg calcPoseAfterTimeDelay(
   const double delay_time_calculation =
     time_to_stop > 0.0 && time_to_stop < delay_time ? time_to_stop : delay_time;
   // simple linear prediction
+  // TODO: check if this is valid compared to tf2::getYaw
   const double yaw = autoware::universe_utils::getYaw(current_pose.orientation);
   const double running_distance = delay_time_calculation * current_vel + 0.5 * current_acc *
                                                                            delay_time_calculation *
