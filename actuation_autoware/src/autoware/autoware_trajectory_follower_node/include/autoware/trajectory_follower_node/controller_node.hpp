@@ -92,6 +92,7 @@ private:
   std::shared_ptr<trajectory_follower::LateralControllerBase> lateral_controller_;
 
   // Subscribers
+  //TODO: check validity with polling subscribers
   std::shared_ptr<Subscriber<TrajectoryMsg>> sub_ref_path_;
   std::shared_ptr<Subscriber<OdometryMsg>> sub_odometry_;
   std::shared_ptr<Subscriber<SteeringReportMsg>> sub_steering_;

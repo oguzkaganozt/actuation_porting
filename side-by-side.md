@@ -33,3 +33,8 @@
 - diag_updater_ removed as we are not using ros2
 - removed param callbacks as we are not using ros2
 
+## TRAJECTORY FOLLOWER NODE
+- removed polling subscribers as we are using direct cyclonedds callbacks
+- removed published_time_publisher for the simplicity
+- removed nodeoptions as we are not using ros2
+

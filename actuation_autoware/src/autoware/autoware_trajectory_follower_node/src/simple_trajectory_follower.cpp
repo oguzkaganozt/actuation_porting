@@ -73,6 +73,7 @@ void SimpleTrajectoryFollower::onTimer(void* arg)
 
 void SimpleTrajectoryFollower::updateClosest()
 {
+  //TODO: check wrap
   auto sequence_traj_points_ = wrap(trajectory_->points);
   const auto closest = findNearestIndex(sequence_traj_points_, odometry_->pose.pose.position);
   closest_traj_point_ = sequence_traj_points_.at(closest);

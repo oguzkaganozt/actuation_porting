@@ -44,6 +44,7 @@ public:
   ~SimpleTrajectoryFollower() = default;
 
 private:
+  //TODO: check validity with polling subscribers
   std::shared_ptr<Subscriber<OdometryMsg>> sub_kinematics_;
   std::shared_ptr<Subscriber<TrajectoryMsg>> sub_trajectory_;
   std::shared_ptr<Publisher<ControlMsg>> pub_cmd_;
