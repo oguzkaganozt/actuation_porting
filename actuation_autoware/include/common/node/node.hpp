@@ -185,7 +185,7 @@ public:
             try {
                 return std::get<ParamT>(*param);
             } catch (const std::bad_variant_access&) {
-                fprintf(stderr, "Node: %s get_parameter failed-1: %s\n", node_name_.c_str(), name.c_str());
+                fprintf(stderr, "%s -> get_parameter failed-1: %s\n", node_name_.c_str(), name.c_str());
                 return ParamT{};
             }
         }
@@ -214,7 +214,7 @@ public:
                 pthread_mutex_unlock(&param_mutex_);
                 return true;
             }
-            printf("Warning: Cannot set parameter '%s' with different type\n", name.c_str());
+            printf("Warning: %s -> Cannot set parameter '%s' with different type\n", node_name_.c_str(), name.c_str());
             pthread_mutex_unlock(&param_mutex_);
             return false;
         }
@@ -272,10 +272,10 @@ public:
         sev.sigev_notify_attributes = &timer_attr_;
 
         if (int ret = timer_create(CLOCK_REALTIME, &sev, &timer_id_); ret < 0) {
-            fprintf(stderr, "Node: %s timer creation failed: %s\n", node_name_.c_str(), strerror(errno));
+            fprintf(stderr, "%s -> timer creation failed: %s\n", node_name_.c_str(), strerror(errno));
             return false;
         }
-        fprintf(stderr, "Node: %s timer has been created\n", node_name_.c_str());
+        fprintf(stderr, "%s -> timer has been created\n", node_name_.c_str());
         
         struct itimerspec its;
         its.it_value.tv_sec  = period_ms / 1000;
@@ -284,13 +284,13 @@ public:
         its.it_interval.tv_nsec = (period_ms % 1000) * 1000000;
         
         if (int ret = timer_settime(timer_id_, 0, &its, nullptr); ret < 0) {
-            fprintf(stderr, "Node: %s timer settime failed: %s\n", node_name_.c_str(), strerror(errno));
+            fprintf(stderr, "%s -> timer settime failed: %s\n", node_name_.c_str(), strerror(errno));
             timer_delete(timer_id_);
             return false;
         }
         timer_active_ = true;
 
-        fprintf(stderr, "Node: %s timer has been set\n", node_name_.c_str());
+        fprintf(stderr, "%s -> timer has been set\n", node_name_.c_str());
         return true;
     }
 
