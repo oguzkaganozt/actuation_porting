@@ -1,13 +1,57 @@
 // Copyright (c) 2024-2025, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <stdio.h>
+#define COLOR_GREEN "\033[32m"
+#define COLOR_RED "\033[31m"
+#define COLOR_RESET "\033[0m"
+
+#include <iostream>
 #include <unistd.h>
+#include "autoware/trajectory_follower_node/simple_trajectory_follower.hpp"
+#include "autoware/trajectory_follower_node/controller_node.hpp"
+
+void configure_network()
+{
+    //TODO: configure network
+}
 
 int main(void)
 {   
-    printf("Hello World\n");
-    
+    printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
+    printf(COLOR_GREEN "ARM - Autoware Safety Island - Actuation\n" COLOR_RESET);
+    printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
+    sleep(2);
+
+    printf(COLOR_GREEN "Starting Simple Trajectory Follower Node\n" COLOR_RESET);
+    try
+    {
+        std::make_shared<simple_trajectory_follower::SimpleTrajectoryFollower>();
+        sleep(2);
+        printf(COLOR_GREEN "Simple Trajectory Follower Node Started\n" COLOR_RESET);
+        printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << COLOR_RED << "Failed to start Simple Trajectory Follower Node: " << e.what() << '\n' << COLOR_RESET;
+    }
+
+    // printf(COLOR_GREEN "Starting Controller Node\n" COLOR_RESET);
+    // try
+    // {
+    //     std::make_shared<autoware::motion::control::trajectory_follower_node::Controller>();
+    //     sleep(2);
+    //     printf(COLOR_GREEN "Controller Node Started\n" COLOR_RESET);
+    //     printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
+    // }
+    // catch(const std::exception& e)
+    // {
+    //     std::cerr << COLOR_RED << "Failed to start Controller Node: " << e.what() << '\n' << COLOR_RESET;
+    // }
+
+    printf(COLOR_GREEN "Actuation Safety Island is Live\n" COLOR_RESET);
+    printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
+
+
     while (1) {
         sleep(1);
     }
