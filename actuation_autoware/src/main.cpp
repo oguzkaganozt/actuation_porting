@@ -21,18 +21,19 @@ int main(void)
     printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
     sleep(2);
 
-    // printf(COLOR_GREEN "Starting Controller Node\n" COLOR_RESET);
-    // try
-    // {
-    //     std::make_shared<autoware::motion::control::trajectory_follower_node::Controller>();
-    //     sleep(2);
-    //     printf(COLOR_GREEN "Controller Node Started\n" COLOR_RESET);
-    //     printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
-    // }
-    // catch(const std::exception& e)
-    // {
-    //     std::cerr << COLOR_RED << "Failed to start Controller Node: " << e.what() << '\n' << COLOR_RESET;
-    // }
+    printf(COLOR_GREEN "Starting Controller Node\n" COLOR_RESET);
+    try
+    {
+        std::make_shared<autoware::motion::control::trajectory_follower_node::Controller>();
+        sleep(2);
+        printf(COLOR_GREEN "Controller Node Started\n" COLOR_RESET);
+        printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << COLOR_RED << "Failed to start Controller Node: " << e.what() << '\n' << COLOR_RESET;
+        std::exit(1);
+    }
 
     printf(COLOR_GREEN "Actuation Safety Island is Live\n" COLOR_RESET);
     printf(COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);

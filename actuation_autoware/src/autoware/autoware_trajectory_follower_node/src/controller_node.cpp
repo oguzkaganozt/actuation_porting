@@ -72,7 +72,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
     declare_parameter<bool>("enable_control_cmd_horizon_pub", false);
 
   const auto lateral_controller_mode =
-    getLateralControllerMode(declare_parameter<std::string>("lateral_controller_mode"));
+    getLateralControllerMode(declare_parameter<std::string>("lateral_controller_mode", "mpc"));
   switch (lateral_controller_mode) {
     case LateralControllerMode::MPC: {
       lateral_controller_ =
@@ -84,7 +84,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   }
 
   const auto longitudinal_controller_mode =
-    getLongitudinalControllerMode(declare_parameter<std::string>("longitudinal_controller_mode"));
+    getLongitudinalControllerMode(declare_parameter<std::string>("longitudinal_controller_mode", "pid"));
   switch (longitudinal_controller_mode) {
     case LongitudinalControllerMode::PID: {
       longitudinal_controller_ =

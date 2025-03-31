@@ -7,7 +7,6 @@ list(APPEND APP_SOURCES
   src/autoware/autoware_mpc_lateral_controller/src/mpc_utils.cpp
   src/autoware/autoware_mpc_lateral_controller/src/steering_predictor.cpp
   src/autoware/autoware_mpc_lateral_controller/src/lowpass_filter.cpp
-  src/autoware/autoware_mpc_lateral_controller/src/qp_solver/qp_solver_osqp.cpp
   src/autoware/autoware_mpc_lateral_controller/src/qp_solver/qp_solver_unconstraint_fast.cpp
   src/autoware/autoware_mpc_lateral_controller/src/steering_offset/steering_offset.cpp
   src/autoware/autoware_mpc_lateral_controller/src/vehicle_model/vehicle_model_bicycle_dynamics.cpp

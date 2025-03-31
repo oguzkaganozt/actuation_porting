@@ -9,9 +9,6 @@ set(CONF_FILE "prj_actuation.conf")
 set(OVERLAY_CONFIG "prj_net.conf;${OVERLAY_CONFIG}" CACHE STRING "overlay config" FORCE)  # Do not overwrite the OVERLAY_CONFIG value provided by the user.
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 find_package(Eigen3 REQUIRED)
-find_package(osqp REQUIRED)
-get_target_property(OSQP_INCLUDE_SUB_DIR osqp::osqp INTERFACE_INCLUDE_DIRECTORIES)
-get_filename_component(OSQP_INCLUDE_DIR ${OSQP_INCLUDE_SUB_DIR} PATH)
 project(actuation_autoware)
 
 # INCLUDES
@@ -81,7 +78,6 @@ set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Add Autoware components
-include(src/autoware/autoware_osqp_interface/autoware_osqp_interface.cmake)
 include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
 include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
 include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
@@ -105,7 +101,6 @@ target_include_directories(app PRIVATE
   include
   ${CMAKE_CURRENT_BINARY_DIR}/install/include
   ${CycloneDDS_INCLUDE_DIR}
-  ${OSQP_INCLUDE_DIR}
   ${EIGEN3_INCLUDE_DIR}
   ${APP_INCLUDE_DIRS}
 )

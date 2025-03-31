@@ -19,6 +19,9 @@
 
 #include <vector>
 
+#define fabsl(x) fabs(x)  //TODO:Check compatibility
+#include <Eigen/Geometry>
+
 // Msgs
 #include "Quaternion.h"
 using QuaternionMsg = geometry_msgs_msg_Quaternion;

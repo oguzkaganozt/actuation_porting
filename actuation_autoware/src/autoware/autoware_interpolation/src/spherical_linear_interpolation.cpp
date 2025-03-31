@@ -31,27 +31,27 @@ QuaternionMsg slerp(
   // const auto interpolated_quat = tf2::slerp(src_tf, dst_tf, ratio);
   // return tf2::toMsg(interpolated_quat);
   // TODO: validate slerp implementation
-  Eigen::Quaternion src_quat(
+  Eigen::Quaterniond src_q(
     src_quat.w,
     src_quat.x,
     src_quat.y,
     src_quat.z);
     
-  Eigen::Quaternion dst_quat(
+  Eigen::Quaterniond dst_q(
     dst_quat.w,
     dst_quat.x,
     dst_quat.y,
     dst_quat.z);
 
   // Perform spherical linear interpolation with Eigen
-  Eigen::Quaternion result_quat = src_quat.slerp(ratio, dst_quat);
+  Eigen::Quaterniond result_q = src_q.slerp(ratio, dst_q);
     
   // Convert back to ROS message type
   QuaternionMsg result_quat_msg;
-  result_quat_msg.x = result_quat.x();
-  result_quat_msg.y = result_quat.y();
-  result_quat_msg.z = result_quat.z();
-  result_quat_msg.w = result_quat.w();
+  result_quat_msg.x = result_q.x();
+  result_quat_msg.y = result_q.y();
+  result_quat_msg.z = result_q.z();
+  result_quat_msg.w = result_q.w();
   return result_quat_msg;
 }
 
@@ -60,7 +60,6 @@ std::vector<QuaternionMsg> slerp(
   const std::vector<QuaternionMsg> & base_values,
   const std::vector<double> & query_keys)
 {
-  TODO: implement slerp
   // throw exception for invalid arguments
   const auto validated_query_keys = validateKeys(base_keys, query_keys);
   validateKeysAndValues(base_keys, base_values);
@@ -95,25 +94,25 @@ QuaternionMsg lerpOrientation(
   // const auto q_interpolated = q_from.slerp(q_to, ratio);
   // return tf2::toMsg(q_interpolated);
   // TODO: validate this implementation
-  Eigen::Quaternion src_quat(
-    src_quat.w,
-    src_quat.x,
-    src_quat.y,
-    src_quat.z);
+  Eigen::Quaterniond src_q(
+    o_from.w,
+    o_from.x,
+    o_from.y,
+    o_from.z);
     
-  Eigen::Quaternion dst_quat(
-    dst_quat.w,
-    dst_quat.x,
-    dst_quat.y,
-    dst_quat.z);
+  Eigen::Quaterniond dst_q(
+    o_to.w,
+    o_to.x,
+    o_to.y,
+    o_to.z);
 
-  Eigen::Quaternion result_quat = src_quat.slerp(ratio, dst_quat);
+  Eigen::Quaterniond result_q = src_q.slerp(ratio, dst_q);
 
   QuaternionMsg result_quat_msg;
-  result_quat_msg.x = result_quat.x();
-  result_quat_msg.y = result_quat.y();
-  result_quat_msg.z = result_quat.z();
-  result_quat_msg.w = result_quat.w();
+  result_quat_msg.x = result_q.x();
+  result_quat_msg.y = result_q.y();
+  result_quat_msg.z = result_q.z();
+  result_quat_msg.w = result_q.w();
   return result_quat_msg;
 }
 }  // namespace autoware::interpolation

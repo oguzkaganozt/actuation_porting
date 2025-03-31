@@ -15,7 +15,6 @@
 #include "autoware/mpc_lateral_controller/mpc_lateral_controller.hpp"
 
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
-#include "autoware/mpc_lateral_controller/qp_solver/qp_solver_osqp.hpp"
 #include "autoware/mpc_lateral_controller/qp_solver/qp_solver_unconstraint_fast.hpp"
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_dynamics.hpp"
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics.hpp"
@@ -29,6 +28,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <cmath>
 
 // Msgs
 #include "OperationModeState.h"
@@ -197,15 +197,10 @@ std::shared_ptr<QPSolverInterface> MpcLateralController::createQPSolverInterface
 {
   std::shared_ptr<QPSolverInterface> qpsolver_ptr;
 
-  const std::string qp_solver_type = node.declare_parameter<std::string>("qp_solver_type");
+  const std::string qp_solver_type = node.declare_parameter<std::string>("qp_solver_type", "unconstraint_fast");
 
   if (qp_solver_type == "unconstraint_fast") {
     qpsolver_ptr = std::make_shared<QPSolverEigenLeastSquareLLT>();
-    return qpsolver_ptr;
-  }
-
-  if (qp_solver_type == "osqp") {
-    qpsolver_ptr = std::make_shared<QPSolverOSQP>();
     return qpsolver_ptr;
   }
 
@@ -588,12 +583,12 @@ bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
   auto sequence_points = wrap(traj.points);
   for (const auto & p : sequence_points) {
     if (
-      !isfinite(p.pose.position.x) || !isfinite(p.pose.position.y) ||
-      !isfinite(p.pose.orientation.w) || !isfinite(p.pose.orientation.x) ||
-      !isfinite(p.pose.orientation.y) || !isfinite(p.pose.orientation.z) ||
-      !isfinite(p.longitudinal_velocity_mps) || !isfinite(p.lateral_velocity_mps) ||
-      !isfinite(p.heading_rate_rps) || !isfinite(p.front_wheel_angle_rad) ||
-      !isfinite(p.rear_wheel_angle_rad)) {
+      !std::isfinite(p.pose.position.x) || !std::isfinite(p.pose.position.y) ||
+      !std::isfinite(p.pose.orientation.w) || !std::isfinite(p.pose.orientation.x) ||
+      !std::isfinite(p.pose.orientation.y) || !std::isfinite(p.pose.orientation.z) ||
+      !std::isfinite(p.longitudinal_velocity_mps) || !std::isfinite(p.lateral_velocity_mps) ||
+      !std::isfinite(p.heading_rate_rps) || !std::isfinite(p.front_wheel_angle_rad) ||
+      !std::isfinite(p.rear_wheel_angle_rad)) {
       return false;
     }
   }
