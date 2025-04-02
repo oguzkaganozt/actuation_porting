@@ -82,9 +82,9 @@ MpcLateralController::MpcLateralController(Node & node)
 
   // steer rate limit depending on curvature
   const auto steer_rate_lim_dps_list_by_curvature =
-    node.declare_parameter<std::vector<double>>("steer_rate_lim_dps_list_by_curvature");
+    node.declare_parameter<std::vector<double>>("steer_rate_lim_dps_list_by_curvature", {40.0, 50.0, 60.0});
   const auto curvature_list_for_steer_rate_lim =
-    node.declare_parameter<std::vector<double>>("curvature_list_for_steer_rate_lim");
+    node.declare_parameter<std::vector<double>>("curvature_list_for_steer_rate_lim", {0.001, 0.002, 0.01});
   for (size_t i = 0; i < steer_rate_lim_dps_list_by_curvature.size(); ++i) {
     m_mpc->m_steer_rate_lim_map_by_curvature.emplace_back(
       curvature_list_for_steer_rate_lim.at(i),
@@ -93,9 +93,9 @@ MpcLateralController::MpcLateralController(Node & node)
 
   // steer rate limit depending on velocity
   const auto steer_rate_lim_dps_list_by_velocity =
-    node.declare_parameter<std::vector<double>>("steer_rate_lim_dps_list_by_velocity");
+    node.declare_parameter<std::vector<double>>("steer_rate_lim_dps_list_by_velocity", {60.0, 50.0, 40.0});
   const auto velocity_list_for_steer_rate_lim =
-    node.declare_parameter<std::vector<double>>("velocity_list_for_steer_rate_lim");
+    node.declare_parameter<std::vector<double>>("velocity_list_for_steer_rate_lim", {10.0, 15.0, 20.0});
   for (size_t i = 0; i < steer_rate_lim_dps_list_by_velocity.size(); ++i) {
     m_mpc->m_steer_rate_lim_map_by_velocity.emplace_back(
       velocity_list_for_steer_rate_lim.at(i), steer_rate_lim_dps_list_by_velocity.at(i) * deg2rad);
@@ -162,7 +162,7 @@ std::shared_ptr<VehicleModelInterface> MpcLateralController::createVehicleModel(
 {
   std::shared_ptr<VehicleModelInterface> vehicle_model_ptr;
 
-  const std::string vehicle_model_type = node.declare_parameter<std::string>("vehicle_model_type");
+  const std::string vehicle_model_type = node.declare_parameter<std::string>("vehicle_model_type", "kinematics");
 
   if (vehicle_model_type == "kinematics") {
     vehicle_model_ptr = std::make_shared<KinematicsBicycleModel>(wheelbase, steer_lim, steer_tau);
@@ -175,6 +175,7 @@ std::shared_ptr<VehicleModelInterface> MpcLateralController::createVehicleModel(
   }
 
   if (vehicle_model_type == "dynamics") {
+    //TODO: it should not be get in here
     const double mass_fl = node.declare_parameter<double>("vehicle.mass_fl");
     const double mass_fr = node.declare_parameter<double>("vehicle.mass_fr");
     const double mass_rl = node.declare_parameter<double>("vehicle.mass_rl");
@@ -212,10 +213,10 @@ std::shared_ptr<SteeringOffsetEstimator> MpcLateralController::createSteerOffset
   const double wheelbase, Node & node)
 {
   const std::string ns = "steering_offset.";
-  const auto vel_thres = node.declare_parameter<double>(ns + "update_vel_threshold");
-  const auto steer_thres = node.declare_parameter<double>(ns + "update_steer_threshold");
-  const auto limit = node.declare_parameter<double>(ns + "steering_offset_limit");
-  const auto num = node.declare_parameter<int>(ns + "average_num");
+  const auto vel_thres = node.declare_parameter<double>(ns + "update_vel_threshold", 5.56);
+  const auto steer_thres = node.declare_parameter<double>(ns + "update_steer_threshold", 0.035);
+  const auto limit = node.declare_parameter<double>(ns + "steering_offset_limit", 0.02);
+  const auto num = node.declare_parameter<int>(ns + "average_num", 1000);
   steering_offset_ =
     std::make_shared<SteeringOffsetEstimator>(wheelbase, num, vel_thres, steer_thres, limit);
   return steering_offset_;
@@ -528,38 +529,38 @@ bool MpcLateralController::isMpcConverged()
 
 void MpcLateralController::declareMPCparameters(Node & node)
 {
-  m_mpc->m_param.prediction_horizon = node.declare_parameter<int>("mpc_prediction_horizon");
-  m_mpc->m_param.prediction_dt = node.declare_parameter<double>("mpc_prediction_dt");
+  m_mpc->m_param.prediction_horizon = node.declare_parameter<int>("mpc_prediction_horizon", 50);
+  m_mpc->m_param.prediction_dt = node.declare_parameter<double>("mpc_prediction_dt", 0.1);
 
-  const auto dp = [&](const auto & param) { return node.declare_parameter<double>(param); };
+  // const auto dp = [&](const auto & param) { return node.declare_parameter<double>(param); };
 
   auto & nw = m_mpc->m_param.nominal_weight;
-  nw.lat_error = dp("mpc_weight_lat_error");
-  nw.heading_error = dp("mpc_weight_heading_error");
-  nw.heading_error_squared_vel = dp("mpc_weight_heading_error_squared_vel");
-  nw.steering_input = dp("mpc_weight_steering_input");
-  nw.steering_input_squared_vel = dp("mpc_weight_steering_input_squared_vel");
-  nw.lat_jerk = dp("mpc_weight_lat_jerk");
-  nw.steer_rate = dp("mpc_weight_steer_rate");
-  nw.steer_acc = dp("mpc_weight_steer_acc");
-  nw.terminal_lat_error = dp("mpc_weight_terminal_lat_error");
-  nw.terminal_heading_error = dp("mpc_weight_terminal_heading_error");
+  nw.lat_error = node.declare_parameter<double>("mpc_weight_lat_error", 1.0);
+  nw.heading_error = node.declare_parameter<double>("mpc_weight_heading_error", 0.0);
+  nw.heading_error_squared_vel = node.declare_parameter<double>("mpc_weight_heading_error_squared_vel", 0.3);
+  nw.steering_input = node.declare_parameter<double>("mpc_weight_steering_input", 1.0);
+  nw.steering_input_squared_vel = node.declare_parameter<double>("mpc_weight_steering_input_squared_vel", 0.25);
+  nw.lat_jerk = node.declare_parameter<double>("mpc_weight_lat_jerk", 0.1);
+  nw.steer_rate = node.declare_parameter<double>("mpc_weight_steer_rate", 0.0);
+  nw.steer_acc = node.declare_parameter<double>("mpc_weight_steer_acc", 0.000001);
+  nw.terminal_lat_error = node.declare_parameter<double>("mpc_weight_terminal_lat_error", 1.0);
+  nw.terminal_heading_error = node.declare_parameter<double>("mpc_weight_terminal_heading_error", 0.1);
 
   auto & lcw = m_mpc->m_param.low_curvature_weight;
-  lcw.lat_error = dp("mpc_low_curvature_weight_lat_error");
-  lcw.heading_error = dp("mpc_low_curvature_weight_heading_error");
-  lcw.heading_error_squared_vel = dp("mpc_low_curvature_weight_heading_error_squared_vel");
-  lcw.steering_input = dp("mpc_low_curvature_weight_steering_input");
-  lcw.steering_input_squared_vel = dp("mpc_low_curvature_weight_steering_input_squared_vel");
-  lcw.lat_jerk = dp("mpc_low_curvature_weight_lat_jerk");
-  lcw.steer_rate = dp("mpc_low_curvature_weight_steer_rate");
-  lcw.steer_acc = dp("mpc_low_curvature_weight_steer_acc");
-  m_mpc->m_param.low_curvature_thresh_curvature = dp("mpc_low_curvature_thresh_curvature");
+  lcw.lat_error = node.declare_parameter<double>("mpc_low_curvature_weight_lat_error", 0.1);
+  lcw.heading_error = node.declare_parameter<double>("mpc_low_curvature_weight_heading_error", 0.0);
+  lcw.heading_error_squared_vel = node.declare_parameter<double>("mpc_low_curvature_weight_heading_error_squared_vel", 0.3);
+  lcw.steering_input = node.declare_parameter<double>("mpc_low_curvature_weight_steering_input", 1.0);
+  lcw.steering_input_squared_vel = node.declare_parameter<double>("mpc_low_curvature_weight_steering_input_squared_vel", 0.25);
+  lcw.lat_jerk = node.declare_parameter<double>("mpc_low_curvature_weight_lat_jerk", 0.0);
+  lcw.steer_rate = node.declare_parameter<double>("mpc_low_curvature_weight_steer_rate", 0.0);
+  lcw.steer_acc = node.declare_parameter<double>("mpc_low_curvature_weight_steer_acc", 0.000001);
+  m_mpc->m_param.low_curvature_thresh_curvature = node.declare_parameter<double>("mpc_low_curvature_thresh_curvature", 0.0);
 
-  m_mpc->m_param.zero_ff_steer_deg = dp("mpc_zero_ff_steer_deg");
-  m_mpc->m_param.acceleration_limit = dp("mpc_acceleration_limit");
-  m_mpc->m_param.velocity_time_constant = dp("mpc_velocity_time_constant");
-  m_mpc->m_param.min_prediction_length = dp("mpc_min_prediction_length");
+  m_mpc->m_param.zero_ff_steer_deg = node.declare_parameter<double>("mpc_zero_ff_steer_deg", 0.5);
+  m_mpc->m_param.acceleration_limit = node.declare_parameter<double>("mpc_acceleration_limit", 2.0);
+  m_mpc->m_param.velocity_time_constant = node.declare_parameter<double>("mpc_velocity_time_constant", 0.3);
+  m_mpc->m_param.min_prediction_length = node.declare_parameter<double>("mpc_min_prediction_length", 5.0);
 }
 
 bool MpcLateralController::isTrajectoryShapeChanged() const

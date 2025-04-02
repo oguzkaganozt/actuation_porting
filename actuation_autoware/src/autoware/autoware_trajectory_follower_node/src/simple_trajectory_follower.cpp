@@ -41,9 +41,9 @@ SimpleTrajectoryFollower::SimpleTrajectoryFollower()
 {
   pub_cmd_ = create_publisher<ControlMsg>("output/control_cmd", &autoware_control_msgs_msg_Control_desc);
 
-  use_external_target_vel_ = declare_parameter<bool>("use_external_target_vel");
-  external_target_vel_ = declare_parameter<double>("external_target_vel");  //TODO: changed from float to double
-  lateral_deviation_ = declare_parameter<double>("lateral_deviation");  //TODO: changed from float to double
+  use_external_target_vel_ = declare_parameter<bool>("use_external_target_vel", true);
+  external_target_vel_ = declare_parameter<double>("external_target_vel", 5.0);  //TODO: changed from float to double
+  lateral_deviation_ = declare_parameter<double>("lateral_deviation", 0.0);  //TODO: changed from float to double
 
   //TODO: check for 30ms correctness
   create_timer(0.03, &SimpleTrajectoryFollower::onTimer, this);
