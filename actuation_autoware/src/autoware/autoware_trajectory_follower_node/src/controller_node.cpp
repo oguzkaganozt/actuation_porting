@@ -111,7 +111,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   }
 
   // Timer
-  //TODO: check working as expected 
+  //TODO: check working as expected with the original autoware code
   {
     const auto period_ns = ctrl_period; //TODO: check if giving ms works
     create_timer(period_ns, &Controller::callbackTimerControl, this);
