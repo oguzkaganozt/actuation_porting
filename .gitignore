@@ -1,17 +1,19 @@
+# platform
 .egg-info/
 __pycache__
+.vscode/
+*.cursorignore
+
+# build artifacts
 build/
 install/
-log/
 .west/
-bootloader/
 modules/
-tools/
-public/
-.vscode/
-porter/
-anan/
+
+# logs
+log/
 *.log
-*.cursorignore
-TODO
+
+# misc
+porter/
 check.sh
