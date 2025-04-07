@@ -204,9 +204,6 @@ void extendTrajectoryInYawDirection(
  */
 MPCTrajectory clipTrajectoryByLength(const MPCTrajectory & trajectory, const double length);
 
-void info_throttle(const char * msg);
-void warn_throttle(const char * msg);
-
 }  // namespace MPCUtils
 }  // namespace autoware::motion::control::mpc_lateral_controller
 #endif  // AUTOWARE__MPC_LATERAL_CONTROLLER__MPC_UTILS_HPP_

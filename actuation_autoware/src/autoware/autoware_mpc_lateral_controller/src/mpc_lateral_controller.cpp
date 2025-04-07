@@ -20,6 +20,7 @@
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics.hpp"
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics_no_delay.hpp"
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
+#include "common/logger/logger.hpp"
 
 #include <algorithm>
 #include <deque>
@@ -337,15 +338,15 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
   m_current_steering = input_data.current_steering;
 
   if (!m_mpc->hasVehicleModel()) {
-    MPCUtils::info_throttle("MPC does not have a vehicle model");
+    common::logger::info_throttle("MPC does not have a vehicle model");
     return false;
   }
   if (!m_mpc->hasQPSolver()) {
-    MPCUtils::info_throttle("MPC does not have a QP solver");
+    common::logger::info_throttle("MPC does not have a QP solver");
     return false;
   }
   if (m_mpc->m_reference_trajectory.empty()) {
-    MPCUtils::info_throttle("trajectory size is zero.");
+    common::logger::info_throttle("trajectory size is zero.");
     return false;
   }
 

@@ -17,6 +17,7 @@
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 #include "autoware/universe_utils/geometry/geometry.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
+#include "common/logger/logger.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -237,13 +238,13 @@ void PidLongitudinalController::setCurrentOperationMode(const OperationModeState
 void PidLongitudinalController::setTrajectory(const TrajectoryMsg & msg)
 {
   if (!longitudinal_utils::isValidTrajectory(msg)) {
-    warn_throttle("received invalid trajectory. ignore.");
+    common::logger::warn_throttle("received invalid trajectory. ignore.");
     return;
   }
 
   auto sequence_points = wrap(msg.points);
   if (sequence_points.size() < 2) {
-    warn_throttle("Unexpected trajectory size < 2. Ignored.");
+    common::logger::warn_throttle("Unexpected trajectory size < 2. Ignored.");
     return;
   }
 
@@ -433,7 +434,7 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
       control_data.slope_angle = m_lpf_pitch->filter(raw_pitch);
     }
   } else {
-    warn_throttle("Slope source is not valid. Using raw_pitch option as default");
+    common::logger::warn_throttle("Slope source is not valid. Using raw_pitch option as default");
     control_data.slope_angle = m_lpf_pitch->filter(raw_pitch);
   }
 

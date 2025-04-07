@@ -13,41 +13,23 @@
 // limitations under the License.
 
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
-
-#include <string>
-
-namespace
-{
-template <class T>
-T getParameter(Node & node, const std::string & name)
-{
-  if (node.has_parameter(name)) {
-    return node.get_parameter<T>(name);
-  }
-
-  try {
-    return node.declare_parameter<T>(name);
-  } catch (const std::exception & ex) {
-    fprintf(stderr, "Failed to get parameter `%s`, please set it when you launch the node.\n", name.c_str());
-    throw(ex);
-  }
-}
-}  // namespace
+#include "common/logger/logger.hpp"
 
 namespace autoware::vehicle_info_utils
 {
 VehicleInfoUtils::VehicleInfoUtils(Node & node)
 {
-  const auto wheel_radius_m = getParameter<double>(node, "wheel_radius");
-  const auto wheel_width_m = getParameter<double>(node, "wheel_width");
-  const auto wheel_base_m = getParameter<double>(node, "wheel_base");
-  const auto wheel_tread_m = getParameter<double>(node, "wheel_tread");
-  const auto front_overhang_m = getParameter<double>(node, "front_overhang");
-  const auto rear_overhang_m = getParameter<double>(node, "rear_overhang");
-  const auto left_overhang_m = getParameter<double>(node, "left_overhang");
-  const auto right_overhang_m = getParameter<double>(node, "right_overhang");
-  const auto vehicle_height_m = getParameter<double>(node, "vehicle_height");
-  const auto max_steer_angle_rad = getParameter<double>(node, "max_steer_angle");
+  const auto wheel_radius_m = node.declare_parameter<double>("wheel_radius", 0.39);
+  const auto wheel_width_m = node.declare_parameter<double>("wheel_width", 0.42);
+  const auto wheel_base_m = node.declare_parameter<double>("wheel_base", 2.74);
+  const auto wheel_tread_m = node.declare_parameter<double>("wheel_tread", 1.63);
+  const auto front_overhang_m = node.declare_parameter<double>("front_overhang", 1.0);
+  const auto rear_overhang_m = node.declare_parameter<double>("rear_overhang", 1.03);
+  const auto left_overhang_m = node.declare_parameter<double>("left_overhang", 0.1);
+  const auto right_overhang_m = node.declare_parameter<double>("right_overhang", 0.1);
+  const auto vehicle_height_m = node.declare_parameter<double>("vehicle_height", 2.5);
+  const auto max_steer_angle_rad = node.declare_parameter<double>("max_steer_angle", 0.70);
+
   vehicle_info_ = createVehicleInfo(
     wheel_radius_m, wheel_width_m, wheel_base_m, wheel_tread_m, front_overhang_m, rear_overhang_m,
     left_overhang_m, right_overhang_m, vehicle_height_m, max_steer_angle_rad);

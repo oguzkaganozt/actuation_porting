@@ -170,27 +170,7 @@ private:
 
   //
   StopWatch<std::chrono::milliseconds> stop_watch_;
-
-  static constexpr double logger_throttle_interval = 5000;
 };
-
-inline void info_throttle(const char * msg)
-{
-  static int counter = 0;
-  if (counter % CONFIG_RCLCPP_THROTTLE_RATE_INFO == 0) {
-    printf("%s", msg);
-  }
-  counter++;
-}
-
-inline void warn_throttle(const char * msg)
-{
-  static int counter = 0;
-  if (counter % CONFIG_RCLCPP_THROTTLE_RATE_WARN == 0) {
-    fprintf(stderr, "%s", msg);
-  }
-  counter++;
-}
 
 }  // namespace trajectory_follower_node
 }  // namespace autoware::motion::control

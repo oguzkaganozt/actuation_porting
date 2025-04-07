@@ -18,6 +18,7 @@
 #include "autoware/motion_utils/trajectory/trajectory.hpp"
 #include "autoware/mpc_lateral_controller/mpc_utils.hpp"
 #include "autoware/universe_utils/math/unit_conversion.hpp"
+#include "common/logger/logger.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -158,7 +159,7 @@ void MPC::setReferenceTrajectory(
   const auto [success_resample, mpc_traj_resampled] = MPCUtils::resampleMPCTrajectoryByDistance(
     mpc_traj_raw, param.traj_resample_dist, nearest_seg_idx, ego_offset_to_segment);
   if (!success_resample) {
-    warn_throttle("[setReferenceTrajectory] spline error when resampling by distance");
+    common::logger::warn_throttle("[setReferenceTrajectory] spline error when resampling by distance");
     return;
   }
 
