@@ -6,13 +6,9 @@
 #define COLOR_RESET "\033[0m"
 
 #include <iostream>
+#include "network.hpp"
 #include "autoware/trajectory_follower_node/simple_trajectory_follower.hpp"
 #include "autoware/trajectory_follower_node/controller_node.hpp"
-
-void configure_network()
-{
-    //TODO: configure network
-}
 
 int main(void)
 {   
@@ -21,7 +17,14 @@ int main(void)
     fprintf(stderr, COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
     sleep(2);
 
-    fprintf(stderr, COLOR_GREEN "Starting Controller Node\n" COLOR_RESET);
+    fprintf(stderr, COLOR_GREEN "Configuring Network...\n" COLOR_RESET);
+    if(configure_network()) {
+        std::cerr << COLOR_RED << "Failed to configure network\n" << COLOR_RESET;
+        std::exit(1);
+    }
+    fprintf(stderr, COLOR_GREEN "Network configured\n" COLOR_RESET);
+
+    fprintf(stderr, COLOR_GREEN "Starting Controller Node...\n" COLOR_RESET);
     try
     {
         std::make_shared<autoware::motion::control::trajectory_follower_node::Controller>();
