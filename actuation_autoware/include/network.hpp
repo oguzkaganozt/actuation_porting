@@ -65,9 +65,12 @@ static int setup_iface(
 static void handler(
   struct net_mgmt_event_callback *cb, uint32_t mgmt_event, struct net_if *iface)
 {
+  fprintf(stderr, ">>> DHCP Handler Entered Event: %u\n", mgmt_event);
+
   int i = 0;
 
   if (mgmt_event != NET_EVENT_IPV4_ADDR_ADD) {
+    fprintf(stderr, "Not a DHCP event\n");
     return;
   }
 
@@ -135,16 +138,21 @@ int configure_network(void)
     fprintf(stderr, "Network interface 2 configured\n");
   }
 
-#if defined(CONFIG_NET_DHCPV4)
+#if CONFIG_NET_DHCPV4 && !CONFIG_NET_CONFIG_AUTO_INIT
   if(ifs.size() >= 1) {
-    fprintf(stderr, "Requesting a DHCP lease...\n");
+    fprintf(stderr, "Bringing up interface %p\n", ifs[0]);
+    net_if_up(ifs[0]);
+
+    fprintf(stderr, "Initializing DHCP event callback...\n");
     net_mgmt_init_event_callback(&mgmt_cb, handler, NET_EVENT_IPV4_ADDR_ADD);
     net_mgmt_add_event_callback(&mgmt_cb);
     net_dhcpv4_start(ifs[0]);
 
-    /* Wait for a lease. */
-    if (k_sem_take(&got_address, K_SECONDS(20)) != 0) {
-      fprintf(stderr, "Did not get a DHCP lease\n");
+    fprintf(stderr, "Waiting for DHCP lease semaphore...\n");
+    if (k_sem_take(&got_address, K_SECONDS(10)) != 0) {
+      fprintf(stderr, "Did not get a DHCP lease within 10 seconds\n");
+    } else {
+      fprintf(stderr, "DHCP lease semaphore acquired.\n");
     }
   }
 #endif  // CONFIG_NET_DHCPV4

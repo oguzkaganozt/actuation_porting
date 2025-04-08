@@ -98,9 +98,9 @@ target_sources(app PRIVATE
 )
 
 # TODO: Check if this is needed
-if(NOT CycloneDDS_INCLUDE_DIR)
-  set(CycloneDDS_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../cyclonedds_native_sim/out/include)
-endif()
+# if(NOT CycloneDDS_INCLUDE_DIR)
+#   set(CycloneDDS_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/../cyclonedds_native_sim/out/include)
+# endif()
 
 target_include_directories(app PRIVATE
   include
