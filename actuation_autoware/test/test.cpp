@@ -565,6 +565,8 @@ static K_THREAD_STACK_DEFINE(timer_stack, 4096);
 
 int main() {
     printf(COLOR_GREEN "=== Starting Node Test Suite ===\n" COLOR_RESET);
+    printf("Waiting for Network interface to be ready\n");
+    sleep(7);
     Node node("test_node", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
     
     test_parameters(node);

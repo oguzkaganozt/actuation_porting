@@ -45,6 +45,7 @@ config MAX_PTHREAD_MUTEX_COUNT
 
 config DDS_NETWORK_INTERFACE
 	string "Name of the network interface to be used by CycloneDDS, should not be used for native_sim"
+	default "ethernet"
 	help
 	  When left undefined, CycloneDDS will automatically select an interface
 	  based on its own criteria.

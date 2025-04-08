@@ -33,6 +33,7 @@ static struct ddsi_config_network_interface_listelem cfg_iface
  */
 inline static void init_config(struct ddsi_config & cfg)
 {
+  fprintf(stderr, "Initializing DDS configuration\n");
   ddsi_config_init_default(&cfg);
 
   // Buffers
