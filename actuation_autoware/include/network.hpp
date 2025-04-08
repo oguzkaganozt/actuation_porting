@@ -119,7 +119,7 @@ int configure_network(void)
     }
     fprintf(stderr, "Network interface 1 configured\n");
   }
-  
+
   if (ifs.size() >= 2 && sizeof(CONFIG_NET_IFACE2_ADDR) > 1) {
     fprintf(stderr, "Configuring network interface 2\n");
     int ret = setup_iface(
@@ -143,7 +143,7 @@ int configure_network(void)
     net_dhcpv4_start(ifs[0]);
 
     /* Wait for a lease. */
-    if (k_sem_take(&got_address, K_SECONDS(10)) != 0) {
+    if (k_sem_take(&got_address, K_SECONDS(20)) != 0) {
       fprintf(stderr, "Did not get a DHCP lease\n");
     }
   }
