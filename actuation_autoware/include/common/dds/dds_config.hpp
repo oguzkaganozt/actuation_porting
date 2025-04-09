@@ -6,12 +6,8 @@
 
 #include <dds/ddsi/ddsi_config.h>
 #include <dds/dds.h>
+#include "config.hpp"
 
-#define DDS_DOMAIN_ID 2
-#define DDS_TRANSPORT_TYPE DDSI_TRANS_UDP // can be DDSI_TRANS_UDP or DDSI_TRANS_TCP
-#define DDS_TCP_PORT 49152 // can be used when DDSI_TRANS_TCP
-
-#if defined(CONFIG_DDS_NETWORK_INTERFACE)
 static struct ddsi_config_network_interface_listelem cfg_iface
 {
   nullptr,
@@ -25,7 +21,6 @@ static struct ddsi_config_network_interface_listelem cfg_iface
     {1, 0}
   }
 };
-#endif
 
 /**
  * @brief Initialize a given DDS configuration structure.
@@ -34,6 +29,15 @@ static struct ddsi_config_network_interface_listelem cfg_iface
 inline static void init_config(struct ddsi_config & cfg)
 {
   fprintf(stderr, "Initializing DDS configuration\n");
+
+  if (sizeof(CONFIG_DDS_NETWORK_INTERFACE) <= 1) {
+    fprintf(stderr, "DDS network interface not set, please set CONFIG_DDS_NETWORK_INTERFACE\n");
+    std::exit(1);
+  }
+  else {
+    fprintf(stderr, "Network interface: %s\n", CONFIG_DDS_NETWORK_INTERFACE);
+  }
+
   ddsi_config_init_default(&cfg);
 
   // Buffers
@@ -53,6 +57,9 @@ inline static void init_config(struct ddsi_config & cfg)
   cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR | DDS_LC_WARNING | DDS_LC_CONFIG | DDS_LC_INFO; // DDS_LC_FATAL | DDS_LC_ERROR; // DDS_LC_ALL
   cfg.tracefile = const_cast<char *>("stderr");
 
+  // Network interface
+  cfg.network_interfaces = &cfg_iface;
+
   // if (DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP) {
   //   cfg.transport_selector = DDSI_TRANS_TCP;
   //   cfg.tcp_port = DDS_TCP_PORT;
@@ -61,15 +68,6 @@ inline static void init_config(struct ddsi_config & cfg)
   //   cfg.transport_selector = DDSI_TRANS_UDP;
   //   fprintf(stderr, "Transport type: UDP\n");
   // }
-
-#if defined(CONFIG_DDS_NETWORK_INTERFACE)
-  if (sizeof(CONFIG_DDS_NETWORK_INTERFACE) > 1) {
-    cfg.network_interfaces = &cfg_iface;
-    fprintf(stderr, "Network interface: %s\n", CONFIG_DDS_NETWORK_INTERFACE);
-  }
-#endif
 }
-
-
 
 #endif  // COMMON__DDS_CONFIG_HPP_
