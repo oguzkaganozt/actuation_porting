@@ -1,30 +1,25 @@
-# 02/04/2025
+# 09/04/2025
 
 # PRIMARY GOALS
-*. native sim ile çalıştırılabilir hale getir.
-*. processData yı kontrol et burası kilit.
+*. make fabsl portable accross: native sim, s32 and fvp 
+*. Check clock:now and torostime functions, as they can return some arbitrary values somehow.
+*. processData, callbackTimerControl, mergeLatLonHorizon check
 *. Use dds_alloc within sequence wrapper to remove duality with malloc vs dds_alloc, even better we can use k_malloc and k_free both within app and dds -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
-*. Corellium ethernet fix
 *. Check TODOs
 
 # DDS TESTING !!!
 *. Validate the message conversion between ROS2 and Zephyr by testing with native cycloneDDS <-> ROS2 communication
 
 ## IF ANYTHING IS NOT WORKING AS EXPECTED
+- check default values of parameters
+- Compare launch structure and synchronization with the native ROS2 nodes
+- Do we need param callbacks ? We cant use them in zephyr, do we strictly need them ?
 - check if sequence wrapper working as expected, if not, maybe we can try with libcpp for direct cpp interoperability ?
 - Another solution maybe create vectors in place when sequence got with -> std::vector<int> vec(c_array, c_array + size). This would do a block copy and allocate the space beforehand.
 - Give Sequence<T> as the only parameter for the functions that require priorly wrapped sequence to remove duality with wrapped and unwrapped sequence. Or may be better solution is to do not pass any sequence into any function just keep the sequence wrapper inside the function block, and only pass or return the real sequence instead of Sequence<T>
-- torostime yaparken bişiler bozuluyor olabilir karşı tarafta aynen alabilmeye bak
 - We can tune the lifespan of dds messages with -> https://cyclonedds.io/docs/cyclonedds/latest/api/qos.html#c.dds_qset_lifespan
-- fabsl(x) to fabs(x) olayı arch dan arch a değişiyür tikkat et !
 - subscriber, publisher ve timer ları özellikle kontrol et.
-- callbackTimerControl yı kontrol et kilit.
-- parametrelerin hepsinin default değerlerini kontrol et.
-- Compare launch structure and synchronization with the native ROS2 nodes
-- Do we need param callbacks ? We cant use them in zephyr, do we strictly need them ?
-- Sadece controller node launch lanıyor
 - Validate side by side all nodes with Autoware original code
-- mergeLatLonHorizon yı kontrol
 
 ### Key points of porting
 1. We dont have boost, rclcpp, osqp, tf2 or any other dependencies installed, except for eigen3, cyclonedds, and actuation_msgs.
