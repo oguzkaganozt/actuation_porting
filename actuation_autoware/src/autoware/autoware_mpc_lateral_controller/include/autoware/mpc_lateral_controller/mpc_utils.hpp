@@ -21,7 +21,11 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
+#endif
+
 #include <Eigen/Core>
 #include "common/clock/clock.hpp"
 

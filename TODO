@@ -1,7 +1,6 @@
-# 09/04/2025
+# 11/04/2025
 
 # PRIMARY GOALS
-*. make fabsl portable accross: native sim, s32 and fvp 
 *. Check clock:now and torostime functions, as they can return some arbitrary values somehow.
 *. processData, callbackTimerControl, mergeLatLonHorizon check
 *. Use dds_alloc within sequence wrapper to remove duality with malloc vs dds_alloc, even better we can use k_malloc and k_free both within app and dds -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html

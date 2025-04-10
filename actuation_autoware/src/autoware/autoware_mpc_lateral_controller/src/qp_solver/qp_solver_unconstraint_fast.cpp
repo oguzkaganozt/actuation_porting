@@ -14,7 +14,9 @@
 
 #include "autoware/mpc_lateral_controller/qp_solver/qp_solver_unconstraint_fast.hpp"
 
+#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
+#endif
 #include <Eigen/Dense>
 
 namespace autoware::motion::control::mpc_lateral_controller

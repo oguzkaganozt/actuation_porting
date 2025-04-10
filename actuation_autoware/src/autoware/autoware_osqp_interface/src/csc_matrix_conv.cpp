@@ -20,7 +20,9 @@
 #include <iostream>
 #include <vector>
 
+#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
+#endif
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 

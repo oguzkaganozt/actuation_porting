@@ -18,7 +18,9 @@
 
 // Libs
 #define EIGEN_MPL2_ONLY
+#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
+#endif
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 

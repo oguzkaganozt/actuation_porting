@@ -49,7 +49,10 @@
 
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_interface.hpp"
 
+#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
+#endif
+
 #include <Eigen/Core>
 #include <Eigen/LU>
 

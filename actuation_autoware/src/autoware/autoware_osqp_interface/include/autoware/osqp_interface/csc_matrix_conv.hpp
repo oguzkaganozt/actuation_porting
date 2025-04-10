@@ -17,7 +17,7 @@
 
 // Libs
 #include <vector>
-#ifndef fabsl
+#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
 #endif
 #include <Eigen/Core>

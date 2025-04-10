@@ -24,7 +24,9 @@
 #include <utility>
 #include <optional>
 
+#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
+#endif
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
