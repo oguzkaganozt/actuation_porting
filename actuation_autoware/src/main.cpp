@@ -12,6 +12,7 @@
 
 int main(void)
 {   
+    return 0;
     fprintf(stderr, COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
     fprintf(stderr, COLOR_GREEN "ARM - Autoware: Actuation Safety Island\n" COLOR_RESET);
     fprintf(stderr, COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
