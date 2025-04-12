@@ -3,8 +3,18 @@
 INTERFACE="$1"
 DST_INTERFACE="$2"
 
+INTERNAL_IP="192.0.2.1"
+
+# Enable NAT
 sudo iptables -t nat -D POSTROUTING -o "$DST_INTERFACE" -j MASQUERADE
+
+# Allow bidirectional forwarding - from INTERFACE to DST_INTERFACE
 sudo iptables -D FORWARD -i "$INTERFACE" -o "$DST_INTERFACE" -j ACCEPT
-sudo iptables -D FORWARD -i "$DST_INTERFACE" -o "$INTERFACE" -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Allow bidirectional forwarding - from DST_INTERFACE to INTERFACE
+sudo iptables -D FORWARD -i "$DST_INTERFACE" -o "$INTERFACE" -j ACCEPT
+
+# Forward UDP packets from DST_INTERFACE to the IP address of the INTERFACE
+sudo iptables -t nat -D PREROUTING -i "$DST_INTERFACE" -p udp -j DNAT --to-destination "$INTERNAL_IP"
 
 ip link delete "$INTERFACE"
