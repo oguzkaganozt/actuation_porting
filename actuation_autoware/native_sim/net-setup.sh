@@ -78,8 +78,12 @@ do
 	    CONF_FILE="$2"
 	    shift 2
 	    ;;
-	--iface|-i)
+	--src-iface|-i)
 	    IFACE="$2"
+	    shift 2
+	    ;;
+	--dst-iface|-d)
+	    DST_IFACE="$2"
 	    shift 2
 	    ;;
 	--times|-t)
@@ -103,6 +107,12 @@ do
     esac
 done
 
+if [ -z "$DST_IFACE" ]; then
+    echo "Error: Destination interface is not set"
+	echo "Usage: $0 --dst-iface <interface>"
+    exit 1
+fi
+
 if [ ! -f "$CONF_FILE" ]; then
     if [ ! -f "${0%/*}/$CONF_FILE" ];then
 	echo "No such file '$CONF_FILE'"
@@ -123,11 +133,11 @@ ctrl_c() {
 
 if [ "$ACTION" != stop ]; then
     echo "Creating $IFACE"
-    ip tuntap add $IFACE mode tap $@
+    ip tuntap add "$IFACE" mode tap $@
 
     # The idea is that the configuration file will setup
     # the IP addresses etc. for the created interface.
-    . "$CONF_FILE" $IFACE
+    . "$CONF_FILE" "$IFACE" "$DST_IFACE"
 fi
 
 if [ "$ACTION" = "" ]; then
@@ -137,12 +147,12 @@ if [ "$ACTION" = "" ]; then
 fi
 
 if [ "$ACTION" != start ]; then
-    ip link set $IFACE down
+    ip link set "$IFACE" down
 
     if [ -f "$CONF_FILE".stop ]; then
-	. "$CONF_FILE".stop $IFACE
+	. "$CONF_FILE".stop "$IFACE" "$DST_IFACE"
     fi
 
     echo "Removing $IFACE"
-    ip tuntap del $IFACE mode tap
+    ip tuntap del "$IFACE" mode tap
 fi

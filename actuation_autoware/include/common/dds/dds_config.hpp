@@ -7,6 +7,15 @@
 #include <dds/ddsi/ddsi_config.h>
 #include <dds/dds.h>
 #include "config.hpp"
+#define CONFIG_NET_CONFIG_PEER_IPV4_ADDR "10.11.0.7"
+
+#if defined(CONFIG_NET_CONFIG_PEER_IPV4_ADDR)
+static struct ddsi_config_peer_listelem cfg_peer
+{
+  nullptr,
+  const_cast<char *>(CONFIG_NET_CONFIG_PEER_IPV4_ADDR)
+};
+#endif
 
 static struct ddsi_config_network_interface_listelem cfg_iface
 {
@@ -59,6 +68,13 @@ inline static void init_config(struct ddsi_config & cfg)
 
   // Network interface
   cfg.network_interfaces = &cfg_iface;
+
+#if defined(CONFIG_NET_CONFIG_PEER_IPV4_ADDR)
+  if (sizeof(CONFIG_NET_CONFIG_PEER_IPV4_ADDR) > 1) {
+    cfg.peers = &cfg_peer;
+    fprintf(stderr, "Adding peer: %s\n", CONFIG_NET_CONFIG_PEER_IPV4_ADDR);
+  }
+#endif
 
   // if (DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP) {
   //   cfg.transport_selector = DDSI_TRANS_TCP;

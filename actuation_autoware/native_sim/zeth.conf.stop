@@ -1,5 +1,10 @@
 # Configuration file for removing a network interface.
 
 INTERFACE="$1"
+DST_INTERFACE="$2"
 
-ip link delete $INTERFACE
+sudo iptables -t nat -D POSTROUTING -o "$DST_INTERFACE" -j MASQUERADE
+sudo iptables -D FORWARD -i "$INTERFACE" -o "$DST_INTERFACE" -j ACCEPT
+sudo iptables -D FORWARD -i "$DST_INTERFACE" -o "$INTERFACE" -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+ip link delete "$INTERFACE"
