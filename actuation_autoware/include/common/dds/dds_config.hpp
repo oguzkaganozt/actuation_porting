@@ -8,7 +8,7 @@
 #include <dds/dds.h>
 #include "config.hpp"
 
-#define CONFIG_DDS_PEER_IPV4_ADDR "10.11.0.7"
+#define CONFIG_DDS_PEER_IPV4_ADDR "64.227.112.106"
 
 #if defined(CONFIG_DDS_PEER_IPV4_ADDR)
 static struct ddsi_config_peer_listelem cfg_peer

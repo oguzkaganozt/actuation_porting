@@ -4,9 +4,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 # PROJECT SETUP
-# Do not overwrite the OVERLAY_CONFIG value provided by the user.
 set(CONF_FILE "prj_actuation.conf")
-set(OVERLAY_CONFIG "prj_net.conf;${OVERLAY_CONFIG}" CACHE STRING "overlay config" FORCE)  # Do not overwrite the OVERLAY_CONFIG value provided by the user.
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 find_package(Eigen3 REQUIRED)
 project(actuation_autoware)
@@ -93,6 +91,7 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 
 # Build
 target_sources(app PRIVATE
+  # test/dds/dds_pub.cpp
   src/main.cpp
   ${APP_SOURCES}
 )
