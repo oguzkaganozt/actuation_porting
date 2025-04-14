@@ -21,10 +21,17 @@ void init_config(struct ddsi_config *cfg)
   //cfg->transport_selector = DDSI_TRANS_UDP6;
   //cfg->defaultMulticastAddressString = "239.255.0.2";
 
+  // Discovery
+#ifndef NATIVE_SIM
+  cfg->participantIndex = DDSI_PARTICIPANT_INDEX_AUTO;
+  cfg->maxAutoParticipantIndex = 60;
+  cfg->allowMulticast = DDSI_AMC_SPDP;
+#endif
+
   struct ddsi_config_network_interface_listelem *ifcfg = malloc(sizeof *ifcfg);
   memset(ifcfg, 0, sizeof *ifcfg);
   ifcfg->next = NULL;
-  ifcfg->cfg.prefer_multicast = true;
+  ifcfg->cfg.prefer_multicast = false;
   ifcfg->cfg.name = CONFIG_DDS_NETWORK_INTERFACE;
   cfg->network_interfaces = ifcfg;
   
