@@ -1,11 +1,10 @@
-# 11/04/2025
 
 # PRIMARY
 *. Validate the message conversion between ROS2 and Zephyr by testing with native cycloneDDS <-> ROS2 communication
 
+*. try with smp enabled
 *. create_timer() is not working as expected
 *. OSQP vs unconstraint_qp - mitsu
-*. try with smp enabled
 *. Check clock:now and toRosTime functions, as they can return some arbitrary values somehow.
 *. processData, callbackTimerControl, mergeLatLonHorizon check
 *. Use dds_alloc within sequence wrapper to remove duality with malloc vs dds_alloc, even better we can use k_malloc and k_free both within app and dds -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
