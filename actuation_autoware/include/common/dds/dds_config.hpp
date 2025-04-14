@@ -23,7 +23,7 @@ static struct ddsi_config_network_interface_listelem cfg_iface
     0,
     const_cast<char *>(CONFIG_DDS_NETWORK_INTERFACE),
     nullptr,
-    0,
+    1,  // prefer_multicast, TODO: Enabled multicast, check if this is required
     1,
     DDSI_BOOLDEF_DEFAULT,
     {1, 0}
@@ -62,7 +62,7 @@ inline static void init_config(struct ddsi_config & cfg)
 
   // Trace
   cfg.tracefp = NULL;
-  cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR | DDS_LC_WARNING | DDS_LC_CONFIG | DDS_LC_INFO; // DDS_LC_FATAL | DDS_LC_ERROR; // DDS_LC_ALL
+  cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR | DDS_LC_WARNING | DDS_LC_CONFIG | DDS_LC_INFO;
   cfg.tracefile = const_cast<char *>("stderr");
 
   // Network interface

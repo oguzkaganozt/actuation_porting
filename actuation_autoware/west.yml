@@ -20,17 +20,17 @@ manifest:
   # Please add items below based on alphabetical order
   projects:
     - name: cmsis
-      revision: 4b96cbb174678dcd3ca86e11e1f24bc5f8726da0
+      revision: 5a00331455dd74e31e80efa383a489faea0590e3
       path: actuation_autoware/modules/hal/cmsis
       groups:
         - hal
     - name: hal_nxp
-      revision: d45b14c198d778658b7853b48378d2e132a6c4be
+      revision: ad142f5612d927e29b1f9606e8edade871b8a526
       path: actuation_autoware/modules/hal/hal_nxp
       groups:
         - hal
     - name: zephyr
-      revision: 6aeb7a2b96c2b212a34f00c0ad3862ac19e826e8
+      revision: 339cd5a45fd2ebba064ef462b71c657336ca0dfe
       west-commands: scripts/west-commands.yml
 
   group-filter:

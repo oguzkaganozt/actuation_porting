@@ -19,7 +19,7 @@ RUN pip3 install gdown==v4.7.3
 
 FROM autoware AS zephyr
 SHELL ["/bin/bash", "-c"]
-ARG ZSDK_VERSION=0.16.5
+ARG ZSDK_VERSION=0.16.3
 ARG BUILD_ARCH=x86_64
 ENV ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk-${ZSDK_VERSION}
 

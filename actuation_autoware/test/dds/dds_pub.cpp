@@ -44,14 +44,22 @@ int main(void) {
     // Create a publisher for the test topic
     auto publisher = node.create_publisher<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc);
 
+    //TODO: TIMER IS NOT WORKING AS EXPECTED !!!
     // Create a timer for the test topic
-    node.create_timer(1000, timer_callback, static_cast<void*>(publisher.get()));
+    // node.create_timer(1000, timer_callback, static_cast<void*>(publisher.get()));
 
     printf("--------------------------------\n");
     printf("DDS publisher started\n");
     printf("--------------------------------\n");
-    
+
     while(true) {
+        PoseStampedMsg msg;
+        msg.header.stamp = Clock::toRosTime(Clock::now());
+        msg.header.frame_id = "map";
+        msg.pose.position.x = 1.0;
+        msg.pose.position.y = 2.0;
+        msg.pose.position.z = 3.0;
+        publisher->publish(msg);
         sleep(1);
     }
 
