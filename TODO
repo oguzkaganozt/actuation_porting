@@ -1,13 +1,15 @@
 # 11/04/2025
 
-# PRIMARY GOALS
-*. Check clock:now and torostime functions, as they can return some arbitrary values somehow.
+# PRIMARY
+*. Validate the message conversion between ROS2 and Zephyr by testing with native cycloneDDS <-> ROS2 communication
+
+*. create_timer() is not working as expected
+*. OSQP vs unconstraint_qp - mitsu
+*. try with smp enabled
+*. Check clock:now and toRosTime functions, as they can return some arbitrary values somehow.
 *. processData, callbackTimerControl, mergeLatLonHorizon check
 *. Use dds_alloc within sequence wrapper to remove duality with malloc vs dds_alloc, even better we can use k_malloc and k_free both within app and dds -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
 *. Check TODOs
-
-# DDS TESTING !!!
-*. Validate the message conversion between ROS2 and Zephyr by testing with native cycloneDDS <-> ROS2 communication
 
 ## IF ANYTHING IS NOT WORKING AS EXPECTED
 - check default values of parameters
@@ -17,7 +19,7 @@
 - Another solution maybe create vectors in place when sequence got with -> std::vector<int> vec(c_array, c_array + size). This would do a block copy and allocate the space beforehand.
 - Give Sequence<T> as the only parameter for the functions that require priorly wrapped sequence to remove duality with wrapped and unwrapped sequence. Or may be better solution is to do not pass any sequence into any function just keep the sequence wrapper inside the function block, and only pass or return the real sequence instead of Sequence<T>
 - We can tune the lifespan of dds messages with -> https://cyclonedds.io/docs/cyclonedds/latest/api/qos.html#c.dds_qset_lifespan
-- subscriber, publisher ve timer ları özellikle kontrol et.
+- subscribers, publishers ve timers
 - Validate side by side all nodes with Autoware original code
 
 ### Key points of porting
