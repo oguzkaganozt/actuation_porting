@@ -38,7 +38,8 @@ int main(void) {
     printf("Starting DDS publisher\n");
     printf("--------------------------------\n");
     printf("Waiting for Network interface to be ready\n");
-    sleep(7);
+    sleep(5);
+    
     Node node("dds_test", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
 
     // Create a publisher for the test topic
@@ -46,7 +47,7 @@ int main(void) {
 
     //TODO: TIMER IS NOT WORKING AS EXPECTED !!!
     // Create a timer for the test topic
-    // node.create_timer(1000, timer_callback, static_cast<void*>(publisher.get()));
+    node.create_timer(100, timer_callback, static_cast<void*>(publisher.get()));
 
     printf("--------------------------------\n");
     printf("DDS publisher started\n");

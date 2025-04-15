@@ -76,14 +76,14 @@ set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Add Autoware components
-include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
-include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
-include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
-include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-include(src/autoware/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
-include(src/autoware/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
-include(src/autoware/autoware_pid_longitudinal_controller/autoware_pid_longitudinal_controller.cmake)
-include(src/autoware/autoware_trajectory_follower_node/autoware_trajectory_follower_node.cmake)
+# include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
+# include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
+# include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
+# include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
+# include(src/autoware/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
+# include(src/autoware/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
+# include(src/autoware/autoware_pid_longitudinal_controller/autoware_pid_longitudinal_controller.cmake)
+# include(src/autoware/autoware_trajectory_follower_node/autoware_trajectory_follower_node.cmake)
 
 message("=== Build Summary ===")
 message("App sources: ${APP_SOURCES}")
@@ -93,7 +93,7 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 target_sources(app PRIVATE
   # test/sub.c
   # src/main.cpp
-  test/dds/dds_sub.cpp
+  test/test.cpp
   # test/dds/dds_sub.cpp
   # ${APP_SOURCES}
 )

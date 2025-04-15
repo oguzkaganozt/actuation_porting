@@ -34,7 +34,8 @@ int main(void) {
     printf("Starting DDS subscriber\n");
     printf("--------------------------------\n");
     printf("Waiting for Network interface to be ready\n");
-    sleep(7);
+    sleep(5);
+    
     Node node("dds_test", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
 
     // Create a subscriber for the test topic

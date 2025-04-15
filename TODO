@@ -2,7 +2,6 @@
 # PRIMARY
 *. Validate the message conversion between ROS2 and Zephyr by testing with native cycloneDDS <-> ROS2 communication
 
-*. try with smp enabled
 *. create_timer() is not working as expected
 *. OSQP vs unconstraint_qp - mitsu
 *. Check clock:now and toRosTime functions, as they can return some arbitrary values somehow.
@@ -11,6 +10,7 @@
 *. Check TODOs
 
 ## IF ANYTHING IS NOT WORKING AS EXPECTED
+- try with smp disabled
 - check default values of parameters
 - Compare launch structure and synchronization with the native ROS2 nodes
 - Do we need param callbacks ? We cant use them in zephyr, do we strictly need them ?
