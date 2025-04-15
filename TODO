@@ -2,15 +2,15 @@
 # PRIMARY
 *. Validate the message conversion between ROS2 and Zephyr by testing with native cycloneDDS <-> ROS2 communication
 
-*. create_timer() is not working as expected
+*. make clock now return normal time instead of 0 https://docs.zephyrproject.org/latest/kernel/timeutil.html
 *. OSQP vs unconstraint_qp - mitsu
-*. Check clock:now and toRosTime functions, as they can return some arbitrary values somehow.
 *. processData, callbackTimerControl, mergeLatLonHorizon check
 *. Use dds_alloc within sequence wrapper to remove duality with malloc vs dds_alloc, even better we can use k_malloc and k_free both within app and dds -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
 *. Check TODOs
 
 ## IF ANYTHING IS NOT WORKING AS EXPECTED
 - try with smp disabled
+- Check clock:now and toRosTime functions, they start from 0 not from epoch, as they can return some arbitrary values somehow.
 - check default values of parameters
 - Compare launch structure and synchronization with the native ROS2 nodes
 - Do we need param callbacks ? We cant use them in zephyr, do we strictly need them ?
