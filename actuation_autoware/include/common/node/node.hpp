@@ -271,7 +271,7 @@ public:
         sev.sigev_notify_function = timer_handler_;
         sev.sigev_notify_attributes = &timer_attr_;
 
-        if (int ret = timer_create(CLOCK_REALTIME, &sev, &timer_id_); ret < 0) {
+        if (int ret = timer_create(CLOCK_MONOTONIC, &sev, &timer_id_); ret < 0) {
             fprintf(stderr, "%s -> timer creation failed: %s\n", node_name_.c_str(), strerror(errno));
             return false;
         }

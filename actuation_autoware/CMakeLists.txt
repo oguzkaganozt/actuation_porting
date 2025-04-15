@@ -93,7 +93,8 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 target_sources(app PRIVATE
   # test/sub.c
   # src/main.cpp
-  test/test.cpp
+  # test/test.cpp
+  test/dds/dds_pub.cpp
   # test/dds/dds_sub.cpp
   # ${APP_SOURCES}
 )

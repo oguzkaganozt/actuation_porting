@@ -16,17 +16,22 @@ static K_THREAD_STACK_DEFINE(timer_stack, 4096);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 #endif
 
-static void timer_callback(void* arg) {
-    printf("Publishing message\n");
-    auto publisher = static_cast<Publisher<PoseStampedMsg>*>(arg);
-    PoseStampedMsg msg;
-    msg.header.stamp = Clock::toRosTime(Clock::now());
-    msg.header.frame_id = "map";
-    msg.pose.position.x = 1.0;
-    msg.pose.position.y = 2.0;
-    msg.pose.position.z = 3.0;
-    publisher->publish(msg);
-}
+// static void timer_callback(void* arg) {
+//     fprintf(stderr, "Publishing message with publisher: %p %ld\n", arg, arg);
+
+//     auto publisher = static_cast<Publisher<PoseStampedMsg>*>(arg);
+//     fprintf(stderr, "Test1\n");
+
+//     static PoseStampedMsg msg;
+//     msg.header.stamp = Clock::toRosTime(Clock::now());
+//     msg.header.frame_id = "map";
+//     msg.pose.position.x = 1.0;
+//     msg.pose.position.y = 2.0;
+//     msg.pose.position.z = 3.0;
+//     fprintf(stderr, "Test2\n");
+//     publisher->publish(msg);
+//     fprintf(stderr, "Test3\n");
+// }
 
 /*
     This test is used to test the DDS communication between ROS2 and Zephyr
@@ -45,9 +50,8 @@ int main(void) {
     // Create a publisher for the test topic
     auto publisher = node.create_publisher<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc);
 
-    //TODO: TIMER IS NOT WORKING AS EXPECTED !!!
     // Create a timer for the test topic
-    node.create_timer(100, timer_callback, static_cast<void*>(publisher.get()));
+    // node.create_timer(1000, timer_callback, static_cast<void*>(publisher.get()));
 
     printf("--------------------------------\n");
     printf("DDS publisher started\n");
