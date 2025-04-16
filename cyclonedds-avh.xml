@@ -1,5 +1,5 @@
 <!--
-    # Copyright (c) 2022-2024, Arm Limited.
+    # Copyright (c) 2024-2025, Arm Limited.
     # SPDX-License-Identifier: Apache-2.0
 -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -16,6 +16,9 @@
         <Discovery>
             <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex>
             <ParticipantIndex>auto</ParticipantIndex>
+            <!-- <Peers> -->
+                <!--<Peer Address="192.0.2.1" />--> <!--IP of the remote machine-->
+            <!-- </Peers> -->
         </Discovery>
     </Domain>
 

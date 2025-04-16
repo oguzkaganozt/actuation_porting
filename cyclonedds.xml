@@ -1,5 +1,5 @@
 <!--
-    # Copyright (c) 2022-2023, Arm Limited.
+    # Copyright (c) 2024-2025, Arm Limited.
     # SPDX-License-Identifier: Apache-2.0
 -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -10,15 +10,18 @@
     <Domain id="2"> <!--Should be aligned with the value of DDS_DOMAIN_ACTUATION in the code-->
         <General>
             <AllowMulticast>spdp</AllowMulticast>
-            <!--<NetworkInterfaceAddress>eth0</NetworkInterfaceAddress>--> <!--Interface to use-->
             <MaxMessageSize>1456B</MaxMessageSize> <!--Accommodate for Zephyr's MTU-->
+            <!-- <Interfaces>
+                <NetworkInterface autodetermine="false" priority="default" multicast="default" name="wlp2s0"/>
+            </Interfaces> -->
+            <!-- <NetworkInterfaceAddress>wlp2s0</NetworkInterfaceAddress> Interface to use -->
         </General>
         <Discovery>
             <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex>
             <ParticipantIndex>auto</ParticipantIndex>
-            <Peers>
+            <!-- <Peers> -->
                 <!--<Peer Address="192.0.2.1" />--> <!--IP of the remote machine-->
-            </Peers>
+            <!-- </Peers> -->
         </Discovery>
     </Domain>
 

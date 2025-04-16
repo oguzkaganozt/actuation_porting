@@ -50,6 +50,7 @@ RUN wget -q --show-progress --progress=bar:force:noscroll \
     ${ZEPHYR_SDK_INSTALL_DIR}/setup.sh -c -t aarch64-zephyr-elf && \
     rm "zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz"
 
+RUN echo "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

@@ -7,6 +7,7 @@ docker run --rm -it \
     --name zephyr-dev \
     -w "/actuation" \
     -e CCACHE_DIR=/root/.ccache \
-    --privileged \
+    -e CYCLONEDDS_URI="file:///actuation/cyclonedds.xml" \
+    -e RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
     --network host \
     zephyr-dev
