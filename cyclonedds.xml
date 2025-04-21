@@ -14,18 +14,12 @@
             <Interfaces>
                 <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
             </Interfaces>
-            <!-- <NetworkInterfaceAddress>wlp2s0</NetworkInterfaceAddress> --> <!-- DEPRECATED Interface to use -->
+            <!-- <NetworkInterfaceAddress>wlp2s0</NetworkInterfaceAddress> --> <!-- DEPRECATED -->
         </General>
         <Sizing>
             <ReceiveBufferSize>16384B</ReceiveBufferSize>
             <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
         </Sizing>
-        <Tracing>
-            <AppendToFile>true</AppendToFile>
-            <Category>trace</Category>
-            <Verbosity>finest</Verbosity>
-            <OutputFile>cyclonedds.log</OutputFile>
-        </Tracing>
         <Discovery>
             <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex>
             <ParticipantIndex>auto</ParticipantIndex>
@@ -33,6 +27,12 @@
                 <Peer Address="10.11.0.1" /> <!-- IP of the remote machine -->
             </Peers>
         </Discovery>
+        <Tracing>
+            <AppendToFile>true</AppendToFile>
+            <Category>trace</Category>
+            <Verbosity>finest</Verbosity>
+            <OutputFile>cyclonedds.log</OutputFile>
+        </Tracing>
     </Domain>
 
 </CycloneDDS>
