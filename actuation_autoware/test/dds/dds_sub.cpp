@@ -36,7 +36,7 @@ int main(void) {
     printf("Waiting for Network interface to be ready\n");
     sleep(5);
     
-    Node node("dds_test", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
+    Node node("dds_test_sub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
 
     // Create a subscriber for the test topic
     auto subscriber = node.create_subscription<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc, handle_pose);
