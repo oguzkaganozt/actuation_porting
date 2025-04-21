@@ -9,9 +9,6 @@ RUN apt-get update && \
     apt install --no-install-recommends -y unzip python3-pip wget && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Ensure the default ROS middleware is used
-RUN echo "unset RMW_IMPLEMENTATION" >> ~/.bashrc
-
 # The gdown version installed in the base image has a breaking bug. Update to
 # the next version that has the fix.
 # See https://github.com/wkentaro/gdown/issues/291
@@ -25,9 +22,8 @@ ENV ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk-${ZSDK_VERSION}
 
 # Install dependencies
 RUN apt-get update && \
-    apt upgrade -y && \
     apt install --no-install-recommends -y \ 
-    ninja-build ccache dfu-util device-tree-compiler wget \
+    ninja-build ccache dfu-util device-tree-compiler wget vim inetutils-ping \
     python3-dev python3-pip python3-setuptools python3-tk screen \ 
     python3-wheel xz-utils file make gcc libsdl2-dev libmagic1 pixz \
     && apt-get install -y gcc-multilib g++-multilib \
@@ -50,7 +46,6 @@ RUN wget -q --show-progress --progress=bar:force:noscroll \
     ${ZEPHYR_SDK_INSTALL_DIR}/setup.sh -c -t aarch64-zephyr-elf && \
     rm "zephyr-sdk-${ZSDK_VERSION}_linux-${BUILD_ARCH}.tar.xz"
 
-RUN echo "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
