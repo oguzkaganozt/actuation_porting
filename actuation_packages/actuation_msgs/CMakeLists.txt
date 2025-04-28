@@ -46,6 +46,19 @@ list(TRANSFORM IDL_FILES REPLACE "\.idl" "\.c" OUTPUT_VARIABLE SOURCES)
 list(TRANSFORM SOURCES REPLACE ".*/" "${CMAKE_CURRENT_BINARY_DIR}/")
 list(TRANSFORM SOURCES REPLACE "\.c$" "\.h" OUTPUT_VARIABLE HEADERS)
 
+execute_process(
+  COMMAND idlc -v
+  OUTPUT_VARIABLE IDLC_VERSION_OUTPUT
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  RESULT_VARIABLE IDLC_VERSION_RESULT
+)
+
+if(NOT IDLC_VERSION_RESULT EQUAL 0)
+  message(WARNING "Failed to get idlc version. Exit code: ${IDLC_VERSION_RESULT}")
+else()
+  message(STATUS "IDLC Version: ${IDLC_VERSION_OUTPUT}")
+endif()
+
 # Generate source files and headers for the DDS messages.
 # Edit out potential absolute path to the source .idl from the resulting .c and .h files.
 add_custom_command(

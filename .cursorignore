@@ -2,7 +2,6 @@
 build/
 zephyr/
 cyclonedds/
-actuation_packages/
 Dockerfiles/
 documentation/
 packet_analyzer/
