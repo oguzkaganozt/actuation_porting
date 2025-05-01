@@ -19,7 +19,6 @@ static K_THREAD_STACK_DEFINE(timer_stack, 4096);
 static void handle_pose(PoseStampedMsg& msg) {
     printf("--------------------------------\n");
     printf("Timestamp: %ld\n", Clock::toDouble(msg.header.stamp));
-    printf("Frame ID: %s\n", msg.header.frame_id);
     printf("Received pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
     printf("--------------------------------\n");
 }
@@ -39,7 +38,9 @@ int main(void) {
     Node node("dds_test_sub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
 
     // Create a subscriber for the test topic
-    auto subscriber = node.create_subscription<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc, handle_pose);
+    dds_topic_descriptor_t modified_desc = geometry_msgs_msg_PoseStamped_desc;
+    modified_desc.m_typename = "geometry_msgs::msg::dds_::PoseStamped_";
+    auto subscriber = node.create_subscription<PoseStampedMsg>("rt/test_pose", &modified_desc, handle_pose);
 
     printf("--------------------------------\n");
     printf("DDS subscriber started\n");

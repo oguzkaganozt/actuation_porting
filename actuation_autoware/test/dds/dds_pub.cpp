@@ -31,7 +31,9 @@ int main(void) {
     Node node("dds_test_pub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
 
     // Create a publisher for the test topic
-    auto publisher = node.create_publisher<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc);
+    dds_topic_descriptor_t modified_desc = geometry_msgs_msg_PoseStamped_desc;  
+    modified_desc.m_typename = "geometry_msgs::msg::dds_::PoseStamped_";
+    auto publisher = node.create_publisher<PoseStampedMsg>("rt/test_pose", &modified_desc);
 
     printf("--------------------------------\n");
     printf("DDS publisher started\n");
@@ -45,7 +47,8 @@ int main(void) {
         msg.pose.position.y = 2.0;
         msg.pose.position.z = 3.0;
         publisher->publish(msg);
-        sleep(1);
+        printf("Published pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
+        sleep(5);
     }
 
     return 0;
