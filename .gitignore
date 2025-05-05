@@ -4,16 +4,14 @@ __pycache__
 .vscode/
 *.cursorignore
 
+# zephyr modules
+zephyr_modules/
+
 # build artifacts
 build/
 install/
 .west/
-zephyr_modules/
 
 # logs
 log/
 *.log
-
-# misc
-porter/
-check.sh
