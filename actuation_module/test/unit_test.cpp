@@ -567,6 +567,15 @@ int main() {
     printf(COLOR_GREEN "=== Starting Node Test Suite ===\n" COLOR_RESET);
     printf("Waiting for Network interface to be ready\n");
     sleep(5);
+
+    // Setting time using SNTP
+    if (Clock::init_clock_via_sntp() < 0) {
+        printf("Failed to set time using SNTP\n");
+    }
+    else {
+        printf("Time set using SNTP\n");
+    }
+
     Node node("test_node", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
     
     test_parameters(node);

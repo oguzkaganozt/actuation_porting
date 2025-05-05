@@ -16,6 +16,8 @@ static K_THREAD_STACK_DEFINE(timer_stack, 4096);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 #endif
 
+#define PUBLISH_PERIOD_MS (3000)
+
 /*
     This test is used to test the DDS communication between ROS2 and Zephyr
     It is used to validate the message conversion between ROS2 and Zephyr
@@ -27,6 +29,14 @@ int main(void) {
     printf("--------------------------------\n");
     printf("Waiting for Network interface to be ready\n");
     sleep(5);
+
+    // Setting time using SNTP
+    if (Clock::init_clock_via_sntp() < 0) {
+        printf("Failed to set time using SNTP\n");
+    }
+    else {
+        printf("Time set using SNTP\n");
+    }
 
     // Create a publisher for the test topic
     Node node("dds_test_pub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
@@ -45,7 +55,7 @@ int main(void) {
         msg.pose.position.z = 3.0;
         publisher->publish(msg);
         printf("Published pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
-        sleep(3);
+        sleep(PUBLISH_PERIOD_MS / 1000);
     }
 
     return 0;

@@ -12,18 +12,50 @@ using DurationMsg = builtin_interfaces_msg_Duration;
 
 class Clock {
 public:
-    /* brief: Get current time in seconds
-    * @return current time in seconds
-    */
+
+    /**
+     * @brief Initialize the clock via SNTP
+     * @return 0 on success, negative value on failure
+     */
+    static int init_clock_via_sntp(void) {
+        printf("Setting time using SNTP\n");
+        struct sntp_time ts;
+        struct timespec tspec;
+        int res = sntp_simple("time.nist.gov",
+                    10000, &ts);
+
+        if (res < 0) {
+            printf("Cannot set time using SNTP\n");
+            return res;
+        }
+
+        tspec.tv_sec = ts.seconds;
+        tspec.tv_nsec = ((uint64_t)ts.fraction * (1000 * 1000 * 1000)) >> 32;
+        res = clock_settime(CLOCK_REALTIME, &tspec);
+        if (res < 0) {
+            printf("Cannot set REALTIME time using SNTP\n");
+            return res;
+        }
+
+        printf("Time set using SNTP: %s\n", ctime(&tspec.tv_sec));
+
+        return 0;
+    }
+
+    /**
+     * @brief Get current time in seconds
+     * @return current time in seconds
+     */
     static double now() {
         auto time_point = std::chrono::system_clock::now();
         return std::chrono::duration<double>(time_point.time_since_epoch()).count();
     }
 
-    /* brief: Convert time in seconds to ROS2 time
-    * @param time: time in seconds
-    * @return ROS2 Time Message
-    */
+    /**
+     * @brief Convert time in seconds to ROS2 time
+     * @param time: time in seconds
+     * @return ROS2 Time Message
+     */
     static TimeMsg toRosTime(const double time) {
         const auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(
             std::chrono::duration<double>(time));
@@ -37,10 +69,11 @@ public:
         return ros_time;
     }
 
-    /* brief: Convert time in seconds to ROS2 duration
-    * @param time: time in seconds
-    * @return ROS2 Duration Message
-    */
+    /**
+     * @brief Convert time in seconds to ROS2 duration
+     * @param time: time in seconds
+     * @return ROS2 Duration Message
+     */
     static DurationMsg toRosDuration(const double time) {
         const auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(
             std::chrono::duration<double>(time));
@@ -54,10 +87,11 @@ public:
         return ros_duration;
     }
 
-    /* brief: Convert ROS2 time to time in seconds
-    * @param ros_time: ROS2 Time Message
-    * @return time in seconds
-    */
+    /**
+     * @brief Convert ROS2 time to time in seconds
+     * @param ros_time: ROS2 Time Message
+     * @return time in seconds
+     */
     static double toDouble(const TimeMsg& ros_time) {
         const int64_t total_ns = static_cast<int64_t>(ros_time.sec) * 1'000'000'000LL 
                                 + ros_time.nanosec;

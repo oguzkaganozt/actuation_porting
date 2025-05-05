@@ -15,14 +15,22 @@ int main(void)
     fprintf(stderr, COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
     fprintf(stderr, COLOR_GREEN "ARM - Autoware: Actuation Safety Island\n" COLOR_RESET);
     fprintf(stderr, COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
-    sleep(2);
+    sleep(5);
 
-    fprintf(stderr, COLOR_GREEN "Configuring Network...\n" COLOR_RESET);
-    if(configure_network()) {
-        std::cerr << COLOR_RED << "Failed to configure network\n" << COLOR_RESET;
-        std::exit(1);
+    // Setting time using SNTP
+    if (Clock::init_clock_via_sntp() < 0) {
+        printf("Failed to set time using SNTP\n");
     }
-    fprintf(stderr, COLOR_GREEN "Network configured\n" COLOR_RESET);
+    else {
+        printf("Time set using SNTP\n");
+    }
+
+    // fprintf(stderr, COLOR_GREEN "Configuring Network...\n" COLOR_RESET);
+    // if(configure_network()) {
+    //     std::cerr << COLOR_RED << "Failed to configure network\n" << COLOR_RESET;
+    //     std::exit(1);
+    // }
+    // fprintf(stderr, COLOR_GREEN "Network configured\n" COLOR_RESET);
 
     fprintf(stderr, COLOR_GREEN "Starting Controller Node...\n" COLOR_RESET);
     try
