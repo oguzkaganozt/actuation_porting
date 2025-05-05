@@ -10,6 +10,6 @@
 // DDS settings
 #define DDS_DOMAIN_ID 2
 #define DDS_TRANSPORT_TYPE DDSI_TRANS_UDP // can be DDSI_TRANS_UDP or DDSI_TRANS_TCP
-#define DDS_TCP_PORT 49152 // can be used when DDSI_TRANS_TCP
+// #define DDS_TCP_PORT 49152 // can be used when DDSI_TRANS_TCP
 
 #endif  // ACTUATION_MODULE_CONFIG_HPP_
