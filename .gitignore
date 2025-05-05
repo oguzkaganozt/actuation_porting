@@ -8,7 +8,7 @@ __pycache__
 build/
 install/
 .west/
-modules/
+zephyr_modules/
 
 # logs
 log/
