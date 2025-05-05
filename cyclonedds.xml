@@ -14,7 +14,6 @@
             <Interfaces>
                 <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
             </Interfaces>
-            <!-- <NetworkInterfaceAddress>wlp2s0</NetworkInterfaceAddress> --> <!-- DEPRECATED -->
         </General>
         <Sizing>
             <ReceiveBufferSize>16384B</ReceiveBufferSize>
