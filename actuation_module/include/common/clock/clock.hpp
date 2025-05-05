@@ -3,6 +3,9 @@
 
 #include <chrono>
 #include <cstdint>
+#include <ctime>
+#include <zephyr/posix/time.h>
+#include <zephyr/net/sntp.h>
 
 //Msgs
 #include "Time.h"
