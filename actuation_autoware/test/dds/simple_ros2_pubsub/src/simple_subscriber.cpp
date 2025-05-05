@@ -5,6 +5,12 @@
 
 using std::placeholders::_1;
 
+/*
+    This test is used to test the DDS communication between ROS2 and Zephyr
+    It is used to validate the message conversion between ROS2 and Zephyr
+    It is used to validate the sequence wrapper    
+*/
+
 class SimpleSubscriber : public rclcpp::Node
 {
 public:

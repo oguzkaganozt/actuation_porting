@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include "dds_helper.hpp"
 
 template<typename T>
 using callback_subscriber = void (*)(T& msg);
@@ -15,16 +16,20 @@ public:
                 const dds_topic_descriptor_t* topic_descriptor,
                 callback_subscriber<T> callback)
             : node_name_(node_name)
-            , topic_name_(topic_name)
             , m_dds_participant(dds_participant)
             , callback_(callback)
     {
+        // Manipulate topic name and topic descriptor for ROS2
+        std::string topic_name_ros2 = transformTopicName(topic_name);
+        dds_topic_descriptor_t topic_descriptor_ros2 = transformTopicDescriptor(topic_descriptor);
+        topic_name_ = topic_name_ros2;
+
         // Create a DDS topic
-        dds_entity_t topic = dds_create_topic(m_dds_participant, topic_descriptor, 
-                                                topic_name.c_str(), NULL, NULL);
+        dds_entity_t topic = dds_create_topic(m_dds_participant, &topic_descriptor_ros2, 
+                                                topic_name_.c_str(), NULL, NULL);
         if (topic < 0) {
             fprintf(stderr, "Error: %s -> dds_create_topic (%s): %s\n", 
-                   node_name_.c_str(), topic_name.c_str(), dds_strretcode(-topic));
+                   node_name_.c_str(), topic_name_.c_str(), dds_strretcode(-topic));
             return;
         }
 
@@ -47,6 +52,8 @@ public:
 
         // Delete the listener explicitly //TODO: check if this is valid
         dds_delete_listener(listener);
+
+        fprintf(stderr, "%s -> Subscriber created for topic %s\n", node_name_.c_str(), topic_name_.c_str());
     }
 
 private:

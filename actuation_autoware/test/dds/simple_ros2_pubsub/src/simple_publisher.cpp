@@ -8,8 +8,11 @@
 
 using namespace std::chrono_literals;
 
-/* This example creates a subclass of Node and uses std::bind() to register a
-* member function as a callback from the timer. */
+/*
+    This test is used to test the DDS communication between ROS2 and Zephyr
+    It is used to validate the message conversion between ROS2 and Zephyr
+    It is used to validate the sequence wrapper    
+*/
 
 class SimplePublisher : public rclcpp::Node
 {
@@ -19,7 +22,7 @@ public:
   {
     publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("test_pose", 10);
     timer_ = this->create_wall_timer(
-      1000ms, std::bind(&SimplePublisher::timer_callback, this));
+      3000ms, std::bind(&SimplePublisher::timer_callback, this));
   }
 
 private:

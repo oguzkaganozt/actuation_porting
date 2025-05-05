@@ -55,18 +55,13 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
     usage
 fi
 
-if [ `id -u` != 0 ]; then
+if [ "$(id -u)" != "0" ]; then
     echo "Run this script as a root user!"
-    sudo $0 $@
+    sudo "$0" "$@"
     exit
 fi
 
 IFACE=zeth
-
-# The counter variable is passed to configuration script where
-# it can be used for example to create multiple network interfaces etc.
-# The -t option can be used to set the variable.
-COUNTER=1
 
 # Default config file setups default connectivity IP addresses
 CONF_FILE=./zeth.conf
@@ -84,10 +79,6 @@ do
 	    ;;
 	--dst-iface|-d)
 	    DST_IFACE="$2"
-	    shift 2
-	    ;;
-	--times|-t)
-	    COUNTER="$2"
 	    shift 2
 	    ;;
 	--help|-h)
@@ -133,7 +124,7 @@ ctrl_c() {
 
 if [ "$ACTION" != stop ]; then
     echo "Creating $IFACE"
-    ip tuntap add "$IFACE" mode tap $@
+    ip tuntap add "$IFACE" mode tap "$@"
 
     # The idea is that the configuration file will setup
     # the IP addresses etc. for the created interface.
