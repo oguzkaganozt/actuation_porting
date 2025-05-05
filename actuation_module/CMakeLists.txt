@@ -60,7 +60,7 @@ externalproject_add(actuation_msgs_pkg
 )
 add_dependencies(app actuation_msgs_pkg)
 
-### BUILD ACTUATION-AUTOWARE APPLICATION ###
+### BUILD ACTUATION MODULE ###
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
