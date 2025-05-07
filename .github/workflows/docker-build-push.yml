@@ -1,4 +1,4 @@
-name: Build and Push Multi-Arch Docker Image
+name: Build-Push Multi-Arch Devcontainer Image
 
 on:
   push:
