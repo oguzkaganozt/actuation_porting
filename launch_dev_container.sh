@@ -1,10 +1,14 @@
 #! /bin/bash
 
+COLOR_YELLOW="\e[33m"
+COLOR_RESET="\e[0m"
+
 # Check if xhost is available
 if command -v xhost >/dev/null 2>&1; then
     xhost +
 else
-    echo "Warning: xhost command not found. X11 forwarding may not work properly."
+    echo -e "${COLOR_YELLOW}Warning: xhost command not found. X11 forwarding may not work properly.${COLOR_RESET}"
+    echo -e "${COLOR_YELLOW}----------------------------------------------------------${COLOR_RESET}"
 fi
 
 docker run --rm -it --name actuation-devcontainer \
