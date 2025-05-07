@@ -25,6 +25,7 @@ int main(void)
     }
     else {
         fprintf(stderr, COLOR_GREEN "Time set using SNTP\n" COLOR_RESET);
+        fprintf(stderr, COLOR_GREEN "-----------------------------------------\n" COLOR_RESET);
         sleep(1);
     }
 
