@@ -2,7 +2,7 @@
 
 xhost +
 
-docker run --rm -it --name zephyr-dev \
+docker run --rm -it --name actuation-devcontainer \
     --network host \
     -v "$HOME/.ccache:/root/.ccache" \
     -v "$(pwd):/actuation" \
@@ -13,4 +13,4 @@ docker run --rm -it --name zephyr-dev \
     -e ROS_DOMAIN_ID=2 \
     -e DISPLAY="$DISPLAY" \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    zephyr-dev
+    ghcr.io/oguzkaganozt/devcontainer:latest
