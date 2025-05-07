@@ -37,7 +37,7 @@
 | autoware_interpolation | ✅ Completed |
 | autoware_vehicle_info_utils | ✅ Completed |
 | autoware_trajectory_follower_base | ✅ Completed |
-| autoware_mpc_lateral_controller | ✅v Completed |
+| autoware_mpc_lateral_controller | ✅ Completed |
 | autoware_pid_longitudinal_controller | ✅ Completed |
 | autoware_trajectory_follower_node | ✅ Completed |
 
@@ -45,8 +45,8 @@
 
 | ROS Component | Zephyr Target | Status |
 |--------------|---------------|---------|
-| RCL Logging  | Zephyr Logger | ✅ Completed |
-| RCL Node     | Zephyr k_threads | ✅ Completed |
-| RCL Timers   | Zephyr Timers | ✅ Completed |
+| RCL Logging  | Custom Logger | ✅ Completed |
+| RCL Node     | POSIX Threads | ✅ Completed |
+| RCL Timers   | POSIX Timers | ✅ Completed |
 | RCL Publisher | CycloneDDS | ✅ Completed |
 | RCL Subscriber | CycloneDDS | ✅ Completed |
