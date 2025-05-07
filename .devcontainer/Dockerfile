@@ -25,8 +25,11 @@ RUN apt-get update && \
     ninja-build ccache dfu-util device-tree-compiler wget vim inetutils-ping \
     python3-dev python3-pip python3-setuptools python3-tk screen \ 
     python3-wheel xz-utils file make gcc libsdl2-dev libmagic1 pixz \
-    && apt-get install -y gcc-multilib g++-multilib \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN if [ "${TARGETARCH}" = "amd64" ]; then \
+        apt install --no-install-recommends -y gcc-multilib g++-multilib; \
+    else echo "Multi-arch support is not available for ${TARGETARCH}" && exit 1; fi
 
 # Install west
 RUN pip3 install -U west pyelftools
