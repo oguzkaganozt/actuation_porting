@@ -256,35 +256,6 @@ void Controller::callbackTimerControl(void* arg)
   // }
 }
 
-// TODO: we can enable this again
-void Controller::publishDebugMarker(
-  const trajectory_follower::InputData & input_data,
-  const trajectory_follower::LateralOutput & lat_out) const
-{
-  // MarkerArrayMsg debug_marker_array{};
-
-  // // steer converged marker
-  // {
-  //   auto marker = autoware::universe_utils::createDefaultMarker(
-  //     "map", this->now(), "steer_converged", 0, visualization_msgs::msg::Marker::TEXT_VIEW_FACING,
-  //     autoware::universe_utils::createMarkerScale(0.0, 0.0, 1.0),
-  //     autoware::universe_utils::createMarkerColor(1.0, 1.0, 1.0, 0.99));
-  //   marker.pose = input_data.current_odometry.pose.pose;
-
-  //   std::stringstream ss;
-  //   const double current = input_data.current_steering.steering_tire_angle;
-  //   const double cmd = lat_out.control_cmd.steering_tire_angle;
-  //   const double diff = current - cmd;
-  //   ss << "current:" << current << " cmd:" << cmd << " diff:" << diff
-  //      << (lat_out.sync_data.is_steer_converged ? " (converged)" : " (not converged)");
-  //   marker.text = ss.str();
-
-  //   debug_marker_array.markers.push_back(marker);
-  // }
-
-  // debug_marker_pub_->publish(debug_marker_array);
-}
-
 void Controller::publishProcessingTime(
   const double t_ms, const std::shared_ptr<Publisher<Float64StampedMsg>> pub)
 {
@@ -294,87 +265,117 @@ void Controller::publishProcessingTime(
   pub->publish(msg);
 }
 
-std::optional<ControlHorizonMsg> Controller::mergeLatLonHorizon(
-  const LateralHorizon & lateral_horizon, const LongitudinalHorizon & longitudinal_horizon,
-  const double & stamp)
-{
-  if (lateral_horizon.controls.empty() || longitudinal_horizon.controls.empty()) {
-    return std::nullopt;
-  }
+// TODO: we can enable this again
+// void Controller::publishDebugMarker(
+//   const trajectory_follower::InputData & input_data,
+//   const trajectory_follower::LateralOutput & lat_out) const
+// {
+//   MarkerArrayMsg debug_marker_array{};
 
-  ControlHorizonMsg control_horizon{};
-  control_horizon.stamp = Clock::toRosTime(stamp);
+//   // steer converged marker
+//   {
+//     auto marker = autoware::universe_utils::createDefaultMarker(
+//       "map", this->now(), "steer_converged", 0, visualization_msgs::msg::Marker::TEXT_VIEW_FACING,
+//       autoware::universe_utils::createMarkerScale(0.0, 0.0, 1.0),
+//       autoware::universe_utils::createMarkerColor(1.0, 1.0, 1.0, 0.99));
+//     marker.pose = input_data.current_odometry.pose.pose;
 
-  // If either of the horizons has only one control, repeat the control to match the other horizon.
-  // lateral horizon
-  if (lateral_horizon.controls.size() == 1) {
-    control_horizon.time_step_ms = longitudinal_horizon.time_step_ms;
-    const auto lateral = lateral_horizon.controls.front();
-    for (const auto & longitudinal : longitudinal_horizon.controls) {
-      ControlMsg control;
-      control.longitudinal = longitudinal;
-      control.lateral = lateral;
-      control.stamp = Clock::toRosTime(stamp);
-      auto sequence_controls = wrap(control_horizon.controls);
-      sequence_controls.push_back(control);
-    }
-    return control_horizon;
-  }
+//     std::stringstream ss;
+//     const double current = input_data.current_steering.steering_tire_angle;
+//     const double cmd = lat_out.control_cmd.steering_tire_angle;
+//     const double diff = current - cmd;
+//     ss << "current:" << current << " cmd:" << cmd << " diff:" << diff
+//        << (lat_out.sync_data.is_steer_converged ? " (converged)" : " (not converged)");
+//     marker.text = ss.str();
 
-  // longitudinal horizon
-  if (longitudinal_horizon.controls.size() == 1) {
-    control_horizon.time_step_ms = lateral_horizon.time_step_ms;
-    const auto longitudinal = longitudinal_horizon.controls.front();
-    for (const auto & lateral : lateral_horizon.controls) {
-      ControlMsg control;
-      control.longitudinal = longitudinal;
-      control.lateral = lateral;
-      control.stamp = Clock::toRosTime(stamp);
-      auto sequence_controls = wrap(control_horizon.controls);
-      sequence_controls.push_back(control);
-    }
-    return control_horizon;
-  }
+//     debug_marker_array.markers.push_back(marker);
+//   }
 
-  // If both horizons have multiple controls, align the time steps and zero-order hold the controls.
-  // calculate greatest common divisor of time steps
-  const auto gcd_double = [](const double a, const double b) {
-    const double precision = 1e9;
-    const int int_a = static_cast<int>(round(a * precision));
-    const int int_b = static_cast<int>(round(b * precision));
-    return static_cast<double>(std::gcd(int_a, int_b)) / precision;
-  };
+//   debug_marker_pub_->publish(debug_marker_array);
+// }
 
-  // calculate greatest common divisor of time steps
-  const double time_step_ms =
-    gcd_double(lateral_horizon.time_step_ms, longitudinal_horizon.time_step_ms);
-  control_horizon.time_step_ms = time_step_ms;
+// TODO: We will not publish control_horizon to keep it simple
+// std::optional<ControlHorizonMsg> Controller::mergeLatLonHorizon(
+//   const LateralHorizon & lateral_horizon, const LongitudinalHorizon & longitudinal_horizon,
+//   const double & stamp)
+// {
+//   if (lateral_horizon.controls.empty() || longitudinal_horizon.controls.empty()) {
+//     return std::nullopt;
+//   }
 
-  // resample lateral horizon
-  const auto lateral_controls = resampleHorizonByZeroOrderHold(
-    lateral_horizon.controls, lateral_horizon.time_step_ms, time_step_ms);
+//   ControlHorizonMsg control_horizon{};
+//   control_horizon.stamp = Clock::toRosTime(stamp);
 
-  // resample longitudinal horizon
-  const auto longitudinal_controls = resampleHorizonByZeroOrderHold(
-    longitudinal_horizon.controls, longitudinal_horizon.time_step_ms, time_step_ms);
+//   // If either of the horizons has only one control, repeat the control to match the other horizon.
+//   // lateral horizon
+//   if (lateral_horizon.controls.size() == 1) {
+//     control_horizon.time_step_ms = longitudinal_horizon.time_step_ms;
+//     const auto lateral = lateral_horizon.controls.front();
+//     for (const auto & longitudinal : longitudinal_horizon.controls) {
+//       ControlMsg control;
+//       control.longitudinal = longitudinal;
+//       control.lateral = lateral;
+//       control.stamp = Clock::toRosTime(stamp);
+//       auto sequence_controls = wrap(control_horizon.controls);
+//       sequence_controls.push_back(control);
+//     }
+//     return control_horizon;
+//   }
 
-  // check if sizes match
-  if (lateral_controls.size() != longitudinal_controls.size()) {
-    return std::nullopt;
-  }
+//   // longitudinal horizon
+//   if (longitudinal_horizon.controls.size() == 1) {
+//     control_horizon.time_step_ms = lateral_horizon.time_step_ms;
+//     const auto longitudinal = longitudinal_horizon.controls.front();
+//     for (const auto & lateral : lateral_horizon.controls) {
+//       ControlMsg control;
+//       control.longitudinal = longitudinal;
+//       control.lateral = lateral;
+//       control.stamp = Clock::toRosTime(stamp);
+//       auto sequence_controls = wrap(control_horizon.controls);
+//       sequence_controls.push_back(control);
+//     }
+//     return control_horizon;
+//   }
 
-  // merge controls
-  const size_t num_steps = lateral_controls.size();
-  for (size_t i = 0; i < num_steps; ++i) {
-    ControlMsg control{};
-    control.stamp = Clock::toRosTime(stamp);
-    control.lateral = lateral_controls.at(i);
-    control.longitudinal = longitudinal_controls.at(i);
-    auto sequence_controls = wrap(control_horizon.controls);
-    sequence_controls.push_back(control);
-  }
+//   // If both horizons have multiple controls, align the time steps and zero-order hold the controls.
+//   // calculate greatest common divisor of time steps
+//   const auto gcd_double = [](const double a, const double b) {
+//     const double precision = 1e9;
+//     const int int_a = static_cast<int>(round(a * precision));
+//     const int int_b = static_cast<int>(round(b * precision));
+//     return static_cast<double>(std::gcd(int_a, int_b)) / precision;
+//   };
+
+//   // calculate greatest common divisor of time steps
+//   const double time_step_ms =
+//     gcd_double(lateral_horizon.time_step_ms, longitudinal_horizon.time_step_ms);
+//   control_horizon.time_step_ms = time_step_ms;
+
+//   // resample lateral horizon
+//   const auto lateral_controls = resampleHorizonByZeroOrderHold(
+//     lateral_horizon.controls, lateral_horizon.time_step_ms, time_step_ms);
+
+//   // resample longitudinal horizon
+//   const auto longitudinal_controls = resampleHorizonByZeroOrderHold(
+//     longitudinal_horizon.controls, longitudinal_horizon.time_step_ms, time_step_ms);
+
+//   // check if sizes match
+//   if (lateral_controls.size() != longitudinal_controls.size()) {
+//     return std::nullopt;
+//   }
+
+//   // merge controls
+//   const size_t num_steps = lateral_controls.size();
+//   for (size_t i = 0; i < num_steps; ++i) {
+//     ControlMsg control{};
+//     control.stamp = Clock::toRosTime(stamp);
+//     control.lateral = lateral_controls.at(i);
+//     control.longitudinal = longitudinal_controls.at(i);
+//     auto sequence_controls = wrap(control_horizon.controls);
+//     sequence_controls.push_back(control);
+//   }
   
-  return control_horizon;
-}
+//   return control_horizon;
+// }
 }  // namespace autoware::motion::control::trajectory_follower_node
 

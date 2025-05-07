@@ -105,8 +105,8 @@ private:
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
   std::shared_ptr<Publisher<Float64StampedMsg>> pub_processing_time_lat_ms_;
   std::shared_ptr<Publisher<Float64StampedMsg>> pub_processing_time_lon_ms_;
-  std::shared_ptr<Publisher<MarkerArrayMsg>> debug_marker_pub_;
   std::shared_ptr<Publisher<ControlHorizonMsg>> control_cmd_horizon_pub_;
+  // std::shared_ptr<Publisher<MarkerArrayMsg>> debug_marker_pub_;
   
   // State
   std::shared_ptr<TrajectoryMsg> current_trajectory_ptr_;
