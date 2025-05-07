@@ -27,9 +27,9 @@ RUN apt-get update && \
     python3-wheel xz-utils file make gcc libsdl2-dev libmagic1 pixz \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# RUN if [ "${TARGETARCH}" = "amd64" ]; then \
-#         apt install --no-install-recommends -y gcc-multilib g++-multilib; \
-#     else echo "Multi-arch support is not available for ${TARGETARCH}"; fi
+RUN if [ "${TARGETARCH}" = "amd64" ]; then \
+        apt install --no-install-recommends -y gcc-multilib g++-multilib; \
+    fi
 
 # Install west
 RUN pip3 install -U west pyelftools
