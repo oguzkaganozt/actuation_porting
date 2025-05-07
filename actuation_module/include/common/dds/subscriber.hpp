@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 #include "dds_helper.hpp"
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 template<typename T>
 using callback_subscriber = void (*)(T& msg);
@@ -28,7 +30,7 @@ public:
         dds_entity_t topic = dds_create_topic(m_dds_participant, &topic_descriptor_ros2, 
                                                 topic_name_.c_str(), NULL, NULL);
         if (topic < 0) {
-            fprintf(stderr, "Error: %s -> dds_create_topic (%s): %s\n", 
+            log_error("Error: %s -> dds_create_topic (%s): %s\n", 
                    node_name_.c_str(), topic_name_.c_str(), dds_strretcode(-topic));
             return;
         }
@@ -36,7 +38,7 @@ public:
         // Create a DDS listener
         dds_listener_t* listener = dds_create_listener(this);
         if (!listener) {
-            fprintf(stderr, "Error: %s -> dds_create_listener\n", node_name_.c_str());
+            log_error("Error: %s -> dds_create_listener\n", node_name_.c_str());
             return;
         }
         dds_lset_data_available(listener, on_msg_dds);
@@ -44,7 +46,7 @@ public:
         // Create a DDS reader
         dds_entity_t reader = dds_create_reader(m_dds_participant, topic, dds_qos, listener);
         if (reader < 0) {
-            fprintf(stderr, "Error: %s -> dds_create_reader (%s): %s\n", 
+            log_error("Error: %s -> dds_create_reader (%s): %s\n", 
                    node_name_.c_str(), topic_name.c_str(), dds_strretcode(-reader));
             dds_delete_listener(listener);
             return;
@@ -53,7 +55,7 @@ public:
         // Delete the listener explicitly //TODO: check if this is valid
         dds_delete_listener(listener);
 
-        fprintf(stderr, "%s -> Subscriber created for topic %s\n", node_name_.c_str(), topic_name_.c_str());
+        log_info("%s -> Subscriber created for topic %s\n", node_name_.c_str(), topic_name_.c_str());
     }
 
 private:
@@ -68,7 +70,7 @@ private:
         void* msg_pointer = reinterpret_cast<void *>(&msg);
         dds_sample_info_t info;
 
-        fprintf(stderr, "%s -> Message received topic: %s\n", subscriber->node_name_.c_str(), subscriber->topic_name_.c_str());
+        log_debug("%s -> Message received topic: %s\n", subscriber->node_name_.c_str(), subscriber->topic_name_.c_str());
 
         dds_return_t rc = dds_take(reader, &msg_pointer, &info, 1, 1);
         if (rc > 0 && info.valid_data) {
@@ -76,7 +78,7 @@ private:
         }
         else if (rc < 0) {
             // TODO: think about removing this as it is common to fail to take a message in the first place ?
-            fprintf(stderr, "Error: %s -> dds_take failed: %s\n", 
+            log_debug("Error: %s -> dds_take failed: %s\n", 
                     subscriber->node_name_.c_str(), dds_strretcode(-rc));
         }
     }

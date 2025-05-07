@@ -7,6 +7,8 @@
 #include <dds/ddsi/ddsi_config.h>
 #include <dds/dds.h>
 #include "config.hpp"
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 #if defined(CONFIG_NET_CONFIG_PEER_IPV4_ADDR)
 static struct ddsi_config_peer_listelem cfg_peer
@@ -36,14 +38,14 @@ static struct ddsi_config_network_interface_listelem cfg_iface
  */
 inline static void init_config(struct ddsi_config & cfg)
 {
-  fprintf(stderr, "Initializing DDS configuration\n");
+  log_debug("Initializing DDS configuration\n");
 
   if (sizeof(CONFIG_DDS_NETWORK_INTERFACE) <= 1) {
-    fprintf(stderr, "DDS network interface not set, please set CONFIG_DDS_NETWORK_INTERFACE\n");
+    log_error("DDS network interface not set, please set CONFIG_DDS_NETWORK_INTERFACE\n");
     std::exit(1);
   }
   else {
-    fprintf(stderr, "Network interface: %s\n", CONFIG_DDS_NETWORK_INTERFACE);
+    log_info("Network interface: %s\n", CONFIG_DDS_NETWORK_INTERFACE);
   }
 
   ddsi_config_init_default(&cfg);
@@ -81,17 +83,17 @@ inline static void init_config(struct ddsi_config & cfg)
 #if defined(CONFIG_NET_CONFIG_PEER_IPV4_ADDR)
   if (sizeof(CONFIG_NET_CONFIG_PEER_IPV4_ADDR) > 1) {
     cfg.peers = &cfg_peer;
-    fprintf(stderr, "Adding peer: %s\n", CONFIG_NET_CONFIG_PEER_IPV4_ADDR);
+    log_info("Adding peer: %s\n", CONFIG_NET_CONFIG_PEER_IPV4_ADDR);
   }
 #endif
 
   // if (DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP) {
   //   cfg.transport_selector = DDSI_TRANS_TCP;
   //   cfg.tcp_port = DDS_TCP_PORT;
-  //   fprintf(stderr, "Transport type: TCP, port: %d\n", DDS_TCP_PORT);
+  //   log_info("Transport type: TCP, port: %d\n", DDS_TCP_PORT);
   // } else {
   //   cfg.transport_selector = DDSI_TRANS_UDP;
-  //   fprintf(stderr, "Transport type: UDP\n");
+  //   log_info("Transport type: UDP\n");
   // }
 }
 

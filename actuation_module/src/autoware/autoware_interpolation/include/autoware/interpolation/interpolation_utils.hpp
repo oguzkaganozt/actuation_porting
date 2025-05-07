@@ -20,13 +20,15 @@
 #include <array>
 #include <stdexcept>
 #include <vector>
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::interpolation
 {
 inline bool isIncreasing(const std::vector<double> & x)
 {
   if (x.empty()) {
-    fprintf(stderr, "Interpolation: Points is empty.");
+    log_error("Interpolation: Points is empty.");
     std::exit(1);
   }
 
@@ -42,7 +44,7 @@ inline bool isIncreasing(const std::vector<double> & x)
 inline bool isNotDecreasing(const std::vector<double> & x)
 {
   if (x.empty()) {
-    fprintf(stderr, "Interpolation: Points is empty.");
+    log_error("Interpolation: Points is empty.");
     std::exit(1);
   }
 
@@ -60,19 +62,19 @@ inline std::vector<double> validateKeys(
 {
   // when vectors are empty
   if (base_keys.empty() || query_keys.empty()) {
-    fprintf(stderr, "Interpolation: Points is empty.");
+    log_error("Interpolation: Points is empty.");
     std::exit(1);
   }
 
   // when size of vectors are less than 2
   if (base_keys.size() < 2) {
-    fprintf(stderr, "Interpolation: The size of points is less than 2. base_keys.size() = %d", base_keys.size());
+    log_error("Interpolation: The size of points is less than 2. base_keys.size() = %d", base_keys.size());
     std::exit(1);
   }
 
   // when indices are not sorted
   if (!isIncreasing(base_keys) || !isNotDecreasing(query_keys)) {
-    fprintf(stderr, "Interpolation: Either base_keys or query_keys is not sorted.");
+    log_error("Interpolation: Either base_keys or query_keys is not sorted.");
     std::exit(1);
   }
 
@@ -81,7 +83,7 @@ inline std::vector<double> validateKeys(
   if (
     query_keys.front() < base_keys.front() - epsilon ||
     base_keys.back() + epsilon < query_keys.back()) {
-    fprintf(stderr, "Interpolation: query_keys is out of base_keys");
+    log_error("Interpolation: query_keys is out of base_keys");
     std::exit(1);
   }
 
@@ -100,19 +102,19 @@ void validateKeysAndValues(
 {
   // when vectors are empty
   if (base_keys.empty() || base_values.empty()) {
-    fprintf(stderr, "Interpolation: Points is empty.");
+    log_error("Interpolation: Points is empty.");
     std::exit(1);
   }
 
   // when size of vectors are less than 2
   if (base_keys.size() < 2 || base_values.size() < 2) {
-    fprintf(stderr, "Interpolation: The size of points is less than 2. base_keys.size() = %d, base_values.size() = %d", base_keys.size(), base_values.size());
+    log_error("Interpolation: The size of points is less than 2. base_keys.size() = %d, base_values.size() = %d", base_keys.size(), base_values.size());
     std::exit(1);
   }
 
   // when sizes of indices and values are not same
   if (base_keys.size() != base_values.size()) {
-    fprintf(stderr, "Interpolation: The size of base_keys and base_values are not the same.");
+    log_error("Interpolation: The size of base_keys and base_values are not the same.");
     std::exit(1);
   }
 }

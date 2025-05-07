@@ -15,6 +15,8 @@
 #include "autoware/mpc_lateral_controller/mpc_trajectory.hpp"
 
 #include <iostream>
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -96,7 +98,7 @@ size_t MPCTrajectory::size() const
     x.size() == relative_time.size()) {
     return x.size();
   } else {
-    fprintf(stderr, "[MPC trajectory] trajectory size is inappropriate\n");
+    log_error("[MPC trajectory] trajectory size is inappropriate\n");
     return 0;
   }
 }

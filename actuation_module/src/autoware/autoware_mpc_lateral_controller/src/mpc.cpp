@@ -159,7 +159,7 @@ void MPC::setReferenceTrajectory(
   const auto [success_resample, mpc_traj_resampled] = MPCUtils::resampleMPCTrajectoryByDistance(
     mpc_traj_raw, param.traj_resample_dist, nearest_seg_idx, ego_offset_to_segment);
   if (!success_resample) {
-    common::logger::warn_throttle("[setReferenceTrajectory] spline error when resampling by distance");
+    log_warn_throttle("[setReferenceTrajectory] spline error when resampling by distance");
     return;
   }
 

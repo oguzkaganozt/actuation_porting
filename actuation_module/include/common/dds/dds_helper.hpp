@@ -9,7 +9,7 @@ static const size_t MAX_TYPENAME_LENGTH = 512;
 // Append "rt/" to the topic name
 // eg. /actuation/actuation_command -> /rt/actuation/actuation_command
 static std::string transformTopicName(const std::string& topic_name) {
-    return "rt/" + topic_name;
+    return "rt" + topic_name;
 }
 
 // Transform the topic descriptor for ROS2
@@ -58,6 +58,9 @@ static dds_topic_descriptor_t transformTopicDescriptor(const dds_topic_descripto
 
     // Point output.m_typename to the new buffer
     output.m_typename = transformed_typename;
+
+    // Print the transformed topic descriptor
+    log_debug("Transformed topic descriptor: %s\n", output.m_typename);
 
     return output;
 }

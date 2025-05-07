@@ -7,6 +7,8 @@
 #include <ctime>
 #include <zephyr/posix/time.h>
 #include <zephyr/net/sntp.h>
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 //Msgs
 #include "Time.h"
@@ -28,7 +30,7 @@ public:
                     10000, &ts);
 
         if (res < 0) {
-            fprintf(stderr, "Cannot set time using SNTP\n");
+            log_error("Cannot set time using SNTP\n");
             return res;
         }
 
@@ -36,11 +38,11 @@ public:
         tspec.tv_nsec = ((uint64_t)ts.fraction * (1000 * 1000 * 1000)) >> 32;
         res = clock_settime(CLOCK_REALTIME, &tspec);
         if (res < 0) {
-            fprintf(stderr, "Cannot set REALTIME time using SNTP\n");
+            log_error("Cannot set REALTIME time using SNTP\n");
             return res;
         }
 
-        fprintf(stderr, "Time set using SNTP: %s\n", ctime(&tspec.tv_sec));
+        log_info("Time set using SNTP: %s\n", ctime(&tspec.tv_sec));
 
         return 0;
     }

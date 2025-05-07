@@ -1,10 +1,8 @@
 #include "common/node/node.hpp"
 #include "common/clock/clock.hpp"
 #include "common/sequence/sequence.hpp"
-
-// Msgs
-#include "PoseStamped.h"
-using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 #if defined(NATIVE_SIM)
 #define STACK_SIZE (4096)
@@ -16,40 +14,92 @@ static K_THREAD_STACK_DEFINE(timer_stack, 4096);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 #endif
 
+// Msgs
+#include "SteeringReport.h"
+#include "Trajectory.h"
+#include "Odometry.h"
+#include "AccelWithCovarianceStamped.h"
+#include "OperationModeState.h"
+using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
+using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
+using OdometryMsg = nav_msgs_msg_Odometry;
+using AccelerationMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
+using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
+
 /*
     This test is used to test the DDS communication between ROS2 and Zephyr
     It is used to validate the message conversion between ROS2 and Zephyr
     It is used to validate the sequence wrapper    
 */
-static void handle_pose(PoseStampedMsg& msg) {
-    printf("--------------------------------\n");
-    printf("Timestamp: %ld\n", Clock::toDouble(msg.header.stamp));
-    printf("Received pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
-    printf("--------------------------------\n");
+static void handle_steering_report(SteeringReportMsg& msg) {
+    log_info("--------------------------------\n");
+    log_info("Timestamp: %d\n", Clock::toDouble(msg.stamp));
+    log_info("Received steering report: (%lf)\n", msg.steering_tire_angle);
+    log_info("--------------------------------\n");
+}
+
+static void handle_trajectory(TrajectoryMsg& msg) {
+    log_info("--------------------------------\n");
+    log_info("Received trajectory: (%d)\n", msg.header.stamp);
+    log_info("--------------------------------\n");
+}
+
+static void handle_odometry(OdometryMsg& msg) {
+    log_info("--------------------------------\n");
+    log_info("Received odometry: (%d)\n", msg.header.stamp);
+    log_info("--------------------------------\n");
+}
+
+static void handle_acceleration(AccelerationMsg& msg) {
+    log_info("--------------------------------\n");
+    log_info("Received acceleration: (%d)\n", msg.header.stamp);
+    log_info("--------------------------------\n");
+}
+
+static void handle_operation_mode_state(OperationModeStateMsg& msg) {
+    log_info("--------------------------------\n");
+    log_info("Received operation mode state: (%d)\n", msg.mode);
+    log_info("--------------------------------\n");
 }
 
 int main(void) {
-    printf("--------------------------------\n");
-    printf("Starting DDS subscriber\n");
-    printf("--------------------------------\n");
-    printf("Waiting for Network interface to be ready\n");
+    log_info("--------------------------------\n");
+    log_info("Starting DDS subscriber\n");
+    log_info("--------------------------------\n");
+    log_info("Waiting for Network interface to be ready\n");
     sleep(5);
 
     // Setting time using SNTP
     if (Clock::init_clock_via_sntp() < 0) {
-        printf("Failed to set time using SNTP\n");
+        log_error("Failed to set time using SNTP\n");
     }
     else {
-        printf("Time set using SNTP\n");
+        log_info("Time set using SNTP\n");
     }
     
-    // Create a subscriber for the test topic
+    // Create a node
     Node node("dds_test_sub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
-    auto subscriber = node.create_subscription<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc, handle_pose);
 
-    printf("--------------------------------\n");
-    printf("DDS subscriber started\n");
-    printf("--------------------------------\n");
+    // Create subscribers
+    auto subscriber = node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
+                                                                &autoware_vehicle_msgs_msg_SteeringReport_desc,
+                                                                handle_steering_report);
+    auto subscriber_trajectory = node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+                                                                &autoware_planning_msgs_msg_Trajectory_desc,
+                                                                handle_trajectory);
+    auto subscriber_odometry = node.create_subscription<OdometryMsg>("/localization/kinematic_state",
+                                                                &nav_msgs_msg_Odometry_desc,
+                                                                handle_odometry);
+    auto subscriber_acceleration = node.create_subscription<AccelerationMsg>("/localization/acceleration",
+                                                                &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
+                                                                handle_acceleration);
+    auto subscriber_operation_mode_state = node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
+                                                                &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
+                                                                handle_operation_mode_state);
+
+    log_info("--------------------------------\n");
+    log_info("DDS subscriber started\n");
+    log_info("--------------------------------\n");
 
     while(true) {
         sleep(1);

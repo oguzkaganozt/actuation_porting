@@ -5,7 +5,14 @@
 #include <map>
 #include <string>
 #include <cstdio>
+#include <cstdarg>
 #include <pthread.h>
+
+#define COLOR_RED "\033[31m"
+#define COLOR_GREEN "\033[32m"
+#define COLOR_YELLOW "\033[33m"
+#define COLOR_BLUE "\033[34m"
+#define COLOR_RESET "\033[0m"
 
 #ifndef CONFIG_LOG_THROTTLE_RATE
 #define CONFIG_LOG_THROTTLE_RATE 3.0 // Default to 3 seconds if not defined in KConfig
@@ -13,7 +20,49 @@
 
 namespace common::logger {
 
-inline void info_throttle(const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
+inline void vprint_color(const char * format, va_list args, const char * color) {
+    fprintf(stderr, "%s", color);
+    vfprintf(stderr, format, args);
+    fprintf(stderr, "%s", COLOR_RESET);
+}
+
+inline void log_info(const char * format, ...) {
+    #if CONFIG_LOG_LEVEL >= 1
+    va_list args;
+    va_start(args, format);
+    vprint_color(format, args, COLOR_GREEN);
+    va_end(args);
+    #endif
+}
+
+inline void log_warn(const char * format, ...) {
+    #if CONFIG_LOG_LEVEL >= 1
+    va_list args;
+    va_start(args, format);
+    vprint_color(format, args, COLOR_YELLOW);
+    va_end(args);
+    #endif
+}
+
+inline void log_error(const char * format, ...) {
+    #if CONFIG_LOG_LEVEL >= 1
+    va_list args;
+    va_start(args, format);
+    vprint_color(format, args, COLOR_RED);
+    va_end(args);
+    #endif
+}
+
+inline void log_debug(const char * format, ...) {
+    #if CONFIG_LOG_LEVEL >= 2
+    va_list args;
+    va_start(args, format);
+    vprint_color(format, args, COLOR_BLUE);
+    va_end(args);
+    #endif
+}
+
+inline void log_info_throttle(const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
 {
     using clock = std::chrono::steady_clock;
     using time_point = clock::time_point;
@@ -45,7 +94,7 @@ inline void info_throttle(const char * msg, double interval_seconds=CONFIG_LOG_T
     }
 }
 
-inline void warn_throttle(const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
+inline void log_warn_throttle(const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
 {
     using clock = std::chrono::steady_clock;
     using time_point = clock::time_point;

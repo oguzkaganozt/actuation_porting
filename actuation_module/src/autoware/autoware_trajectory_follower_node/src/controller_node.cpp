@@ -19,6 +19,7 @@
 #include "autoware/universe_utils/ros/marker_helper.hpp"
 #include <autoware/trajectory_follower_base/lateral_controller_base.hpp>
 #include "common/logger/logger.hpp"
+using namespace common::logger;
 
 #include <algorithm>
 #include <limits>
@@ -187,11 +188,11 @@ bool Controller::isTimeOut(
 {
   const auto now = Clock::now();
   if ((now - Clock::toDouble(lat_out.control_cmd.stamp)) > timeout_thr_sec_) {
-    common::logger::warn_throttle("Lateral control command too old, control_cmd will not be published.");
+    log_warn_throttle("Lateral control command too old, control_cmd will not be published.");
     return true;
   }
   if ((now - Clock::toDouble(lon_out.control_cmd.stamp)) > timeout_thr_sec_) {
-    common::logger::warn_throttle("Longitudinal control command too old, control_cmd will not be published.");
+    log_warn_throttle("Longitudinal control command too old, control_cmd will not be published.");
     return true;
   }
   return false;
@@ -220,7 +221,7 @@ void Controller::callbackTimerControl(void* arg)
   // 1. create input data
   const auto input_data = controller->createInputData();
   if (!input_data) {
-    common::logger::info_throttle("Control is skipped since input data is not ready.");
+    log_info_throttle("Control is skipped since input data is not ready.");
     return;
   }
 
@@ -228,7 +229,7 @@ void Controller::callbackTimerControl(void* arg)
   const bool is_lat_ready = controller->lateral_controller_->isReady(*input_data);
   const bool is_lon_ready = controller->longitudinal_controller_->isReady(*input_data);
   if (!is_lat_ready || !is_lon_ready) {
-    common::logger::info_throttle("Control is skipped since lateral and/or longitudinal controllers are not ready to run.");
+    log_info_throttle("Control is skipped since lateral and/or longitudinal controllers are not ready to run.");
     return;
   }
 

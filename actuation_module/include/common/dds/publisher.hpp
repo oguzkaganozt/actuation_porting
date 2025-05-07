@@ -4,6 +4,8 @@
 #include <string>
 #include <dds/dds.h>
 #include "dds_helper.hpp"
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 /**
  * @brief Publisher class for DDS communication
@@ -27,30 +29,30 @@ public:
         dds_entity_t topic = dds_create_topic(dds_participant, &topic_descriptor_ros2, 
                                                 topic_name_.c_str(), NULL, NULL);
         if (topic < 0) {
-            fprintf(stderr, "Error: %s -> dds_create_topic (%s): %s\n", 
+            log_error("Error: %s -> dds_create_topic (%s): %s\n", 
                    node_name.c_str(), topic_name_.c_str(), dds_strretcode(-topic));
             exit(-1);
         }
 
         m_dds_writer = dds_create_writer(dds_participant, topic, dds_qos, NULL);
         if (m_dds_writer < 0) {
-            fprintf(stderr, "Error: %s -> dds_create_writer (%s): %s\n", 
+            log_error("Error: %s -> dds_create_writer (%s): %s\n", 
                    node_name.c_str(), topic_name_.c_str(), dds_strretcode(-m_dds_writer));
             exit(-1);
         }
 
-        fprintf(stderr, "%s -> Publisher created for topic %s\n", node_name.c_str(), topic_name_.c_str());
+        log_info("%s -> Publisher created for topic %s\n", node_name.c_str(), topic_name_.c_str());
     }
 
     bool publish(const MessageT& message) {
         dds_return_t rc = dds_write(m_dds_writer, &message);
         if (rc < 0) {
-            fprintf(stderr, "Error: %s -> dds_write (%s): %s\n", 
+            log_error("Error: %s -> dds_write (%s): %s\n", 
                    node_name_.c_str(), topic_name_.c_str(), dds_strretcode(-rc));
             return false;
         }
 
-        fprintf(stderr, "%s -> Message published to topic %s: rc: %d\n", node_name_.c_str(), topic_name_.c_str(), rc);
+        log_debug("%s -> Message published to topic %s: rc: %d\n", node_name_.c_str(), topic_name_.c_str(), rc);
         return true;
     }    
 

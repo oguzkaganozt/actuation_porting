@@ -20,6 +20,7 @@
 #include "autoware/universe_utils/geometry/geometry.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 #include "common/logger/logger.hpp"
+using namespace common::logger;
 
 #include <algorithm>
 #include <iostream>
@@ -342,14 +343,14 @@ bool calcNearestPoseInterp(
   double * nearest_time, const double max_dist, const double max_yaw)
 {
   if (traj.empty() || !nearest_pose || !nearest_index || !nearest_time) {
-    common::logger::warn_throttle("[calcNearestPoseInterp] input trajectory is empty - 1");
+    log_warn_throttle("[calcNearestPoseInterp] input trajectory is empty - 1");
     return false;
   }
 
   const auto autoware_traj = convertToAutowareTrajectory(traj);
   auto sequence_autoware_traj_points = wrap(autoware_traj.points);
   if (sequence_autoware_traj_points.empty()) {
-    common::logger::warn_throttle("[calcNearestPoseInterp] input trajectory is empty - 2");
+    log_warn_throttle("[calcNearestPoseInterp] input trajectory is empty - 2");
     return false;
   }
 

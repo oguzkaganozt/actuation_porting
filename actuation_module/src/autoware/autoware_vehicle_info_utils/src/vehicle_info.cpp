@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "common/logger/logger.hpp"
+using namespace common::logger;
+
 #include "autoware_vehicle_info_utils/vehicle_info.hpp"
 
 #include <limits>
@@ -27,13 +30,13 @@ VehicleInfo createVehicleInfo(
   double wheel_base_m = wheel_base_m_arg;
   static constexpr double MIN_WHEEL_BASE_M = 1e-6;
   if (std::abs(wheel_base_m) < MIN_WHEEL_BASE_M) {
-    fprintf(stderr, "VehicleInfo -> wheel_base_m %f is almost 0.0, clamping to %f", wheel_base_m, MIN_WHEEL_BASE_M);
+    log_warn("VehicleInfo -> wheel_base_m %f is almost 0.0, clamping to %f", wheel_base_m, MIN_WHEEL_BASE_M);
     wheel_base_m = MIN_WHEEL_BASE_M;
   }
   double max_steer_angle_rad = max_steer_angle_rad_arg;
   static constexpr double MAX_STEER_ANGLE_RAD = 1e-6;
   if (std::abs(max_steer_angle_rad) < MAX_STEER_ANGLE_RAD) {
-    fprintf(stderr, "VehicleInfo -> max_steer_angle_rad %f is almost 0.0, clamping to %f", max_steer_angle_rad, MAX_STEER_ANGLE_RAD);
+    log_warn("VehicleInfo -> max_steer_angle_rad %f is almost 0.0, clamping to %f", max_steer_angle_rad, MAX_STEER_ANGLE_RAD);
     max_steer_angle_rad = MAX_STEER_ANGLE_RAD;
   }
 
@@ -41,7 +44,7 @@ VehicleInfo createVehicleInfo(
     wheel_radius_m <= 0 || wheel_width_m <= 0 || wheel_base_m <= 0 || wheel_tread_m <= 0 ||
     front_overhang_m <= 0 || rear_overhang_m <= 0 || left_overhang_m <= 0 ||
     right_overhang_m <= 0 || vehicle_height_m <= 0 || max_steer_angle_rad <= 0) {
-    fprintf(stderr, "VehicleInfo -> given parameters contain non positive values");
+    log_error("VehicleInfo -> given parameters contain non positive values");
   }
 
   // Calculate derived parameters

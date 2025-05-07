@@ -21,6 +21,7 @@
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics_no_delay.hpp"
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
 #include "common/logger/logger.hpp"
+using namespace common::logger;
 
 #include <algorithm>
 #include <deque>
@@ -338,15 +339,15 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
   m_current_steering = input_data.current_steering;
 
   if (!m_mpc->hasVehicleModel()) {
-    common::logger::info_throttle("MPC does not have a vehicle model");
+    log_info_throttle("MPC does not have a vehicle model");
     return false;
   }
   if (!m_mpc->hasQPSolver()) {
-    common::logger::info_throttle("MPC does not have a QP solver");
+    log_info_throttle("MPC does not have a QP solver");
     return false;
   }
   if (m_mpc->m_reference_trajectory.empty()) {
-    common::logger::info_throttle("trajectory size is zero.");
+    log_info_throttle("trajectory size is zero.");
     return false;
   }
 
@@ -360,12 +361,12 @@ void MpcLateralController::setTrajectory(
   m_current_trajectory = msg;
 
   if (sequence_points.size() < 3) {
-    fprintf(stderr, "MPC: received path size is < 3, not enough.");
+    log_error("MPC: received path size is < 3, not enough.");
     return;
   }
 
   if (!isValidTrajectory(msg)) {
-    fprintf(stderr, "MPC: Trajectory is invalid!! stop computing.");
+    log_error("MPC: Trajectory is invalid!! stop computing.");
     return;
   }
 

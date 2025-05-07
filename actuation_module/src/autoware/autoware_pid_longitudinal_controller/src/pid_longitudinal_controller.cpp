@@ -238,13 +238,13 @@ void PidLongitudinalController::setCurrentOperationMode(const OperationModeState
 void PidLongitudinalController::setTrajectory(const TrajectoryMsg & msg)
 {
   if (!longitudinal_utils::isValidTrajectory(msg)) {
-    common::logger::warn_throttle("received invalid trajectory. ignore.");
+    log_warn_throttle("received invalid trajectory. ignore.");
     return;
   }
 
   auto sequence_points = wrap(msg.points);
   if (sequence_points.size() < 2) {
-    common::logger::warn_throttle("Unexpected trajectory size < 2. Ignored.");
+    log_warn_throttle("Unexpected trajectory size < 2. Ignored.");
     return;
   }
 
@@ -434,7 +434,7 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
       control_data.slope_angle = m_lpf_pitch->filter(raw_pitch);
     }
   } else {
-    common::logger::warn_throttle("Slope source is not valid. Using raw_pitch option as default");
+    log_warn_throttle("Slope source is not valid. Using raw_pitch option as default");
     control_data.slope_angle = m_lpf_pitch->filter(raw_pitch);
   }
 
