@@ -1,6 +1,11 @@
 #! /bin/bash
 
-xhost +
+# Check if xhost is available
+if command -v xhost >/dev/null 2>&1; then
+    xhost +
+else
+    echo "Warning: xhost command not found. X11 forwarding may not work properly."
+fi
 
 docker run --rm -it --name actuation-devcontainer \
     --network host \
