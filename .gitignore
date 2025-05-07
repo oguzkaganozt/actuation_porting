@@ -11,6 +11,7 @@ zephyr_modules/
 build/
 install/
 .west/
+check_.sh
 
 # logs
 log/

@@ -36,7 +36,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: devcontainer
+          images: ghcr.io/devcontainer
           tags: |
             type=sha
             type=ref,event=branch
