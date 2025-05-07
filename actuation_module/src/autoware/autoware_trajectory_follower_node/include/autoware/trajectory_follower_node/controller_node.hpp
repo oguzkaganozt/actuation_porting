@@ -94,12 +94,7 @@ private:
   std::shared_ptr<trajectory_follower::LateralControllerBase> lateral_controller_;
 
   // Subscribers
-  //TODO: check validity with polling subscribers
-  std::shared_ptr<Subscriber<TrajectoryMsg>> sub_ref_path_;
-  std::shared_ptr<Subscriber<OdometryMsg>> sub_odometry_;
-  std::shared_ptr<Subscriber<SteeringReportMsg>> sub_steering_;
-  std::shared_ptr<Subscriber<AccelWithCovarianceStampedMsg>> sub_accel_;
-  std::shared_ptr<Subscriber<OperationModeStateMsg>> sub_operation_mode_;
+  //TODO: we don't need to store the subscribers as lifetime of the node is same as the application
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
@@ -172,6 +167,9 @@ private:
 
   //
   StopWatch<std::chrono::milliseconds> stop_watch_;
+
+  // SUBSCRIBER CALLBACKS
+  static void callbackSteeringStatus(SteeringReportMsg& msg);
 };
 
 }  // namespace trajectory_follower_node

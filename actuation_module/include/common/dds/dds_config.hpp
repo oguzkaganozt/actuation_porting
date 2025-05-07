@@ -66,8 +66,14 @@ inline static void init_config(struct ddsi_config & cfg)
 
   // Trace
   cfg.tracefp = NULL;
-  cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR | DDS_LC_WARNING | DDS_LC_CONFIG ; // DDS_LC_ALL
   cfg.tracefile = const_cast<char *>("stderr");
+  #if CONFIG_DDS_LOG_LEVEL == 2
+    cfg.tracemask = DDS_LC_ALL;
+  #elif CONFIG_DDS_LOG_LEVEL == 1
+    cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR | DDS_LC_WARNING | DDS_LC_CONFIG ;
+  #else
+    cfg.tracemask = 0;
+  #endif
 
   // Network interface
   cfg.network_interfaces = &cfg_iface;

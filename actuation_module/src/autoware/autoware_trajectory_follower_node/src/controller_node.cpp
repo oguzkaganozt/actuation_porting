@@ -103,23 +103,38 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
     create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
   pub_processing_time_lon_ms_ =
     create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+  
+  // TODO: we are not publishing these for the sake of simplicity
   // debug_marker_pub_ =
   //   create_publisher<MarkerArrayMsg>("~/output/debug_marker", &visualization_msgs_msg_MarkerArray_desc);
-
-  if (enable_control_cmd_horizon_pub_) {
-    control_cmd_horizon_pub_ = create_publisher<ControlHorizonMsg>(
-      "~/debug/control_cmd_horizon", &autoware_control_msgs_msg_ControlHorizon_desc);
-  }
+  // if (enable_control_cmd_horizon_pub_) {
+  //   control_cmd_horizon_pub_ = create_publisher<ControlHorizonMsg>(
+  //     "~/debug/control_cmd_horizon", &autoware_control_msgs_msg_ControlHorizon_desc);
+  // }
+  // published_time_publisher_ =
+  //   std::make_unique<autoware::universe_utils::PublishedTimePublisher>(this);
 
   // Timer
   //TODO: check working as expected with the original autoware code
-  {
-    const auto period_ns = ctrl_period; //TODO: check if giving ms works
-    create_timer(period_ns, &Controller::callbackTimerControl, this);
-  }
+  // {
+  //   const auto period_ns = ctrl_period; //TODO: check if giving ms works
+  //   create_timer(period_ns, &Controller::callbackTimerControl, this);
+  // }
 
-  // published_time_publisher_ =
-  //   std::make_unique<autoware::universe_utils::PublishedTimePublisher>(this);
+  // Subscribers
+  create_subscription<SteeringReportMsg>(
+    "vehicle/status/steering_status",
+    &autoware_vehicle_msgs_msg_SteeringReport_desc,
+    Controller::callbackSteeringStatus);
+}
+
+// SUBSCRIBER CALLBACKS
+void Controller::callbackSteeringStatus(SteeringReportMsg& msg)
+{
+  printf("--------------------------------\n");
+  printf("Timestamp: %ld\n", Clock::toDouble(msg.stamp));
+  printf("Received steering status: %f\n", msg.steering_tire_angle);
+  printf("--------------------------------\n");
 }
 
 Controller::LateralControllerMode Controller::getLateralControllerMode(

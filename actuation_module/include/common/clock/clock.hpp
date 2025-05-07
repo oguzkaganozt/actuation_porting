@@ -2,6 +2,7 @@
 #define COMMON__CLOCK_HPP_
 
 #include <chrono>
+#include <cstdio>
 #include <cstdint>
 #include <ctime>
 #include <zephyr/posix/time.h>
@@ -21,14 +22,13 @@ public:
      * @return 0 on success, negative value on failure
      */
     static int init_clock_via_sntp(void) {
-        printf("Setting time using SNTP\n");
         struct sntp_time ts;
         struct timespec tspec;
         int res = sntp_simple("time.nist.gov",
                     10000, &ts);
 
         if (res < 0) {
-            printf("Cannot set time using SNTP\n");
+            fprintf(stderr, "Cannot set time using SNTP\n");
             return res;
         }
 
@@ -36,11 +36,11 @@ public:
         tspec.tv_nsec = ((uint64_t)ts.fraction * (1000 * 1000 * 1000)) >> 32;
         res = clock_settime(CLOCK_REALTIME, &tspec);
         if (res < 0) {
-            printf("Cannot set REALTIME time using SNTP\n");
+            fprintf(stderr, "Cannot set REALTIME time using SNTP\n");
             return res;
         }
 
-        printf("Time set using SNTP: %s\n", ctime(&tspec.tv_sec));
+        fprintf(stderr, "Time set using SNTP: %s\n", ctime(&tspec.tv_sec));
 
         return 0;
     }

@@ -159,8 +159,8 @@ build_cyclonedds_host
 if [ "${BUILD_ACTUATION_MODULE}" = "1" ]; then build_zephyr; fi
 
 # Build Autoware Packages for the demo
-if [ "${BUILD_AUTOWARE_PACKAGES}" = "1" ]; then
-  colcon build --packages-select actuation_demos actuation_message_converter actuation_msgs \
-    --build-base build/autoware --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON \
-    --base-paths actuation_packages
-fi
+# if [ "${BUILD_AUTOWARE_PACKAGES}" = "1" ]; then
+#   colcon build --packages-select actuation_demos actuation_message_converter actuation_msgs \
+#     --build-base build/autoware --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON \
+#     --base-paths actuation_packages
+# fi
