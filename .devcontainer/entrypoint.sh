@@ -3,14 +3,18 @@
 
 COLOR_BLUE="\e[34m"
 COLOR_GREEN="\e[32m"
+COLOR_YELLOW="\e[33m"
 COLOR_RESET="\e[0m"
 
 # Source ROS and Autoware
 source "/opt/ros/humble/setup.bash"
 source "/opt/autoware/setup.bash"
 
-# Clone submodules
-git submodule update --init --recursive
+# Check if zephyr and cyclonedds submodules are cloned
+if [ ! -d "zephyr" ] || [ ! -d "cyclonedds" ]; then
+    echo -e "${COLOR_YELLOW}Zephyr and CycloneDDS submodules are not cloned.${COLOR_RESET}"
+    echo -e "${COLOR_YELLOW}Please clone the submodules then run the container in order to build the project.${COLOR_RESET}"
+fi
 
 # Install Zephyr dependencies
 echo -e "${COLOR_BLUE}Checking Zephyr dependencies...${COLOR_RESET}"
