@@ -13,7 +13,7 @@ RUN apt-get update && \
 # See https://github.com/wkentaro/gdown/issues/291
 RUN pip3 install gdown==v4.7.3
 
-FROM autoware AS zephyr
+FROM autoware AS devcontainer
 SHELL ["/bin/bash", "-c"]
 ARG TARGETARCH
 ARG ZSDK_VERSION=0.16.3

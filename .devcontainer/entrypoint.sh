@@ -1,8 +1,12 @@
 #! /bin/bash
+# shellcheck disable=SC1091
 
 COLOR_BLUE="\e[34m"
 COLOR_GREEN="\e[32m"
 COLOR_RESET="\e[0m"
+
+source "/opt/ros/humble/setup.bash"
+source "/opt/autoware/setup.bash"
 
 echo -e "${COLOR_BLUE}Checking Zephyr dependencies...${COLOR_RESET}"
 pip3 install -r zephyr/scripts/requirements-base.txt > /dev/null 2>&1
