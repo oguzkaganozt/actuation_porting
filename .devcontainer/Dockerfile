@@ -29,7 +29,7 @@ RUN apt-get update && \
 
 RUN if [ "${TARGETARCH}" = "amd64" ]; then \
         apt install --no-install-recommends -y gcc-multilib g++-multilib; \
-    else echo "Multi-arch support is not available for ${TARGETARCH}" fi
+    else echo "Multi-arch support is not available for ${TARGETARCH}"; fi
 
 # Install west
 RUN pip3 install -U west pyelftools

@@ -3,6 +3,8 @@ name: Build-Push Multi-Arch Devcontainer Image
 on:
   push:
     branches: [ main ]
+    paths:
+      - '.devcontainer/**'
   workflow_dispatch:
 
 jobs:
