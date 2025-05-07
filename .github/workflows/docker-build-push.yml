@@ -1,4 +1,4 @@
-name: Build-Push Multi-Arch Devcontainer Image
+name: Build-Push Devcontainer Image
 
 on:
   push:
