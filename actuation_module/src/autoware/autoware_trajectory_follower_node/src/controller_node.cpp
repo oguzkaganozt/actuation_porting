@@ -37,6 +37,13 @@ static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 #endif
 
+static void handle_steering_report(SteeringReportMsg& msg) {
+    log_info("------ STEERING REPORT ------\n");
+    log_info("Timestamp: %d\n", Clock::toDouble(msg.stamp));
+    log_info("Steering tire angle: %lf\n", msg.steering_tire_angle);
+    log_info("-------------------------------\n");
+}
+
 namespace
 {
 template <typename T>
@@ -69,40 +76,40 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   // NOTE: It is possible that using control_horizon could be expected to enhance performance,
   // but it is not a formal interface topic, only an experimental one.
   // So it is disabled by default.
-  enable_control_cmd_horizon_pub_ =
-    declare_parameter<bool>("enable_control_cmd_horizon_pub", false);
+  // enable_control_cmd_horizon_pub_ =
+  //   declare_parameter<bool>("enable_control_cmd_horizon_pub", false);
 
-  const auto lateral_controller_mode =
-    getLateralControllerMode(declare_parameter<std::string>("lateral_controller_mode", "mpc"));
-  switch (lateral_controller_mode) {
-    case LateralControllerMode::MPC: {
-      lateral_controller_ =
-        std::make_shared<mpc_lateral_controller::MpcLateralController>(*this);
-      break;
-    }
-    default:
-      throw std::domain_error("[LateralController] invalid algorithm");
-  }
+  // const auto lateral_controller_mode =
+  //   getLateralControllerMode(declare_parameter<std::string>("lateral_controller_mode", "mpc"));
+  // switch (lateral_controller_mode) {
+  //   case LateralControllerMode::MPC: {
+  //     lateral_controller_ =
+  //       std::make_shared<mpc_lateral_controller::MpcLateralController>(*this);
+  //     break;
+  //   }
+  //   default:
+  //     throw std::domain_error("[LateralController] invalid algorithm");
+  // }
 
-  const auto longitudinal_controller_mode =
-    getLongitudinalControllerMode(declare_parameter<std::string>("longitudinal_controller_mode", "pid"));
-  switch (longitudinal_controller_mode) {
-    case LongitudinalControllerMode::PID: {
-      longitudinal_controller_ =
-        std::make_shared<pid_longitudinal_controller::PidLongitudinalController>(*this);
-      break;
-    }
-    default:
-      throw std::domain_error("[LongitudinalController] invalid algorithm");
-  }
+  // const auto longitudinal_controller_mode =
+  //   getLongitudinalControllerMode(declare_parameter<std::string>("longitudinal_controller_mode", "pid"));
+  // switch (longitudinal_controller_mode) {
+  //   case LongitudinalControllerMode::PID: {
+  //     longitudinal_controller_ =
+  //       std::make_shared<pid_longitudinal_controller::PidLongitudinalController>(*this);
+  //     break;
+  //   }
+  //   default:
+  //     throw std::domain_error("[LongitudinalController] invalid algorithm");
+  // }
 
   // Publishers
-  control_cmd_pub_ = create_publisher<ControlMsg>(
-    "~/output/control_cmd", &autoware_control_msgs_msg_Control_desc);
-  pub_processing_time_lat_ms_ =
-    create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
-  pub_processing_time_lon_ms_ =
-    create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+  // control_cmd_pub_ = create_publisher<ControlMsg>(
+  //   "~/output/control_cmd", &autoware_control_msgs_msg_Control_desc);
+  // pub_processing_time_lat_ms_ =
+  //   create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+  // pub_processing_time_lon_ms_ =
+  //   create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
   
   // TODO: we are not publishing these for the sake of simplicity
   // debug_marker_pub_ =
@@ -123,9 +130,9 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
 
   // Subscribers
   create_subscription<SteeringReportMsg>(
-    "vehicle/status/steering_status",
+    "/vehicle/status/steering_status",
     &autoware_vehicle_msgs_msg_SteeringReport_desc,
-    Controller::callbackSteeringStatus);
+    handle_steering_report);
 }
 
 // SUBSCRIBER CALLBACKS
