@@ -6,7 +6,7 @@
 
 #include <dds/ddsi/ddsi_config.h>
 #include <dds/dds.h>
-#include "config.hpp"
+
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 

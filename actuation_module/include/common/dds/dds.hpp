@@ -27,16 +27,16 @@ public:
         log_info("%s -> Creating DDS domain with raw config\n", node_name_.c_str());
 
         // Create a DDS domain with raw config
-        dds_entity_t domain = dds_create_domain_with_rawconfig(DDS_DOMAIN_ID, &dds_cfg);
+        dds_entity_t domain = dds_create_domain_with_rawconfig(CONFIG_DDS_DOMAIN_ID, &dds_cfg);
         if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
             log_error("%s -> dds_create_domain_with_rawconfig: %s\n", 
                 node_name_.c_str(), dds_strretcode(-domain));
             exit(-1);
         }
-        log_info("%s -> DDS domain created with DOMAIN_ID: %d\n", node_name_.c_str(), DDS_DOMAIN_ID);
+        log_info("%s -> DDS domain created with DOMAIN_ID: %d\n", node_name_.c_str(), CONFIG_DDS_DOMAIN_ID);
 
         // Create a DDS participant
-        m_dds_participant = dds_create_participant(DDS_DOMAIN_ID, NULL, NULL);
+        m_dds_participant = dds_create_participant(CONFIG_DDS_DOMAIN_ID, NULL, NULL);
         if (m_dds_participant < 0) {
             log_error("%s -> dds_create_participant: %s\n", 
                 node_name_.c_str(), dds_strretcode(-m_dds_participant));

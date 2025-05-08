@@ -6,8 +6,8 @@
 static const size_t MAX_TYPENAME_LENGTH = 512;
 
 // Transform the topic name for ROS2
-// Append "rt/" to the topic name
-// eg. /actuation/actuation_command -> /rt/actuation/actuation_command
+// Append "rt" to the topic name
+// eg. /actuation/actuation_command -> rt/actuation/actuation_command
 static std::string transformTopicName(const std::string& topic_name) {
     return "rt" + topic_name;
 }

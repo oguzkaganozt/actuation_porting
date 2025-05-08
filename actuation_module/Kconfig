@@ -5,6 +5,13 @@
 config MAX_PTHREAD_MUTEX_COUNT
 	range 0 30000
 
+config THREAD_STACK_SIZE
+	int "Stack size for threads"
+	default 10240
+	help
+	  This config sets the stack size for threads.
+	  It is used to limit the stack size for threads.
+
 config LOG_LEVEL
 	int "Log level for actuation module"
 	default 2
@@ -29,6 +36,12 @@ config DDS_NETWORK_INTERFACE
 	help
 	  When left undefined, CycloneDDS will automatically select an interface
 	  based on its own criteria.
+
+config DDS_DOMAIN_ID
+	int "Domain ID for CycloneDDS"
+	default 2
+	help
+	  This config sets the domain ID for CycloneDDS.
 
 config DDS_LOG_LEVEL
 	int "Log level for CycloneDDS"

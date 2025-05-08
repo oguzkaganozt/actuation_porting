@@ -1,15 +1,16 @@
 // Copyright (c) 2022-2023, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
-#include <pthread.h>
-#include <zephyr/net/net_if.h>
-#include <zephyr/net/ethernet.h>
-#include "common/logger/logger.hpp"
-using namespace common::logger;
-
 #include <cstdio>
 #include <memory>
 #include <vector>
+#include <pthread.h>
+
+#include <zephyr/net/net_if.h>
+#include <zephyr/net/ethernet.h>
+
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 #if defined(CONFIG_NET_DHCPV4)
 /* Semaphore to indicate a lease has been acquired. */
