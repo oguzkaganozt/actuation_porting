@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
-#include "common/logger/logger.hpp"
 
 namespace autoware::vehicle_info_utils
 {

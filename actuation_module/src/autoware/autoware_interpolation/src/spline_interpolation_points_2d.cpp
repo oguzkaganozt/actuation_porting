@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <vector>
+
 #include "autoware/interpolation/spline_interpolation_points_2d.hpp"
 
-#include <vector>
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::interpolation
 {
@@ -59,7 +62,7 @@ std::array<std::vector<double>, 4> getBaseValues(
 
   // calculate base_keys, base_values
   if (base_x.size() < 2 || base_y.size() < 2 || base_z.size() < 2) {
-    fprintf(stderr, "Interpolation: The number of unique points is not enough.");
+    log_error("Interpolation: The number of unique points is not enough.");
     std::exit(1);
   }
 
@@ -99,7 +102,7 @@ PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
   const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    fprintf(stderr, "Interpolation: idx is out of range.");
+    log_error("Interpolation: idx is out of range.");
     std::exit(1);
   }
 
@@ -125,7 +128,7 @@ PointMsg SplineInterpolationPoints2d::getSplineInterpolatedPoint(
 double SplineInterpolationPoints2d::getSplineInterpolatedYaw(const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    fprintf(stderr, "Interpolation: idx is out of range.");
+    log_error("Interpolation: idx is out of range.");
     std::exit(1);
   }
 
@@ -152,7 +155,7 @@ double SplineInterpolationPoints2d::getSplineInterpolatedCurvature(
   const size_t idx, const double s) const
 {
   if (base_s_vec_.size() <= idx) {
-    fprintf(stderr, "Interpolation: idx is out of range.");
+    log_error("Interpolation: idx is out of range.");
     std::exit(1);
   }
 
@@ -193,7 +196,7 @@ size_t SplineInterpolationPoints2d::getOffsetIndex(const size_t idx, const doubl
 double SplineInterpolationPoints2d::getAccumulatedLength(const size_t idx) const
 {
   if (base_s_vec_.size() <= idx) {
-    fprintf(stderr, "Interpolation: idx is out of range.");
+    log_error("Interpolation: idx is out of range.");
     std::exit(1);
   }
   return base_s_vec_.at(idx);

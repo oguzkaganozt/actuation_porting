@@ -26,6 +26,9 @@
 #include <tuple>
 #include <vector>
 
+#include "common/logger/logger.hpp"
+using namespace common::logger;
+
 namespace autoware::osqp_interface
 {
 OSQPInterface::OSQPInterface(const c_float eps_abs, const bool polish)
@@ -221,7 +224,7 @@ void OSQPInterface::updatePolish(const bool polish)
 void OSQPInterface::updatePolishRefinementIteration(const int polish_refine_iter)
 {
   if (polish_refine_iter < 0) {
-    fprintf(stderr, "Polish refinement iterations must be positive");
+    log_error("Polish refinement iterations must be positive");
     return;
   }
 
@@ -234,7 +237,7 @@ void OSQPInterface::updatePolishRefinementIteration(const int polish_refine_iter
 void OSQPInterface::updateCheckTermination(const int check_termination)
 {
   if (check_termination < 0) {
-    fprintf(stderr, "Check termination must be positive");
+    log_error("Check termination must be positive");
     return;
   }
 
@@ -258,7 +261,7 @@ bool OSQPInterface::setPrimalVariables(const std::vector<double> & primal_variab
 
   const auto result = osqp_warm_start_x(m_work.get(), primal_variables.data());
   if (result != 0) {
-    fprintf(stderr, "Failed to set primal variables for warm start");
+    log_error("Failed to set primal variables for warm start");
     return false;
   }
 
@@ -273,7 +276,7 @@ bool OSQPInterface::setDualVariables(const std::vector<double> & dual_variables)
 
   const auto result = osqp_warm_start_y(m_work.get(), dual_variables.data());
   if (result != 0) {
-    fprintf(stderr, "Failed to set dual variables for warm start");
+    log_error("Failed to set dual variables for warm start");
     return false;
   }
 
@@ -289,31 +292,31 @@ int64_t OSQPInterface::initializeProblem(
   if (P.rows() != P.cols()) {
     ss << "P.rows() and P.cols() are not the same. P.rows() = " << P.rows()
        << ", P.cols() = " << P.cols();
-    fprintf(stderr, "Error: %s", ss.str().c_str());
+    log_error("Error: %s", ss.str().c_str());
     return -1;
   }
   if (P.rows() != static_cast<int>(q.size())) {
     ss << "P.rows() and q.size() are not the same. P.rows() = " << P.rows()
        << ", q.size() = " << q.size();
-    fprintf(stderr, "Error: %s", ss.str().c_str());
+    log_error("Error: %s", ss.str().c_str());
     return -1;
   }
   if (P.rows() != A.cols()) {
     ss << "P.rows() and A.cols() are not the same. P.rows() = " << P.rows()
        << ", A.cols() = " << A.cols();
-    fprintf(stderr, "Error: %s", ss.str().c_str());
+    log_error("Error: %s", ss.str().c_str());
     return -1;
   }
   if (A.rows() != static_cast<int>(l.size())) {
     ss << "A.rows() and l.size() are not the same. A.rows() = " << A.rows()
        << ", l.size() = " << l.size();
-    fprintf(stderr, "Error: %s", ss.str().c_str());
+    log_error("Error: %s", ss.str().c_str());
     return -1;
   }
   if (A.rows() != static_cast<int>(u.size())) {
     ss << "A.rows() and u.size() are not the same. A.rows() = " << A.rows()
        << ", u.size() = " << u.size();
-    fprintf(stderr, "Error: %s", ss.str().c_str());
+    log_error("Error: %s", ss.str().c_str());
     return -1;
   }
 
@@ -436,6 +439,6 @@ void OSQPInterface::logUnsolvedStatus(const std::string & prefix_message) const
   output_message += "Optimization failed due to " + status_message;
 
   // log with warning
-  fprintf(stderr, "OSQP: %s", output_message.c_str());
+  log_warn("OSQP: %s", output_message.c_str());
 }
 }  // namespace autoware::osqp_interface

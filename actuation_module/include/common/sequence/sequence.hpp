@@ -7,6 +7,9 @@
 #include <type_traits>
 #include <utility>
 
+#include "common/logger/logger.hpp"
+using namespace common::logger;
+
 #define DEFAULT_SEQUENCE_SIZE 128
 #define MAX_SEQUENCE_SIZE 2048
 
@@ -33,12 +36,12 @@ private:
     // Check and potentially grow the buffer
     bool ensure_capacity(size_t required_capacity) {
         if constexpr (is_const_type) {
-            fprintf(stderr, "Cannot modify const sequence\n");
+            log_error("Cannot modify const sequence\n");
             std::exit(EXIT_FAILURE);
             return false;
         } else {
             if (!sequence || !sequence->_buffer) {
-                fprintf(stderr, "Invalid sequence state\n");
+                log_error("Invalid sequence state\n");
                 std::exit(EXIT_FAILURE);
             }
             
@@ -48,7 +51,7 @@ private:
             
             // Need to allocate more memory - use fixed growth to avoid excessive allocations
             if (required_capacity > MAX_SEQUENCE_SIZE) {
-                fprintf(stderr, "Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, MAX_SEQUENCE_SIZE);
+                log_error("Requested capacity %zu exceeds maximum allowed (%zu)\n", required_capacity, MAX_SEQUENCE_SIZE);
                 std::exit(EXIT_FAILURE);
             }
             
@@ -61,13 +64,13 @@ private:
             
             // Size overflow check
             if (new_capacity > SIZE_MAX / sizeof(ElementType)) {
-                fprintf(stderr, "Allocation size would overflow\n");
+                log_error("Allocation size would overflow\n");
                 std::exit(EXIT_FAILURE);
             }
             
             ElementType* new_buffer = static_cast<ElementType*>(malloc(new_capacity * sizeof(ElementType)));
             if (!new_buffer) {
-                fprintf(stderr, "Failed to allocate memory for sequence buffer\n");
+                log_error("Failed to allocate memory for sequence buffer\n");
                 std::exit(EXIT_FAILURE);
             }
             
@@ -103,7 +106,7 @@ public:
     // Owning constructor with initial capacity (only for non-const types)
     explicit Sequence(size_type initial_capacity=DEFAULT_SEQUENCE_SIZE) {
         if constexpr (is_const_type) {
-            fprintf(stderr, "Cannot create owning Sequence with const type\n");
+            log_error("Cannot create owning Sequence with const type\n");
             std::exit(EXIT_FAILURE);
             sequence = nullptr;
             owns_sequence = false;
@@ -179,11 +182,11 @@ public:
     // Data access
     reference operator[](size_type index) { 
         if (!sequence || !sequence->_buffer) {
-            fprintf(stderr, "Dereferencing invalid sequence\n");
+            log_error("Dereferencing invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         if(index >= sequence->_length) {
-            fprintf(stderr, "Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
+            log_error("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index]; 
@@ -191,11 +194,11 @@ public:
     
     const_reference operator[](size_type index) const { 
         if (!sequence || !sequence->_buffer) {
-            fprintf(stderr, "Dereferencing invalid sequence\n");
+            log_error("Dereferencing invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         if(index >= sequence->_length) {
-            fprintf(stderr, "Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
+            log_error("Index %zu out of bounds (size: %zu)\n", index, sequence->_length);
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index]; 
@@ -203,7 +206,7 @@ public:
 
     value_type* data() noexcept { 
         if (!sequence || !sequence->_buffer) {
-            fprintf(stderr, "Invalid sequence\n");
+            log_error("Invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer; 
@@ -211,7 +214,7 @@ public:
     
     const value_type* data() const noexcept { 
         if (!sequence || !sequence->_buffer) {
-            fprintf(stderr, "Invalid sequence\n");
+            log_error("Invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer; 
@@ -219,7 +222,7 @@ public:
 
     reference at(size_type index) {
         if (!sequence || !sequence->_buffer || index >= sequence->_length) {
-            fprintf(stderr, "Index %zu out of range (size: %zu)\n", index, size());
+            log_error("Index %zu out of range (size: %zu)\n", index, size());
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index];
@@ -227,7 +230,7 @@ public:
 
     const_reference at(size_type index) const {
         if (!sequence || !sequence->_buffer || index >= sequence->_length) {
-            fprintf(stderr, "Index %zu out of range (size: %zu)\n", index, size());
+            log_error("Index %zu out of range (size: %zu)\n", index, size());
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[index];
@@ -235,7 +238,7 @@ public:
     
     reference front() {
         if (!sequence || !sequence->_buffer || empty()) {
-            fprintf(stderr, "Cannot access front() of empty sequence\n");
+            log_error("Cannot access front() of empty sequence\n");
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[0];
@@ -243,7 +246,7 @@ public:
     
     const_reference front() const {
         if (!sequence || !sequence->_buffer || empty()) {
-            fprintf(stderr, "Cannot access front() of empty sequence\n");
+            log_error("Cannot access front() of empty sequence\n");
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[0];
@@ -251,7 +254,7 @@ public:
     
     reference back() {
         if (!sequence || !sequence->_buffer || empty()) {
-            fprintf(stderr, "Cannot access back() of empty sequence\n");
+            log_error("Cannot access back() of empty sequence\n");
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[sequence->_length - 1];
@@ -259,7 +262,7 @@ public:
     
     const_reference back() const {
         if (!sequence || !sequence->_buffer || empty()) {
-            fprintf(stderr, "Cannot access back() of empty sequence\n");
+            log_error("Cannot access back() of empty sequence\n");
             std::exit(EXIT_FAILURE);
         }
         return sequence->_buffer[sequence->_length - 1];
@@ -271,12 +274,12 @@ public:
     
     bool push_back(const value_type& value) {
         if constexpr (is_const_type) {
-            fprintf(stderr, "Cannot modify const sequence\n");
+            log_error("Cannot modify const sequence\n");
             std::exit(EXIT_FAILURE);
             return false;
         } else {
             if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-                fprintf(stderr, "Failed to push_back() - copy\n");
+                log_error("Failed to push_back() - copy\n");
                 std::exit(EXIT_FAILURE);
             }
             sequence->_buffer[sequence->_length++] = value;
@@ -287,7 +290,7 @@ public:
     // Add move-enabled push_back for better performance with movable types
     bool push_back(value_type&& value) {
         if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-            fprintf(stderr, "Failed to push_back() - move\n");
+            log_error("Failed to push_back() - move\n");
             std::exit(EXIT_FAILURE);
         }
         sequence->_buffer[sequence->_length++] = std::move(value);
@@ -296,7 +299,7 @@ public:
     
     bool pop_back() {
         if (!sequence || sequence->_length == 0) {
-            fprintf(stderr, "Cannot pop_back() from empty sequence\n");
+            log_error("Cannot pop_back() from empty sequence\n");
             std::exit(EXIT_FAILURE);
         }
         sequence->_length--;
@@ -305,12 +308,12 @@ public:
     
     bool resize(size_type new_size) {
         if (!sequence) {
-            fprintf(stderr, "Invalid sequence\n");
+            log_error("Invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         
         if (new_size > sequence->_maximum && !ensure_capacity(new_size)) {
-            fprintf(stderr, "Failed to resize sequence\n");
+            log_error("Failed to resize sequence\n");
             std::exit(EXIT_FAILURE);
         }
         
@@ -332,46 +335,46 @@ public:
     
     void dump(const char* name = "Sequence") const {
         if (!is_valid()) {
-            fprintf(stderr, "%s: Invalid sequence\n", name);
+            log_error("%s: Invalid sequence\n", name);
             return;
         }
         
-        fprintf(stderr, "%s[size=%zu, capacity=%zu]\n", name, size(), capacity());
+        log_info("%s[size=%zu, capacity=%zu]\n", name, size(), capacity());
         
         if (!empty()) {
-            fprintf(stderr, "Contents:\n");
+            log_info("Contents:\n");
             for (size_t i = 0; i < (size() < 20 ? size() : 20); ++i) {
                 if constexpr (std::is_integral_v<value_type>) {
-                    fprintf(stderr, "  [%zu]: %d\n", i, static_cast<int>((*this)[i]));
+                    log_info("  [%zu]: %d\n", i, static_cast<int>((*this)[i]));
                 } else if constexpr (std::is_floating_point_v<value_type>) {
-                    fprintf(stderr, "  [%zu]: %f\n", i, static_cast<double>((*this)[i]));
+                    log_info("  [%zu]: %f\n", i, static_cast<double>((*this)[i]));
                 } else {
-                    fprintf(stderr, "  [%zu]: (unformattable type)\n", i);
+                    log_info("  [%zu]: (unformattable type)\n", i);
                 }
             }
             
             if (size() > 20) {
-                fprintf(stderr, "  ... and %zu more elements\n", size() - 20);
+                log_info("  ... and %zu more elements\n", size() - 20);
             }
         } else {
-            fprintf(stderr, "  (empty)\n");
+            log_info("  (empty)\n");
         }
     }
 
     bool insert(size_type position, const value_type& value) {
         if (!sequence) {
-            fprintf(stderr, "Invalid sequence\n");
+            log_error("Invalid sequence\n");
             std::exit(EXIT_FAILURE);
         }
         
         if (position > sequence->_length) {
-            fprintf(stderr, "Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
+            log_error("Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
             std::exit(EXIT_FAILURE);
         }
         
         // Ensure we have enough capacity for one more element
         if (!ensure_capacity(sequence->_length + 1)) {
-            fprintf(stderr, "Failed to insert - couldn't resize sequence\n");
+            log_error("Failed to insert - couldn't resize sequence\n");
             std::exit(EXIT_FAILURE);
         }
         

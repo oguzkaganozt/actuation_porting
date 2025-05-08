@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/mpc_lateral_controller/mpc.hpp"
-
-#include "autoware/interpolation/linear_interpolation.hpp"
-#include "autoware/motion_utils/trajectory/trajectory.hpp"
-#include "autoware/mpc_lateral_controller/mpc_utils.hpp"
-#include "autoware/universe_utils/math/unit_conversion.hpp"
-#include "common/logger/logger.hpp"
-
 #include <algorithm>
 #include <iostream>
 #include <limits>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "autoware/mpc_lateral_controller/mpc.hpp"
+#include "autoware/interpolation/linear_interpolation.hpp"
+#include "autoware/motion_utils/trajectory/trajectory.hpp"
+#include "autoware/mpc_lateral_controller/mpc_utils.hpp"
+#include "autoware/universe_utils/math/unit_conversion.hpp"
+
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -180,7 +181,7 @@ void MPC::setReferenceTrajectory(
       !filt_vector(param.path_filter_moving_ave_num, mpc_traj_smoothed.y) ||
       !filt_vector(param.path_filter_moving_ave_num, mpc_traj_smoothed.yaw) ||
       !filt_vector(param.path_filter_moving_ave_num, mpc_traj_smoothed.vx)) {
-      fprintf(stderr, "MPC: path callback: filtering error. stop filtering.");
+      log_error("MPC: path callback: filtering error. stop filtering.");
       mpc_traj_smoothed = mpc_traj_resampled;
     }
   }
@@ -215,7 +216,7 @@ void MPC::setReferenceTrajectory(
   mpc_traj_smoothed.push_back(last_point);
 
   if (!mpc_traj_smoothed.size()) {
-    fprintf(stderr, "MPC: path callback: trajectory size is undesired.");
+    log_error("MPC: path callback: trajectory size is undesired.");
     return;
   }
 
@@ -317,10 +318,10 @@ VectorXd MPC::getInitialState(const MPCData & data)
     dlat = m_lpf_lateral_error.filter(dlat);
     dyaw = m_lpf_yaw_error.filter(dyaw);
     x0 << lat_err, dlat, yaw_err, dyaw;
-    fprintf(stderr, "MPC: (before lpf) dot_lat_err = %f, dot_yaw_err = %f", dlat, dyaw);
-    fprintf(stderr, "MPC: (after lpf) dot_lat_err = %f, dot_yaw_err = %f", dlat, dyaw);
+    log_info("MPC: (before lpf) dot_lat_err = %f, dot_yaw_err = %f", dlat, dyaw);
+    log_info("MPC: (after lpf) dot_lat_err = %f, dot_yaw_err = %f", dlat, dyaw);
   } else {
-    fprintf(stderr, "MPC: vehicle_model_type is undefined");
+    log_error("MPC: vehicle_model_type is undefined");
   }
   return x0;
 }
@@ -348,7 +349,7 @@ std::pair<bool, VectorXd> MPC::updateStateForDelayCompensation(
       k = autoware::interpolation::lerp(traj.relative_time, traj.k, mpc_curr_time) * sign_vx;
       v = autoware::interpolation::lerp(traj.relative_time, traj.vx, mpc_curr_time);
     } catch (const std::exception & e) {
-      fprintf(stderr, "MPC: mpc resample failed at delay compensation, stop mpc: %s", e.what());
+      log_error("MPC: mpc resample failed at delay compensation, stop mpc: %s", e.what());
       return {false, {}};
     }
 
@@ -575,7 +576,7 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
 
   {
     auto t = t_end - t_start;
-    fprintf(stderr, "MPC: qp solver calculation time = %ld [ms]", t);
+    log_info("MPC: qp solver calculation time = %ld [ms]", t);
   }
 
   if (Uex.array().isNaN().any()) {
@@ -740,7 +741,7 @@ VectorXd MPC::calcSteerRateLimitOnTrajectory(
       }
     }
 
-    fprintf(stderr, "MPC::calcSteerRateLimitOnTrajectory() interpolation logic is broken. Command "
+    log_error("MPC::calcSteerRateLimitOnTrajectory() interpolation logic is broken. Command "
                     "filter is not working. Please check the code.");
     return reference.back();
   };

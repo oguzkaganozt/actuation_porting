@@ -12,17 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/mpc_lateral_controller/mpc_lateral_controller.hpp"
-
-#include "autoware/motion_utils/trajectory/trajectory.hpp"
-#include "autoware/mpc_lateral_controller/qp_solver/qp_solver_unconstraint_fast.hpp"
-#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_dynamics.hpp"
-#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics.hpp"
-#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics_no_delay.hpp"
-#include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
-#include "common/logger/logger.hpp"
-using namespace common::logger;
-
 #include <algorithm>
 #include <deque>
 #include <limits>
@@ -31,6 +20,17 @@ using namespace common::logger;
 #include <utility>
 #include <vector>
 #include <cmath>
+
+#include "autoware/mpc_lateral_controller/mpc_lateral_controller.hpp"
+#include "autoware/motion_utils/trajectory/trajectory.hpp"
+#include "autoware/mpc_lateral_controller/qp_solver/qp_solver_unconstraint_fast.hpp"
+#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_dynamics.hpp"
+#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics.hpp"
+#include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_kinematics_no_delay.hpp"
+#include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
+
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 // Msgs
 #include "OperationModeState.h"
@@ -191,7 +191,7 @@ std::shared_ptr<VehicleModelInterface> MpcLateralController::createVehicleModel(
     return vehicle_model_ptr;
   }
 
-  fprintf(stderr, "MPC: vehicle_model_type is undefined");
+  log_error("MPC: vehicle_model_type is undefined");
   return vehicle_model_ptr;
 }
 
@@ -207,7 +207,7 @@ std::shared_ptr<QPSolverInterface> MpcLateralController::createQPSolverInterface
     return qpsolver_ptr;
   }
 
-  fprintf(stderr, "MPC: qp_solver_type is undefined");
+  log_error("MPC: qp_solver_type is undefined");
   return qpsolver_ptr;
 }
 
@@ -255,7 +255,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
   if (
     (m_mpc_solved_status.result == true && mpc_solved_status.result == false) ||
     (!mpc_solved_status.result && mpc_solved_status.reason != m_mpc_solved_status.reason)) {
-    fprintf(stderr, "MPC: failed due to %s", mpc_solved_status.reason.c_str());
+    log_error("MPC: failed due to %s", mpc_solved_status.reason.c_str());
   }
   m_mpc_solved_status = mpc_solved_status;  // for diagnostic updater
 
@@ -321,7 +321,7 @@ bool MpcLateralController::isSteerConverged(const LateralMsg & cmd) const
   // wait for a while to propagate the trajectory shape to the output command when the trajectory
   // shape is changed.
   if (!m_has_received_first_trajectory || isTrajectoryShapeChanged()) {
-    fprintf(stderr, "MPC: trajectory shaped is changed");
+    log_error("MPC: trajectory shaped is changed");
     return false;
   }
 

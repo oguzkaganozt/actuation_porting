@@ -26,6 +26,9 @@
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 
+#include "common/logger/logger.hpp"
+using namespace common::logger;
+
 namespace autoware::osqp_interface
 {
 CSC_Matrix calCSCMatrix(const Eigen::MatrixXd & mat)
@@ -137,7 +140,7 @@ void printCSCMatrix(const CSC_Matrix & csc_mat)
   }
   ss << "]\n";
 
-  fprintf(stderr, "%s", ss.str().c_str());
+  log_info("%s", ss.str().c_str());
 }
 
 }  // namespace autoware::osqp_interface

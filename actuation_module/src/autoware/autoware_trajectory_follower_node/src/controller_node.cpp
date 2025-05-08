@@ -132,10 +132,10 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
 // SUBSCRIBER CALLBACKS
 void Controller::callbackSteeringStatus(SteeringReportMsg& msg)
 {
-  printf("--------------------------------\n");
-  printf("Timestamp: %ld\n", Clock::toDouble(msg.stamp));
-  printf("Received steering status: %f\n", msg.steering_tire_angle);
-  printf("--------------------------------\n");
+  log_info("--------------------------------\n");
+  log_info("Timestamp: %ld\n", Clock::toDouble(msg.stamp));
+  log_info("Received steering status: %f\n", msg.steering_tire_angle);
+  log_info("--------------------------------\n");
 }
 
 Controller::LateralControllerMode Controller::getLateralControllerMode(

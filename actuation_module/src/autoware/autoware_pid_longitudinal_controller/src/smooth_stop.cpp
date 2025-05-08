@@ -24,6 +24,8 @@
 #include <cstdio>
 
 #include "common/clock/clock.hpp"
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
@@ -67,7 +69,7 @@ std::optional<double> SmoothStop::calcTimeToStop(
   const std::vector<std::pair<double, double>> & vel_hist) const
 {
   if (!m_is_set_params) {
-    fprintf(stderr, "SmoothStop: Error: Trying to calculate uninitialized SmoothStop");
+    log_error("SmoothStop: Error: Trying to calculate uninitialized SmoothStop");
     std::exit(EXIT_FAILURE);
   }
 
@@ -123,7 +125,7 @@ double SmoothStop::calculate(
   const std::vector<std::pair<double, double>> & vel_hist, const double delay_time)
 {
   if (!m_is_set_params) {
-    fprintf(stderr, "SmoothStop: Error: Trying to calculate uninitialized SmoothStop");
+    log_error("SmoothStop: Error: Trying to calculate uninitialized SmoothStop");
     std::exit(EXIT_FAILURE);
   }
 

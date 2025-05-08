@@ -15,10 +15,8 @@
 #ifndef AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_POINTS_2D_HPP_
 #define AUTOWARE__INTERPOLATION__SPLINE_INTERPOLATION_POINTS_2D_HPP_
 
-// Libs
 #include <vector>
 
-// Autoware
 #include "autoware/interpolation/spline_interpolation.hpp"
 
 // Msgs

@@ -15,11 +15,11 @@
 #ifndef AUTOWARE__INTERPOLATION__INTERPOLATION_UTILS_HPP_
 #define AUTOWARE__INTERPOLATION__INTERPOLATION_UTILS_HPP_
 
-// Libs
 #include <algorithm>
 #include <array>
 #include <stdexcept>
 #include <vector>
+
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 

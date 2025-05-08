@@ -1,7 +1,3 @@
-#include "common/node/node.hpp"
-#include "common/clock/clock.hpp"
-#include "common/sequence/sequence.hpp"
-
 #include <cassert>
 #include <chrono>
 #include <cmath>
@@ -9,6 +5,12 @@
 #include <pthread.h>
 #include <time.h>
 #include <vector>
+
+#include "common/node/node.hpp"
+#include "common/clock/clock.hpp"
+#include "common/sequence/sequence.hpp"
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 // Msgs
 #include "PoseStamped.h"
@@ -50,17 +52,16 @@ static TestState g_state;  // Global test state
 
 // Helper macros for test readability
 #define TEST_START(name) \
-    printf("\n=== Testing " #name " ===\n"); \
+    log_info("=== Testing " #name " ===\n"); \
     g_state.reset();
 
 #define TEST_END(name) \
-    printf(COLOR_GREEN #name " tests passed" COLOR_RESET "\n");
+    log_info(#name " tests passed\n");
 
 #define ASSERT_MSG(condition, message) \
     do { \
         if (!(condition)) { \
-            printf(COLOR_RED "Assertion failed: %s" COLOR_RESET "\n", message); \
-            fflush(stdout); /* Ensure the reset code is output before abort */ \
+            log_error("Assertion failed: %s\n", message); \
             assert(false && message); \
         } \
     } while (0)
@@ -69,14 +70,14 @@ static TestState g_state;  // Global test state
 static void handle_pose(PoseStampedMsg& msg) {
     pthread_mutex_lock(&g_state.mutex);
     g_state.pose = {true, msg.pose.position.x, msg.pose.position.y, msg.pose.position.z};
-    printf("Received pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
+    log_info("Received pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
     pthread_mutex_unlock(&g_state.mutex);
 }
 
 static void handle_timer(void* node) {
     pthread_mutex_lock(&g_state.mutex);
     g_state.timer.count++;
-    printf("Timer #%d\n", g_state.timer.count);
+    log_info("Timer #%d\n", g_state.timer.count);
     pthread_mutex_unlock(&g_state.mutex);
     Node* node_ptr = static_cast<Node*>(node);
     node_ptr->set_parameter("int_param", g_state.timer.count);
@@ -186,7 +187,7 @@ void test_clock_utils() {
     
     // Test Clock::now() returns valid time
     double now = Clock::now();
-    printf("Current time: %f\n", now);
+    log_info("Current time: %f\n", now);
     ASSERT_MSG(now > 0, "Current time should be positive");
     
     // Test round-trip conversion: double -> ROS time -> double
@@ -564,16 +565,16 @@ static K_THREAD_STACK_DEFINE(timer_stack, 4096);
 #endif
 
 int main() {
-    printf(COLOR_GREEN "=== Starting Node Test Suite ===\n" COLOR_RESET);
-    printf("Waiting for Network interface to be ready\n");
+    log_info("=== Starting Node Test Suite ===\n");
+    log_info("Waiting for Network interface to be ready\n");
     sleep(5);
 
     // Setting time using SNTP
     if (Clock::init_clock_via_sntp() < 0) {
-        printf("Failed to set time using SNTP\n");
+        log_error("Failed to set time using SNTP\n");
     }
     else {
-        printf("Time set using SNTP\n");
+        log_info("Time set using SNTP\n");
     }
 
     Node node("test_node", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
@@ -585,6 +586,6 @@ int main() {
     test_sequence();
     test_clock_utils();
 
-    printf(COLOR_GREEN "\n=== All Tests Passed ===\n" COLOR_RESET);
+    log_info("\n=== All Tests Passed ===\n");
     exit(0);
 }

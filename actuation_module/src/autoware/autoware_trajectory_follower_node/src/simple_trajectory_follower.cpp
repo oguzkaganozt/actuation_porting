@@ -16,6 +16,8 @@
 
 #include <autoware/motion_utils/trajectory/trajectory.hpp>
 #include <autoware/universe_utils/geometry/pose_deviation.hpp>
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 #include <algorithm>
 
@@ -51,11 +53,11 @@ SimpleTrajectoryFollower::SimpleTrajectoryFollower()
 
 void SimpleTrajectoryFollower::onTimer(void* arg)
 {
-  printf("onTimer\n");  //TODO: remove
+  log_info("onTimer\n");  //TODO: remove
   auto self = static_cast<SimpleTrajectoryFollower*>(arg);
 
   if (!self->processData()) {
-    printf("data not ready\n");
+    log_error("data not ready\n");
     return;
   }
 
@@ -97,7 +99,7 @@ double SimpleTrajectoryFollower::calcSteerCmd()
   constexpr auto steer_lim = 0.6;
 
   const auto steer = std::clamp(-kp * lat_err - kd * yaw_err, -steer_lim, steer_lim);
-  printf("kp = %f, lat_err = %f, kd = %f, yaw_err = %f, steer = %f\n", kp, lat_err, kd, yaw_err, steer);
+  log_info("kp = %f, lat_err = %f, kd = %f, yaw_err = %f, steer = %f\n", kp, lat_err, kd, yaw_err, steer);
   return steer;
 }
 
@@ -113,7 +115,7 @@ double SimpleTrajectoryFollower::calcAccCmd()
   constexpr auto acc_lim = 2.0;
 
   const auto acc = std::clamp(-kp * vel_err, -acc_lim, acc_lim);
-  printf("vel_err = %f, acc = %f\n", vel_err, acc);
+  log_info("vel_err = %f, acc = %f\n", vel_err, acc);
   return acc;
 }
 

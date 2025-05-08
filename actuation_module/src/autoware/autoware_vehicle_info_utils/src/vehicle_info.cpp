@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "common/logger/logger.hpp"
-using namespace common::logger;
+#include <limits>
 
 #include "autoware_vehicle_info_utils/vehicle_info.hpp"
 
-#include <limits>
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::vehicle_info_utils
 {

@@ -15,9 +15,9 @@
 #ifndef AUTOWARE__INTERPOLATION__SPHERICAL_LINEAR_INTERPOLATION_HPP_
 #define AUTOWARE__INTERPOLATION__SPHERICAL_LINEAR_INTERPOLATION_HPP_
 
-#include "autoware/interpolation/interpolation_utils.hpp"
-
 #include <vector>
+
+#include "autoware/interpolation/interpolation_utils.hpp"
 
 #ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility

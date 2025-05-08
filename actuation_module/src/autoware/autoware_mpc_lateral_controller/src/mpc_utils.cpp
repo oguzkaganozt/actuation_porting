@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/mpc_lateral_controller/mpc_utils.hpp"
-
-#include "autoware/interpolation/linear_interpolation.hpp"
-#include "autoware/interpolation/spline_interpolation.hpp"
-#include "autoware/motion_utils/trajectory/trajectory.hpp"
-#include "autoware/universe_utils/geometry/geometry.hpp"
-#include "autoware/universe_utils/math/normalization.hpp"
-#include "common/logger/logger.hpp"
-using namespace common::logger;
-
 #include <algorithm>
 #include <iostream>
 #include <limits>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "autoware/mpc_lateral_controller/mpc_utils.hpp"
+#include "autoware/interpolation/linear_interpolation.hpp"
+#include "autoware/interpolation/spline_interpolation.hpp"
+#include "autoware/motion_utils/trajectory/trajectory.hpp"
+#include "autoware/universe_utils/geometry/geometry.hpp"
+#include "autoware/universe_utils/math/normalization.hpp"
+
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -182,11 +182,11 @@ bool linearInterpMPCTrajectory(
     out_traj.smooth_k = lerp_arc_length(in_traj.smooth_k);
     out_traj.relative_time = lerp_arc_length(in_traj.relative_time);
   } catch (const std::exception & e) {
-    fprintf(stderr, "linearInterpMPCTrajectory error!: %s\n", e.what());
+    log_error("linearInterpMPCTrajectory error!: %s\n", e.what());
   }
 
   if (out_traj.empty()) {
-    fprintf(stderr, "[mpc util] linear interpolation error\n");
+    log_error("[mpc util] linear interpolation error\n");
     return false;
   }
 
@@ -199,7 +199,7 @@ void calcTrajectoryYawFromXY(MPCTrajectory & traj, const bool is_forward_shift)
     return;
   }
   if (traj.yaw.size() != traj.vx.size()) {
-    fprintf(stderr, "MPC: trajectory size has no consistency.\n");
+    log_error("MPC: trajectory size has no consistency.\n");
     return;
   }
 
@@ -246,7 +246,7 @@ std::vector<double> calcTrajectoryCurvature(
     try {
       curvature_vec.at(curr_idx) = autoware::universe_utils::calcCurvature(p1, p2, p3);
     } catch (...) {
-      fprintf(stderr, "[MPC] 2 points are too close to calculate curvature.\n");
+      log_error("[MPC] 2 points are too close to calculate curvature.\n");
       curvature_vec.at(curr_idx) = 0.0;
     }
   }

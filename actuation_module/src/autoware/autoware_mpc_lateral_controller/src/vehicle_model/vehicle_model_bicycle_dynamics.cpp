@@ -15,6 +15,8 @@
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_bicycle_dynamics.hpp"
 
 #include <algorithm>
+#include "common/logger/logger.hpp"
+using namespace common::logger;
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -93,7 +95,7 @@ MPCTrajectory DynamicsBicycleModel::calculatePredictedTrajectoryInWorldCoordinat
   const Eigen::MatrixXd & x0, const Eigen::MatrixXd & Uex,
   const MPCTrajectory & reference_trajectory, [[maybe_unused]] const double dt) const
 {
-  fprintf(stderr,
+  log_error(
     "Predicted trajectory calculation in world coordinate is not supported in dynamic model. "
     "Calculate in the Frenet coordinate instead.");
   return calculatePredictedTrajectoryInFrenetCoordinate(

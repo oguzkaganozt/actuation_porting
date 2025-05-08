@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/interpolation/spline_interpolation.hpp"
-
 #include <cstdint>
 #include <vector>
+
+#include "autoware/interpolation/spline_interpolation.hpp"
 
 namespace autoware::interpolation
 {

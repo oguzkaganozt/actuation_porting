@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "autoware/interpolation/spherical_linear_interpolation.hpp"
-
 #include <vector>
 #include <cstdio>
 #include <cmath>
+
+#include "autoware/interpolation/spherical_linear_interpolation.hpp"
 
 namespace autoware::interpolation
 {

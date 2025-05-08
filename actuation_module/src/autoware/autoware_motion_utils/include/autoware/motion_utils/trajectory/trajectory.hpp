@@ -15,12 +15,6 @@
 #ifndef AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 #define AUTOWARE__MOTION_UTILS__TRAJECTORY__TRAJECTORY_HPP_
 
-// Autoware
-#include "autoware/universe_utils/geometry/geometry.hpp"
-#include "autoware/universe_utils/geometry/pose_deviation.hpp"
-#include "autoware/universe_utils/math/constants.hpp"
-
-// Libs
 #include <algorithm>
 #include <limits>
 #include <optional>
@@ -28,9 +22,16 @@
 #include <string>
 #include <utility>
 #include <vector>
-
 #include <numeric>
 #include <cmath>
+
+#include "autoware/universe_utils/geometry/geometry.hpp"
+#include "autoware/universe_utils/geometry/pose_deviation.hpp"
+#include "autoware/universe_utils/math/constants.hpp"
+
+#include "common/logger/logger.hpp"
+using namespace common::logger;
+
 
 #ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
@@ -63,7 +64,7 @@ template <class T>
 void validateNonEmpty(const T & points)
 {
   if (points.empty()) {
-    fprintf(stderr, "[autoware_motion_utils] validateNonEmpty(): Points is empty.");
+    log_error("[autoware_motion_utils] validateNonEmpty(): Points is empty.");
     throw std::invalid_argument("[autoware_motion_utils] validateNonEmpty(): Points is empty.");
   }
 }
@@ -135,7 +136,7 @@ std::optional<size_t> findNearestIndex(
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    fprintf(stderr, "Trajectory: Error: %s", e.what());
+    log_error("Trajectory: Error: %s", e.what());
     return {};
   }
 
@@ -296,11 +297,11 @@ double calcLongitudinalOffsetToSegment(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Failed to calculate longitudinal offset because the given segment index is out of the "
       "points size.");
-    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    log_error("Trajectory: Error: %s", error_message.c_str());
     if (throw_exception) {
       std::exit(1);
     }
-    fprintf(stderr, "Trajectory: Return NaN since no_throw option is enabled. The maintainer must check the code.");
+    log_error("Trajectory: Return NaN since no_throw option is enabled. The maintainer must check the code.");
     return std::nan("");
   }
 
@@ -312,7 +313,7 @@ double calcLongitudinalOffsetToSegment(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      fprintf(stderr, "Trajectory: Error: %s", e.what());
+      log_error("Trajectory: Error: %s", e.what());
       return std::nan("");
     }
   }
@@ -324,7 +325,7 @@ double calcLongitudinalOffsetToSegment(
     if (throw_exception) {
       std::exit(1);
     }
-    fprintf(stderr, "Trajectory: %s Return NaN since no_throw option is enabled. The maintainer must check the code.", error_message.c_str());
+    log_error("Trajectory: %s Return NaN since no_throw option is enabled. The maintainer must check the code.", error_message.c_str());
     return std::nan("");
   }
 
@@ -348,11 +349,11 @@ double calcLongitudinalOffsetToSegment(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Failed to calculate longitudinal offset because the given segment index is out of the "
       "points size.");
-    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    log_error("Trajectory: Error: %s", error_message.c_str());
     if (throw_exception) {
       std::exit(1);
     }
-    fprintf(stderr, "Trajectory: Return NaN since no_throw option is enabled. The maintainer must check the code.");
+    log_error("Trajectory: Return NaN since no_throw option is enabled. The maintainer must check the code.");
     return std::nan("");
   }
 
@@ -364,7 +365,7 @@ double calcLongitudinalOffsetToSegment(
     try {
       validateNonEmpty(overlap_removed_points);
     } catch (const std::exception & e) {
-      fprintf(stderr, "Trajectory: Error: %s", e.what());
+      log_error("Trajectory: Error: %s", e.what());
       return std::nan("");
     }
   }
@@ -373,7 +374,7 @@ double calcLongitudinalOffsetToSegment(
     const std::string error_message(
       "[autoware_motion_utils] " + std::string(__func__) +
       ": Longitudinal offset calculation is not supported for the same points.");
-    fprintf(stderr, "Trajectory: Error: %s", error_message.c_str());
+    log_error("Trajectory: Error: %s", error_message.c_str());
     return std::nan("");
   }
 
@@ -729,7 +730,7 @@ std::optional<size_t> searchZeroVelocityIndex(
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
-    fprintf(stderr, "%s", e.what());
+    log_error("%s", e.what());
     return {};
   }
 
@@ -761,7 +762,7 @@ std::optional<size_t> searchZeroVelocityIndex(const T & points_with_twist, const
   try {
     validateNonEmpty(points_with_twist);
   } catch (const std::exception & e) {
-    fprintf(stderr, "%s", e.what());
+    log_error("%s", e.what());
     return {};
   }
 
@@ -805,7 +806,7 @@ double calcSignedArcLength(const T & points, const size_t src_idx, const size_t 
   try {
     validateNonEmpty(points);
   } catch (const std::exception & e) {
-    fprintf(stderr, "%s", e.what());
+    log_error("%s", e.what());
     return 0.0;
   }
 
