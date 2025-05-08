@@ -11,7 +11,6 @@
 #define COLOR_RED "\033[31m"
 #define COLOR_GREEN "\033[32m"
 #define COLOR_YELLOW "\033[33m"
-#define COLOR_BLUE "\033[34m"
 #define COLOR_RESET "\033[0m"
 
 #ifndef CONFIG_LOG_THROTTLE_RATE
@@ -57,7 +56,7 @@ inline void log_debug(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 2
     va_list args;
     va_start(args, format);
-    vprint_color(format, args, COLOR_BLUE);
+    vprint_color(format, args, COLOR_RESET);
     va_end(args);
     #endif
 }
