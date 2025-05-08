@@ -2,7 +2,7 @@
 .egg-info/
 __pycache__
 .vscode/
-*.cursorignore
+.cursorignore
 
 # zephyr modules
 zephyr_modules/
