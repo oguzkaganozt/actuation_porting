@@ -5,8 +5,10 @@
 #include <cstdio>
 #include <cstdint>
 #include <ctime>
+
 #include <zephyr/posix/time.h>
 #include <zephyr/net/sntp.h>
+
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 

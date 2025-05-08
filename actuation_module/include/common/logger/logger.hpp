@@ -13,10 +13,6 @@
 #define COLOR_YELLOW "\033[33m"
 #define COLOR_RESET "\033[0m"
 
-#ifndef CONFIG_LOG_THROTTLE_RATE
-#define CONFIG_LOG_THROTTLE_RATE 3.0 // Default to 3 seconds if not defined in KConfig
-#endif
-
 namespace common::logger {
 
 inline void vprint_color(const char * format, va_list args, const char * color) {
