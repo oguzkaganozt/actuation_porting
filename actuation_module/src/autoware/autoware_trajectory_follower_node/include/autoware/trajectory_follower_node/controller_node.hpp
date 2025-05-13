@@ -118,7 +118,6 @@ private:
     OperationModeStateMsg* operation_mode_ptr_;
   };
   mutable pthread_mutex_t pipeline_data_mutex_;
-  pipeline_data_t pipeline_data_;
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;

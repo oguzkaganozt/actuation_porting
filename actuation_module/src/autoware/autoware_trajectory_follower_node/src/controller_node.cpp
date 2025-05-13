@@ -118,11 +118,10 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   //   std::make_unique<autoware::universe_utils::PublishedTimePublisher>(this);
 
   // Timer
-  // TODO: check working as expected with the original autoware code
-  // {
-  //   const auto period_ns = ctrl_period; //TODO: check if giving ms works
-  //   create_timer(period_ns, &Controller::callbackTimerControl, this);
-  // }
+  {
+    const auto period_ms = ctrl_period*1000;
+    create_timer(period_ms, &Controller::callbackTimerControl, this);
+  }
 
   // Subscribers
     auto subscriber = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",

@@ -288,7 +288,7 @@ public:
         }
         timer_active_ = true;
 
-        log_info("%s -> timer has been set\n", node_name_.c_str());
+        log_info("%s -> timer has been set with period %d ms\n", node_name_.c_str(), period_ms);
         return true;
     }
 
