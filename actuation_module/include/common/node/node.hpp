@@ -71,19 +71,15 @@ public:
      * @return 0 on success, negative value on failure
      */
     int spin() {
-        thread_active_ = true;
-        return pthread_create(&thread_, &thread_attr_, thread_entry_, this);
+        return pthread_create(&thread_, &thread_attr_, main_thread_entry_, this);
     }
     
     /**
      * @brief Stop the node thread
      */
     void stop() {
-        if (thread_active_) {
-            pthread_cancel(thread_);
-            pthread_join(thread_, nullptr);
-            thread_active_ = false;
-        }
+        pthread_cancel(thread_);
+        pthread_join(thread_, nullptr);
     }
 
     /** 
@@ -301,6 +297,7 @@ public:
             timer_active_ = false;
             delete timer_handler_data_;
             timer_handler_data_ = nullptr;
+            log_info("%s -> Timer stopped and data released.\n", node_name_.c_str());
         }
     }
 
@@ -316,19 +313,15 @@ private:
     pthread_t thread_;
     pthread_attr_t thread_attr_;
     pthread_attr_t timer_attr_;
-    bool thread_active_ = false;
 
     static void* thread_entry_(void* arg) {
         Node* node = static_cast<Node*>(arg);
-        node->run_();
-        return nullptr;
-    }
+        
+        // TODO: Implement the node logic here
+        // timer overruns are checked in timer_handler_
+        // subscriptions are handled in the cyclonedds callback
 
-    void run_() {
-        while (thread_active_) {
-            // timer overruns are checked in timer_handler_
-            // subscriptions are handled in the cyclonedds callback
-        }
+        return nullptr;
     }
 
     // DDS

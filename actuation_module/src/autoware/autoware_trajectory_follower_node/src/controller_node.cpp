@@ -64,7 +64,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
 {
   using std::placeholders::_1;
 
-  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.03);
+  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.5); // 0.03
   timeout_thr_sec_ = declare_parameter<double>("timeout_thr_sec", 0.5);
 
   // NOTE: It is possible that using control_horizon could be expected to enhance performance,
