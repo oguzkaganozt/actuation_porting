@@ -46,6 +46,7 @@ int main(void)
     try
     {
         controller = new autoware::motion::control::trajectory_follower_node::Controller();
+        controller->spin();
         log_info("Controller Node Started\n");
         log_info("-----------------------------------------\n");
     }

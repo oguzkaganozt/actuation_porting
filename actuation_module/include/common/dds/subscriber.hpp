@@ -57,7 +57,15 @@ public:
         // Delete the listener explicitly //TODO: check if this is valid
         dds_delete_listener(listener);
 
+        pthread_mutex_init(&subscription_mutex_, nullptr);
+        pthread_cond_init(&subscription_cond_, nullptr);
+
         log_info("%s -> Subscriber created for topic %s\n", node_name_.c_str(), topic_name_.c_str());
+    }
+
+    void execute() {
+        send_serve_signal_();
+        wait_for_finish_();
     }
 
 private:
@@ -66,6 +74,26 @@ private:
     dds_entity_t m_dds_participant;
     callback_subscriber<T> callback_;
     void* arg_;
+
+    // Locking for main node thread
+    mutable pthread_mutex_t subscription_mutex_;
+    mutable pthread_cond_t subscription_cond_;
+    bool subscription_serve_signal_ = false;
+
+    void send_serve_signal_() {
+        pthread_mutex_lock(&subscription_mutex_);
+        subscription_serve_signal_ = true;
+        pthread_cond_signal(&subscription_cond_);
+        pthread_mutex_unlock(&subscription_mutex_);
+    }
+
+    void wait_for_finish_() {
+        pthread_mutex_lock(&subscription_mutex_);
+        while (subscription_serve_signal_) {
+            pthread_cond_wait(&subscription_cond_, &subscription_mutex_);
+        }
+        pthread_mutex_unlock(&subscription_mutex_);
+    }
     
     static void on_msg_dds(dds_entity_t reader, void * arg) {
         Subscriber<T>* subscriber = static_cast<Subscriber<T>*>(arg);
@@ -75,6 +103,13 @@ private:
 
         log_debug("%s -> Message received topic: %s\n", subscriber->node_name_.c_str(), subscriber->topic_name_.c_str());
 
+        // Wait for serve signal
+        pthread_mutex_lock(&subscriber->subscription_mutex_);
+        while (!subscriber->subscription_serve_signal_) {
+            pthread_cond_wait(&subscriber->subscription_cond_, &subscriber->subscription_mutex_);
+        }
+
+        // Take a message from the DDS reader and execute callback
         dds_return_t rc = dds_take(reader, &msg_pointer, &info, 1, 1);
         if (rc > 0 && info.valid_data) {
             subscriber->callback_(msg, subscriber->arg_);
@@ -84,6 +119,11 @@ private:
             log_debug("Error: %s -> dds_take failed: %s\n", 
                     subscriber->node_name_.c_str(), dds_strretcode(-rc));
         }
+
+        // Reset flags
+        subscriber->subscription_serve_signal_ = false;
+        pthread_cond_signal(&subscriber->subscription_cond_);
+        pthread_mutex_unlock(&subscriber->subscription_mutex_);
     }
 };
 

@@ -56,6 +56,9 @@ public:
 
         pthread_attr_init(&timer_attr_);
         pthread_attr_setstack(&timer_attr_, timer_stack_area, timer_stack_size);
+
+        pthread_mutex_init(&timer_mutex_, nullptr);
+        pthread_cond_init(&timer_cond_, nullptr);
     }
     
     /**
@@ -64,6 +67,12 @@ public:
     ~Node() {
         stop_timer();
         stop();
+
+        pthread_mutex_destroy(&param_mutex_);
+        pthread_mutex_destroy(&timer_mutex_);
+        pthread_cond_destroy(&timer_cond_);
+        pthread_attr_destroy(&thread_attr_);
+        pthread_attr_destroy(&timer_attr_);
     }
 
     /**
@@ -240,6 +249,7 @@ public:
     struct handler_data_t {
         void (*callback)(void*);
         void* arg;
+        Node* node;
     };
 
     /**
@@ -256,9 +266,8 @@ public:
         struct sigevent sev;
         memset(&sev, 0, sizeof(struct sigevent));
 
-        timer_handler_data_ = new handler_data_t{callback, arg};
+        timer_handler_data_ = new handler_data_t{callback, arg, this};
         
-        // TODO: Check if SIGEV_THREAD is supported in zephyr
         sev.sigev_notify = SIGEV_THREAD;
         sev.sigev_signo = SIGALRM;
         sev.sigev_value.sival_ptr = timer_handler_data_;
@@ -312,16 +321,38 @@ private:
     // Thread
     pthread_t thread_;
     pthread_attr_t thread_attr_;
-    pthread_attr_t timer_attr_;
 
-    static void* thread_entry_(void* arg) {
+    static void* main_thread_entry_(void* arg) {
         Node* node = static_cast<Node*>(arg);
         
-        // TODO: Implement the node logic here
-        // timer overruns are checked in timer_handler_
-        // subscriptions are handled in the cyclonedds callback
+        while (1) {
+            log_debug("Main thread entry\n");        
 
-        return nullptr;
+            // Send serve signal to the timer thread
+            pthread_mutex_lock(&node->timer_mutex_);
+            if (node->timer_ready_flag_) {
+                node->timer_serve_signal_ = true;
+                pthread_cond_signal(&node->timer_cond_);
+                pthread_mutex_unlock(&node->timer_mutex_);
+
+                log_debug("Main thread send serve signal to timer thread\n");
+
+                // Wait for timer thread to finish
+                pthread_mutex_lock(&node->timer_mutex_);
+                while (node->timer_serve_signal_) {
+                    pthread_cond_wait(&node->timer_cond_, &node->timer_mutex_);
+                }
+                pthread_mutex_unlock(&node->timer_mutex_);
+
+                log_debug("Main thread wait for timer thread to finish\n");
+            }
+
+            // Send serve signal to the subscription threads
+            // And wait for them to finish
+            for (auto& subscription : node->subscriptions_) {
+                subscription->execute();
+            }
+        }
     }
 
     // DDS
@@ -331,12 +362,43 @@ private:
     // Timer
     timer_t timer_id_;
     bool timer_active_ = false;
-    handler_data_t* timer_handler_data_ = nullptr;
+    pthread_attr_t timer_attr_;
 
+    // Locking for main node thread
+    mutable pthread_mutex_t timer_mutex_;
+    mutable pthread_cond_t timer_cond_;
+    bool timer_serve_signal_ = false;
+    bool timer_ready_flag_ = false;
+
+    handler_data_t* timer_handler_data_ = nullptr;
     static void timer_handler_(union sigval val) {
-        handler_data_t* handler_data = static_cast<handler_data_t*>(val.sival_ptr);
-        void (*callback)(void*) = handler_data->callback;
-        callback(handler_data->arg);
+        log_debug("Timer handler\n");
+        
+        // Get node, callback and arg
+        auto node = static_cast<handler_data_t*>(val.sival_ptr)->node;
+        auto callback = static_cast<handler_data_t*>(val.sival_ptr)->callback;
+        auto arg = static_cast<handler_data_t*>(val.sival_ptr)->arg;
+
+        // Wait for serve signal
+        pthread_mutex_lock(&node->timer_mutex_);
+
+        if (node->timer_ready_flag_) {
+            log_warn("Timer overrun\n");
+            return;
+        }
+        node->timer_ready_flag_ = true;
+        while (!node->timer_serve_signal_) {
+            pthread_cond_wait(&node->timer_cond_, &node->timer_mutex_);
+        }
+
+        // Execute callback
+        callback(arg);
+
+        // Reset flags
+        node->timer_ready_flag_ = false;
+        node->timer_serve_signal_ = false;
+        pthread_cond_signal(&node->timer_cond_);
+        pthread_mutex_unlock(&node->timer_mutex_);
     }
 };
 
