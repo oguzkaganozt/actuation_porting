@@ -10,13 +10,10 @@
 #include <variant>
 #include <optional>
 #include <pthread.h>
-#include <time.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <signal.h>
 
 // Project headers
 #include "common/dds/dds.hpp"
+#include "common/node/timer.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 
@@ -54,25 +51,17 @@ public:
         pthread_attr_init(&thread_attr_);
         pthread_attr_setstack(&thread_attr_, stack_area, stack_size);
 
-        pthread_attr_init(&timer_attr_);
-        pthread_attr_setstack(&timer_attr_, timer_stack_area, timer_stack_size);
-
-        pthread_mutex_init(&timer_mutex_, nullptr);
-        pthread_cond_init(&timer_cond_, nullptr);
+        timer_ = std::make_unique<Timer>(node_name_, timer_stack_area, timer_stack_size);
     }
     
     /**
      * @brief Destructor
      */
     ~Node() {
-        stop_timer();
         stop();
 
         pthread_mutex_destroy(&param_mutex_);
-        pthread_mutex_destroy(&timer_mutex_);
-        pthread_cond_destroy(&timer_cond_);
         pthread_attr_destroy(&thread_attr_);
-        pthread_attr_destroy(&timer_attr_);
     }
 
     /**
@@ -246,12 +235,6 @@ public:
         return node_name_;
     }
 
-    struct handler_data_t {
-        void (*callback)(void*);
-        void* arg;
-        Node* node;
-    };
-
     /**
      * @brief Create a timer
      * @param period_ms Period in milliseconds
@@ -259,54 +242,22 @@ public:
      * @return true if timer was created, false otherwise
      */
     bool create_timer(uint32_t period_ms, void (*callback)(void*), void* arg = nullptr) {
-        if (timer_active_) {
+        if (!timer_) {
+            log_error("%s -> Timer object not initialized!\n", node_name_.c_str());
             return false;
         }
-
-        struct sigevent sev;
-        memset(&sev, 0, sizeof(struct sigevent));
-
-        timer_handler_data_ = new handler_data_t{callback, arg, this};
-        
-        sev.sigev_notify = SIGEV_THREAD;
-        sev.sigev_signo = SIGALRM;
-        sev.sigev_value.sival_ptr = timer_handler_data_;
-        sev.sigev_notify_function = timer_handler_;
-        sev.sigev_notify_attributes = &timer_attr_;
-
-        if (int ret = timer_create(CLOCK_MONOTONIC, &sev, &timer_id_); ret < 0) {
-            log_error("%s -> timer creation failed: %s\n", node_name_.c_str(), strerror(errno));
-            return false;
-        }
-        log_info("%s -> timer has been created\n", node_name_.c_str());
-        
-        struct itimerspec its;
-        its.it_value.tv_sec  = period_ms / 1000;
-        its.it_value.tv_nsec = (period_ms % 1000) * 1000000;
-        its.it_interval.tv_sec  = period_ms / 1000;
-        its.it_interval.tv_nsec = (period_ms % 1000) * 1000000;
-        
-        if (int ret = timer_settime(timer_id_, 0, &its, nullptr); ret < 0) {
-            log_error("%s -> timer settime failed: %s\n", node_name_.c_str(), strerror(errno));
-            timer_delete(timer_id_);
-            return false;
-        }
-        timer_active_ = true;
-
-        log_info("%s -> timer has been set with period %d ms\n", node_name_.c_str(), period_ms);
-        return true;
+        return timer_->create(period_ms, callback, arg);
     }
 
     /**
      * @brief Stop the timer
      */
     void stop_timer() {
-        if (timer_active_) {
-            timer_delete(timer_id_);
-            timer_active_ = false;
-            delete timer_handler_data_;
-            timer_handler_data_ = nullptr;
-            log_info("%s -> Timer stopped and data released.\n", node_name_.c_str());
+        if (timer_) {
+            timer_->stop();
+            log_info("%s -> Timer stopped via Node request.\n", node_name_.c_str());
+        } else {
+            log_warn("%s -> Attempted to stop a non-initialized timer.\n", node_name_.c_str());
         }
     }
 
@@ -326,25 +277,23 @@ private:
         Node* node = static_cast<Node*>(arg);
         
         while (1) {
-            log_debug("Main thread entry\n");        
+            // log_debug("Main thread entry\n"); // Can be too verbose
 
-            // Send serve signal to the timer thread
-            pthread_mutex_lock(&node->timer_mutex_);
-            if (node->timer_ready_flag_) {
-                node->timer_serve_signal_ = true;
-                pthread_cond_signal(&node->timer_cond_);
-                pthread_mutex_unlock(&node->timer_mutex_);
+            // Serve the timer if it's ready
+            if (node->timer_) { // Check if timer object exists
+                node->timer_->lock_mutex();
+                if (node->timer_->get_ready_flag()) { // Timer has signaled it's ready
+                    node->timer_->set_serve_signal(true); // Node signals timer to proceed
+                    node->timer_->signal_cond();          // Wake up timer thread if it's waiting
 
-                log_debug("Main thread send serve signal to timer thread\n");
-
-                // Wait for timer thread to finish
-                pthread_mutex_lock(&node->timer_mutex_);
-                while (node->timer_serve_signal_) {
-                    pthread_cond_wait(&node->timer_cond_, &node->timer_mutex_);
+                    // Wait for timer thread to finish its callback execution.
+                    // The timer thread sets serve_signal_ to false when it's done and signals.
+                    while (node->timer_->get_serve_signal()) {
+                        node->timer_->wait_cond(); // Wait for timer to signal completion
+                    }
+                    // ready_flag is reset by the timer thread itself after callback execution
                 }
-                pthread_mutex_unlock(&node->timer_mutex_);
-
-                log_debug("Main thread wait for timer thread to finish\n");
+                node->timer_->unlock_mutex(); // Unlock in all cases
             }
 
             // Send serve signal to the subscription threads
@@ -352,7 +301,10 @@ private:
             for (auto& subscription : node->subscriptions_) {
                 subscription->execute();
             }
+            // A small sleep might be useful here if the loop is too tight, depending on DDS behavior
+            // For example: usleep(1000); // 1ms, if nothing else yields
         }
+        return nullptr; // Should not be reached
     }
 
     // DDS
@@ -360,46 +312,7 @@ private:
     std::vector<std::shared_ptr<void>> subscriptions_;
     
     // Timer
-    timer_t timer_id_;
-    bool timer_active_ = false;
-    pthread_attr_t timer_attr_;
-
-    // Locking for main node thread
-    mutable pthread_mutex_t timer_mutex_;
-    mutable pthread_cond_t timer_cond_;
-    bool timer_serve_signal_ = false;
-    bool timer_ready_flag_ = false;
-
-    handler_data_t* timer_handler_data_ = nullptr;
-    static void timer_handler_(union sigval val) {
-        log_debug("Timer handler\n");
-        
-        // Get node, callback and arg
-        auto node = static_cast<handler_data_t*>(val.sival_ptr)->node;
-        auto callback = static_cast<handler_data_t*>(val.sival_ptr)->callback;
-        auto arg = static_cast<handler_data_t*>(val.sival_ptr)->arg;
-
-        // Wait for serve signal
-        pthread_mutex_lock(&node->timer_mutex_);
-
-        if (node->timer_ready_flag_) {
-            log_warn("Timer overrun\n");
-            return;
-        }
-        node->timer_ready_flag_ = true;
-        while (!node->timer_serve_signal_) {
-            pthread_cond_wait(&node->timer_cond_, &node->timer_mutex_);
-        }
-
-        // Execute callback
-        callback(arg);
-
-        // Reset flags
-        node->timer_ready_flag_ = false;
-        node->timer_serve_signal_ = false;
-        pthread_cond_signal(&node->timer_cond_);
-        pthread_mutex_unlock(&node->timer_mutex_);
-    }
+    std::unique_ptr<Timer> timer_;
 };
 
 #endif  // COMMON__NODE_HPP_
