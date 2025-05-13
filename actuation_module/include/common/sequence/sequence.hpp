@@ -305,6 +305,35 @@ public:
         sequence->_length--;
         return true;
     }
+
+    bool insert(size_type position, const value_type& value) {
+        if (!sequence) {
+            log_error("Invalid sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        
+        if (position > sequence->_length) {
+            log_error("Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
+            std::exit(EXIT_FAILURE);
+        }
+        
+        // Ensure we have enough capacity for one more element
+        if (!ensure_capacity(sequence->_length + 1)) {
+            log_error("Failed to insert - couldn't resize sequence\n");
+            std::exit(EXIT_FAILURE);
+        }
+        
+        // Shift elements after the insertion point
+        for (size_type i = sequence->_length; i > position; --i) {
+            sequence->_buffer[i] = sequence->_buffer[i-1];
+        }
+        
+        // Insert the new element
+        sequence->_buffer[position] = value;
+        sequence->_length++;
+        
+        return true;
+    }
     
     bool resize(size_type new_size) {
         if (!sequence) {
@@ -340,54 +369,6 @@ public:
         }
         
         log_info("%s[size=%zu, capacity=%zu]\n", name, size(), capacity());
-        
-        if (!empty()) {
-            log_info("Contents:\n");
-            for (size_t i = 0; i < (size() < 20 ? size() : 20); ++i) {
-                if constexpr (std::is_integral_v<value_type>) {
-                    log_info("  [%zu]: %d\n", i, static_cast<int>((*this)[i]));
-                } else if constexpr (std::is_floating_point_v<value_type>) {
-                    log_info("  [%zu]: %f\n", i, static_cast<double>((*this)[i]));
-                } else {
-                    log_info("  [%zu]: (unformattable type)\n", i);
-                }
-            }
-            
-            if (size() > 20) {
-                log_info("  ... and %zu more elements\n", size() - 20);
-            }
-        } else {
-            log_info("  (empty)\n");
-        }
-    }
-
-    bool insert(size_type position, const value_type& value) {
-        if (!sequence) {
-            log_error("Invalid sequence\n");
-            std::exit(EXIT_FAILURE);
-        }
-        
-        if (position > sequence->_length) {
-            log_error("Insert position %zu out of range (size: %zu)\n", position, sequence->_length);
-            std::exit(EXIT_FAILURE);
-        }
-        
-        // Ensure we have enough capacity for one more element
-        if (!ensure_capacity(sequence->_length + 1)) {
-            log_error("Failed to insert - couldn't resize sequence\n");
-            std::exit(EXIT_FAILURE);
-        }
-        
-        // Shift elements after the insertion point
-        for (size_type i = sequence->_length; i > position; --i) {
-            sequence->_buffer[i] = sequence->_buffer[i-1];
-        }
-        
-        // Insert the new element
-        sequence->_buffer[position] = value;
-        sequence->_length++;
-        
-        return true;
     }
 
     // For const types, provide methods that return a new sequence
