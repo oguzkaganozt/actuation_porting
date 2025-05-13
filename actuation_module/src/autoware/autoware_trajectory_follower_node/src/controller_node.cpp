@@ -118,65 +118,81 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   //   std::make_unique<autoware::universe_utils::PublishedTimePublisher>(this);
 
   // Timer
-  //TODO: check working as expected with the original autoware code
+  // TODO: check working as expected with the original autoware code
   // {
   //   const auto period_ns = ctrl_period; //TODO: check if giving ms works
   //   create_timer(period_ns, &Controller::callbackTimerControl, this);
   // }
 
   // Subscribers
-    auto subscriber = node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
+    auto subscriber = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
                                                                 &autoware_vehicle_msgs_msg_SteeringReport_desc,
-                                                                callbackSteeringStatus);
-    auto subscriber_trajectory = node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
-                                                                &autoware_planning_msgs_msg_Trajectory_desc,
-                                                                callbackTrajectory);
-    auto subscriber_odometry = node.create_subscription<OdometryMsg>("/localization/kinematic_state",
-                                                                &nav_msgs_msg_Odometry_desc,
-                                                                callbackOdometry);
-    auto subscriber_acceleration = node.create_subscription<AccelerationMsg>("/localization/acceleration",
-                                                                &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
-                                                                callbackAcceleration);
-    auto subscriber_operation_mode_state = node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
-                                                                &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
-                                                                callbackOperationModeState);
+                                                                callbackSteeringStatus, this);
+    // auto subscriber_trajectory = create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+    //                                                             &autoware_planning_msgs_msg_Trajectory_desc,
+    //                                                             callbackTrajectory);
+    // auto subscriber_odometry = create_subscription<OdometryMsg>("/localization/kinematic_state",
+    //                                                             &nav_msgs_msg_Odometry_desc,
+    //                                                             callbackOdometry);
+    // auto subscriber_acceleration = create_subscription<AccelWithCovarianceStampedMsg>("/localization/acceleration",
+    //                                                             &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
+    //                                                             callbackAcceleration);
+    // auto subscriber_operation_mode_state = create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
+    //                                                             &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
+    //                                                             callbackOperationModeState);
 }
 
 // SUBSCRIBER CALLBACKS
-void Controller::callbackSteeringStatus(SteeringReportMsg& msg)
+void Controller::callbackSteeringStatus(SteeringReportMsg& msg, void* arg)
 {
   log_debug("--------------------------------\n");
   log_debug("Timestamp: %ld\n", Clock::toDouble(msg.stamp));
   log_debug("Received steering status: %f\n", msg.steering_tire_angle);
   log_debug("--------------------------------\n");
+
+  // Put data into state pointers
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_steering_ptr_ = &msg;
 }
 
-void Controller::callbackOperationModeState(OperationModeStateMsg& msg) {
+void Controller::callbackOperationModeState(OperationModeStateMsg& msg, void* arg) {
     log_debug("\n------ OPERATION MODE STATE ------\n");
     log_debug("Timestamp: %d\n", Clock::toDouble(msg.stamp));
     log_debug("Mode: %d\n", msg.mode);
     log_debug("Autoware control enabled: %d\n", msg.is_autoware_control_enabled);
     log_debug("In transition: %d\n", msg.is_in_transition);
     log_debug("-------------------------------\n");
+
+    // Put data into state pointers
+    Controller* controller = static_cast<Controller*>(arg);
+    controller->current_operation_mode_ptr_ = &msg;
 }
 
-void Controller::callbackOdometry(OdometryMsg& msg) {
+void Controller::callbackOdometry(OdometryMsg& msg, void* arg) {
     log_debug("\n------ ODOMETRY ------\n");
     log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
     log_debug("Position: %lf, %lf, %lf\n", msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z);
     log_debug("Linear Twist: %lf, %lf, %lf\n", msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z);
     log_debug("-------------------------------\n");
+
+    // Put data into state pointers
+    Controller* controller = static_cast<Controller*>(arg);
+    controller->current_odometry_ptr_ = &msg;
 }
 
-void Controller::callbackAcceleration(AccelerationMsg& msg) {
+void Controller::callbackAcceleration(AccelWithCovarianceStampedMsg& msg, void* arg) {
     log_debug("\n------ ACCELERATION ------\n");
     log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
     log_debug("Linear acceleration: %lf, %lf, %lf\n", msg.accel.accel.linear.x, msg.accel.accel.linear.y, msg.accel.accel.linear.z);
     log_debug("Angular acceleration: %lf, %lf, %lf\n", msg.accel.accel.angular.x, msg.accel.accel.angular.y, msg.accel.accel.angular.z);
     log_debug("-------------------------------\n");
+
+    // Put data into state pointers
+    Controller* controller = static_cast<Controller*>(arg);
+    controller->current_accel_ptr_ = &msg;
 }
 
-void Controller::callbackTrajectory(TrajectoryMsg& msg) {
+void Controller::callbackTrajectory(TrajectoryMsg& msg, void* arg) {
     log_debug("\n------ TRAJECTORY ------\n");
     log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
     log_debug("Trajectory size: %d\n", msg.points._length);
@@ -195,6 +211,10 @@ void Controller::callbackTrajectory(TrajectoryMsg& msg) {
         log_debug("... and %zu more points\n", points.size() - 10);
     }
     log_debug("-------------------------------\n");
+
+    // Put data into state pointers
+    Controller* controller = static_cast<Controller*>(arg);
+    controller->current_trajectory_ptr_ = &msg;
 }
 
 Controller::LateralControllerMode Controller::getLateralControllerMode(
@@ -216,27 +236,26 @@ Controller::LongitudinalControllerMode Controller::getLongitudinalControllerMode
 //TODO: we are getting data from direct callbacks, maybe we can keep track of get data within each callback function
 bool Controller::processData()
 {
+  log_debug("Processing data...\n");
   bool is_ready = true;
 
-  // const auto & logData = [this](const std::string & data_type) {
-  //   info_throttle(("Waiting for " + data_type + " data").c_str());
-  // };
+  const auto & logData = [this](const std::string & data_type) {
+    log_info_throttle(("Waiting for " + data_type + " data").c_str());
+  };
 
-  // const auto & getData = [&logData](auto & dest, auto & sub, const std::string & data_type = "") {
-  //   const auto temp = sub.takeData();
-  //   if (temp) {
-  //     dest = temp;
-  //     return true;
-  //   }
-  //   if (!data_type.empty()) logData(data_type);
-  //   return false;
-  // };
+  const auto & getData = [&logData](auto & dest, const std::string & data_type = "") {
+    if (dest) {
+      return true;
+    }
+    if (!data_type.empty()) logData(data_type);
+    return false;
+  };
 
-  // is_ready &= getData(current_accel_ptr_, sub_accel_, "acceleration");
-  // is_ready &= getData(current_steering_ptr_, sub_steering_, "steering");
-  // is_ready &= getData(current_trajectory_ptr_, sub_ref_path_, "trajectory");
-  // is_ready &= getData(current_odometry_ptr_, sub_odometry_, "odometry");
-  // is_ready &= getData(current_operation_mode_ptr_, sub_operation_mode_, "operation mode");
+  is_ready &= getData(current_accel_ptr_, "acceleration");
+  is_ready &= getData(current_steering_ptr_, "steering");
+  is_ready &= getData(current_trajectory_ptr_, "trajectory");
+  is_ready &= getData(current_odometry_ptr_, "odometry");
+  is_ready &= getData(current_operation_mode_ptr_, "operation mode");
 
   return is_ready;
 }
@@ -260,17 +279,21 @@ bool Controller::isTimeOut(
 std::optional<trajectory_follower::InputData> Controller::createInputData()
 {
   if (!processData()) {
+    log_info_throttle("Control is skipped since input data is not ready.");
     return {};
   }
 
-  trajectory_follower::InputData input_data;
-  input_data.current_trajectory = *current_trajectory_ptr_;
-  input_data.current_odometry = *current_odometry_ptr_;
-  input_data.current_steering = *current_steering_ptr_;
-  input_data.current_accel = *current_accel_ptr_;
-  input_data.current_operation_mode = *current_operation_mode_ptr_;
+  log_debug("Creating input data...\n");
+  return {};  //TODO: DEBUG REMOVE
 
-  return input_data;
+  // trajectory_follower::InputData input_data;
+  // input_data.current_trajectory = *current_trajectory_ptr_;
+  // input_data.current_odometry = *current_odometry_ptr_;
+  // input_data.current_steering = *current_steering_ptr_;
+  // input_data.current_accel = *current_accel_ptr_;
+  // input_data.current_operation_mode = *current_operation_mode_ptr_;
+
+  // return input_data;
 }
 
 void Controller::callbackTimerControl(void* arg)

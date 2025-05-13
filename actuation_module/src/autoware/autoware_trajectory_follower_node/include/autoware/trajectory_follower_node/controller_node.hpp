@@ -95,11 +95,30 @@ private:
 
   // Subscribers
   //TODO: we don't need to store the subscribers as lifetime of the node is same as the application
-  static void callbackSteeringStatus(SteeringReportMsg& msg);
-  static void callbackOperationModeState(OperationModeStateMsg& msg);
-  static void callbackOdometry(OdometryMsg& msg);
-  static void callbackAcceleration(AccelerationMsg& msg);
-  static void callbackTrajectory(TrajectoryMsg& msg);
+  static void callbackSteeringStatus(SteeringReportMsg& msg, void* arg);
+  static void callbackOperationModeState(OperationModeStateMsg& msg, void* arg);
+  static void callbackOdometry(OdometryMsg& msg, void* arg);
+  static void callbackAcceleration(AccelWithCovarianceStampedMsg& msg, void* arg);
+  static void callbackTrajectory(TrajectoryMsg& msg, void* arg);
+
+  // Current Data
+  TrajectoryMsg* current_trajectory_ptr_;
+  OdometryMsg* current_odometry_ptr_;
+  SteeringReportMsg* current_steering_ptr_;
+  AccelWithCovarianceStampedMsg* current_accel_ptr_;
+  OperationModeStateMsg* current_operation_mode_ptr_;
+  mutable pthread_mutex_t current_data_mutex_;
+
+  // Pipeline data
+  struct pipeline_data_t {
+    TrajectoryMsg* trajectory_ptr_;
+    OdometryMsg* odometry_ptr_;
+    SteeringReportMsg* steering_ptr_;
+    AccelWithCovarianceStampedMsg* acceleration_ptr_;
+    OperationModeStateMsg* operation_mode_ptr_;
+  };
+  mutable pthread_mutex_t pipeline_data_mutex_;
+  pipeline_data_t pipeline_data_;
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
@@ -108,13 +127,6 @@ private:
   std::shared_ptr<Publisher<ControlHorizonMsg>> control_cmd_horizon_pub_;
   // std::shared_ptr<Publisher<MarkerArrayMsg>> debug_marker_pub_;
   
-  // State
-  std::shared_ptr<TrajectoryMsg> current_trajectory_ptr_;
-  std::shared_ptr<OdometryMsg> current_odometry_ptr_;
-  std::shared_ptr<SteeringReportMsg> current_steering_ptr_;
-  std::shared_ptr<AccelWithCovarianceStampedMsg> current_accel_ptr_;
-  std::shared_ptr<OperationModeStateMsg> current_operation_mode_ptr_;
-
   enum class LateralControllerMode {
     INVALID = 0,
     MPC = 1,

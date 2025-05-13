@@ -108,9 +108,9 @@ public:
     template<typename T>
     bool create_subscription(const std::string& topic_name, 
                            const dds_topic_descriptor_t* topic_descriptor, 
-                           callback_subscriber<T> callback) {
+                           callback_subscriber<T> callback, void* arg) {
 
-        auto subscription = dds_.create_subscription_dds<T>(topic_name, topic_descriptor, callback);
+        auto subscription = dds_.create_subscription_dds<T>(topic_name, topic_descriptor, callback, arg);
         subscriptions_.push_back(subscription);
         
         return true;

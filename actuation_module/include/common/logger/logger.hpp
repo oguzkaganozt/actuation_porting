@@ -16,7 +16,18 @@
 namespace common::logger {
 
 inline void vprint_color(const char * format, va_list args, const char * color) {
-    fprintf(stderr, "%s", color);
+    // Get current time with milliseconds
+    auto now = std::chrono::system_clock::now();
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        now.time_since_epoch()) % 1000;
+    
+    char time_str[13]; // HH:MM:SS.mmm\0
+    strftime(time_str, 9, "%H:%M:%S", localtime(&time_t_now));
+    sprintf(time_str + 8, ".%03ld", ms.count());
+
+    // Print message with time and color
+    fprintf(stderr, "%s[%s] |", color, time_str);
     vfprintf(stderr, format, args);
     fprintf(stderr, "%s", COLOR_RESET);
 }

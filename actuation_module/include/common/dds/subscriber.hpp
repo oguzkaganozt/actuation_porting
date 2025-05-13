@@ -9,7 +9,7 @@
 using namespace common::logger;
 
 template<typename T>
-using callback_subscriber = void (*)(T& msg);
+using callback_subscriber = void (*)(T& msg, void* arg);
 
 template<typename T>
 class Subscriber {
@@ -17,10 +17,11 @@ public:
     Subscriber(const std::string& node_name, const std::string& topic_name, 
                 dds_entity_t dds_participant, dds_qos_t* dds_qos, 
                 const dds_topic_descriptor_t* topic_descriptor,
-                callback_subscriber<T> callback)
+                callback_subscriber<T> callback, void* arg)
             : node_name_(node_name)
             , m_dds_participant(dds_participant)
             , callback_(callback)
+            , arg_(arg)
     {
         // Manipulate topic name and topic descriptor for ROS2
         std::string topic_name_ros2 = transformTopicName(topic_name);
@@ -64,7 +65,8 @@ private:
     std::string topic_name_;
     dds_entity_t m_dds_participant;
     callback_subscriber<T> callback_;
-
+    void* arg_;
+    
     static void on_msg_dds(dds_entity_t reader, void * arg) {
         Subscriber<T>* subscriber = static_cast<Subscriber<T>*>(arg);
         static T msg;
@@ -75,7 +77,7 @@ private:
 
         dds_return_t rc = dds_take(reader, &msg_pointer, &info, 1, 1);
         if (rc > 0 && info.valid_data) {
-            subscriber->callback_(msg);
+            subscriber->callback_(msg, subscriber->arg_);
         }
         else if (rc < 0) {
             // TODO: think about removing this as it is common to fail to take a message in the first place ?

@@ -95,11 +95,11 @@ public:
     template<typename T>
     std::shared_ptr<Subscriber<T>> create_subscription_dds(const std::string& topic_name, 
                             const dds_topic_descriptor_t* topic_descriptor, 
-                            callback_subscriber<T> callback) 
+                            callback_subscriber<T> callback, void* arg) 
     {
         try {
             auto subscriber = std::make_shared<Subscriber<T>>(
-                node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor, callback);
+                node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor, callback, arg);
             return subscriber;
         } catch (const std::exception& e) {
             log_error("%s -> create_subscription_dds: %s\n", 
