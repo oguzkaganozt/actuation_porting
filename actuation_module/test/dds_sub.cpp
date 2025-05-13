@@ -32,14 +32,14 @@ static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
     It is used to validate the sequence wrapper    
 */
 static void handle_steering_report(SteeringReportMsg& msg) {
-    log_info("------ STEERING REPORT ------\n");
+    log_info("\n------ STEERING REPORT ------\n");
     log_info("Timestamp: %d\n", Clock::toDouble(msg.stamp));
     log_info("Steering tire angle: %lf\n", msg.steering_tire_angle);
     log_info("-------------------------------\n");
 }
 
 static void handle_operation_mode_state(OperationModeStateMsg& msg) {
-    log_info("------ OPERATION MODE STATE ------\n");
+    log_info("\n------ OPERATION MODE STATE ------\n");
     log_info("Timestamp: %d\n", Clock::toDouble(msg.stamp));
     log_info("Mode: %d\n", msg.mode);
     log_info("Autoware control enabled: %d\n", msg.is_autoware_control_enabled);
@@ -48,7 +48,7 @@ static void handle_operation_mode_state(OperationModeStateMsg& msg) {
 }
 
 static void handle_odometry(OdometryMsg& msg) {
-    log_info("------ ODOMETRY ------\n");
+    log_info("\n------ ODOMETRY ------\n");
     log_info("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
     log_info("Position: %lf, %lf, %lf\n", msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z);
     log_info("Linear Twist: %lf, %lf, %lf\n", msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z);
@@ -56,7 +56,7 @@ static void handle_odometry(OdometryMsg& msg) {
 }
 
 static void handle_acceleration(AccelerationMsg& msg) {
-    log_info("------ ACCELERATION ------\n");
+    log_info("\n------ ACCELERATION ------\n");
     log_info("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
     log_info("Linear acceleration: %lf, %lf, %lf\n", msg.accel.accel.linear.x, msg.accel.accel.linear.y, msg.accel.accel.linear.z);
     log_info("Angular acceleration: %lf, %lf, %lf\n", msg.accel.accel.angular.x, msg.accel.accel.angular.y, msg.accel.accel.angular.z);
@@ -64,9 +64,23 @@ static void handle_acceleration(AccelerationMsg& msg) {
 }
 
 static void handle_trajectory(TrajectoryMsg& msg) {
-    log_info("------ TRAJECTORY ------\n");
+    log_info("\n------ TRAJECTORY ------\n");
     log_info("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
     log_info("Trajectory size: %d\n", msg.points._length);
+    auto points = wrap(msg.points);
+    size_t count = 0;
+    for (auto point : points) {
+        log_info("--------------------------------\n");
+        if (count >= 10) break;
+        log_info("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
+        log_info("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
+        log_info("Accelleration: %lf\n", point.acceleration_mps2);
+        log_info("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
+        count++;
+    }
+    if (points.size() > 10) {
+        log_info("... and %zu more points\n", points.size() - 10);
+    }
     log_info("-------------------------------\n");
 }
 
