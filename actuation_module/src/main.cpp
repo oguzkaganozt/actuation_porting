@@ -15,6 +15,8 @@ using namespace common::logger;
 
 int main(void)
 {   
+    autoware::motion::control::trajectory_follower_node::Controller* controller;
+    
     log_info("-----------------------------------------\n");
     log_info("ARM - Autoware: Actuation Safety Island\n");
     log_info("-----------------------------------------\n");
@@ -43,7 +45,7 @@ int main(void)
     log_info("Starting Controller Node...\n");
     try
     {
-        std::make_shared<autoware::motion::control::trajectory_follower_node::Controller>();
+        controller = new autoware::motion::control::trajectory_follower_node::Controller();
         log_info("Controller Node Started\n");
         log_info("-----------------------------------------\n");
     }

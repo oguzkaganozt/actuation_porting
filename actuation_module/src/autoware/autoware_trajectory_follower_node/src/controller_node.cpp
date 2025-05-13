@@ -37,13 +37,6 @@ static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 #endif
 
-static void handle_steering_report(SteeringReportMsg& msg) {
-    log_info("------ STEERING REPORT ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg.stamp));
-    log_info("Steering tire angle: %lf\n", msg.steering_tire_angle);
-    log_info("-------------------------------\n");
-}
-
 namespace
 {
 template <typename T>
@@ -129,10 +122,10 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   // }
 
   // Subscribers
-  create_subscription<SteeringReportMsg>(
+  auto steering_sub = create_subscription<SteeringReportMsg>(
     "/vehicle/status/steering_status",
     &autoware_vehicle_msgs_msg_SteeringReport_desc,
-    handle_steering_report);
+    callbackSteeringStatus);
 }
 
 // SUBSCRIBER CALLBACKS
