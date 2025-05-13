@@ -1,4 +1,5 @@
 // Copyright 2021 Tier IV, Inc. All rights reserved.
+// Edited by: Oguz Ozturk 2025, ARM
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -69,40 +70,42 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   // NOTE: It is possible that using control_horizon could be expected to enhance performance,
   // but it is not a formal interface topic, only an experimental one.
   // So it is disabled by default.
-  // enable_control_cmd_horizon_pub_ =
-  //   declare_parameter<bool>("enable_control_cmd_horizon_pub", false);
+  enable_control_cmd_horizon_pub_ =
+    declare_parameter<bool>("enable_control_cmd_horizon_pub", false);
 
-  // const auto lateral_controller_mode =
-  //   getLateralControllerMode(declare_parameter<std::string>("lateral_controller_mode", "mpc"));
-  // switch (lateral_controller_mode) {
-  //   case LateralControllerMode::MPC: {
-  //     lateral_controller_ =
-  //       std::make_shared<mpc_lateral_controller::MpcLateralController>(*this);
-  //     break;
-  //   }
-  //   default:
-  //     throw std::domain_error("[LateralController] invalid algorithm");
-  // }
+  const auto lateral_controller_mode =
+    getLateralControllerMode(declare_parameter<std::string>("lateral_controller_mode", "mpc"));
+  log_debug("Lateral controller mode: %d\n", lateral_controller_mode);
+  switch (lateral_controller_mode) {
+    case LateralControllerMode::MPC: {
+      lateral_controller_ =
+        std::make_shared<mpc_lateral_controller::MpcLateralController>(*this);
+      break;
+    }
+    default:
+      throw std::domain_error("[LateralController] invalid algorithm");
+  }
 
-  // const auto longitudinal_controller_mode =
-  //   getLongitudinalControllerMode(declare_parameter<std::string>("longitudinal_controller_mode", "pid"));
-  // switch (longitudinal_controller_mode) {
-  //   case LongitudinalControllerMode::PID: {
-  //     longitudinal_controller_ =
-  //       std::make_shared<pid_longitudinal_controller::PidLongitudinalController>(*this);
-  //     break;
-  //   }
-  //   default:
-  //     throw std::domain_error("[LongitudinalController] invalid algorithm");
-  // }
+  const auto longitudinal_controller_mode =
+    getLongitudinalControllerMode(declare_parameter<std::string>("longitudinal_controller_mode", "pid"));
+  log_debug("Longitudinal controller mode: %d\n", longitudinal_controller_mode);
+  switch (longitudinal_controller_mode) {
+    case LongitudinalControllerMode::PID: {
+      longitudinal_controller_ =
+        std::make_shared<pid_longitudinal_controller::PidLongitudinalController>(*this);
+      break;
+    }
+    default:
+      throw std::domain_error("[LongitudinalController] invalid algorithm");
+  }
 
   // Publishers
-  // control_cmd_pub_ = create_publisher<ControlMsg>(
-  //   "~/output/control_cmd", &autoware_control_msgs_msg_Control_desc);
-  // pub_processing_time_lat_ms_ =
-  //   create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
-  // pub_processing_time_lon_ms_ =
-  //   create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+  control_cmd_pub_ = create_publisher<ControlMsg>(
+    "~/output/control_cmd", &autoware_control_msgs_msg_Control_desc);
+  pub_processing_time_lat_ms_ =
+    create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+  pub_processing_time_lon_ms_ =
+    create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
   
   // TODO: we are not publishing these for the sake of simplicity
   // debug_marker_pub_ =
@@ -122,19 +125,76 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   // }
 
   // Subscribers
-  auto steering_sub = create_subscription<SteeringReportMsg>(
-    "/vehicle/status/steering_status",
-    &autoware_vehicle_msgs_msg_SteeringReport_desc,
-    callbackSteeringStatus);
+    auto subscriber = node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
+                                                                &autoware_vehicle_msgs_msg_SteeringReport_desc,
+                                                                callbackSteeringStatus);
+    auto subscriber_trajectory = node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+                                                                &autoware_planning_msgs_msg_Trajectory_desc,
+                                                                callbackTrajectory);
+    auto subscriber_odometry = node.create_subscription<OdometryMsg>("/localization/kinematic_state",
+                                                                &nav_msgs_msg_Odometry_desc,
+                                                                callbackOdometry);
+    auto subscriber_acceleration = node.create_subscription<AccelerationMsg>("/localization/acceleration",
+                                                                &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
+                                                                callbackAcceleration);
+    auto subscriber_operation_mode_state = node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
+                                                                &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
+                                                                callbackOperationModeState);
 }
 
 // SUBSCRIBER CALLBACKS
 void Controller::callbackSteeringStatus(SteeringReportMsg& msg)
 {
-  log_info("--------------------------------\n");
-  log_info("Timestamp: %ld\n", Clock::toDouble(msg.stamp));
-  log_info("Received steering status: %f\n", msg.steering_tire_angle);
-  log_info("--------------------------------\n");
+  log_debug("--------------------------------\n");
+  log_debug("Timestamp: %ld\n", Clock::toDouble(msg.stamp));
+  log_debug("Received steering status: %f\n", msg.steering_tire_angle);
+  log_debug("--------------------------------\n");
+}
+
+void Controller::callbackOperationModeState(OperationModeStateMsg& msg) {
+    log_debug("\n------ OPERATION MODE STATE ------\n");
+    log_debug("Timestamp: %d\n", Clock::toDouble(msg.stamp));
+    log_debug("Mode: %d\n", msg.mode);
+    log_debug("Autoware control enabled: %d\n", msg.is_autoware_control_enabled);
+    log_debug("In transition: %d\n", msg.is_in_transition);
+    log_debug("-------------------------------\n");
+}
+
+void Controller::callbackOdometry(OdometryMsg& msg) {
+    log_debug("\n------ ODOMETRY ------\n");
+    log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
+    log_debug("Position: %lf, %lf, %lf\n", msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z);
+    log_debug("Linear Twist: %lf, %lf, %lf\n", msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z);
+    log_debug("-------------------------------\n");
+}
+
+void Controller::callbackAcceleration(AccelerationMsg& msg) {
+    log_debug("\n------ ACCELERATION ------\n");
+    log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
+    log_debug("Linear acceleration: %lf, %lf, %lf\n", msg.accel.accel.linear.x, msg.accel.accel.linear.y, msg.accel.accel.linear.z);
+    log_debug("Angular acceleration: %lf, %lf, %lf\n", msg.accel.accel.angular.x, msg.accel.accel.angular.y, msg.accel.accel.angular.z);
+    log_debug("-------------------------------\n");
+}
+
+void Controller::callbackTrajectory(TrajectoryMsg& msg) {
+    log_debug("\n------ TRAJECTORY ------\n");
+    log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
+    log_debug("Trajectory size: %d\n", msg.points._length);
+    auto points = wrap(msg.points);
+    size_t count = 0;
+    for (auto point : points) {
+        log_debug("--------------------------------\n");
+        if (count >= 10) break;
+        log_debug("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
+        log_debug("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
+        log_debug("Accelleration: %lf\n", point.acceleration_mps2);
+        log_debug("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
+        count++;
+    }
+    if (points.size() > 10) {
+        log_debug("... and %zu more points\n", points.size() - 10);
+    }
+    log_debug("-------------------------------\n");
 }
 
 Controller::LateralControllerMode Controller::getLateralControllerMode(

@@ -1,6 +1,6 @@
 #include "common/node/node.hpp"
 #include "common/clock/clock.hpp"
-#include "common/sequence/sequence.hpp"
+#include "common/dds/sequence.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 

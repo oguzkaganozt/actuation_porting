@@ -39,7 +39,7 @@ using namespace common::logger;
 #include <Eigen/Geometry>
 
 // Msgs
-#include "common/sequence/sequence.hpp"
+#include "common/dds/sequence.hpp"
 #include "Point.h"
 #include "Path.h"
 #include "Pose.h"

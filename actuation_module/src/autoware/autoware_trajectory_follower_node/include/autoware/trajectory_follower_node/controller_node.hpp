@@ -95,6 +95,11 @@ private:
 
   // Subscribers
   //TODO: we don't need to store the subscribers as lifetime of the node is same as the application
+  static void callbackSteeringStatus(SteeringReportMsg& msg);
+  static void callbackOperationModeState(OperationModeStateMsg& msg);
+  static void callbackOdometry(OdometryMsg& msg);
+  static void callbackAcceleration(AccelerationMsg& msg);
+  static void callbackTrajectory(TrajectoryMsg& msg);
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
@@ -167,9 +172,6 @@ private:
 
   //
   StopWatch<std::chrono::milliseconds> stop_watch_;
-
-  // SUBSCRIBER CALLBACKS
-  static void callbackSteeringStatus(SteeringReportMsg& msg);
 };
 
 }  // namespace trajectory_follower_node

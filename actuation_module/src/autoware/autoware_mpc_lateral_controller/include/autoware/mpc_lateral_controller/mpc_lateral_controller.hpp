@@ -28,7 +28,7 @@
 #include <utility>
 #include <vector>
 #include "common/clock/clock.hpp"
-#include "common/sequence/sequence.hpp"
+#include "common/dds/sequence.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
