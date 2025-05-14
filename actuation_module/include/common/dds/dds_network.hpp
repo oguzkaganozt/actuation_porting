@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 #include <pthread.h>
-
 #include <zephyr/net/net_if.h>
 #include <zephyr/net/ethernet.h>
 

@@ -58,10 +58,7 @@ static dds_topic_descriptor_t transformTopicDescriptor(const dds_topic_descripto
 
     // Point output.m_typename to the new buffer
     output.m_typename = transformed_typename;
-
-    // Print the transformed topic descriptor
     log_debug("Transformed topic descriptor: %s\n", output.m_typename);
-
     return output;
 }
 

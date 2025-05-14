@@ -100,6 +100,7 @@ public:
         try {
             auto subscriber = std::make_shared<Subscriber<T>>(
                 node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor, callback, arg);
+            subscriptions_.push_back(subscriber);
             return subscriber;
         } catch (const std::exception& e) {
             log_error("%s -> create_subscription_dds: %s\n", 
@@ -108,10 +109,28 @@ public:
         }
     }
 
+    /**
+     * @brief Execute all subscription handlers
+     */
+    void execute_subscriptions() {
+        for (auto& subscription : subscriptions_) {
+            // subscription->execute();
+        }
+    }
+
+    /**
+     * @brief Check if there are any subscriptions
+     * @return true if there are subscriptions, false otherwise
+     */
+    bool has_subscriptions() {
+        return !subscriptions_.empty();
+    }
+
 private:
     std::string node_name_;
     dds_entity_t m_dds_participant;
     dds_qos_t* m_dds_qos;
+    std::vector<std::shared_ptr<void>> subscriptions_;
 };
 
 #endif // COMMON__DDS_HPP_

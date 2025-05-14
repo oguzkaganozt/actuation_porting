@@ -95,6 +95,7 @@ public:
      * @param topic_name Topic name
      * @param topic_descriptor Topic descriptor 
      * @param callback Callback function
+     * @param arg Callback user argument
      * @return bool true on success, false on failure
      */
     template<typename T>
@@ -103,8 +104,6 @@ public:
                            callback_subscriber<T> callback, void* arg) {
 
         auto subscription = dds_.create_subscription_dds<T>(topic_name, topic_descriptor, callback, arg);
-        subscriptions_.push_back(subscription);
-        
         return true;
     }
 
@@ -280,7 +279,7 @@ private:
 
     static void* main_thread_entry_(void* arg) {
         Node* node = static_cast<Node*>(arg);
-        
+
         while (1) {
             if (node->timer_) { // Check and execute the timer callback
                 if (node->timer_->is_ready()) {
@@ -288,16 +287,13 @@ private:
                 }
             }
 
-            // Check and execute the subscriptions callbacks
-            // for (auto& subscription : node->subscriptions_) {
-            //     subscription->execute();
-            // }
-            
+            if (node->dds_.has_subscriptions()) {   // Check and execute the subscriptions callbacks
+                // node->dds_.execute_subscriptions();
+            }
             
             usleep(2000);   // 2ms, if nothing else yields
         }
-
-        return nullptr;
+        return nullptr; // Should never reach here
     }
 };
 
