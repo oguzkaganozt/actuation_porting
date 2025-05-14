@@ -167,6 +167,7 @@ private:
     pthread_mutex_t mutex_;
     bool ready_flag_;
 
+    // Timer handler primitives
     TimerHandlerData* handler_data_;
 
     static void static_timer_handler(union sigval val) {

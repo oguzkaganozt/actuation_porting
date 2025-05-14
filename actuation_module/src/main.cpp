@@ -46,7 +46,11 @@ int main(void)
     try
     {
         controller = new autoware::motion::control::trajectory_follower_node::Controller();
-        controller->spin();
+        int ret = controller->spin();
+        if (ret != 0) {
+            log_error("Failed to start Controller Node\n");
+            std::exit(1);
+        }
         log_info("Controller Node Started\n");
         log_info("-----------------------------------------\n");
     }

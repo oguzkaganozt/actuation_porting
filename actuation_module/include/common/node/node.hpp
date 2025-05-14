@@ -50,7 +50,6 @@ public:
     {
         pthread_attr_init(&main_thread_attr_);
         pthread_attr_setstack(&main_thread_attr_, stack_area, stack_size);
-
         timer_ = std::make_unique<Timer>(node_name_, timer_stack_area, timer_stack_size);
     }
     
@@ -59,7 +58,6 @@ public:
      */
     ~Node() {
         stop();
-
         pthread_mutex_destroy(&param_mutex_);
         pthread_attr_destroy(&main_thread_attr_);
     }
@@ -284,8 +282,7 @@ private:
         Node* node = static_cast<Node*>(arg);
         
         while (1) {
-            // Check and execute the timer callback
-            if (node->timer_) {
+            if (node->timer_) { // Check and execute the timer callback
                 if (node->timer_->is_ready()) {
                     node->timer_->execute_callback();
                 }
@@ -296,8 +293,8 @@ private:
             //     subscription->execute();
             // }
             
-            // 2ms, if nothing else yields
-            usleep(2000);
+            
+            usleep(2000);   // 2ms, if nothing else yields
         }
 
         return nullptr;
