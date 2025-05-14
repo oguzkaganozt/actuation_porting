@@ -22,12 +22,13 @@ inline void vprint_color(const char * format, va_list args, const char * color) 
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
         now.time_since_epoch()) % 1000;
     
-    char time_str[13]; // HH:MM:SS.mmm\0
+    // Print time in HH:MM:SS.mmm format
+    char time_str[13]; 
     strftime(time_str, 9, "%H:%M:%S", localtime(&time_t_now));
     sprintf(time_str + 8, ".%03ld", ms.count());
 
     // Print message with time and color
-    fprintf(stderr, "%s[%s] |", color, time_str);
+    fprintf(stderr, "%s[%s] | ", color, time_str);
     vfprintf(stderr, format, args);
     fprintf(stderr, "%s", COLOR_RESET);
 }
@@ -45,6 +46,7 @@ inline void log_warn(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
+    fprintf(stderr, "%sWARNING: ", COLOR_YELLOW);
     vprint_color(format, args, COLOR_YELLOW);
     va_end(args);
     #endif
@@ -54,6 +56,7 @@ inline void log_error(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
+    fprintf(stderr, "%sERROR: ", COLOR_RED);
     vprint_color(format, args, COLOR_RED);
     va_end(args);
     #endif

@@ -36,7 +36,7 @@ public:
     {
         pthread_mutex_init(&data_queue_mutex_, nullptr);
 
-        // Manipulate topic name and topic descriptor for ROS2
+        // Manipulate topic name and topic descriptor for ROS2 compatibility
         std::string topic_name_ros2 = transformTopicName(topic_name);
         dds_topic_descriptor_t topic_descriptor_ros2 = transformTopicDescriptor(topic_descriptor);
 
@@ -44,7 +44,7 @@ public:
         dds_entity_t topic = dds_create_topic(m_dds_participant, &topic_descriptor_ros2, 
                                                 topic_name_ros2.c_str(), NULL, NULL);
         if (topic < 0) {
-            log_error("Error: %s -> dds_create_topic (%s): %s\n", 
+            log_error("%s -> dds_create_topic (%s): %s\n", 
                    node_name_.c_str(), topic_name_ros2.c_str(), dds_strretcode(-topic));
             return;
         }
@@ -52,7 +52,7 @@ public:
         // Create a DDS listener
         dds_listener_t* listener = dds_create_listener(this);
         if (!listener) {
-            log_error("Error: %s -> dds_create_listener\n", node_name_.c_str());
+            log_error("%s -> dds_create_listener\n", node_name_.c_str());
             dds_delete(topic);
             return;
         }
@@ -61,7 +61,7 @@ public:
         // Create a DDS reader
         m_reader_entity = dds_create_reader(m_dds_participant, topic, dds_qos, listener);
         if (m_reader_entity < 0) {
-            log_error("Error: %s -> dds_create_reader (%s): %s\n", 
+            log_error("%s -> dds_create_reader (%s): %s\n", 
                    node_name_.c_str(), topic_name_ros2.c_str(), dds_strretcode(-m_reader_entity));
             dds_delete_listener(listener);
             dds_delete(topic);
@@ -125,6 +125,11 @@ public:
             if (info[0].valid_data) {
                 log_debug("%s -> Message received on topic: %s\n", node_name_.c_str(), topic_name_.c_str());
                 pthread_mutex_lock(&data_queue_mutex_);
+                auto size = message_queue_.size();
+                if (size != 0) {
+                    log_warn("%s -> Message queue contains %d messages for topic %s\n", 
+                            node_name_.c_str(), size, topic_name_.c_str());
+                }
                 message_queue_.push_back(data_buffer[0]);
                 pthread_mutex_unlock(&data_queue_mutex_);
             }
@@ -148,7 +153,7 @@ private:
         if (subscriber_instance) {
             subscriber_instance->internal_on_data_available(reader);
         } else {
-            log_error("Error: %s -> on_msg_dds_static called with null instance for reader %d\n", \
+            log_error("%s -> on_msg_dds_static called with null instance for reader %d\n", \
                         "UnknownNode", reader);
         }
     }
