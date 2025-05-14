@@ -279,7 +279,6 @@ bool Controller::isTimeOut(
 
 std::optional<trajectory_follower::InputData> Controller::createInputData()
 {
-  return {}; // TODO: DEBUG REMOVE
   if (!processData()) {
     log_info_throttle("Control is skipped since input data is not ready.");
     return {};
@@ -302,7 +301,6 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
 void Controller::callbackTimerControl(void* arg)
 {
   log_debug("Callback timer control\n");
-  return; // TODO: DEBUG REMOVE
   Controller* controller = static_cast<Controller*>(arg);
 
   // 1. create input data
@@ -312,6 +310,7 @@ void Controller::callbackTimerControl(void* arg)
     return;
   }
 
+  log_debug("Input data created\n");
   return; // TODO: DEBUG REMOVE
 
   // 2. check if controllers are ready
