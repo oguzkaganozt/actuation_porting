@@ -105,19 +105,19 @@ int main(void) {
     // Create subscribers
     auto subscriber = node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
                                                                 &autoware_vehicle_msgs_msg_SteeringReport_desc,
-                                                                handle_steering_report);
+                                                                handle_steering_report, this);
     auto subscriber_trajectory = node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
                                                                 &autoware_planning_msgs_msg_Trajectory_desc,
-                                                                handle_trajectory);
+                                                                handle_trajectory, this);
     auto subscriber_odometry = node.create_subscription<OdometryMsg>("/localization/kinematic_state",
                                                                 &nav_msgs_msg_Odometry_desc,
-                                                                handle_odometry);
+                                                                handle_odometry, this);
     auto subscriber_acceleration = node.create_subscription<AccelerationMsg>("/localization/acceleration",
                                                                 &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
-                                                                handle_acceleration);
+                                                                handle_acceleration, this);
     auto subscriber_operation_mode_state = node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
                                                                 &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
-                                                                handle_operation_mode_state);
+                                                                handle_operation_mode_state, this);
 
     log_info("--------------------------------\n");
     log_info("DDS subscriber started\n");

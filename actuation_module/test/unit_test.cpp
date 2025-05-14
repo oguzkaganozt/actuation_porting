@@ -67,7 +67,7 @@ static TestState g_state;  // Global test state
     } while (0)
 
 // Callback handlers
-static void handle_pose(PoseStampedMsg& msg) {
+static void handle_pose(PoseStampedMsg& msg, void* node) {
     pthread_mutex_lock(&g_state.mutex);
     g_state.pose = {true, msg.pose.position.x, msg.pose.position.y, msg.pose.position.z};
     log_info("Received pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
@@ -160,7 +160,7 @@ void test_dds_communication(Node& node) {
     
     node.spin();
     auto publisher = node.create_publisher<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc);
-    node.create_subscription<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc, handle_pose);
+    node.create_subscription<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc, handle_pose, &node);
     
     // Test message roundtrips
     for (int i = 0; i < 3; i++) {
