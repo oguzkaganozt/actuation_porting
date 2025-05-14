@@ -10,6 +10,7 @@
 #include <variant>
 #include <optional>
 #include <pthread.h>
+#include <cstring>
 
 // Project headers
 #include "common/dds/dds.hpp"
@@ -49,7 +50,12 @@ public:
     , dds_(node_name)
     {
         pthread_attr_init(&main_thread_attr_);
-        pthread_attr_setstack(&main_thread_attr_, stack_area, stack_size);
+        int ret = pthread_attr_setstack(&main_thread_attr_, stack_area, stack_size);
+        if (ret != 0) {
+            log_error("%s -> pthread_attr_setstack failed for main thread: %s. Exiting.\n", 
+                      node_name_.c_str(), strerror(ret));
+            std::exit(1);
+        }
         timer_ = std::make_unique<Timer>(node_name_, timer_stack_area, timer_stack_size);
     }
     
@@ -104,7 +110,7 @@ public:
                            callback_subscriber<T> callback, void* arg) {
 
         auto subscription = dds_.create_subscription_dds<T>(topic_name, topic_descriptor, callback, arg);
-        return true;
+        return subscription != nullptr;
     }
 
     /**
@@ -141,25 +147,6 @@ public:
 
     /**
      * @brief Get a parameter value by name
-     * @param name Name of the parameter
-     * @return std::optional<param_type> The parameter value if found, std::nullopt if not found
-     */
-    std::optional<param_type> get_parameter(const std::string& name) const {
-        pthread_mutex_lock(&param_mutex_);
-        
-        auto it = parameters_map_.find(name);
-        if (it != parameters_map_.end()) {
-            param_type value = it->second;
-            pthread_mutex_unlock(&param_mutex_);
-            return value;
-        }
-        
-        pthread_mutex_unlock(&param_mutex_);
-        return std::nullopt;
-    }
-
-    /**
-     * @brief Get a parameter value by name
      * @tparam ParamT Type of the parameter
      * @param name Name of the parameter
      * @return The parameter value or default-constructed value if not found
@@ -169,7 +156,7 @@ public:
         static_assert(std::is_constructible_v<param_type, ParamT>, 
                      "Parameter type must be one of the supported types in param_type variant");
         
-        auto param = get_parameter(name);
+        auto param = search_parameter_(name);
         if (param) {
             try {
                 return std::get<ParamT>(*param);
@@ -293,6 +280,19 @@ private:
             usleep(2000);   // 2ms, if nothing else yields
         }
         return nullptr; // Should never reach here
+    }
+
+    std::optional<param_type> search_parameter_(const std::string& name) const {
+        pthread_mutex_lock(&param_mutex_);
+        
+        auto it = parameters_map_.find(name);
+        std::optional<param_type> result = std::nullopt;
+        if (it != parameters_map_.end()) {
+            result = it->second;
+        }
+        
+        pthread_mutex_unlock(&param_mutex_);
+        return result;
     }
 };
 

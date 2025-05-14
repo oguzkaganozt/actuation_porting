@@ -34,11 +34,11 @@ public:
         if (stack_area && stack_size > 0) {
             int ret = pthread_attr_setstack(&timer_attr_, stack_area, stack_size);
             if (ret != 0) {
-                log_error("%s -> pthread_attr_setstack failed for timer thread: %s. Using default stack attributes.\n", node_name_.c_str(), strerror(ret));
+                log_error("%s -> pthread_attr_setstack failed for timer thread: %s. Exiting.\n", node_name_.c_str(), strerror(ret));
                 std::exit(1);
             }
         } else {
-            log_warn("%s -> Timer stack area/size not provided or invalid. Timer thread will use default stack attributes.\n", node_name_.c_str());
+            log_warn("%s -> Timer stack area/size not provided or invalid. Exiting.\n", node_name_.c_str());
             std::exit(1);
         }
     }
