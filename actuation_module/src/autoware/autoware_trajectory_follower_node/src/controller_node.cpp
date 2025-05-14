@@ -99,6 +99,29 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
       throw std::domain_error("[LongitudinalController] invalid algorithm");
   }
 
+  // Timer
+  {
+    const auto period_ms = ctrl_period*1000;
+    create_timer(period_ms, &Controller::callbackTimerControl, this);
+  }
+
+  // Subscribers
+    auto subscriber_steering_status = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
+                                                                &autoware_vehicle_msgs_msg_SteeringReport_desc,
+                                                                callbackSteeringStatus, this);
+    auto subscriber_trajectory = create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+                                                                &autoware_planning_msgs_msg_Trajectory_desc,
+                                                                callbackTrajectory, this);
+    auto subscriber_odometry = create_subscription<OdometryMsg>("/localization/kinematic_state",
+                                                                &nav_msgs_msg_Odometry_desc,
+                                                                callbackOdometry, this);
+    auto subscriber_acceleration = create_subscription<AccelWithCovarianceStampedMsg>("/localization/acceleration",
+                                                                &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
+                                                                callbackAcceleration, this);
+    auto subscriber_operation_mode_state = create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
+                                                                &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
+                                                                callbackOperationModeState, this);
+    
   // Publishers
   control_cmd_pub_ = create_publisher<ControlMsg>(
     "~/output/control_cmd", &autoware_control_msgs_msg_Control_desc);
@@ -116,35 +139,12 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   // }
   // published_time_publisher_ =
   //   std::make_unique<autoware::universe_utils::PublishedTimePublisher>(this);
-
-  // Timer
-  {
-    const auto period_ms = ctrl_period*1000;
-    create_timer(period_ms, &Controller::callbackTimerControl, this);
-  }
-
-  // Subscribers
-    auto subscriber = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
-                                                                &autoware_vehicle_msgs_msg_SteeringReport_desc,
-                                                                callbackSteeringStatus, this);
-    // auto subscriber_trajectory = create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
-    //                                                             &autoware_planning_msgs_msg_Trajectory_desc,
-    //                                                             callbackTrajectory);
-    // auto subscriber_odometry = create_subscription<OdometryMsg>("/localization/kinematic_state",
-    //                                                             &nav_msgs_msg_Odometry_desc,
-    //                                                             callbackOdometry);
-    // auto subscriber_acceleration = create_subscription<AccelWithCovarianceStampedMsg>("/localization/acceleration",
-    //                                                             &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
-    //                                                             callbackAcceleration);
-    // auto subscriber_operation_mode_state = create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
-    //                                                             &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
-    //                                                             callbackOperationModeState);
 }
 
 // SUBSCRIBER CALLBACKS
 void Controller::callbackSteeringStatus(SteeringReportMsg& msg, void* arg)
 {
-  log_debug("--------------------------------\n");
+  log_debug("-------STEERING STATUS------------\n");
   log_debug("Timestamp: %ld\n", Clock::toDouble(msg.stamp));
   log_debug("Received steering status: %f\n", msg.steering_tire_angle);
   log_debug("--------------------------------\n");
@@ -256,6 +256,8 @@ bool Controller::processData()
   is_ready &= getData(current_odometry_ptr_, "odometry");
   is_ready &= getData(current_operation_mode_ptr_, "operation mode");
 
+  log_debug("Data ready: %d\n", is_ready);
+
   return is_ready;
 }
 
@@ -277,28 +279,30 @@ bool Controller::isTimeOut(
 
 std::optional<trajectory_follower::InputData> Controller::createInputData()
 {
+  return {}; // TODO: DEBUG REMOVE
   if (!processData()) {
     log_info_throttle("Control is skipped since input data is not ready.");
     return {};
   }
 
   log_debug("Creating input data...\n");
-  return {};  //TODO: DEBUG REMOVE
 
-  // trajectory_follower::InputData input_data;
-  // input_data.current_trajectory = *current_trajectory_ptr_;
-  // input_data.current_odometry = *current_odometry_ptr_;
-  // input_data.current_steering = *current_steering_ptr_;
-  // input_data.current_accel = *current_accel_ptr_;
-  // input_data.current_operation_mode = *current_operation_mode_ptr_;
+  trajectory_follower::InputData input_data;
+  input_data.current_trajectory = *current_trajectory_ptr_;
+  input_data.current_odometry = *current_odometry_ptr_;
+  input_data.current_steering = *current_steering_ptr_;
+  input_data.current_accel = *current_accel_ptr_;
+  input_data.current_operation_mode = *current_operation_mode_ptr_;
 
-  // return input_data;
+  log_debug("Input data created\n");
+
+  return input_data;
 }
 
 void Controller::callbackTimerControl(void* arg)
 {
   log_debug("Callback timer control\n");
-  return;
+  return; // TODO: DEBUG REMOVE
   Controller* controller = static_cast<Controller*>(arg);
 
   // 1. create input data
@@ -307,6 +311,8 @@ void Controller::callbackTimerControl(void* arg)
     log_info_throttle("Control is skipped since input data is not ready.");
     return;
   }
+
+  return; // TODO: DEBUG REMOVE
 
   // 2. check if controllers are ready
   const bool is_lat_ready = controller->lateral_controller_->isReady(*input_data);

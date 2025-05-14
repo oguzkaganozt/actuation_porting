@@ -109,28 +109,26 @@ public:
     }
     
     void internal_on_data_available(dds_entity_t reader) {
-        T data_buffer[1];
-        void* samples[] = { data_buffer };
-        dds_sample_info_t info[1];
         int count;
+        static T msg;
+        void* msg_pointer = reinterpret_cast<void *>(&msg);
+        dds_sample_info_t info;
 
-        count = dds_take(reader, samples, info, 1, 1);
-
+        count = dds_take(reader, &msg_pointer, &info, 1, 1);
         if (count < 0) {
             if (count != DDS_RETCODE_NO_DATA && count != DDS_RETCODE_TRY_AGAIN) {
                  log_debug("Error: %s -> dds_take failed for topic %s: %s\n", 
                         node_name_.c_str(), topic_name_.c_str(), dds_strretcode(-count));
             }
         } else if (count > 0) {
-            if (info[0].valid_data) {
-                log_debug("%s -> Message received on topic: %s\n", node_name_.c_str(), topic_name_.c_str());
+            if (info.valid_data) {
                 pthread_mutex_lock(&data_queue_mutex_);
                 auto size = message_queue_.size();
                 if (size != 0) {
                     log_warn("%s -> Message queue contains %d messages for topic %s\n", 
                             node_name_.c_str(), size, topic_name_.c_str());
                 }
-                message_queue_.push_back(data_buffer[0]);
+                message_queue_.push_back(msg);
                 pthread_mutex_unlock(&data_queue_mutex_);
             }
         }

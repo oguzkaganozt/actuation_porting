@@ -55,7 +55,7 @@ inline static void init_config(struct ddsi_config & cfg)
   // cfg.multiple_recv_threads = DDSI_BOOLDEF_FALSE;
 
   // Buffers
-  cfg.rbuf_size = 16 * 1024;
+  cfg.rbuf_size = 24 * 1024;
   cfg.rmsg_chunk_size = 2 * 1204;
   cfg.max_msg_size = 1456;
 

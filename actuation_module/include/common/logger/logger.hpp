@@ -28,9 +28,9 @@ inline void vprint_color(const char * format, va_list args, const char * color) 
     sprintf(time_str + 8, ".%03ld", ms.count());
 
     // Print message with time and color
-    fprintf(stderr, "%s[%s] | ", color, time_str);
-    vfprintf(stderr, format, args);
-    fprintf(stderr, "%s", COLOR_RESET);
+    printf("%s[%s] | ", color, time_str);
+    vprintf(format, args);
+    printf("%s", COLOR_RESET);
 }
 
 inline void log_info(const char * format, ...) {
@@ -46,7 +46,7 @@ inline void log_warn(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    fprintf(stderr, "%sWARNING: ", COLOR_YELLOW);
+    printf("%sWARNING: ", COLOR_YELLOW);
     vprint_color(format, args, COLOR_YELLOW);
     va_end(args);
     #endif
@@ -56,7 +56,7 @@ inline void log_error(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    fprintf(stderr, "%sERROR: ", COLOR_RED);
+    printf("%sERROR: ", COLOR_RED);
     vprint_color(format, args, COLOR_RED);
     va_end(args);
     #endif
@@ -132,7 +132,7 @@ inline void log_warn_throttle(const char * msg, double interval_seconds=CONFIG_L
     pthread_mutex_unlock(&mutex_warn);
 
     if (should_print) {
-        fprintf(stderr, "%s", msg);
+        printf("%s", msg);
     }
 }
 
