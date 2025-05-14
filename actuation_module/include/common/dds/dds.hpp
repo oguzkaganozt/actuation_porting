@@ -6,10 +6,9 @@
 #include <vector>
 #include <dds/dds.h>
 
-#include "common/dds/dds_config.hpp"
+#include "common/dds/config.hpp"
 #include "common/dds/publisher.hpp"
 #include "common/dds/subscriber.hpp"
-#include "common/dds/isubscription_handler.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 

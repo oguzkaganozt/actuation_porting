@@ -6,10 +6,16 @@
 #include <deque>
 #include <pthread.h>
 
-#include "common/dds/dds_helper.hpp"
-#include "common/dds/isubscription_handler.hpp"
+#include "common/dds/helper.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
+
+class ISubscriptionHandler {
+public:
+    virtual ~ISubscriptionHandler() = default;
+    virtual bool is_data_available() = 0;
+    virtual void process_next_message() = 0;
+};
 
 template<typename T>
 using callback_subscriber = void (*)(T& msg, void* arg);

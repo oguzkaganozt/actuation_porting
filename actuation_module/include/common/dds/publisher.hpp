@@ -4,7 +4,7 @@
 #include <string>
 #include <dds/dds.h>
 
-#include "common/dds/dds_helper.hpp"
+#include "common/dds/helper.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 

@@ -6,7 +6,7 @@
 #define COLOR_RESET "\033[0m"
 
 #include <iostream>
-#include "common/dds/dds_network.hpp"
+#include "common/dds/network_config.hpp"
 #include "common/clock/clock.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
