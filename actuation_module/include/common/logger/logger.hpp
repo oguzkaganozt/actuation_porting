@@ -13,6 +13,9 @@
 #define COLOR_YELLOW "\033[33m"
 #define COLOR_RESET "\033[0m"
 
+#define log_info_throttle(msg, ...) common::logger::log_info_throttle_(__FILE__, __LINE__, msg, ##__VA_ARGS__)
+#define log_warn_throttle(msg, ...) common::logger::log_warn_throttle_(__FILE__, __LINE__, msg, ##__VA_ARGS__)
+
 namespace common::logger {
 
 inline void vprint_color(const char * format, va_list args, const char * color) {
@@ -28,12 +31,12 @@ inline void vprint_color(const char * format, va_list args, const char * color) 
     sprintf(time_str + 8, ".%03ld", ms.count());
 
     // Print message with time and color
-    printf("%s[%s] | ", color, time_str);
-    vprintf(format, args);
-    printf("%s", COLOR_RESET);
+    fprintf(stderr, "%s[%s] | ", color, time_str);
+    vfprintf(stderr, format, args);
+    fprintf(stderr, "%s", COLOR_RESET);
 }
 
-inline void log_info(const char * format, ...) {
+inline void log_success(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
@@ -42,11 +45,19 @@ inline void log_info(const char * format, ...) {
     #endif
 }
 
+inline void log_info(const char * format, ...) {
+    #if CONFIG_LOG_LEVEL >= 1
+    va_list args;
+    va_start(args, format);
+    vprint_color(format, args, COLOR_RESET);
+    va_end(args);
+    #endif
+}
+
 inline void log_warn(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    printf("%sWARNING: ", COLOR_YELLOW);
     vprint_color(format, args, COLOR_YELLOW);
     va_end(args);
     #endif
@@ -56,7 +67,6 @@ inline void log_error(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    printf("%sERROR: ", COLOR_RED);
     vprint_color(format, args, COLOR_RED);
     va_end(args);
     #endif
@@ -71,7 +81,7 @@ inline void log_debug(const char * format, ...) {
     #endif
 }
 
-inline void log_info_throttle(const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
+inline void log_info_throttle_(const char * file, int line, const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
 {
     using clock = std::chrono::steady_clock;
     using time_point = clock::time_point;
@@ -80,15 +90,15 @@ inline void log_info_throttle(const char * msg, double interval_seconds=CONFIG_L
     static pthread_mutex_t mutex_info = PTHREAD_MUTEX_INITIALIZER;
     static std::map<std::string, time_point> last_print_times;
 
-    const std::string msg_str(msg);
+    const std::string location_key = std::string(file) + ":" + std::to_string(line);
     const auto now = clock::now();
     bool should_print = false;
 
     pthread_mutex_lock(&mutex_info);
-    auto it = last_print_times.find(msg_str);
+    auto it = last_print_times.find(location_key);
     if (it == last_print_times.end()) {
         should_print = true;
-        last_print_times[msg_str] = now;
+        last_print_times[location_key] = now;
     } else {
         const duration time_since_last_print = now - it->second;
         if (time_since_last_print.count() >= interval_seconds) {
@@ -99,11 +109,11 @@ inline void log_info_throttle(const char * msg, double interval_seconds=CONFIG_L
     pthread_mutex_unlock(&mutex_info);
 
     if (should_print) {
-        printf("%s", msg);
+        log_info("%s\n", msg);
     }
 }
 
-inline void log_warn_throttle(const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
+inline void log_warn_throttle_(const char * file, int line, const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
 {
     using clock = std::chrono::steady_clock;
     using time_point = clock::time_point;
@@ -112,16 +122,16 @@ inline void log_warn_throttle(const char * msg, double interval_seconds=CONFIG_L
     static std::map<std::string, time_point> last_print_times_warn;
     static pthread_mutex_t mutex_warn = PTHREAD_MUTEX_INITIALIZER;
 
-    const std::string msg_str(msg);
+    const std::string location_key = std::string(file) + ":" + std::to_string(line);
     const auto now = clock::now();
     bool should_print = false;
 
     pthread_mutex_lock(&mutex_warn);
-    auto it = last_print_times_warn.find(msg_str);
+    auto it = last_print_times_warn.find(location_key);
 
     if (it == last_print_times_warn.end()) {
         should_print = true;
-        last_print_times_warn[msg_str] = now;
+        last_print_times_warn[location_key] = now;
     } else {
         const duration time_since_last_print = now - it->second;
         if (time_since_last_print.count() >= interval_seconds) {
@@ -132,10 +142,9 @@ inline void log_warn_throttle(const char * msg, double interval_seconds=CONFIG_L
     pthread_mutex_unlock(&mutex_warn);
 
     if (should_print) {
-        printf("%s", msg);
+        log_warn("%s\n", msg);
     }
 }
 
 } // namespace common::logger
-
 #endif  // COMMON__LOGGER_LOGGER_HPP_

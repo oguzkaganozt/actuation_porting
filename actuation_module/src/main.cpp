@@ -17,9 +17,9 @@ int main(void)
 {   
     autoware::motion::control::trajectory_follower_node::Controller* controller;
     
-    log_info("-----------------------------------------\n");
-    log_info("ARM - Autoware: Actuation Safety Island\n");
-    log_info("-----------------------------------------\n");
+    log_success("-----------------------------------------\n");
+    log_success("ARM - Autoware: Actuation Safety Island\n");
+    log_success("-----------------------------------------\n");
     log_info("Waiting for DHCP to get IP address...\n");
     sleep(7);
 
@@ -30,8 +30,8 @@ int main(void)
         std::exit(1);
     }
     else {
-        log_info("Time set using SNTP\n");
-        log_info("-----------------------------------------\n");
+        log_success("Time set using SNTP\n");
+        log_success("-----------------------------------------\n");
         sleep(1);
     }
 
@@ -52,8 +52,8 @@ int main(void)
             log_error("Failed to start Controller Node\n");
             std::exit(1);
         }
-        log_info("Controller Node Started\n");
-        log_info("-----------------------------------------\n");
+        log_success("Controller Node Started\n");
+        log_success("-----------------------------------------\n");
     }
     catch(const std::exception& e)
     {
@@ -61,8 +61,8 @@ int main(void)
         std::exit(1);
     }
 
-    log_info("Actuation Safety Island is Live\n");
-    log_info("-----------------------------------------\n");
+    log_success("Actuation Safety Island is Live\n");
+    log_success("-----------------------------------------\n");
 
     while (1) {
         sleep(1);
