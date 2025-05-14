@@ -288,9 +288,8 @@ private:
             }
 
             if (node->dds_.has_subscriptions()) {   // Check and execute the subscriptions callbacks
-                // node->dds_.execute_subscriptions();
+                node->dds_.execute_subscriptions();
             }
-            
             usleep(2000);   // 2ms, if nothing else yields
         }
         return nullptr; // Should never reach here

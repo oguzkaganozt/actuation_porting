@@ -3,8 +3,11 @@
 
 #include <memory>
 #include <string>
+#include <deque>
+#include <pthread.h>
 
 #include "common/dds/dds_helper.hpp"
+#include "common/dds/isubscription_handler.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 
@@ -12,28 +15,31 @@ template<typename T>
 using callback_subscriber = void (*)(T& msg, void* arg);
 
 template<typename T>
-class Subscriber {
+class Subscriber : public ISubscriptionHandler {
 public:
     Subscriber(const std::string& node_name, const std::string& topic_name, 
                 dds_entity_t dds_participant, dds_qos_t* dds_qos, 
                 const dds_topic_descriptor_t* topic_descriptor,
                 callback_subscriber<T> callback, void* arg)
             : node_name_(node_name)
+            , topic_name_(topic_name)
             , m_dds_participant(dds_participant)
             , callback_(callback)
             , arg_(arg)
+            , m_reader_entity(0)
     {
+        pthread_mutex_init(&data_queue_mutex_, nullptr);
+
         // Manipulate topic name and topic descriptor for ROS2
         std::string topic_name_ros2 = transformTopicName(topic_name);
         dds_topic_descriptor_t topic_descriptor_ros2 = transformTopicDescriptor(topic_descriptor);
-        topic_name_ = topic_name_ros2;
 
         // Create a DDS topic
         dds_entity_t topic = dds_create_topic(m_dds_participant, &topic_descriptor_ros2, 
-                                                topic_name_.c_str(), NULL, NULL);
+                                                topic_name_ros2.c_str(), NULL, NULL);
         if (topic < 0) {
             log_error("Error: %s -> dds_create_topic (%s): %s\n", 
-                   node_name_.c_str(), topic_name_.c_str(), dds_strretcode(-topic));
+                   node_name_.c_str(), topic_name_ros2.c_str(), dds_strretcode(-topic));
             return;
         }
 
@@ -41,26 +47,82 @@ public:
         dds_listener_t* listener = dds_create_listener(this);
         if (!listener) {
             log_error("Error: %s -> dds_create_listener\n", node_name_.c_str());
+            dds_delete(topic);
             return;
         }
-        dds_lset_data_available(listener, on_msg_dds);
+        dds_lset_data_available(listener, Subscriber<T>::on_msg_dds_static);
 
         // Create a DDS reader
-        dds_entity_t reader = dds_create_reader(m_dds_participant, topic, dds_qos, listener);
-        if (reader < 0) {
+        m_reader_entity = dds_create_reader(m_dds_participant, topic, dds_qos, listener);
+        if (m_reader_entity < 0) {
             log_error("Error: %s -> dds_create_reader (%s): %s\n", 
-                   node_name_.c_str(), topic_name.c_str(), dds_strretcode(-reader));
+                   node_name_.c_str(), topic_name_ros2.c_str(), dds_strretcode(-m_reader_entity));
             dds_delete_listener(listener);
+            dds_delete(topic);
             return;
         }
 
-        // Delete the listener explicitly //TODO: check if this is valid
-        dds_delete_listener(listener);
+        m_listener_ = listener;
 
-        pthread_mutex_init(&subscription_mutex_, nullptr);
-        pthread_cond_init(&subscription_cond_, nullptr);
+        log_info("%s -> Subscriber created for topic %s\n", node_name_.c_str(), topic_name_ros2.c_str());
+    }
 
-        log_info("%s -> Subscriber created for topic %s\n", node_name_.c_str(), topic_name_.c_str());
+    ~Subscriber() {
+        if (m_reader_entity != 0) {
+            dds_delete(m_reader_entity);
+        }
+        
+        if (m_listener_) {
+            dds_delete_listener(m_listener_);
+        }
+        pthread_mutex_destroy(&data_queue_mutex_);
+    }
+
+    bool is_data_available() override {
+        pthread_mutex_lock(&data_queue_mutex_);
+        bool available = !message_queue_.empty();
+        pthread_mutex_unlock(&data_queue_mutex_);
+        return available;
+    }
+
+    void process_next_message() override {
+        T msg_copy;
+        bool should_process = false;
+
+        pthread_mutex_lock(&data_queue_mutex_);
+        if (!message_queue_.empty()) {
+            msg_copy = message_queue_.front();
+            message_queue_.pop_front();
+            should_process = true;
+        }
+        pthread_mutex_unlock(&data_queue_mutex_);
+
+        if (should_process && callback_) {
+            callback_(msg_copy, arg_);
+        }
+    }
+    
+    void internal_on_data_available(dds_entity_t reader) {
+        T data_buffer[1];
+        void* samples[] = { data_buffer };
+        dds_sample_info_t info[1];
+        int count;
+
+        count = dds_take(reader, samples, info, 1, 1);
+
+        if (count < 0) {
+            if (count != DDS_RETCODE_NO_DATA && count != DDS_RETCODE_TRY_AGAIN) {
+                 log_debug("Error: %s -> dds_take failed for topic %s: %s\n", 
+                        node_name_.c_str(), topic_name_.c_str(), dds_strretcode(-count));
+            }
+        } else if (count > 0) {
+            if (info[0].valid_data) {
+                log_debug("%s -> Message received on topic: %s\n", node_name_.c_str(), topic_name_.c_str());
+                pthread_mutex_lock(&data_queue_mutex_);
+                message_queue_.push_back(data_buffer[0]);
+                pthread_mutex_unlock(&data_queue_mutex_);
+            }
+        }
     }
 
 private:
@@ -69,32 +131,20 @@ private:
     dds_entity_t m_dds_participant;
     callback_subscriber<T> callback_;
     void* arg_;
+    dds_entity_t m_reader_entity;
+    dds_listener_t* m_listener_{nullptr};
 
-    // Locking for main node thread
-    mutable pthread_mutex_t subscription_mutex_;
-    mutable pthread_cond_t subscription_cond_;
-    bool subscription_serve_signal_ = false;
-    
-    static void on_msg_dds(dds_entity_t reader, void * arg) {
-        Subscriber<T>* subscriber = static_cast<Subscriber<T>*>(arg);
-        static T msg;
-        void* msg_pointer = reinterpret_cast<void *>(&msg);
-        dds_sample_info_t info;
+    std::deque<T> message_queue_;
+    pthread_mutex_t data_queue_mutex_;
 
-        log_debug("%s -> Message received topic: %s\n", subscriber->node_name_.c_str(), subscriber->topic_name_.c_str());
-
-
-        // Take a message from the DDS reader and execute callback
-        dds_return_t rc = dds_take(reader, &msg_pointer, &info, 1, 1);
-        if (rc > 0 && info.valid_data) {
-            subscriber->callback_(msg, subscriber->arg_);
+    static void on_msg_dds_static(dds_entity_t reader, void* Ssubscriber_instance_as_void_ptr) {
+        Subscriber<T>* subscriber_instance = static_cast<Subscriber<T>*>(Ssubscriber_instance_as_void_ptr);
+        if (subscriber_instance) {
+            subscriber_instance->internal_on_data_available(reader);
+        } else {
+            log_error("Error: %s -> on_msg_dds_static called with null instance for reader %d\n", \
+                        "UnknownNode", reader);
         }
-        else if (rc < 0) {
-            // TODO: think about removing this as it is common to fail to take a message in the first place ?
-            log_debug("Error: %s -> dds_take failed: %s\n", 
-                    subscriber->node_name_.c_str(), dds_strretcode(-rc));
-        }
-
     }
 };
 
