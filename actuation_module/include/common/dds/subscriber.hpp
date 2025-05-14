@@ -69,7 +69,6 @@ public:
         }
 
         m_listener_ = listener;
-
         log_info("%s -> Subscriber created for topic %s\n", node_name_.c_str(), topic_name_ros2.c_str());
     }
 
@@ -146,8 +145,8 @@ private:
     std::deque<T> message_queue_;
     pthread_mutex_t data_queue_mutex_;
 
-    static void on_msg_dds_static(dds_entity_t reader, void* Ssubscriber_instance_as_void_ptr) {
-        Subscriber<T>* subscriber_instance = static_cast<Subscriber<T>*>(Ssubscriber_instance_as_void_ptr);
+    static void on_msg_dds_static(dds_entity_t reader, void* subscriber_ptr) {
+        Subscriber<T>* subscriber_instance = static_cast<Subscriber<T>*>(subscriber_ptr);
         if (subscriber_instance) {
             subscriber_instance->internal_on_data_available(reader);
         } else {
