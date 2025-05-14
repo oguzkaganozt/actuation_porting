@@ -20,7 +20,7 @@ int main(void)
     log_info("-----------------------------------------\n");
     log_info("ARM - Autoware: Actuation Safety Island\n");
     log_info("-----------------------------------------\n");
-    sleep(5);
+    sleep(7);
 
     // Setting time using SNTP
     log_info("Setting time using SNTP...\n");

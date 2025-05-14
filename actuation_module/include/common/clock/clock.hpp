@@ -43,8 +43,8 @@ public:
             return res;
         }
 
+        sleep(1);
         log_info("Time set using SNTP: %s\n", ctime(&tspec.tv_sec));
-
         return 0;
     }
 
