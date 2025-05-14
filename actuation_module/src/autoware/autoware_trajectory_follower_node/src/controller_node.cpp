@@ -297,8 +297,8 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
 
 void Controller::callbackTimerControl(void* arg)
 {
-  return;
   log_debug("Callback timer control\n");
+  return;
   Controller* controller = static_cast<Controller*>(arg);
 
   // 1. create input data

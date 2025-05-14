@@ -48,8 +48,8 @@ public:
     , param_mutex_(PTHREAD_MUTEX_INITIALIZER)
     , dds_(node_name)
     {
-        pthread_attr_init(&thread_attr_);
-        pthread_attr_setstack(&thread_attr_, stack_area, stack_size);
+        pthread_attr_init(&main_thread_attr_);
+        pthread_attr_setstack(&main_thread_attr_, stack_area, stack_size);
 
         timer_ = std::make_unique<Timer>(node_name_, timer_stack_area, timer_stack_size);
     }
@@ -61,7 +61,7 @@ public:
         stop();
 
         pthread_mutex_destroy(&param_mutex_);
-        pthread_attr_destroy(&thread_attr_);
+        pthread_attr_destroy(&main_thread_attr_);
     }
 
     /**
@@ -69,15 +69,15 @@ public:
      * @return 0 on success, negative value on failure
      */
     int spin() {
-        return pthread_create(&thread_, &thread_attr_, main_thread_entry_, this);
+        return pthread_create(&main_thread_, &main_thread_attr_, main_thread_entry_, this);
     }
     
     /**
      * @brief Stop the node thread
      */
     void stop() {
-        pthread_cancel(thread_);
-        pthread_join(thread_, nullptr);
+        pthread_cancel(main_thread_);
+        pthread_join(main_thread_, nullptr);
     }
 
     /** 
@@ -239,6 +239,7 @@ public:
      * @brief Create a timer
      * @param period_ms Period in milliseconds
      * @param callback Callback function
+     * @param arg Callback argument
      * @return true if timer was created, false otherwise
      */
     bool create_timer(uint32_t period_ms, void (*callback)(void*), void* arg = nullptr) {
@@ -246,7 +247,7 @@ public:
             log_error("%s -> Timer object not initialized!\n", node_name_.c_str());
             return false;
         }
-        return timer_->create(period_ms, callback, arg);
+        return timer_->start(period_ms, callback, arg);
     }
 
     /**
@@ -269,50 +270,39 @@ private:
     std::unordered_map<std::string, param_type> parameters_map_;
     mutable pthread_mutex_t param_mutex_;
 
-    // Thread
-    pthread_t thread_;
-    pthread_attr_t thread_attr_;
-
-    static void* main_thread_entry_(void* arg) {
-        Node* node = static_cast<Node*>(arg);
-        
-        while (1) {
-            // log_debug("Main thread entry\n"); // Can be too verbose
-
-            // Serve the timer if it's ready
-            if (node->timer_) { // Check if timer object exists
-                node->timer_->lock_mutex();
-                if (node->timer_->get_ready_flag()) { // Timer has signaled it's ready
-                    node->timer_->set_serve_signal(true); // Node signals timer to proceed
-                    node->timer_->signal_cond();          // Wake up timer thread if it's waiting
-
-                    // Wait for timer thread to finish its callback execution.
-                    // The timer thread sets serve_signal_ to false when it's done and signals.
-                    while (node->timer_->get_serve_signal()) {
-                        node->timer_->wait_cond(); // Wait for timer to signal completion
-                    }
-                    // ready_flag is reset by the timer thread itself after callback execution
-                }
-                node->timer_->unlock_mutex(); // Unlock in all cases
-            }
-
-            // Send serve signal to the subscription threads
-            // And wait for them to finish
-            for (auto& subscription : node->subscriptions_) {
-                subscription->execute();
-            }
-            // A small sleep might be useful here if the loop is too tight, depending on DDS behavior
-            // For example: usleep(1000); // 1ms, if nothing else yields
-        }
-        return nullptr; // Should not be reached
-    }
-
     // DDS
     DDS dds_;
     std::vector<std::shared_ptr<void>> subscriptions_;
     
     // Timer
     std::unique_ptr<Timer> timer_;
+
+    // Main thread
+    pthread_t main_thread_;
+    pthread_attr_t main_thread_attr_;
+
+    static void* main_thread_entry_(void* arg) {
+        Node* node = static_cast<Node*>(arg);
+        
+        while (1) {
+            // Check and execute the timer callback
+            if (node->timer_) {
+                if (node->timer_->is_ready()) {
+                    node->timer_->execute_callback();
+                }
+            }
+
+            // Check and execute the subscriptions callbacks
+            // for (auto& subscription : node->subscriptions_) {
+            //     subscription->execute();
+            // }
+            
+            // 2ms, if nothing else yields
+            usleep(2000);
+        }
+
+        return nullptr;
+    }
 };
 
 #endif  // COMMON__NODE_HPP_
