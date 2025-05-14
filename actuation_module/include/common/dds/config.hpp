@@ -25,7 +25,7 @@ static struct ddsi_config_network_interface_listelem cfg_iface
     0,
     const_cast<char *>(CONFIG_DDS_NETWORK_INTERFACE),
     nullptr,
-    1,  // prefer_multicast, TODO: Enabled multicast, check if this is required
+    1,  // prefer_multicast
     1,
     DDSI_BOOLDEF_DEFAULT, // multicast
     {1, 0}
@@ -50,13 +50,16 @@ inline static void init_config(struct ddsi_config & cfg)
 
   ddsi_config_init_default(&cfg);
 
-  // TODO: Check if this is required
-  // cfg.retransmit_merging = DDSI_REXMIT_MERGE_ALWAYS;
-  // cfg.multiple_recv_threads = DDSI_BOOLDEF_FALSE;
+  // Network interface
+  cfg.network_interfaces = &cfg_iface;
+
+  // Processing
+  cfg.retransmit_merging = DDSI_REXMIT_MERGE_ALWAYS;
+  // cfg.multiple_recv_threads = DDSI_BOOLDEF_FALSE;  // TODO: Check if this is required
 
   // Buffers
-  cfg.rbuf_size = 24 * 1024;
-  cfg.rmsg_chunk_size = 2 * 1204;
+  cfg.rbuf_size = 32 * 1024;
+  cfg.rmsg_chunk_size = 2 * 1024;
   cfg.max_msg_size = 1456;
 
   // Discovery
@@ -69,16 +72,13 @@ inline static void init_config(struct ddsi_config & cfg)
   // Trace
   cfg.tracefp = NULL;
   cfg.tracefile = const_cast<char *>("stderr");
-  #if CONFIG_DDS_LOG_LEVEL == 2
+#if CONFIG_DDS_LOG_LEVEL == 2
     cfg.tracemask = DDS_LC_ALL;
-  #elif CONFIG_DDS_LOG_LEVEL == 1
+#elif CONFIG_DDS_LOG_LEVEL == 1
     cfg.tracemask = DDS_LC_FATAL | DDS_LC_ERROR | DDS_LC_WARNING | DDS_LC_CONFIG ;
-  #else
+#else
     cfg.tracemask = 0;
-  #endif
-
-  // Network interface
-  cfg.network_interfaces = &cfg_iface;
+#endif
 
 #if defined(CONFIG_NET_CONFIG_PEER_IPV4_ADDR)
   if (sizeof(CONFIG_NET_CONFIG_PEER_IPV4_ADDR) > 1) {
@@ -86,15 +86,6 @@ inline static void init_config(struct ddsi_config & cfg)
     log_info("Adding peer: %s\n", CONFIG_NET_CONFIG_PEER_IPV4_ADDR);
   }
 #endif
-
-  // if (DDS_TRANSPORT_TYPE == DDSI_TRANS_TCP) {
-  //   cfg.transport_selector = DDSI_TRANS_TCP;
-  //   cfg.tcp_port = DDS_TCP_PORT;
-  //   log_info("Transport type: TCP, port: %d\n", DDS_TCP_PORT);
-  // } else {
-  //   cfg.transport_selector = DDSI_TRANS_UDP;
-  //   log_info("Transport type: UDP\n");
-  // }
 }
 
 #endif  // COMMON__DDS_CONFIG_HPP_
