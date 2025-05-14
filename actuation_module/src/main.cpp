@@ -20,6 +20,7 @@ int main(void)
     log_info("-----------------------------------------\n");
     log_info("ARM - Autoware: Actuation Safety Island\n");
     log_info("-----------------------------------------\n");
+    log_info("Waiting for DHCP to get IP address...\n");
     sleep(7);
 
     // Setting time using SNTP
