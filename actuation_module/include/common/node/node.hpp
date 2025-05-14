@@ -272,7 +272,6 @@ private:
 
     // DDS
     DDS dds_;
-    std::vector<std::shared_ptr<void>> subscriptions_;
     
     // Timer
     std::unique_ptr<Timer> timer_;
