@@ -23,16 +23,10 @@ int main(void)
     log_info("Waiting for DHCP to get IP address...\n");
     sleep(7);
 
-    // Setting time using SNTP
     log_info("Setting time using SNTP...\n");
     if (Clock::init_clock_via_sntp() < 0) {
         log_error("Failed to set time using SNTP\n");
         std::exit(1);
-    }
-    else {
-        log_success("Time set using SNTP\n");
-        log_success("-----------------------------------------\n");
-        sleep(1);
     }
 
     // TODO: we are not configuring the network as we are using DHCP and other configurations will be done by cyclonedds
