@@ -18,7 +18,7 @@
 
 namespace common::logger {
 
-inline void vprint_color(const char * format, va_list args, const char * color) {
+inline void vprint_color_(const char * format, va_list args, const char * color) {
     // Get current time with milliseconds
     auto now = std::chrono::system_clock::now();
     auto time_t_now = std::chrono::system_clock::to_time_t(now);
@@ -40,7 +40,7 @@ inline void log_success(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    vprint_color(format, args, COLOR_GREEN);
+    vprint_color_(format, args, COLOR_GREEN);
     va_end(args);
     #endif
 }
@@ -49,7 +49,7 @@ inline void log_info(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    vprint_color(format, args, COLOR_RESET);
+    vprint_color_(format, args, COLOR_RESET);
     va_end(args);
     #endif
 }
@@ -58,7 +58,7 @@ inline void log_warn(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    vprint_color(format, args, COLOR_YELLOW);
+    vprint_color_(format, args, COLOR_YELLOW);
     va_end(args);
     #endif
 }
@@ -67,7 +67,7 @@ inline void log_error(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 1
     va_list args;
     va_start(args, format);
-    vprint_color(format, args, COLOR_RED);
+    vprint_color_(format, args, COLOR_RED);
     va_end(args);
     #endif
 }
@@ -76,7 +76,7 @@ inline void log_debug(const char * format, ...) {
     #if CONFIG_LOG_LEVEL >= 2
     va_list args;
     va_start(args, format);
-    vprint_color(format, args, COLOR_RESET);
+    vprint_color_(format, args, COLOR_RESET);
     va_end(args);
     #endif
 }
