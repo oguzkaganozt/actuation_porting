@@ -88,10 +88,10 @@ inline void log_info_throttle_(const char * file, int line, const char * format,
     using duration = std::chrono::duration<double>;
 
     static pthread_mutex_t mutex_info = PTHREAD_MUTEX_INITIALIZER;
-    static std::map<std::string, time_point> last_print_times;
+    static std::map<std::pair<const char*, int>, time_point> last_print_times;
 
     const double interval_seconds = CONFIG_LOG_THROTTLE_RATE;
-    const std::string location_key = std::string(file) + ":" + std::to_string(line);
+    const auto location_key = std::make_pair(file, line);
     const auto now = clock::now();
     bool should_print = false;
 
@@ -99,12 +99,12 @@ inline void log_info_throttle_(const char * file, int line, const char * format,
     auto it = last_print_times.find(location_key);
     if (it == last_print_times.end()) {
         should_print = true;
-        last_print_times[location_key] = now;
+        last_print_times.emplace(location_key, now);
     } else {
         const duration time_since_last_print = now - it->second;
         if (time_since_last_print.count() >= interval_seconds) {
             should_print = true;
-            it->second = now; // Update last print time
+            it->second = now;
         }
     }
     pthread_mutex_unlock(&mutex_info);
@@ -125,11 +125,11 @@ inline void log_warn_throttle_(const char * file, int line, const char * format,
     using time_point = clock::time_point;
     using duration = std::chrono::duration<double>;
 
-    static std::map<std::string, time_point> last_print_times_warn;
+    static std::map<std::pair<const char*, int>, time_point> last_print_times_warn;
     static pthread_mutex_t mutex_warn = PTHREAD_MUTEX_INITIALIZER;
 
     const double interval_seconds = CONFIG_LOG_THROTTLE_RATE;
-    const std::string location_key = std::string(file) + ":" + std::to_string(line);
+    const auto location_key = std::make_pair(file, line);
     const auto now = clock::now();
     bool should_print = false;
 
@@ -138,12 +138,12 @@ inline void log_warn_throttle_(const char * file, int line, const char * format,
 
     if (it == last_print_times_warn.end()) {
         should_print = true;
-        last_print_times_warn[location_key] = now;
+        last_print_times_warn.emplace(location_key, now);
     } else {
         const duration time_since_last_print = now - it->second;
         if (time_since_last_print.count() >= interval_seconds) {
             should_print = true;
-            it->second = now; // Update last print time
+            it->second = now;
         }
     }
     pthread_mutex_unlock(&mutex_warn);

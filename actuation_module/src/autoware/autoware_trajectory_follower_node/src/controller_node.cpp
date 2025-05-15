@@ -232,7 +232,6 @@ Controller::LongitudinalControllerMode Controller::getLongitudinalControllerMode
   return LongitudinalControllerMode::INVALID;
 }
 
-//TODO: we are getting data from direct callbacks, maybe we can keep track of get data within each callback function
 bool Controller::processData()
 {
   bool is_ready = true;
