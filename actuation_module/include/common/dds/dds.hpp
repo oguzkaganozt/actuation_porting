@@ -48,6 +48,7 @@ public:
         // Reliable QoS
         m_dds_qos = dds_create_qos();
         dds_qset_reliability(m_dds_qos, DDS_RELIABILITY_RELIABLE, DDS_MSECS(30));
+        dds_qset_history(m_dds_qos, DDS_HISTORY_KEEP_LAST, 500);    // TODO: TUNE THIS
         log_info("%s -> DDS QoS created\n", node_name_.c_str());
     }
 
@@ -117,10 +118,8 @@ public:
      */
     void execute_subscriptions() {
         for (auto& sub_handler_ptr : subscriptions_) {
-            if (sub_handler_ptr) { // Check if the pointer is valid
-                // if (sub_handler_ptr->is_data_available()) {
-                    sub_handler_ptr->process_next_message();
-                // }
+            if (sub_handler_ptr) {
+                sub_handler_ptr->process_next_message();
             }
         }
     }
