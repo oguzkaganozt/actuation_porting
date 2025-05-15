@@ -118,9 +118,9 @@ public:
     void execute_subscriptions() {
         for (auto& sub_handler_ptr : subscriptions_) {
             if (sub_handler_ptr) { // Check if the pointer is valid
-                if (sub_handler_ptr->is_data_available()) {
+                // if (sub_handler_ptr->is_data_available()) {
                     sub_handler_ptr->process_next_message();
-                }
+                // }
             }
         }
     }
