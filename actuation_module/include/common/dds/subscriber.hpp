@@ -103,7 +103,8 @@ public:
         pthread_mutex_unlock(&data_queue_mutex_);
 
         if (should_process && callback_) {
-            // T msg = *static_cast<T*>(msg_ptr);
+            // T msg = *static_cast<const T*>(msg_ptr);
+            // callback_(&msg, arg_);
             callback_(static_cast<const T*>(msg_ptr), arg_);
         }
     }
@@ -114,6 +115,7 @@ public:
         dds_sample_info_t info;
 
         count = dds_take(reader, &msg_ptr, &info, 1, 1);
+        // count = dds_read(reader, &msg_ptr, &info, 1, 1);
         if (count < 0) {
             if (count != DDS_RETCODE_NO_DATA && count != DDS_RETCODE_TRY_AGAIN) {
                  log_debug("Error: %s -> dds_take failed for topic %s: %s\n", 
