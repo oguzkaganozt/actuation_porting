@@ -95,11 +95,11 @@ private:
 
   // Subscribers
   //TODO: we don't need to store the subscribers as lifetime of the node is same as the application
-  static void callbackSteeringStatus(SteeringReportMsg& msg, void* arg);
-  static void callbackOperationModeState(OperationModeStateMsg& msg, void* arg);
-  static void callbackOdometry(OdometryMsg& msg, void* arg);
-  static void callbackAcceleration(AccelWithCovarianceStampedMsg& msg, void* arg);
-  static void callbackTrajectory(TrajectoryMsg& msg, void* arg);
+  static void callbackSteeringStatus(const SteeringReportMsg* msg, void* arg);
+  static void callbackOperationModeState(const OperationModeStateMsg* msg, void* arg);
+  static void callbackOdometry(const OdometryMsg* msg, void* arg);
+  static void callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, void* arg);
+  static void callbackTrajectory(const TrajectoryMsg* msg, void* arg);
 
   // Current Data
   TrajectoryMsg* current_trajectory_ptr_;

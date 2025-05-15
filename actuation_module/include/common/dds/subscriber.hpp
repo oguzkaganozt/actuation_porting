@@ -18,7 +18,7 @@ public:
 };
 
 template<typename T>
-using callback_subscriber = void (*)(T& msg, void* arg);
+using callback_subscriber = void (*)(const T* msg, void* arg);
 
 template<typename T>
 class Subscriber : public ISubscriptionHandler {
@@ -91,29 +91,29 @@ public:
     }
 
     void process_next_message() override {
-        T msg_copy;
+        void* msg_ptr = nullptr;
         bool should_process = false;
 
         pthread_mutex_lock(&data_queue_mutex_);
         if (!message_queue_.empty()) {
-            msg_copy = message_queue_.front();
+            msg_ptr = message_queue_.front();
             message_queue_.pop_front();
             should_process = true;
         }
         pthread_mutex_unlock(&data_queue_mutex_);
 
         if (should_process && callback_) {
-            callback_(msg_copy, arg_);
+            // T msg = *static_cast<T*>(msg_ptr);
+            callback_(static_cast<const T*>(msg_ptr), arg_);
         }
     }
     
     void internal_on_data_available(dds_entity_t reader) {
         int count;
-        static T msg;
-        void* msg_pointer = reinterpret_cast<void *>(&msg);
+        static void* msg_ptr = nullptr;
         dds_sample_info_t info;
 
-        count = dds_take(reader, &msg_pointer, &info, 1, 1);
+        count = dds_take(reader, &msg_ptr, &info, 1, 1);
         if (count < 0) {
             if (count != DDS_RETCODE_NO_DATA && count != DDS_RETCODE_TRY_AGAIN) {
                  log_debug("Error: %s -> dds_take failed for topic %s: %s\n", 
@@ -127,7 +127,7 @@ public:
                     log_warn_throttle("%s -> %d unprocessed messages for topic %s\n", 
                             node_name_.c_str(), size, topic_name_.c_str());
                 }
-                message_queue_.push_back(msg);
+                message_queue_.push_back(msg_ptr);
                 pthread_mutex_unlock(&data_queue_mutex_);
             }
         }
@@ -142,7 +142,7 @@ private:
     dds_entity_t m_reader_entity;
     dds_listener_t* m_listener_{nullptr};
 
-    std::deque<T> message_queue_;
+    std::deque<void*> message_queue_;
     pthread_mutex_t data_queue_mutex_;
 
     static void on_msg_dds_static(dds_entity_t reader, void* subscriber_ptr) {
