@@ -8,6 +8,7 @@
 #include <time.h>
 #include <signal.h>
 #include <cerrno>
+#include <atomic>
 
 // Project headers
 #include "common/logger/logger.hpp"
@@ -25,7 +26,7 @@ public:
     : node_name_(node_name),
       timer_id_{0},
       timer_active_(false),
-      ready_flag_(false),
+      ready_flag_{false},
       handler_data_(nullptr)
     {
         pthread_mutex_init(&mutex_, nullptr);
@@ -95,7 +96,7 @@ public:
         }
 
         timer_active_ = true;
-        ready_flag_ = false;
+        ready_flag_.store(false, std::memory_order_release);
         pthread_mutex_unlock(&mutex_);
         log_info("%s -> Timer created and set with period %u ms\n", node_name_.c_str(), period_ms);
         return true;
@@ -113,7 +114,7 @@ public:
                 delete handler_data_;
                 handler_data_ = nullptr;
             }
-            ready_flag_ = false;
+            ready_flag_.store(false, std::memory_order_release);
         }
         pthread_mutex_unlock(&mutex_);
 
@@ -128,10 +129,7 @@ public:
      * @return true if the timer callback is ready, false otherwise.
      */
     bool is_ready() {
-        pthread_mutex_lock(&mutex_);
-        bool is_ready_flag = ready_flag_;
-        pthread_mutex_unlock(&mutex_);
-        return is_ready_flag;
+        return ready_flag_.load(std::memory_order_acquire);
     }
 
     /**
@@ -144,10 +142,10 @@ public:
         bool should_run = false;
 
         pthread_mutex_lock(&mutex_);
-        if (timer_active_ && ready_flag_ && handler_data_ && handler_data_->callback) {
+        if (timer_active_ && ready_flag_.load(std::memory_order_acquire) && handler_data_ && handler_data_->callback) {
             user_callback = handler_data_->callback;
             user_arg = handler_data_->arg;
-            ready_flag_ = false;
+            ready_flag_.store(false, std::memory_order_release);
             should_run = true;
         }
         pthread_mutex_unlock(&mutex_);
@@ -165,7 +163,7 @@ private:
     
     // Synchronization primitives
     pthread_mutex_t mutex_;
-    bool ready_flag_;
+    std::atomic<bool> ready_flag_;
 
     // Timer handler primitives
     TimerHandlerData* handler_data_;
@@ -189,10 +187,10 @@ private:
             return;
         } 
         
-        if (ready_flag_) {
-            log_warn_throttle("%s -> Timer overrun count %d.", node_name_.c_str(), overrun_counter++); 
+        bool expected_is_false = false;
+        if (!ready_flag_.compare_exchange_strong(expected_is_false, true, std::memory_order_acq_rel, std::memory_order_acquire)) {
+            log_warn_throttle("%s -> Timer overrun count %d.", node_name_.c_str(), overrun_counter++);
         }
-        ready_flag_ = true;
         pthread_mutex_unlock(&mutex_);
     }
 };
