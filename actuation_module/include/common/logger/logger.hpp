@@ -81,7 +81,7 @@ inline void log_debug(const char * format, ...) {
     #endif
 }
 
-inline void log_info_throttle_(const char * file, int line, const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
+inline void log_info_throttle_(const char * file, int line, const char * format, ...)
 {
     using clock = std::chrono::steady_clock;
     using time_point = clock::time_point;
@@ -90,6 +90,7 @@ inline void log_info_throttle_(const char * file, int line, const char * msg, do
     static pthread_mutex_t mutex_info = PTHREAD_MUTEX_INITIALIZER;
     static std::map<std::string, time_point> last_print_times;
 
+    const double interval_seconds = CONFIG_LOG_THROTTLE_RATE;
     const std::string location_key = std::string(file) + ":" + std::to_string(line);
     const auto now = clock::now();
     bool should_print = false;
@@ -109,11 +110,16 @@ inline void log_info_throttle_(const char * file, int line, const char * msg, do
     pthread_mutex_unlock(&mutex_info);
 
     if (should_print) {
-        log_info("%s\n", msg);
+        char formatted_msg_buffer[1024];
+        va_list args;
+        va_start(args, format);
+        vsnprintf(formatted_msg_buffer, sizeof(formatted_msg_buffer), format, args);
+        va_end(args);
+        log_info("%s\n", formatted_msg_buffer);
     }
 }
 
-inline void log_warn_throttle_(const char * file, int line, const char * msg, double interval_seconds=CONFIG_LOG_THROTTLE_RATE)
+inline void log_warn_throttle_(const char * file, int line, const char * format, ...)
 {
     using clock = std::chrono::steady_clock;
     using time_point = clock::time_point;
@@ -122,6 +128,7 @@ inline void log_warn_throttle_(const char * file, int line, const char * msg, do
     static std::map<std::string, time_point> last_print_times_warn;
     static pthread_mutex_t mutex_warn = PTHREAD_MUTEX_INITIALIZER;
 
+    const double interval_seconds = CONFIG_LOG_THROTTLE_RATE;
     const std::string location_key = std::string(file) + ":" + std::to_string(line);
     const auto now = clock::now();
     bool should_print = false;
@@ -142,7 +149,12 @@ inline void log_warn_throttle_(const char * file, int line, const char * msg, do
     pthread_mutex_unlock(&mutex_warn);
 
     if (should_print) {
-        log_warn("%s\n", msg);
+        char formatted_msg_buffer[1024];
+        va_list args;
+        va_start(args, format);
+        vsnprintf(formatted_msg_buffer, sizeof(formatted_msg_buffer), format, args);
+        va_end(args);
+        log_warn("%s\n", formatted_msg_buffer);
     }
 }
 

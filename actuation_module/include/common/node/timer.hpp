@@ -180,15 +180,18 @@ private:
     }
 
     void instance_timer_handler() {
-        pthread_mutex_lock(&mutex_);
+        static int overrun_counter = 0;
 
+        pthread_mutex_lock(&mutex_);
         if (!timer_active_) {
             log_warn("%s -> Timer callback called while timer is not active.\n", node_name_.c_str());
             pthread_mutex_unlock(&mutex_);
             return;
-        }
+        } 
         
-        if (ready_flag_) { log_warn("%s -> Timer overrun detected.\n", node_name_.c_str()); }
+        if (ready_flag_) {
+            log_warn_throttle("%s -> Timer overrun count %d.", node_name_.c_str(), overrun_counter++); 
+        }
         ready_flag_ = true;
         pthread_mutex_unlock(&mutex_);
     }

@@ -124,7 +124,7 @@ public:
                 pthread_mutex_lock(&data_queue_mutex_);
                 auto size = message_queue_.size();
                 if (size != 0) {
-                    log_warn("%s -> Message queue contains %d messages for topic %s\n", 
+                    log_warn_throttle("%s -> %d unprocessed messages for topic %s\n", 
                             node_name_.c_str(), size, topic_name_.c_str());
                 }
                 message_queue_.push_back(msg);
