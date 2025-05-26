@@ -16,7 +16,7 @@ services:
       sensor_model:=sample_sensor_kit
       rviz:=false
 
-  control-module:
+  actuation-module:
     image: ghcr.io/autowarefoundation/autoware:universe-20250207
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
