@@ -336,12 +336,10 @@ void Controller::callbackTimerControl(void* arg)
   out.longitudinal = lon_out.control_cmd;
   controller->control_cmd_pub_->publish(out);
 
-  //TODO: we can enable this again
+  //TODO: we are not publishing these for the sake of simplicity
   // // 6. publish debug
   // published_time_publisher_->publish_if_subscribed(control_cmd_pub_, out.stamp);
   // publishDebugMarker(*input_data, lat_out);
-
-  //TODO: we can enable this again
   // // 7. publish experimental topic
   // if (enable_control_cmd_horizon_pub_) {
   //   const auto control_horizon =
@@ -361,7 +359,7 @@ void Controller::publishProcessingTime(
   pub->publish(msg);
 }
 
-// TODO: we can enable this again
+// TODO: we are not publishing these for the sake of simplicity
 // void Controller::publishDebugMarker(
 //   const trajectory_follower::InputData & input_data,
 //   const trajectory_follower::LateralOutput & lat_out) const
@@ -390,7 +388,6 @@ void Controller::publishProcessingTime(
 //   debug_marker_pub_->publish(debug_marker_array);
 // }
 
-// TODO: We will not publish control_horizon to keep it simple
 // std::optional<ControlHorizonMsg> Controller::mergeLatLonHorizon(
 //   const LateralHorizon & lateral_horizon, const LongitudinalHorizon & longitudinal_horizon,
 //   const double & stamp)
