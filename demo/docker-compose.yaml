@@ -27,9 +27,7 @@ services:
       - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
     command: >
       ros2 launch /autoware/control-module.launch.xml
-      map_path:=/root/autoware_map
       vehicle_model:=sample_vehicle
-      sensor_model:=sample_sensor_kit
   
   visualizer:
     build:
