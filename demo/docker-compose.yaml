@@ -39,3 +39,5 @@ services:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
       - ROS_DOMAIN_ID=2
       - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
+    ports:
+      - 6080:6080
