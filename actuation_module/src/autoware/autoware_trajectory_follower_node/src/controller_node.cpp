@@ -142,79 +142,83 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
 }
 
 // SUBSCRIBER CALLBACKS
-void Controller::callbackSteeringStatus(const SteeringReportMsg* msg, void* arg)
-{
-  static int count = 0;
-  log_debug("-------STEERING STATUS----IDX %d----\n", count++);
-  log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
-  log_debug("Received steering status: %f\n", msg->steering_tire_angle);
-  log_debug("--------------------------------\n");
+void Controller::callbackSteeringStatus(const SteeringReportMsg* msg, void* arg) {
+  // static int count = 0;
+  // log_debug("-------STEERING STATUS----IDX %d----\n", count++);
+  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
+  // log_debug("Received steering status: %f\n", msg->steering_tire_angle);
+  // log_debug("--------------------------------\n");
 
   // Put data into state pointers
-  // Controller* controller = static_cast<Controller*>(arg);
-  // controller->current_steering_ptr_ = &msg;
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_steering_ptr_ = msg;
 }
 
 void Controller::callbackOperationModeState(const OperationModeStateMsg* msg, void* arg) {
-    // log_debug("\n------ OPERATION MODE STATE ------\n");
-    // log_debug("Timestamp: %d\n", Clock::toDouble(msg.stamp));
-    // log_debug("Mode: %d\n", msg.mode);
-    // log_debug("Autoware control enabled: %d\n", msg.is_autoware_control_enabled);
-    // log_debug("In transition: %d\n", msg.is_in_transition);
-    // log_debug("-------------------------------\n");
+  // static int count = 0;
+  // log_debug("-------OPERATION MODE STATE----IDX %d----\n", count++);
+  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
+  // log_debug("Mode: %d\n", msg->mode);
+  // log_debug("Autoware control enabled: %d\n", msg->is_autoware_control_enabled);
+  // log_debug("In transition: %d\n", msg->is_in_transition);
+  // log_debug("--------------------------------\n");
 
-    // Put data into state pointers
-    // Controller* controller = static_cast<Controller*>(arg);
-    // controller->current_operation_mode_ptr_ = &msg;
+  // Put data into state pointers
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_operation_mode_ptr_ = msg;
 }
 
 void Controller::callbackOdometry(const OdometryMsg* msg, void* arg) {
-    // log_debug("\n------ ODOMETRY ------\n");
-    // log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
-    // log_debug("Position: %lf, %lf, %lf\n", msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z);
-    // log_debug("Linear Twist: %lf, %lf, %lf\n", msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z);
-    // log_debug("-------------------------------\n");
+  // static int count = 0;
+  // log_debug("-------ODOMETRY----IDX %d----\n", count++);
+  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
+  // log_debug("Position: %lf, %lf, %lf\n", msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
+  // log_debug("Linear Twist: %lf, %lf, %lf\n", msg->twist.twist.linear.x, msg->twist.twist.linear.y, msg->twist.twist.linear.z);
+  // log_debug("-------------------------------\n");
 
-    // Put data into state pointers
-    // Controller* controller = static_cast<Controller*>(arg);
-    // controller->current_odometry_ptr_ = &msg;
+  // Put data into state pointers
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_odometry_ptr_ = msg;
 }
 
 void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, void* arg) {
-    // log_debug("\n------ ACCELERATION ------\n");
-    // log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
-    // log_debug("Linear acceleration: %lf, %lf, %lf\n", msg.accel.accel.linear.x, msg.accel.accel.linear.y, msg.accel.accel.linear.z);
-    // log_debug("Angular acceleration: %lf, %lf, %lf\n", msg.accel.accel.angular.x, msg.accel.accel.angular.y, msg.accel.accel.angular.z);
-    // log_debug("-------------------------------\n");
+  // static int count = 0;
+  // log_debug("-------ACCELERATION----IDX %d----\n", count++);
+  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
+  // log_debug("Linear acceleration: %lf, %lf, %lf\n", msg->accel.accel.linear.x, msg->accel.accel.linear.y, msg->accel.accel.linear.z);
+  // log_debug("Angular acceleration: %lf, %lf, %lf\n", msg->accel.accel.angular.x, msg->accel.accel.angular.y, msg->accel.accel.angular.z);
+  // log_debug("-------------------------------\n");
 
-    // Put data into state pointers
-    // Controller* controller = static_cast<Controller*>(arg);
-    // controller->current_accel_ptr_ = &msg;
+  // Put data into state pointers
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_accel_ptr_ = msg;
 }
 
 void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
-    // log_debug("\n------ TRAJECTORY ------\n");
-    // log_debug("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
-    // log_debug("Trajectory size: %d\n", msg.points._length);
-    // auto points = wrap(msg.points);
-    // size_t count = 0;
-    // for (auto point : points) {
-    //     log_debug("--------------------------------\n");
-    //     if (count >= 10) break;
-    //     log_debug("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
-    //     log_debug("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
-    //     log_debug("Accelleration: %lf\n", point.acceleration_mps2);
-    //     log_debug("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
-    //     count++;
-    // }
-    // if (points.size() > 10) {
-    //     log_debug("... and %zu more points\n", points.size() - 10);
-    // }
-    // log_debug("-------------------------------\n");
+  // static int count = 0;
+  // log_debug("-------TRAJECTORY----IDX %d----\n", count++);
+  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->header.stamp));
+  // log_debug("Trajectory size: %d\n", msg->points._length);
+  // log_debug("-------------------------------\n");
+  // auto points = wrap(msg.points);
+  // size_t count = 0;
+  // for (auto point : points) {
+  //     log_debug("--------------------------------\n");
+  //     if (count >= 10) break;
+  //     log_debug("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
+  //     log_debug("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
+  //     log_debug("Accelleration: %lf\n", point.acceleration_mps2);
+  //     log_debug("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
+  //     count++;
+  // }
+  // if (points.size() > 10) {
+  //     log_debug("... and %zu more points\n", points.size() - 10);
+  // }
+  // log_debug("-------------------------------\n");
 
-    // Put data into state pointers
-    // Controller* controller = static_cast<Controller*>(arg);
-    // controller->current_trajectory_ptr_ = &msg;
+  // Put data into state pointers
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_trajectory_ptr_ = msg;
 }
 
 Controller::LateralControllerMode Controller::getLateralControllerMode(
@@ -303,7 +307,6 @@ void Controller::callbackTimerControl(void* arg)
   }
 
   log_debug("Input data created\n");
-  return; // TODO: DEBUG REMOVE
 
   // 2. check if controllers are ready
   const bool is_lat_ready = controller->lateral_controller_->isReady(*input_data);
@@ -312,6 +315,9 @@ void Controller::callbackTimerControl(void* arg)
     log_info_throttle("Control is skipped since lateral and/or longitudinal controllers are not ready to run.");
     return;
   }
+
+  log_debug("Controllers are ready\n");
+  std::exit(0); // TODO: DEBUG REMOVE
 
   // 3. run controllers
   controller->stop_watch_.tic("lateral");
