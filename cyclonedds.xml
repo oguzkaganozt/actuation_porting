@@ -12,8 +12,8 @@
             <AllowMulticast>spdp</AllowMulticast>
             <MaxMessageSize>1456B</MaxMessageSize> <!--Accommodate for Zephyr's MTU-->
             <Interfaces>
-                <!-- <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/> -->
-                <NetworkInterface autodetermine="true" priority="default" multicast="default"/>
+                <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
+                <!-- <NetworkInterface autodetermine="true" priority="default" multicast="default"/> -->
             </Interfaces>
         </General>
         <Sizing>

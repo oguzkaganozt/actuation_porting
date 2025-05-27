@@ -143,11 +143,11 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
 
 // SUBSCRIBER CALLBACKS
 void Controller::callbackSteeringStatus(const SteeringReportMsg* msg, void* arg) {
-  // static int count = 0;
-  // log_debug("-------STEERING STATUS----IDX %d----\n", count++);
-  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
-  // log_debug("Received steering status: %f\n", msg->steering_tire_angle);
-  // log_debug("--------------------------------\n");
+  static int count = 0;
+  log_debug("-------STEERING STATUS----IDX %d----\n", count++);
+  log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
+  log_debug("Received steering status: %f\n", msg->steering_tire_angle);
+  log_debug("--------------------------------\n");
 
   // Put data into state pointers
   Controller* controller = static_cast<Controller*>(arg);
