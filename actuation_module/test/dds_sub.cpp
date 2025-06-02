@@ -31,43 +31,43 @@ static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
     It is used to validate the message conversion between ROS2 and Zephyr
     It is used to validate the sequence wrapper    
 */
-static void handle_steering_report(SteeringReportMsg& msg, void* arg) {
+static void handle_steering_report(const SteeringReportMsg* msg, void* arg) {
     log_info("\n------ STEERING REPORT ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg.stamp));
-    log_info("Steering tire angle: %lf\n", msg.steering_tire_angle);
+    log_info("Timestamp: %d\n", Clock::toDouble(msg->stamp));
+    log_info("Steering tire angle: %lf\n", msg->steering_tire_angle);
     log_info("-------------------------------\n");
 }
 
-static void handle_operation_mode_state(OperationModeStateMsg& msg, void* arg) {
+static void handle_operation_mode_state(const OperationModeStateMsg* msg, void* arg) {
     log_info("\n------ OPERATION MODE STATE ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg.stamp));
-    log_info("Mode: %d\n", msg.mode);
-    log_info("Autoware control enabled: %d\n", msg.is_autoware_control_enabled);
-    log_info("In transition: %d\n", msg.is_in_transition);
+    log_info("Timestamp: %d\n", Clock::toDouble(msg->stamp));
+    log_info("Mode: %d\n", msg->mode);
+    log_info("Autoware control enabled: %d\n", msg->is_autoware_control_enabled);
+    log_info("In transition: %d\n", msg->is_in_transition);
     log_info("-------------------------------\n");
 }
 
-static void handle_odometry(OdometryMsg& msg, void* arg) {
+static void handle_odometry(const OdometryMsg* msg, void* arg) {
     log_info("\n------ ODOMETRY ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
-    log_info("Position: %lf, %lf, %lf\n", msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z);
-    log_info("Linear Twist: %lf, %lf, %lf\n", msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z);
+    log_info("Timestamp: %d\n", Clock::toDouble(msg->header.stamp));
+    log_info("Position: %lf, %lf, %lf\n", msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
+    log_info("Linear Twist: %lf, %lf, %lf\n", msg->twist.twist.linear.x, msg->twist.twist.linear.y, msg->twist.twist.linear.z);
     log_info("-------------------------------\n");
 }
 
-static void handle_acceleration(AccelerationMsg& msg, void* arg) {
+static void handle_acceleration(const AccelerationMsg* msg, void* arg) {
     log_info("\n------ ACCELERATION ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
-    log_info("Linear acceleration: %lf, %lf, %lf\n", msg.accel.accel.linear.x, msg.accel.accel.linear.y, msg.accel.accel.linear.z);
-    log_info("Angular acceleration: %lf, %lf, %lf\n", msg.accel.accel.angular.x, msg.accel.accel.angular.y, msg.accel.accel.angular.z);
+    log_info("Timestamp: %d\n", Clock::toDouble(msg->header.stamp));
+    log_info("Linear acceleration: %lf, %lf, %lf\n", msg->accel.accel.linear.x, msg->accel.accel.linear.y, msg->accel.accel.linear.z);
+    log_info("Angular acceleration: %lf, %lf, %lf\n", msg->accel.accel.angular.x, msg->accel.accel.angular.y, msg->accel.accel.angular.z);
     log_info("-------------------------------\n");
 }
 
-static void handle_trajectory(TrajectoryMsg& msg, void* arg) {
+static void handle_trajectory(const TrajectoryMsg* msg, void* arg) {
     log_info("\n------ TRAJECTORY ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg.header.stamp));
-    log_info("Trajectory size: %d\n", msg.points._length);
-    auto points = wrap(msg.points);
+    log_info("Timestamp: %d\n", Clock::toDouble(msg->header.stamp));
+    log_info("Trajectory size: %d\n", msg->points._length);
+    auto points = wrap(msg->points);
     size_t count = 0;
     for (auto point : points) {
         log_info("--------------------------------\n");

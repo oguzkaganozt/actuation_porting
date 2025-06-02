@@ -67,10 +67,10 @@ static TestState g_state;  // Global test state
     } while (0)
 
 // Callback handlers
-static void handle_pose(PoseStampedMsg& msg, void* node) {
+static void handle_pose(const PoseStampedMsg* msg, void* node) {
     pthread_mutex_lock(&g_state.mutex);
-    g_state.pose = {true, msg.pose.position.x, msg.pose.position.y, msg.pose.position.z};
-    log_info("Received pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
+    g_state.pose = {true, msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
+    log_info("Received pose: (%.1f, %.1f, %.1f)\n", msg->pose.position.x, msg->pose.position.y, msg->pose.position.z);
     pthread_mutex_unlock(&g_state.mutex);
 }
 
