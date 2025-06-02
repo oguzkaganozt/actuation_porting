@@ -109,22 +109,22 @@ int main(void) {
     Node node("dds_test_sub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
 
     // Create test timer
-    node.create_timer(500, callbackTimer, &node);
+    // node.create_timer(500, callbackTimer, &node);
 
     // Create subscribers
-    auto subscriber = node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
+    node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
                                                                 &autoware_vehicle_msgs_msg_SteeringReport_desc,
                                                                 handle_steering_report, &node);
-    auto subscriber_trajectory = node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+    node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
                                                                 &autoware_planning_msgs_msg_Trajectory_desc,
                                                                 handle_trajectory, &node);
-    auto subscriber_odometry = node.create_subscription<OdometryMsg>("/localization/kinematic_state",
+    node.create_subscription<OdometryMsg>("/localization/kinematic_state",
                                                                 &nav_msgs_msg_Odometry_desc,
                                                                 handle_odometry, &node);
-    auto subscriber_acceleration = node.create_subscription<AccelerationMsg>("/localization/acceleration",
+    node.create_subscription<AccelerationMsg>("/localization/acceleration",
                                                                 &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
                                                                 handle_acceleration, &node);
-    auto subscriber_operation_mode_state = node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
+    node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
                                                                 &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
                                                                 handle_operation_mode_state, &node);
 
