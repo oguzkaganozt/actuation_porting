@@ -282,8 +282,9 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 {
   log_debug("-------MPC-3-1-10--\n", 0);
   TrajectoryMsg output;
-  auto sequence_output_points = wrap(output.points);
-  sequence_output_points.reserve(input.size()/2);
+  
+  // Create an owning sequence instead of wrapping output.points
+  Sequence<decltype(output.points)> sequence_output_points(input.size());
   TrajectoryPointMsg p;
 
   log_debug("-------MPC-3-1-11--\n", 0);
@@ -297,8 +298,9 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
     p.pose.orientation = autoware::universe_utils::createQuaternionFromYaw(input.yaw.at(i));
     p.longitudinal_velocity_mps =
       static_cast<decltype(p.longitudinal_velocity_mps)>(input.vx.at(i));
-    log_debug("-------MPC-3-1-12-2--\n", 0);
+    log_debug("-------START-CASE--\n", 0);
     sequence_output_points.push_back(p);
+    log_debug("-------END-CASE--\n", 0);
     if (sequence_output_points.size() == sequence_output_points.max_size()) {
       break;
     }
@@ -306,6 +308,23 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
   }
 
   log_debug("-------MPC-3-1-13--\n", 0);
+  
+  // Copy data from owning sequence to output.points
+  auto* seq = sequence_output_points.get_sequence();
+  if (seq && seq->_buffer && seq->_length > 0) {
+    // Initialize output.points properly
+    output.points._length = seq->_length;
+    output.points._maximum = seq->_length;
+    output.points._buffer = static_cast<decltype(output.points._buffer)>(
+      malloc(seq->_length * sizeof(decltype(*output.points._buffer))));
+    
+    if (output.points._buffer) {
+      // Copy all the trajectory points
+      for (size_t i = 0; i < seq->_length; ++i) {
+        output.points._buffer[i] = seq->_buffer[i];
+      }
+    }
+  }
 
   return output;
 }

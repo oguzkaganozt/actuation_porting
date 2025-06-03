@@ -40,9 +40,15 @@ private:
             std::exit(EXIT_FAILURE);
             return false;
         } else {
-            if (!sequence || !sequence->_buffer) {
-                log_error("Invalid sequence state\n");
+            if (!sequence) {
+                log_error("Invalid sequence state - null sequence pointer\n");
                 std::exit(EXIT_FAILURE);
+            }
+            
+            // Handle uninitialized sequence (normal case for DDS sequences)
+            if (!sequence->_buffer) {
+                sequence->_length = 0;
+                sequence->_maximum = 0;
             }
             
             if (required_capacity <= sequence->_maximum) {
@@ -289,12 +295,18 @@ public:
     
     // Add move-enabled push_back for better performance with movable types
     bool push_back(value_type&& value) {
-        if (!sequence || !ensure_capacity(sequence->_length + 1)) {
-            log_error("Failed to push_back() - move\n");
+        if constexpr (is_const_type) {
+            log_error("Cannot modify const sequence\n");
             std::exit(EXIT_FAILURE);
+            return false;
+        } else {
+            if (!sequence || !ensure_capacity(sequence->_length + 1)) {
+                log_error("Failed to push_back() - move\n");
+                std::exit(EXIT_FAILURE);
+            }
+            sequence->_buffer[sequence->_length++] = std::move(value);
+            return true;
         }
-        sequence->_buffer[sequence->_length++] = std::move(value);
-        return true;
     }
     
     bool pop_back() {
