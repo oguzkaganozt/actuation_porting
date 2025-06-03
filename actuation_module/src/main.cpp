@@ -23,11 +23,12 @@ int main(void)
     log_info("Waiting for DHCP to get IP address...\n");
     sleep(7);
 
-    log_info("Setting time using SNTP...\n");
-    if (Clock::init_clock_via_sntp() < 0) {
-        log_error("Failed to set time using SNTP\n");
-        std::exit(1);
-    }
+    // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
+    // log_info("Setting time using SNTP...\n");
+    // if (Clock::init_clock_via_sntp() < 0) {
+    //     log_error("Failed to set time using SNTP\n");
+    //     std::exit(1);
+    // }
 
     // TODO: we are not configuring the network as we are using DHCP and other configurations will be done by cyclonedds
     // log_info("Configuring Network...\n");

@@ -97,19 +97,20 @@ int main(void) {
     log_info("Waiting for Network interface to be ready\n");
     sleep(5);
 
-    // Setting time using SNTP
-    if (Clock::init_clock_via_sntp() < 0) {
-        log_error("Failed to set time using SNTP\n");
-    }
-    else {
-        log_info("Time set using SNTP\n");
-    }
+    // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
+    // // Setting time using SNTP
+    // if (Clock::init_clock_via_sntp() < 0) {
+    //     log_error("Failed to set time using SNTP\n");
+    // }
+    // else {
+    //     log_info("Time set using SNTP\n");
+    // }
     
     // Create a node
     Node node("dds_test_sub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
 
     // Create test timer
-    // node.create_timer(500, callbackTimer, &node);
+    node.create_timer(500, callbackTimer, &node);
 
     // Create subscribers
     node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
