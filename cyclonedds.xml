@@ -12,7 +12,7 @@
             <AllowMulticast>spdp</AllowMulticast>
             <MaxMessageSize>1456B</MaxMessageSize> <!--Accommodate for Zephyr's MTU-->
             <Interfaces>
-                <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
+                <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>    <!-- TODO: Using VPN interface -->
                 <!-- <NetworkInterface autodetermine="true" priority="default" multicast="default"/> -->
             </Interfaces>
         </General>
@@ -24,10 +24,10 @@
             <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex>
             <ParticipantIndex>auto</ParticipantIndex>
             <!-- <Peers> -->
-                <!-- <Peer Address="10.11.0.1" /> IP of the remote machine, should not be needed in case of local network -->
+                <!-- <Peer Address="10.11.0.1" /> --> <!-- IP of the remote machine, should not be needed in case of local network -->
             <!-- </Peers> -->
         </Discovery>
-        <!-- <Tracing>
+        <!-- <Tracing>  <!-- Uncomment this when debugging -->
             <AppendToFile>true</AppendToFile>
             <Category>trace</Category>
             <Verbosity>finest</Verbosity>
