@@ -143,15 +143,15 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
 
 // SUBSCRIBER CALLBACKS
 void Controller::callbackSteeringStatus(const SteeringReportMsg* msg, void* arg) {
-  static int count = 0;
-  log_debug("-------STEERING STATUS----IDX %d----\n", count++);
-  log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
-  log_debug("Received steering status: %f\n", msg->steering_tire_angle);
-  log_debug("--------------------------------\n");
+  // static int count = 0;
+  // log_debug("-------STEERING STATUS----IDX %d----\n", count++);
+  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->stamp));
+  // log_debug("Received steering status: %f\n", msg->steering_tire_angle);
+  // log_debug("--------------------------------\n");
 
   // Put data into state pointers
-  // Controller* controller = static_cast<Controller*>(arg);
-  // controller->current_steering_ptr_ = msg;
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_steering_ptr_ = msg;
 }
 
 void Controller::callbackOperationModeState(const OperationModeStateMsg* msg, void* arg) {
@@ -164,8 +164,8 @@ void Controller::callbackOperationModeState(const OperationModeStateMsg* msg, vo
   // log_debug("--------------------------------\n");
 
   // Put data into state pointers
-  // Controller* controller = static_cast<Controller*>(arg);
-  // controller->current_operation_mode_ptr_ = msg;
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_operation_mode_ptr_ = msg;
 }
 
 void Controller::callbackOdometry(const OdometryMsg* msg, void* arg) {
@@ -177,8 +177,8 @@ void Controller::callbackOdometry(const OdometryMsg* msg, void* arg) {
   // log_debug("-------------------------------\n");
 
   // Put data into state pointers
-  // Controller* controller = static_cast<Controller*>(arg);
-  // controller->current_odometry_ptr_ = msg;
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_odometry_ptr_ = msg;
 }
 
 void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, void* arg) {
@@ -190,8 +190,8 @@ void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, 
   // log_debug("-------------------------------\n");
 
   // Put data into state pointers
-  // Controller* controller = static_cast<Controller*>(arg);
-  // controller->current_accel_ptr_ = msg;
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_accel_ptr_ = msg;
 }
 
 void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
@@ -217,8 +217,8 @@ void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
   // log_debug("-------------------------------\n");
 
   // Put data into state pointers
-  // Controller* controller = static_cast<Controller*>(arg);
-  // controller->current_trajectory_ptr_ = msg;
+  Controller* controller = static_cast<Controller*>(arg);
+  controller->current_trajectory_ptr_ = msg;
 }
 
 Controller::LateralControllerMode Controller::getLateralControllerMode(

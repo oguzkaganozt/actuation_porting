@@ -27,7 +27,7 @@
                 <!-- <Peer Address="10.11.0.1" /> --> <!-- IP of the remote machine, should not be needed in case of local network -->
             <!-- </Peers> -->
         </Discovery>
-        <!-- <Tracing>  <!-- Uncomment this when debugging -->
+        <!-- <Tracing>
             <AppendToFile>true</AppendToFile>
             <Category>trace</Category>
             <Verbosity>finest</Verbosity>
