@@ -10,13 +10,11 @@
 #include <variant>
 #include <optional>
 #include <pthread.h>
-#include <time.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <signal.h>
+#include <cstring>
 
 // Project headers
 #include "common/dds/dds.hpp"
+#include "common/node/timer.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 
@@ -51,19 +49,23 @@ public:
     , param_mutex_(PTHREAD_MUTEX_INITIALIZER)
     , dds_(node_name)
     {
-        pthread_attr_init(&thread_attr_);
-        pthread_attr_setstack(&thread_attr_, stack_area, stack_size);
-
-        pthread_attr_init(&timer_attr_);
-        pthread_attr_setstack(&timer_attr_, timer_stack_area, timer_stack_size);
+        pthread_attr_init(&main_thread_attr_);
+        int ret = pthread_attr_setstack(&main_thread_attr_, stack_area, stack_size);
+        if (ret != 0) {
+            log_error("%s -> pthread_attr_setstack failed for main thread: %s. Exiting.\n", 
+                      node_name_.c_str(), strerror(ret));
+            std::exit(1);
+        }
+        timer_ = std::make_unique<Timer>(node_name_, timer_stack_area, timer_stack_size);
     }
     
     /**
      * @brief Destructor
      */
     ~Node() {
-        stop_timer();
         stop();
+        pthread_mutex_destroy(&param_mutex_);
+        pthread_attr_destroy(&main_thread_attr_);
     }
 
     /**
@@ -71,15 +73,15 @@ public:
      * @return 0 on success, negative value on failure
      */
     int spin() {
-        return pthread_create(&thread_, &thread_attr_, main_thread_entry_, this);
+        return pthread_create(&main_thread_, &main_thread_attr_, main_thread_entry_, this);
     }
     
     /**
      * @brief Stop the node thread
      */
     void stop() {
-        pthread_cancel(thread_);
-        pthread_join(thread_, nullptr);
+        pthread_cancel(main_thread_);
+        pthread_join(main_thread_, nullptr);
     }
 
     /** 
@@ -99,6 +101,7 @@ public:
      * @param topic_name Topic name
      * @param topic_descriptor Topic descriptor 
      * @param callback Callback function
+     * @param arg Callback user argument
      * @return bool true on success, false on failure
      */
     template<typename T>
@@ -107,9 +110,7 @@ public:
                            callback_subscriber<T> callback, void* arg) {
 
         auto subscription = dds_.create_subscription_dds<T>(topic_name, topic_descriptor, callback, arg);
-        subscriptions_.push_back(subscription);
-        
-        return true;
+        return subscription != nullptr;
     }
 
     /**
@@ -146,25 +147,6 @@ public:
 
     /**
      * @brief Get a parameter value by name
-     * @param name Name of the parameter
-     * @return std::optional<param_type> The parameter value if found, std::nullopt if not found
-     */
-    std::optional<param_type> get_parameter(const std::string& name) const {
-        pthread_mutex_lock(&param_mutex_);
-        
-        auto it = parameters_map_.find(name);
-        if (it != parameters_map_.end()) {
-            param_type value = it->second;
-            pthread_mutex_unlock(&param_mutex_);
-            return value;
-        }
-        
-        pthread_mutex_unlock(&param_mutex_);
-        return std::nullopt;
-    }
-
-    /**
-     * @brief Get a parameter value by name
      * @tparam ParamT Type of the parameter
      * @param name Name of the parameter
      * @return The parameter value or default-constructed value if not found
@@ -174,7 +156,7 @@ public:
         static_assert(std::is_constructible_v<param_type, ParamT>, 
                      "Parameter type must be one of the supported types in param_type variant");
         
-        auto param = get_parameter(name);
+        auto param = search_parameter_(name);
         if (param) {
             try {
                 return std::get<ParamT>(*param);
@@ -237,67 +219,30 @@ public:
         return node_name_;
     }
 
-    struct handler_data_t {
-        void (*callback)(void*);
-        void* arg;
-    };
-
     /**
      * @brief Create a timer
      * @param period_ms Period in milliseconds
      * @param callback Callback function
+     * @param arg Callback argument
      * @return true if timer was created, false otherwise
      */
     bool create_timer(uint32_t period_ms, void (*callback)(void*), void* arg = nullptr) {
-        if (timer_active_) {
+        if (!timer_) {
+            log_error("%s -> Timer object not initialized!\n", node_name_.c_str());
             return false;
         }
-
-        struct sigevent sev;
-        memset(&sev, 0, sizeof(struct sigevent));
-
-        timer_handler_data_ = new handler_data_t{callback, arg};
-        
-        // TODO: Check if SIGEV_THREAD is supported in zephyr
-        sev.sigev_notify = SIGEV_THREAD;
-        sev.sigev_signo = SIGALRM;
-        sev.sigev_value.sival_ptr = timer_handler_data_;
-        sev.sigev_notify_function = timer_handler_;
-        sev.sigev_notify_attributes = &timer_attr_;
-
-        if (int ret = timer_create(CLOCK_MONOTONIC, &sev, &timer_id_); ret < 0) {
-            log_error("%s -> timer creation failed: %s\n", node_name_.c_str(), strerror(errno));
-            return false;
-        }
-        log_info("%s -> timer has been created\n", node_name_.c_str());
-        
-        struct itimerspec its;
-        its.it_value.tv_sec  = period_ms / 1000;
-        its.it_value.tv_nsec = (period_ms % 1000) * 1000000;
-        its.it_interval.tv_sec  = period_ms / 1000;
-        its.it_interval.tv_nsec = (period_ms % 1000) * 1000000;
-        
-        if (int ret = timer_settime(timer_id_, 0, &its, nullptr); ret < 0) {
-            log_error("%s -> timer settime failed: %s\n", node_name_.c_str(), strerror(errno));
-            timer_delete(timer_id_);
-            return false;
-        }
-        timer_active_ = true;
-
-        log_info("%s -> timer has been set with period %d ms\n", node_name_.c_str(), period_ms);
-        return true;
+        return timer_->start(period_ms, callback, arg);
     }
 
     /**
      * @brief Stop the timer
      */
     void stop_timer() {
-        if (timer_active_) {
-            timer_delete(timer_id_);
-            timer_active_ = false;
-            delete timer_handler_data_;
-            timer_handler_data_ = nullptr;
-            log_info("%s -> Timer stopped and data released.\n", node_name_.c_str());
+        if (timer_) {
+            timer_->stop();
+            log_info("%s -> Timer stopped via Node request.\n", node_name_.c_str());
+        } else {
+            log_warn("%s -> Attempted to stop a non-initialized timer.\n", node_name_.c_str());
         }
     }
 
@@ -309,34 +254,45 @@ private:
     std::unordered_map<std::string, param_type> parameters_map_;
     mutable pthread_mutex_t param_mutex_;
 
-    // Thread
-    pthread_t thread_;
-    pthread_attr_t thread_attr_;
-    pthread_attr_t timer_attr_;
-
-    static void* thread_entry_(void* arg) {
-        Node* node = static_cast<Node*>(arg);
-        
-        // TODO: Implement the node logic here
-        // timer overruns are checked in timer_handler_
-        // subscriptions are handled in the cyclonedds callback
-
-        return nullptr;
-    }
-
     // DDS
     DDS dds_;
-    std::vector<std::shared_ptr<void>> subscriptions_;
     
     // Timer
-    timer_t timer_id_;
-    bool timer_active_ = false;
-    handler_data_t* timer_handler_data_ = nullptr;
+    std::unique_ptr<Timer> timer_;
 
-    static void timer_handler_(union sigval val) {
-        handler_data_t* handler_data = static_cast<handler_data_t*>(val.sival_ptr);
-        void (*callback)(void*) = handler_data->callback;
-        callback(handler_data->arg);
+    // Main thread
+    pthread_t main_thread_;
+    pthread_attr_t main_thread_attr_;
+
+    static void* main_thread_entry_(void* arg) {
+        Node* node = static_cast<Node*>(arg);
+
+        while (1) {
+            if (node->timer_) { // Check and execute the timer callback
+                if (node->timer_->is_ready()) {
+                    node->timer_->execute_callback();
+                }
+            }
+
+            if (node->dds_.has_subscriptions()) {   // Check and execute the subscriptions callbacks
+                node->dds_.execute_subscriptions();
+            }
+            usleep(1000);   // 1ms, if nothing else yields
+        }
+        return nullptr; // Should never reach here
+    }
+
+    std::optional<param_type> search_parameter_(const std::string& name) const {
+        pthread_mutex_lock(&param_mutex_);
+        
+        auto it = parameters_map_.find(name);
+        std::optional<param_type> result = std::nullopt;
+        if (it != parameters_map_.end()) {
+            result = it->second;
+        }
+        
+        pthread_mutex_unlock(&param_mutex_);
+        return result;
     }
 };
 

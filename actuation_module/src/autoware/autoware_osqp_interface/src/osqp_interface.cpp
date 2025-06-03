@@ -292,31 +292,31 @@ int64_t OSQPInterface::initializeProblem(
   if (P.rows() != P.cols()) {
     ss << "P.rows() and P.cols() are not the same. P.rows() = " << P.rows()
        << ", P.cols() = " << P.cols();
-    log_error("Error: %s", ss.str().c_str());
+    log_error("%s", ss.str().c_str());
     return -1;
   }
   if (P.rows() != static_cast<int>(q.size())) {
     ss << "P.rows() and q.size() are not the same. P.rows() = " << P.rows()
        << ", q.size() = " << q.size();
-    log_error("Error: %s", ss.str().c_str());
+    log_error("%s", ss.str().c_str());
     return -1;
   }
   if (P.rows() != A.cols()) {
     ss << "P.rows() and A.cols() are not the same. P.rows() = " << P.rows()
        << ", A.cols() = " << A.cols();
-    log_error("Error: %s", ss.str().c_str());
+    log_error("%s", ss.str().c_str());
     return -1;
   }
   if (A.rows() != static_cast<int>(l.size())) {
     ss << "A.rows() and l.size() are not the same. A.rows() = " << A.rows()
        << ", l.size() = " << l.size();
-    log_error("Error: %s", ss.str().c_str());
+    log_error("%s", ss.str().c_str());
     return -1;
   }
   if (A.rows() != static_cast<int>(u.size())) {
     ss << "A.rows() and u.size() are not the same. A.rows() = " << A.rows()
        << ", u.size() = " << u.size();
-    log_error("Error: %s", ss.str().c_str());
+    log_error("%s", ss.str().c_str());
     return -1;
   }
 

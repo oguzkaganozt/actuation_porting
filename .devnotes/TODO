@@ -1,13 +1,12 @@
 # PRIMARY
 
-*. get all topics on actuation_module, and parse them using sequence wrapper. Make sure we are getting messages correctly parsed in correct order.
 *. processData, callbackTimerControl, mergeLatLonHorizon check
 *. Use dds_alloc within sequence wrapper to remove duality with malloc vs dds_alloc, even better we can use k_malloc and k_free both within app and dds -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
 *. Check TODOs
 
 ## IF ANYTHING IS NOT WORKING AS EXPECTED
 
-- subscribers, publishers ve timers"
+- subscribers, publishers ve timers
 - check default values of parameters
 - Compare launch structure and synchronization with the native ROS2 nodes
 - OSQP vs unconstraint_qp

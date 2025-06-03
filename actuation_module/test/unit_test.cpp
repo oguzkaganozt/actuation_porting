@@ -67,10 +67,10 @@ static TestState g_state;  // Global test state
     } while (0)
 
 // Callback handlers
-static void handle_pose(PoseStampedMsg& msg) {
+static void handle_pose(const PoseStampedMsg* msg, void* node) {
     pthread_mutex_lock(&g_state.mutex);
-    g_state.pose = {true, msg.pose.position.x, msg.pose.position.y, msg.pose.position.z};
-    log_info("Received pose: (%.1f, %.1f, %.1f)\n", msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
+    g_state.pose = {true, msg->pose.position.x, msg->pose.position.y, msg->pose.position.z};
+    log_info("Received pose: (%.1f, %.1f, %.1f)\n", msg->pose.position.x, msg->pose.position.y, msg->pose.position.z);
     pthread_mutex_unlock(&g_state.mutex);
 }
 
@@ -122,8 +122,8 @@ void test_parameters(Node& node) {
 void test_timer_operations(Node& node) {
     TEST_START(Timer Operations)
     
-    node.spin();
     node.create_timer(100, handle_timer, &node);  // 10Hz timer
+    node.spin();
     
     // Verify timer fires at least twice
     ASSERT_MSG(wait_for_event([] {
@@ -158,10 +158,10 @@ void test_thread_safety(Node& node) {
 void test_dds_communication(Node& node) {
     TEST_START(DDS Communication)
     
-    node.spin();
     auto publisher = node.create_publisher<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc);
-    node.create_subscription<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc, handle_pose);
-    
+    node.create_subscription<PoseStampedMsg>("test_pose", &geometry_msgs_msg_PoseStamped_desc, handle_pose, &node);
+    node.spin();
+
     // Test message roundtrips
     for (int i = 0; i < 3; i++) {
         PoseStampedMsg msg = {};
@@ -176,6 +176,9 @@ void test_dds_communication(Node& node) {
         }), "Message delivery timeout");
         
         verify_pose_reception(i*1.0, i*2.0, i*3.0);
+        pthread_mutex_lock(&g_state.mutex);
+        g_state.pose.received = false; // Reset for the next message
+        pthread_mutex_unlock(&g_state.mutex);
     }
     
     node.stop();

@@ -95,29 +95,18 @@ private:
 
   // Subscribers
   //TODO: we don't need to store the subscribers as lifetime of the node is same as the application
-  static void callbackSteeringStatus(SteeringReportMsg& msg, void* arg);
-  static void callbackOperationModeState(OperationModeStateMsg& msg, void* arg);
-  static void callbackOdometry(OdometryMsg& msg, void* arg);
-  static void callbackAcceleration(AccelWithCovarianceStampedMsg& msg, void* arg);
-  static void callbackTrajectory(TrajectoryMsg& msg, void* arg);
+  static void callbackSteeringStatus(const SteeringReportMsg* msg, void* arg);
+  static void callbackOperationModeState(const OperationModeStateMsg* msg, void* arg);
+  static void callbackOdometry(const OdometryMsg* msg, void* arg);
+  static void callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, void* arg);
+  static void callbackTrajectory(const TrajectoryMsg* msg, void* arg);
 
   // Current Data
-  TrajectoryMsg* current_trajectory_ptr_;
-  OdometryMsg* current_odometry_ptr_;
-  SteeringReportMsg* current_steering_ptr_;
-  AccelWithCovarianceStampedMsg* current_accel_ptr_;
-  OperationModeStateMsg* current_operation_mode_ptr_;
-  mutable pthread_mutex_t current_data_mutex_;
-
-  // Pipeline data
-  struct pipeline_data_t {
-    TrajectoryMsg* trajectory_ptr_;
-    OdometryMsg* odometry_ptr_;
-    SteeringReportMsg* steering_ptr_;
-    AccelWithCovarianceStampedMsg* acceleration_ptr_;
-    OperationModeStateMsg* operation_mode_ptr_;
-  };
-  mutable pthread_mutex_t pipeline_data_mutex_;
+  const TrajectoryMsg* current_trajectory_ptr_;
+  const OdometryMsg* current_odometry_ptr_;
+  const SteeringReportMsg* current_steering_ptr_;
+  const AccelWithCovarianceStampedMsg* current_accel_ptr_;
+  const OperationModeStateMsg* current_operation_mode_ptr_;
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;

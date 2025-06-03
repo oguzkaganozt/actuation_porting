@@ -3,6 +3,16 @@
 FROM ghcr.io/autowarefoundation/autoware:universe-devel-20250207 AS autoware
 SHELL ["/bin/bash", "-c"]
 
+# Fix expired ROS GPG key issue comprehensively
+# See: https://github.com/osrf/docker_images/issues/535
+RUN apt-get update --allow-unauthenticated || true && \
+    apt-get install -y --allow-unauthenticated curl gnupg2 && \
+    apt-key del F42ED6FBAB17C654 || true && \
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /tmp/ros.key && \
+    cat /tmp/ros.key | gpg --dearmor --batch --yes -o /usr/share/keyrings/ros2-latest-archive-keyring.gpg && \
+    rm /tmp/ros.key
+
 # Install dependencies
 RUN apt-get update && \
     apt install --no-install-recommends -y unzip python3-pip wget && \

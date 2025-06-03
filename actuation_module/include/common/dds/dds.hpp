@@ -3,9 +3,10 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 #include <dds/dds.h>
 
-#include "common/dds/dds_config.hpp"
+#include "common/dds/config.hpp"
 #include "common/dds/publisher.hpp"
 #include "common/dds/subscriber.hpp"
 #include "common/logger/logger.hpp"
@@ -47,6 +48,7 @@ public:
         // Reliable QoS
         m_dds_qos = dds_create_qos();
         dds_qset_reliability(m_dds_qos, DDS_RELIABILITY_RELIABLE, DDS_MSECS(30));
+        dds_qset_history(m_dds_qos, DDS_HISTORY_KEEP_LAST, 500);    // TODO: TUNE HISTORY BUFFER SIZE IF WE DROP MESSAGES
         log_info("%s -> DDS QoS created\n", node_name_.c_str());
     }
 
@@ -100,6 +102,9 @@ public:
         try {
             auto subscriber = std::make_shared<Subscriber<T>>(
                 node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor, callback, arg);
+            
+            // Store as ISubscriptionHandler
+            subscriptions_.push_back(std::static_pointer_cast<ISubscriptionHandler>(subscriber));
             return subscriber;
         } catch (const std::exception& e) {
             log_error("%s -> create_subscription_dds: %s\n", 
@@ -108,10 +113,30 @@ public:
         }
     }
 
+    /**
+     * @brief Execute all subscription handlers
+     */
+    void execute_subscriptions() {
+        for (auto& sub_handler_ptr : subscriptions_) {
+            if (sub_handler_ptr) {
+                sub_handler_ptr->process_next_message();
+            }
+        }
+    }
+
+    /**
+     * @brief Check if there are any subscriptions
+     * @return true if there are subscriptions, false otherwise
+     */
+    bool has_subscriptions() {
+        return !subscriptions_.empty();
+    }
+
 private:
     std::string node_name_;
     dds_entity_t m_dds_participant;
     dds_qos_t* m_dds_qos;
+    std::vector<std::shared_ptr<ISubscriptionHandler>> subscriptions_;
 };
 
 #endif // COMMON__DDS_HPP_

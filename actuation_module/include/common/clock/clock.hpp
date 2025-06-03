@@ -5,7 +5,6 @@
 #include <cstdio>
 #include <cstdint>
 #include <ctime>
-
 #include <zephyr/posix/time.h>
 #include <zephyr/net/sntp.h>
 
@@ -44,8 +43,8 @@ public:
             return res;
         }
 
+        sleep(1);
         log_info("Time set using SNTP: %s\n", ctime(&tspec.tv_sec));
-
         return 0;
     }
 

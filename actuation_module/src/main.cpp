@@ -6,7 +6,7 @@
 #define COLOR_RESET "\033[0m"
 
 #include <iostream>
-#include "common/dds/dds_network.hpp"
+#include "common/dds/network_config.hpp"
 #include "common/clock/clock.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
@@ -17,22 +17,18 @@ int main(void)
 {   
     autoware::motion::control::trajectory_follower_node::Controller* controller;
     
-    log_info("-----------------------------------------\n");
-    log_info("ARM - Autoware: Actuation Safety Island\n");
-    log_info("-----------------------------------------\n");
-    sleep(5);
+    log_success("-----------------------------------------\n");
+    log_success("ARM - Autoware: Actuation Safety Island\n");
+    log_success("-----------------------------------------\n");
+    log_info("Waiting for DHCP to get IP address...\n");
+    sleep(7);
 
-    // Setting time using SNTP
-    log_info("Setting time using SNTP...\n");
-    if (Clock::init_clock_via_sntp() < 0) {
-        log_error("Failed to set time using SNTP\n");
-        std::exit(1);
-    }
-    else {
-        log_info("Time set using SNTP\n");
-        log_info("-----------------------------------------\n");
-        sleep(1);
-    }
+    // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
+    // log_info("Setting time using SNTP...\n");
+    // if (Clock::init_clock_via_sntp() < 0) {
+    //     log_error("Failed to set time using SNTP\n");
+    //     std::exit(1);
+    // }
 
     // TODO: we are not configuring the network as we are using DHCP and other configurations will be done by cyclonedds
     // log_info("Configuring Network...\n");
@@ -46,8 +42,13 @@ int main(void)
     try
     {
         controller = new autoware::motion::control::trajectory_follower_node::Controller();
-        log_info("Controller Node Started\n");
-        log_info("-----------------------------------------\n");
+        int ret = controller->spin();
+        if (ret != 0) {
+            log_error("Failed to start Controller Node\n");
+            std::exit(1);
+        }
+        log_success("Controller Node Started\n");
+        log_success("-----------------------------------------\n");
     }
     catch(const std::exception& e)
     {
@@ -55,8 +56,8 @@ int main(void)
         std::exit(1);
     }
 
-    log_info("Actuation Safety Island is Live\n");
-    log_info("-----------------------------------------\n");
+    log_success("Actuation Safety Island is Live\n");
+    log_success("-----------------------------------------\n");
 
     while (1) {
         sleep(1);
