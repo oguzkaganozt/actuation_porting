@@ -280,23 +280,33 @@ MPCTrajectory convertToMPCTrajectory(const TrajectoryMsg & input)
 
 TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 {
+  log_debug("-------MPC-3-1-10--\n", 0);
   TrajectoryMsg output;
   auto sequence_output_points = wrap(output.points);
   sequence_output_points.reserve(input.size()/2);
   TrajectoryPointMsg p;
+
+  log_debug("-------MPC-3-1-11--\n", 0);
   
   for (size_t i = 0; i < input.size(); ++i) {
     p.pose.position.x = input.x.at(i);
     p.pose.position.y = input.y.at(i);
     p.pose.position.z = input.z.at(i);
+
+    log_debug("-------MPC-3-1-12-1--\n", 0);
     p.pose.orientation = autoware::universe_utils::createQuaternionFromYaw(input.yaw.at(i));
     p.longitudinal_velocity_mps =
       static_cast<decltype(p.longitudinal_velocity_mps)>(input.vx.at(i));
+    log_debug("-------MPC-3-1-12-2--\n", 0);
     sequence_output_points.push_back(p);
     if (sequence_output_points.size() == sequence_output_points.max_size()) {
       break;
     }
+    log_debug("-------MPC-3-1-12-3--\n", 0);
   }
+
+  log_debug("-------MPC-3-1-13--\n", 0);
+
   return output;
 }
 
@@ -342,10 +352,13 @@ bool calcNearestPoseInterp(
   const MPCTrajectory & traj, const PoseMsg & self_pose, PoseMsg * nearest_pose, size_t * nearest_index,
   double * nearest_time, const double max_dist, const double max_yaw)
 {
+  log_debug("-------MPC-3-1-1--\n", 0);
   if (traj.empty() || !nearest_pose || !nearest_index || !nearest_time) {
     log_warn_throttle("[calcNearestPoseInterp] input trajectory is empty - 1");
     return false;
   }
+
+  log_debug("-------MPC-3-1-2--\n", 0);
 
   const auto autoware_traj = convertToAutowareTrajectory(traj);
   auto sequence_autoware_traj_points = wrap(autoware_traj.points);
@@ -354,9 +367,13 @@ bool calcNearestPoseInterp(
     return false;
   }
 
+  log_debug("-------MPC-3-1-3--\n", 0);
+
   *nearest_index = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
     sequence_autoware_traj_points, self_pose, max_dist, max_yaw);
   const size_t traj_size = traj.size();
+
+  log_debug("-------MPC-3-1-4--\n", 0);
 
   if (traj.size() == 1) {
     nearest_pose->position.x = traj.x.at(*nearest_index);
@@ -365,6 +382,8 @@ bool calcNearestPoseInterp(
     *nearest_time = traj.relative_time.at(*nearest_index);
     return true;
   }
+
+  log_debug("-------MPC-3-1-5--\n", 0);
 
   /* get second nearest index = next to nearest_index */
   const auto [prev, next] = [&]() -> std::pair<size_t, size_t> {
@@ -390,12 +409,17 @@ bool calcNearestPoseInterp(
     return std::make_pair(*nearest_index, *nearest_index + 1);
   }();
 
+  log_debug("-------MPC-3-1-6--\n", 0);
+
   PointMsg next_traj_point;
   next_traj_point.x = traj.x.at(next);
   next_traj_point.y = traj.y.at(next);
   PointMsg prev_traj_point;
   prev_traj_point.x = traj.x.at(prev);
   prev_traj_point.y = traj.y.at(prev);
+
+  log_debug("-------MPC-3-1-7--\n", 0);
+
   const double traj_seg_length =
     autoware::universe_utils::calcDistance2d(prev_traj_point, next_traj_point);
   /* if distance between two points are too close */
@@ -407,6 +431,8 @@ bool calcNearestPoseInterp(
     return true;
   }
 
+  log_debug("-------MPC-3-1-8--\n", 0);
+
   /* linear interpolation */
   const double ratio = std::clamp(
     calcLongitudinalOffset(prev_traj_point, next_traj_point, self_pose.position) / traj_seg_length,
@@ -417,6 +443,9 @@ bool calcNearestPoseInterp(
   const double nearest_yaw = normalizeRadian(traj.yaw.at(next) + (1 - ratio) * tmp_yaw_err);
   nearest_pose->orientation = createQuaternionFromYaw(nearest_yaw);
   *nearest_time = (1 - ratio) * traj.relative_time.at(prev) + ratio * traj.relative_time.at(next);
+
+  log_debug("-------MPC-3-1-9--\n", 0);
+
   return true;
 }
 
