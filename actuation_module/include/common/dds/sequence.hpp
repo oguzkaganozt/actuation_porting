@@ -17,7 +17,94 @@ using namespace common::logger;
 #define MAX_SEQUENCE_SIZE 2048
 
 /**
- * @brief Simplified DDS Sequence wrapper with vector-like interface
+ * @file sequence.hpp
+ * @brief A robust C++ wrapper around DDS (Data Distribution Service) sequences
+ * 
+ * ==========================================================================
+ * WHAT THIS CLASS DOES:
+ * ==========================================================================
+ * This template class provides a safe, std::vector-like interface for DDS sequences.
+ * DDS sequences are low-level C structures used for message passing in robotics systems.
+ * 
+ * KEY PROBLEMS SOLVED:
+ * - DDS sequences can contain uninitialized/corrupted memory that causes crashes
+ * - Raw DDS API is difficult and error-prone to use directly
+ * - Memory management complexity with DDS allocation/deallocation
+ * - No bounds checking or safety features
+ * 
+ * ==========================================================================
+ * MAIN WORKFLOW:
+ * ==========================================================================
+ * 
+ * 1. WRAPPING EXISTING DDS SEQUENCES (most common):
+ *    ```cpp
+ *    TrajectoryMsg msg;                        // DDS message with sequence field
+ *    auto seq = wrap(msg.points);              // Wrap the sequence safely
+ *    seq.push_back(trajectory_point);          // Use like std::vector
+ *    ```
+ * 
+ * 2. CREATING NEW SEQUENCES:
+ *    ```cpp
+ *    Sequence<PointSequence> seq(128);         // Create with initial capacity
+ *    seq.push_back(point1);                    // Add elements
+ *    seq.push_back(point2);
+ *    ```
+ * 
+ * ==========================================================================
+ * AUTOMATIC SAFETY FEATURES:
+ * ==========================================================================
+ * 
+ * ✅ CORRUPTION DETECTION: Automatically detects and fixes:
+ *    - Uninitialized memory (random garbage values)
+ *    - Invalid buffer pointers (e.g., 0x40ad355408f6fd2f)
+ *    - Inconsistent length/capacity values
+ *    - Buffer addresses that look suspicious
+ * 
+ * ✅ CRASH PREVENTION: Safe fallbacks for:
+ *    - Null pointer access → Returns dummy values instead of crashing
+ *    - Out-of-bounds access → Bounds checking with exceptions
+ *    - Invalid operations → Error logging and graceful failures
+ * 
+ * ✅ MEMORY MANAGEMENT: Automatic handling of:
+ *    - DDS memory allocation/deallocation
+ *    - Buffer growth and reallocation
+ *    - Cleanup on destruction
+ * 
+ * ==========================================================================
+ * TYPICAL USAGE PATTERNS:
+ * ==========================================================================
+ * 
+ * // Pattern 1: Convert internal data to DDS message
+ * TrajectoryMsg output;
+ * auto points = wrap(output.points);           // Auto-detects corruption
+ * points.reserve(trajectory.size());           // Pre-allocate for efficiency
+ * for (const auto& pt : trajectory) {
+ *     points.push_back(convert_point(pt));     // Safe insertion
+ * }
+ * 
+ * // Pattern 2: Process incoming DDS data
+ * void handle_trajectory(const TrajectoryMsg& msg) {
+ *     auto points = wrap(msg.points);          // Read-only wrapper
+ *     for (size_t i = 0; i < points.size(); ++i) {
+ *         process_point(points[i]);            // Safe access
+ *     }
+ * }
+ * 
+ * ==========================================================================
+ * INTERNAL WORKFLOW (for developers):
+ * ==========================================================================
+ * 
+ * 1. Constructor called with DDS sequence reference
+ * 2. needs_auto_initialization() checks for corruption signs:
+ *    - _maximum > MAX_SEQUENCE_SIZE (2048)
+ *    - _length > _maximum
+ *    - Non-null _buffer with zero _maximum
+ *    - Suspicious pointer addresses (> 1TB)
+ * 3. If corrupted, auto_initialize_sequence() resets to safe defaults
+ * 4. Operations use ensure_capacity() for dynamic buffer growth
+ * 5. All memory management uses DDS allocation functions
+ * 6. Destructor automatically cleans up owned resources
+ * 
  * @tparam T DDS sequence type (must have _length, _buffer, _maximum, _release members)
  */
 template<typename T>
