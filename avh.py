@@ -236,15 +236,23 @@ async def connect_to_console(api_instance, instance_id):
 async def build_firmware(rebuild=False, unit_test=False):
     """Build firmware"""
     print("🔄 Building firmware...")
-    if rebuild:
-        subprocess.run(['./build.sh', '-c'], check=True)
-        subprocess.run(['./build.sh'], check=True)
-    elif unit_test:
-        subprocess.run(['./build.sh', '-c'], check=True)
-        subprocess.run(['./build.sh', '--unit-test'], check=True)
-    else:
-        subprocess.run(['./build.sh'], check=True)
-    print("✅ Firmware built")
+    
+    log_dir = Path("log")
+    log_dir.mkdir(exist_ok=True)
+    log_file = log_dir / "build.log.ansi"
+    os.chmod(log_file, 0o666)
+    
+    with open(log_file, 'w') as f:
+        if rebuild:
+            subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
+            subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        elif unit_test:
+            subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
+            subprocess.run(['./build.sh', '--unit-test'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        else:
+            subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
+    
+    print(f"✅ Firmware built (log saved to {log_file})")
 
 
 def print_help():
