@@ -585,34 +585,51 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   const MPCMatrix & m, const VectorXd & x0, const double prediction_dt, const MPCTrajectory & traj,
   const double current_velocity)
 {
+  log_debug("-------MPC-7-1--\n", 0);
   VectorXd Uex;
 
   if (!isValid(m)) {
     return {ResultWithReason{false, "invalid model matrix"}, {}};
   }
 
+  log_debug("-------MPC-7-2--\n", 0);
+
   const int DIM_U_N = m_param.prediction_horizon * m_vehicle_model_ptr->getDimU();
+
+  log_debug("-------MPC-7-3--\n", 0);
 
   // cost function: 1/2 * Uex' * H * Uex + f' * Uex,  H = B' * C' * Q * C * B + R
   const MatrixXd CB = m.Cex * m.Bex;
   const MatrixXd QCB = m.Qex * CB;
   // MatrixXd H = CB.transpose() * QCB + m.R1ex + m.R2ex; // This calculation is heavy. looking for
   // a good way.  //NOLINT
+  log_debug("-------MPC-7-3-1--\n", 0);
   MatrixXd H = MatrixXd::Zero(DIM_U_N, DIM_U_N);
+  log_debug("-------MPC-7-3-2--\n", 0);
   H.triangularView<Eigen::Upper>() = CB.transpose() * QCB;
+  log_debug("-------MPC-7-3-3--\n", 0);
   H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
+  log_debug("-------MPC-7-3-4--\n", 0);
   H.triangularView<Eigen::Lower>() = H.transpose();
+  log_debug("-------MPC-7-3-5--\n", 0);
   MatrixXd f = (m.Cex * (m.Aex * x0 + m.Wex)).transpose() * QCB - m.Uref_ex.transpose() * m.R1ex;
+  log_debug("-------MPC-7-3-6--\n", 0);
   addSteerWeightF(prediction_dt, f);
+  log_debug("-------MPC-7-3-7--\n", 0);
 
+  log_debug("-------MPC-7-4--\n", 0);
   MatrixXd A = MatrixXd::Identity(DIM_U_N, DIM_U_N);
   for (int i = 1; i < DIM_U_N; i++) {
     A(i, i - 1) = -1.0;
   }
 
+  log_debug("-------MPC-7-5--\n", 0);
+
   // steering angle limit
   VectorXd lb = VectorXd::Constant(DIM_U_N, -m_steer_lim);  // min steering angle
   VectorXd ub = VectorXd::Constant(DIM_U_N, m_steer_lim);   // max steering angle
+
+  log_debug("-------MPC-7-6--\n", 0);
 
   // steering angle rate limit
   VectorXd steer_rate_limits = calcSteerRateLimitOnTrajectory(traj, current_velocity);
@@ -621,6 +638,8 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   ubA(0) = m_raw_steer_cmd_prev + steer_rate_limits(0) * m_ctrl_period;
   lbA(0) = m_raw_steer_cmd_prev - steer_rate_limits(0) * m_ctrl_period;
 
+  log_debug("-------MPC-7-7--\n", 0);
+
   auto t_start = Clock::now();
   bool solve_result = m_qpsolver_ptr->solve(H, f.transpose(), A, lb, ub, lbA, ubA, Uex);
   auto t_end = Clock::now();
@@ -628,10 +647,14 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
     return {ResultWithReason{false, "qp solver error"}, {}};
   }
 
+  log_debug("-------MPC-7-8--\n", 0);
+
   {
     auto t = t_end - t_start;
     log_info("MPC: qp solver calculation time = %ld [ms]", t);
   }
+
+  log_debug("-------MPC-7-9--\n", 0);
 
   if (Uex.array().isNaN().any()) {
     return {ResultWithReason{false, "model Uex including NaN"}, {}};

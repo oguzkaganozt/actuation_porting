@@ -30,18 +30,20 @@ def load_config():
     
     api_endpoint = os.getenv('AVH_API_ENDPOINT')
     api_token = os.getenv('AVH_API_TOKEN')
+    project_name = os.getenv('AVH_PROJECT_NAME')
     instance_name = os.getenv('AVH_INSTANCE_NAME')
     instance_flavor = os.getenv('AVH_INSTANCE_FLAVOR')
     
-    if not all([api_token, api_endpoint, instance_name, instance_flavor]):
+    if not all([api_token, api_endpoint, project_name, instance_name, instance_flavor]):
         print("❌ Missing required environment variables:")
         print("   - AVH_API_TOKEN")
         print("   - AVH_API_ENDPOINT") 
+        print("   - AVH_PROJECT_NAME")
         print("   - AVH_INSTANCE_NAME")
         print("   - AVH_INSTANCE_FLAVOR")
         sys.exit(1)
           
-    return api_endpoint, api_token, instance_name, instance_flavor
+    return api_endpoint, api_token, project_name, instance_name, instance_flavor
 
 
 async def authenticate(api_instance, api_token):
@@ -57,10 +59,10 @@ async def authenticate(api_instance, api_token):
         sys.exit(1)
 
 
-async def get_project_id(api_instance):
+async def get_project_id(api_instance, project_name):
     """Get project ID"""
     print("   Finding the project ...")
-    api_response = await api_instance.v1_get_projects()
+    api_response = await api_instance.v1_get_projects(name=project_name)
     projectId = api_response[0].id
     print(f"✅ Project found: {projectId}")
     return projectId
@@ -235,16 +237,24 @@ async def connect_to_console(api_instance, instance_id):
 
 async def build_firmware(rebuild=False, unit_test=False):
     """Build firmware"""
-    print("🔄 Building firmware...")
-    if rebuild:
-        subprocess.run(['./build.sh', '-c'], check=True)
-        subprocess.run(['./build.sh'], check=True)
-    elif unit_test:
-        subprocess.run(['./build.sh', '-c'], check=True)
-        subprocess.run(['./build.sh', '--unit-test'], check=True)
-    else:
-        subprocess.run(['./build.sh'], check=True)
-    print("✅ Firmware built")
+    print(f"🔄 Building firmware (build logs: log/build.log.ansi)")
+    
+    log_dir = Path("log")
+    log_dir.mkdir(exist_ok=True)
+    log_file = log_dir / "build.log.ansi"
+    
+    with open(log_file, 'w') as f:
+        os.chmod(log_file, 0o666)
+        if rebuild:
+            subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
+            subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        elif unit_test:
+            subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
+            subprocess.run(['./build.sh', '--unit-test'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        else:
+            subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
+    
+    print(f"✅ Firmware built")
 
 
 def print_help():
@@ -283,7 +293,7 @@ async def main():
         return 0
     
     # Setup API client
-    api_endpoint, api_token, instance_name, instance_flavor = load_config()
+    api_endpoint, api_token, project_name, instance_name, instance_flavor = load_config()
     configuration = AvhAPI.Configuration(host=api_endpoint)
     
     async with AvhAPI.ApiClient(configuration=configuration) as api_client:        
@@ -291,7 +301,7 @@ async def main():
         api_instance = AvhAPI.ArmApi(api_client)
         access_token = await authenticate(api_instance, api_token)
         configuration.access_token = access_token
-        project_id = await get_project_id(api_instance)
+        project_id = await get_project_id(api_instance, project_name)
 
         # Find instance or create new instance if not found
         instance_id = await find_instance(api_instance, instance_name, instance_flavor)
