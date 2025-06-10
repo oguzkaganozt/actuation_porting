@@ -11,6 +11,9 @@ zephyr_modules/
 build/
 install/
 .west/
+
+# avh
+.env
 avh.ovpn
 
 # logs
