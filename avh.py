@@ -244,6 +244,7 @@ async def build_firmware(rebuild=False, unit_test=False):
     log_file = log_dir / "build.log.ansi"
     
     with open(log_file, 'w') as f:
+        os.chmod(log_file, 0o666)
         if rebuild:
             subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
             subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
@@ -253,7 +254,6 @@ async def build_firmware(rebuild=False, unit_test=False):
         else:
             subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
     
-    os.chmod(log_file, 0o666)
     print(f"✅ Firmware built")
 
 

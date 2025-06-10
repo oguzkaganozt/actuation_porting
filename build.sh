@@ -44,7 +44,7 @@ function usage() {
 }
 
 function clean() {
-  rm -rf "${ROOT_DIR}"/build "${ROOT_DIR}"/install "${ROOT_DIR}"/log
+  rm -rf "${ROOT_DIR}"/build "${ROOT_DIR}"/install
 }
 
 function parse_args() {
