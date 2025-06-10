@@ -25,15 +25,17 @@ def load_config():
     api_endpoint = os.getenv('AVH_API_ENDPOINT')
     api_token = os.getenv('AVH_API_TOKEN')
     instance_name = os.getenv('AVH_INSTANCE_NAME')
+    instance_flavor = os.getenv('AVH_INSTANCE_FLAVOR')
     
-    if not all([api_token, api_endpoint, instance_name]):
+    if not all([api_token, api_endpoint, instance_name, instance_flavor]):
         print("❌ Missing required environment variables:")
         print("   - AVH_API_TOKEN")
         print("   - AVH_API_ENDPOINT") 
         print("   - AVH_INSTANCE_NAME")
+        print("   - AVH_INSTANCE_FLAVOR")
         sys.exit(1)
-        
-    return api_endpoint, api_token, instance_name
+          
+    return api_endpoint, api_token, instance_name, instance_flavor
 
 
 async def authenticate(api_instance, api_token):
@@ -49,7 +51,31 @@ async def authenticate(api_instance, api_token):
         sys.exit(1)
 
 
-async def find_instance(api_instance, instance_name):
+async def create_instance(api_instance, instance_name, instance_flavor):
+    """Create instance"""
+    print(f"   Creating new instance: {instance_name} with flavor: {instance_flavor}")
+    
+    try:
+        print('   Finding the project ...')
+        api_response = await api_instance.v1_get_projects()
+        projectId = api_response[0].id
+        print(f"✅ Project found: {projectId}")
+        
+        instance = await api_instance.v1_create_instance({
+            'project': projectId,
+            'name': instance_name,
+            'flavor': instance_flavor,
+            'os': '1.0.0'
+        })
+        print(f"✅ Instance created: {instance.id}")
+        await asyncio.sleep(2)
+        return instance.id
+    except AvhAPIException as e:
+        print(f"❌ Instance creation failed: {e}")
+        sys.exit(1)
+
+
+async def find_instance(api_instance, instance_name, instance_flavor):
     """Find instance by name and return its details"""
     print(f"   Looking for instance: {instance_name}")
     
@@ -58,15 +84,19 @@ async def find_instance(api_instance, instance_name):
         
         if not instances:
             print(f"❌ No instance found with name: {instance_name}")
-            sys.exit(1)
-            
-        instance = instances[0]
-        print(f"✅ Found instance: {instance.id}")
-        print(f"    Service IP: {instance.service_ip}")
-        print(f"    Flavor: {instance.flavor}")
-        print(f"    State: {instance.state}")
+            return None
         
-        return instance.id
+        for instance in instances:
+            if instance.flavor == instance_flavor:
+                print(f"✅ Found instance: {instance.id}")
+                print(f"    Service IP: {instance.service_ip}")
+                print(f"    Flavor: {instance.flavor}")
+                print(f"    State: {instance.state}")
+                print(f"    Project: {instance.project}")
+                return instance.id
+            
+        print(f"❌ No instance found with flavor: {instance_flavor}")
+        return None
         
     except AvhAPIException as e:
         print(f"❌ Failed to find instance: {e}")
@@ -173,7 +203,7 @@ async def main():
     print("=" * 40)
     
     # Load configuration
-    api_endpoint, api_token, instance_name = load_config()
+    api_endpoint, api_token, instance_name, instance_flavor = load_config()
     
     # Setup API client
     configuration = AvhAPI.Configuration(host=api_endpoint)
@@ -186,7 +216,9 @@ async def main():
         configuration.access_token = access_token
         
         # Find instance
-        instance_id = await find_instance(api_instance, instance_name)
+        instance_id = await find_instance(api_instance, instance_name, instance_flavor)
+        if instance_id is None:
+            instance_id = await create_instance(api_instance, instance_name, instance_flavor)
         
         # Upload firmware
         await upload_firmware(api_instance, instance_id)
