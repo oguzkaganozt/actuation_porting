@@ -67,14 +67,11 @@ async def connect_to_vpn(api_instance, project_id):
     
     try:
         vpn_config = await api_instance.v1_get_project_vpn_config(project_id, format='ovpn')
-        
-        # Write VPN config to file
         with open('avh.ovpn', 'w') as f:
             f.write(vpn_config)
             
-        # Connect to VPN
+        print(f"   VPN config written to avh.ovpn")
         subprocess.run(['openvpn', './avh.ovpn'], check=True)
-        print(f"✅ VPN connected: {vpn_config.url}")
 
     except AvhAPIException as e:
         print(f"❌ VPN connection failed: {e}")
