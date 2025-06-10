@@ -16,3 +16,4 @@ avh.ovpn
 # logs
 log/
 *.log
+*.log.ansi

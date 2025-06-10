@@ -194,10 +194,14 @@ async def wait_for_ready(api_instance, instance_id):
 async def monitor_console(websocket):
     """Display console output"""
     try:
-        while True:
-            message = await websocket.recv()
-            decoded_message = message.decode('utf-8', errors='replace')
-            print(decoded_message, end='')
+        with open("console.log.ansi", "w", encoding='utf-8') as log_file:
+            os.chmod("console.log.ansi", 0o666)
+            while True:
+                message = await websocket.recv()
+                decoded_message = message.decode('utf-8', errors='replace')
+                print(decoded_message, end='')
+                log_file.write(decoded_message)
+                log_file.flush()  # Ensure immediate write to file
     except websockets.exceptions.ConnectionClosed:
         print("\nConsole connection closed")
     except KeyboardInterrupt:
