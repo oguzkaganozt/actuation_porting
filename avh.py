@@ -7,6 +7,7 @@ Uploads firmware to an AVH instance and connects to its console.
 import asyncio
 import os
 import sys
+import subprocess
 from pathlib import Path
 from dotenv import load_dotenv
 import websockets
@@ -51,18 +52,42 @@ async def authenticate(api_instance, api_token):
         sys.exit(1)
 
 
-async def create_instance(api_instance, instance_name, instance_flavor):
+async def get_project_id(api_instance):
+    """Get project ID"""
+    print("   Finding the project ...")
+    api_response = await api_instance.v1_get_projects()
+    projectId = api_response[0].id
+    print(f"✅ Project found: {projectId}")
+    return projectId
+
+
+async def connect_to_vpn(api_instance, project_id):
+    """Connect to VPN"""
+    print(f"   Connecting to VPN for project: {project_id}")
+    
+    try:
+        vpn_config = await api_instance.v1_get_project_vpn_config(project_id, format='ovpn')
+        
+        # Write VPN config to file
+        with open('avh.ovpn', 'w') as f:
+            f.write(vpn_config)
+            
+        # Connect to VPN
+        subprocess.run(['openvpn', './avh.ovpn'], check=True)
+        print(f"✅ VPN connected: {vpn_config.url}")
+
+    except AvhAPIException as e:
+        print(f"❌ VPN connection failed: {e}")
+        sys.exit(1)
+
+
+async def create_instance(api_instance, project_id, instance_name, instance_flavor):
     """Create instance"""
     print(f"   Creating new instance: {instance_name} with flavor: {instance_flavor}")
     
     try:
-        print('   Finding the project ...')
-        api_response = await api_instance.v1_get_projects()
-        projectId = api_response[0].id
-        print(f"✅ Project found: {projectId}")
-        
         instance = await api_instance.v1_create_instance({
-            'project': projectId,
+            'project': project_id,
             'name': instance_name,
             'flavor': instance_flavor,
             'os': '1.0.0'
@@ -184,8 +209,7 @@ async def connect_to_console(api_instance, instance_id):
         console_response = await api_instance.v1_get_instance_console(instance_id)
         websocket_url = console_response.url
         
-        print("🖥️  Console connected")
-        print("Console output (Ctrl+C to exit):")
+        print("🖥️  Console connected (Ctrl+C to exit)")
         print("-" * 50)
         
         async with websockets.connect(websocket_url) as websocket:
@@ -214,11 +238,19 @@ async def main():
         # Authenticate
         access_token = await authenticate(api_instance, api_token)
         configuration.access_token = access_token
+
+        # Get project ID
+        project_id = await get_project_id(api_instance)
+
+        # Connect to VPN if --vpn flag is provided
+        if '--vpn' in sys.argv:
+            await connect_to_vpn(api_instance, project_id)
+            sys.exit(0)
         
-        # Find instance
+        # Find instance or create new instance
         instance_id = await find_instance(api_instance, instance_name, instance_flavor)
         if instance_id is None:
-            instance_id = await create_instance(api_instance, instance_name, instance_flavor)
+            instance_id = await create_instance(api_instance, project_id, instance_name, instance_flavor)
         
         # Upload firmware
         await upload_firmware(api_instance, instance_id)
