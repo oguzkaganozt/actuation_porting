@@ -2,6 +2,13 @@
 
 # Copyright (c) 2025, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
+#
+# Build script for the Zephyr Actuation Module
+#
+# This script builds the Zephyr Actuation Module for the specified target board.
+# It also builds the Autoware Packages for the demo.
+#
+# Usage: ./build.sh [OPTIONS]
 
 # Color codes
 RED='\033[0;31m'

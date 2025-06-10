@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
-ARM Virtual Hardware (AVH) Firmware Upload Script
-Uploads firmware to an AVH instance and connects to its console.
-"""
+
+# Copyright (c) 2025, Arm Limited.
+# SPDX-License-Identifier: Apache-2.0
+#
+# ARM Virtual Hardware (AVH) Firmware Management Script
+# Manages firmware on an AVH instance.
+#
+# Usage: ./avh.py [OPTIONS]
 
 import asyncio
 import os
@@ -13,6 +17,7 @@ from dotenv import load_dotenv
 import websockets
 import avh_api_async as AvhAPI
 from avh_api_async.rest import ApiException as AvhAPIException
+from datetime import datetime
 
 # Configuration
 FIRMWARE_PATH = 'build/actuation_module/zephyr/zephyr.elf'
@@ -67,14 +72,11 @@ async def connect_to_vpn(api_instance, project_id):
     
     try:
         vpn_config = await api_instance.v1_get_project_vpn_config(project_id, format='ovpn')
-        
-        # Write VPN config to file
         with open('avh.ovpn', 'w') as f:
             f.write(vpn_config)
             
-        # Connect to VPN
+        print(f"   VPN config written to avh.ovpn")
         subprocess.run(['openvpn', './avh.ovpn'], check=True)
-        print(f"✅ VPN connected: {vpn_config.url}")
 
     except AvhAPIException as e:
         print(f"❌ VPN connection failed: {e}")
@@ -146,6 +148,8 @@ async def upload_firmware(api_instance, instance_id):
             file=str(firmware_path.absolute())
         )
         print(f"✅ Firmware uploaded: {response.id}")
+        await reboot_instance(api_instance, instance_id)
+        await wait_for_ready(api_instance, instance_id)
         
     except AvhAPIException as e:
         print(f"❌ Upload failed: {e}")
@@ -191,10 +195,19 @@ async def wait_for_ready(api_instance, instance_id):
 async def monitor_console(websocket):
     """Display console output"""
     try:
-        while True:
-            message = await websocket.recv()
-            decoded_message = message.decode('utf-8', errors='replace')
-            print(decoded_message, end='')
+        logs_dir = Path("log")
+        logs_dir.mkdir(exist_ok=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_filename = logs_dir / f"{timestamp}.log.ansi"
+        
+        with open(log_filename, "w", encoding='utf-8') as log_file:
+            os.chmod(log_filename, 0o666)
+            while True:
+                message = await websocket.recv()
+                decoded_message = message.decode('utf-8', errors='replace')
+                print(decoded_message, end='')
+                log_file.write(decoded_message)
+                log_file.flush()  # Ensure immediate write to file
     except websockets.exceptions.ConnectionClosed:
         print("\nConsole connection closed")
     except KeyboardInterrupt:
@@ -220,49 +233,88 @@ async def connect_to_console(api_instance, instance_id):
         sys.exit(1)
 
 
+async def build_firmware(rebuild=False, unit_test=False):
+    """Build firmware"""
+    print("🔄 Building firmware...")
+    if rebuild:
+        subprocess.run(['./build.sh', '-c'], check=True)
+        subprocess.run(['./build.sh'], check=True)
+    elif unit_test:
+        subprocess.run(['./build.sh', '-c'], check=True)
+        subprocess.run(['./build.sh', '--unit-test'], check=True)
+    else:
+        subprocess.run(['./build.sh'], check=True)
+    print("✅ Firmware built")
+
+
+def print_help():
+    print("Usage: ./avh.py [OPTIONS]")
+    print("Options:")
+    print("  --build: Build firmware")
+    print("  --rebuild: Rebuild firmware")
+    print("  --build-unit-test: Build unit test")
+    print("  --vpn: Connect to VPN")
+    print("  --deploy: Deploy the firmware to the instance")
+    print("  --reboot: Reboot instance")
+    print("  --ssh: Connect to the instance console")
+    print("  --help: Print this help message")
+
+
 async def main():
     """Main script execution"""
     print("=" * 40)
-    print("Starting AVH Firmware Upload")
+    print("AVH Firmware Management Script")
     print("=" * 40)
-    
-    # Load configuration
-    api_endpoint, api_token, instance_name, instance_flavor = load_config()
+
+    if '--help' in sys.argv:
+        print_help()
+        return 0
+
+    # Build firmware if requested
+    if '--build' in sys.argv:
+        await build_firmware(rebuild=False)
+    elif '--rebuild' in sys.argv:
+        await build_firmware(rebuild=True)
+    elif '--build-unit-test' in sys.argv:
+        await build_firmware(unit_test=True)
+
+    if not any(arg in sys.argv for arg in ['--vpn', '--deploy', '--reboot', '--ssh']):
+        print("No AVH command provided. Please use --help to see the available commands.")
+        return 0
     
     # Setup API client
+    api_endpoint, api_token, instance_name, instance_flavor = load_config()
     configuration = AvhAPI.Configuration(host=api_endpoint)
     
-    async with AvhAPI.ApiClient(configuration=configuration) as api_client:
-        api_instance = AvhAPI.ArmApi(api_client)
-        
+    async with AvhAPI.ApiClient(configuration=configuration) as api_client:        
         # Authenticate
+        api_instance = AvhAPI.ArmApi(api_client)
         access_token = await authenticate(api_instance, api_token)
         configuration.access_token = access_token
-
-        # Get project ID
         project_id = await get_project_id(api_instance)
 
-        # Connect to VPN if --vpn flag is provided
-        if '--vpn' in sys.argv:
-            await connect_to_vpn(api_instance, project_id)
-            sys.exit(0)
-        
-        # Find instance or create new instance
+        # Find instance or create new instance if not found
         instance_id = await find_instance(api_instance, instance_name, instance_flavor)
         if instance_id is None:
             instance_id = await create_instance(api_instance, project_id, instance_name, instance_flavor)
+
+        # Connect to VPN if requested
+        if '--vpn' in sys.argv:
+            await connect_to_vpn(api_instance, project_id)
+            return 0
         
-        # Upload firmware
-        await upload_firmware(api_instance, instance_id)
+        # Deploy new firmware if requested
+        if '--deploy' in sys.argv:
+            await upload_firmware(api_instance, instance_id)
         
-        # Reboot with new firmware
-        await reboot_instance(api_instance, instance_id)
-        
-        # Wait for boot
-        await wait_for_ready(api_instance, instance_id)
-        
-        # Connect to console
-        await connect_to_console(api_instance, instance_id)
+        # Reboot instance if requested
+        if '--reboot' in sys.argv:
+            await reboot_instance(api_instance, instance_id)
+            await wait_for_ready(api_instance, instance_id)
+
+        # Connect to console if requested
+        if '--ssh' in sys.argv:
+            await connect_to_console(api_instance, instance_id)
 
 
 if __name__ == '__main__':
