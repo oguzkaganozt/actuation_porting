@@ -283,10 +283,8 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
   log_debug("-------MPC-3-1-10--\n", 0);
   TrajectoryMsg output;
   
-  // Wrap output.points directly - no need for separate sequence
   auto sequence_output_points = wrap(output.points);
   
-  // Reserve capacity for better performance
   if (!sequence_output_points.reserve(input.size())) {
     log_error("Failed to reserve capacity for trajectory points");
     return output;
@@ -322,7 +320,6 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 
   log_debug("-------MPC-3-1-13-- Created trajectory with %zu points\n", sequence_output_points.size());
   
-  // No need to copy data - output.points is already populated via the wrapper!
   return output;
 }
 
