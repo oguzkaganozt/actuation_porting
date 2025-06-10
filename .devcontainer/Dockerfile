@@ -33,7 +33,7 @@ ENV ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk-${ZSDK_VERSION}
 RUN apt-get update && \
     apt install --no-install-recommends -y \ 
     ninja-build ccache dfu-util device-tree-compiler wget vim inetutils-ping \
-    python3-dev python3-pip python3-setuptools python3-tk screen \ 
+    python3-dev python3-pip python3-setuptools python3-tk screen openvpn \ 
     python3-wheel xz-utils file make gcc libsdl2-dev libmagic1 pixz \
     && pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3 dotenv \
     && apt-get clean && rm -rf /var/lib/apt/lists/*

@@ -13,6 +13,7 @@ fi
 
 docker run --rm -it --name actuation-devcontainer \
     --network host \
+    --privileged \
     -v "$HOME/.ccache:/root/.ccache" \
     -v "$(pwd):/actuation" \
     -w "/actuation" \
