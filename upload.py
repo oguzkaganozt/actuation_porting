@@ -1,160 +1,214 @@
+#!/usr/bin/env python3
+"""
+ARM Virtual Hardware (AVH) Firmware Upload Script
+Uploads firmware to an AVH instance and connects to its console.
+"""
+
 import asyncio
-import time
-import websockets
-#from pprint import pprint # Optional for testing and development purposes.
-import avh_api_async as AvhAPI
-from avh_api_async.rest import ApiException as AvhAPIException
-from dotenv import load_dotenv
 import os
 import sys
+from pathlib import Path
+from dotenv import load_dotenv
+import websockets
+import avh_api_async as AvhAPI
+from avh_api_async.rest import ApiException as AvhAPIException
 
-# load the api token from the .env file
-load_dotenv()
-apiEndpoint = os.getenv('AVH_API_ENDPOINT')
-apiToken = os.getenv('AVH_API_TOKEN')
-instanceFlavor = os.getenv('AVH_INSTANCE_FLAVOR')
-instanceName = os.getenv('AVH_INSTANCE_NAME')
+# Configuration
+FIRMWARE_PATH = 'build/actuation_module/zephyr/zephyr.elf'
+BOOT_TIMEOUT_SECONDS = 7200  # 2 hours
+STATE_CHECK_INTERVAL = 2  # seconds
 
-# check if the api token and endpoint are set
-if not apiToken or not apiEndpoint:
-  print('AVH_API_TOKEN or AVH_API_ENDPOINT is not set in the .env file')
-  exit(1)
-  
-async def main():
-  configuration = AvhAPI.Configuration(host = apiEndpoint)
-  
-  async with AvhAPI.ApiClient(configuration=configuration) as api_client:
-    api_instance = AvhAPI.ArmApi(api_client)
-  
-    # Log in
-    print('Logging in ...')
-    try:
-        token_response = await api_instance.v1_auth_login({
-          "apiToken": apiToken
-        })
-        configuration.access_token = token_response.token
-    except AvhAPIException as e:
-        print('Exception when calling v1_auth_login: %s\n' % e)
-        exit(1)
-    print('Logged in.')
+def load_config():
+    """Load and validate environment variables"""
+    load_dotenv()
     
-    # Get the project
-    print('Finding the project ...')
-    api_response = await api_instance.v1_get_projects()
-    projectId = api_response[0].id
-    print('Found project ' + projectId + '.')
+    api_endpoint = os.getenv('AVH_API_ENDPOINT')
+    api_token = os.getenv('AVH_API_TOKEN')
+    instance_name = os.getenv('AVH_INSTANCE_NAME')
+    
+    if not all([api_token, api_endpoint, instance_name]):
+        print("❌ Missing required environment variables:")
+        print("   - AVH_API_TOKEN")
+        print("   - AVH_API_ENDPOINT") 
+        print("   - AVH_INSTANCE_NAME")
+        sys.exit(1)
+        
+    return api_endpoint, api_token, instance_name
 
-    # Get the instance by name
-    print('Finding the instance ...')
+
+async def authenticate(api_instance, api_token):
+    """Login to AVH API"""
+    print("   Logging in...")
+    
     try:
-        api_response = await api_instance.v1_get_instances(
-          name=instanceName
+        token_response = await api_instance.v1_auth_login({"apiToken": api_token})
+        print("✅ Logged in successfully")
+        return token_response.token
+    except AvhAPIException as e:
+        print(f"❌ Login failed: {e}")
+        sys.exit(1)
+
+
+async def find_instance(api_instance, instance_name):
+    """Find instance by name and return its details"""
+    print(f"   Looking for instance: {instance_name}")
+    
+    try:
+        instances = await api_instance.v1_get_instances(name=instance_name)
+        
+        if not instances:
+            print(f"❌ No instance found with name: {instance_name}")
+            sys.exit(1)
+            
+        instance = instances[0]
+        print(f"✅ Found instance: {instance.id}")
+        print(f"    Service IP: {instance.service_ip}")
+        print(f"    Flavor: {instance.flavor}")
+        print(f"    State: {instance.state}")
+        
+        return instance.id
+        
+    except AvhAPIException as e:
+        print(f"❌ Failed to find instance: {e}")
+        sys.exit(1)
+
+
+async def upload_firmware(api_instance, instance_id):
+    """Upload firmware to the instance"""
+    firmware_path = Path(FIRMWARE_PATH)
+    
+    if not firmware_path.exists():
+        print(f"❌ Firmware file not found: {firmware_path}")
+        sys.exit(1)
+        
+    print(f"📤 Uploading firmware: {firmware_path}")
+    
+    try:
+        response = await api_instance.v1_create_image(
+            'fwbinary', 'plain',
+            name="zephyr.elf",
+            instance=instance_id,
+            file=str(firmware_path.absolute())
         )
-        print(f'API response received: {len(api_response)} instances found')
-        if len(api_response) == 0:
-            print(f'No instance found with name: {instanceName}')
-            exit(1)
-        instanceId = api_response[0].id
-        serviceIp = api_response[0].service_ip
-        flavor = api_response[0].flavor
-        type = api_response[0].type
-        state = api_response[0].state
+        print(f"✅ Firmware uploaded: {response.id}")
+        
     except AvhAPIException as e:
-        print('Exception when calling v1_get_instances: %s\n' % e)
-        exit(1)
-    except Exception as e:
-        print(f'Unexpected error when finding instance: {e}')
-        exit(1)
+        print(f"❌ Upload failed: {e}")
+        sys.exit(1)
 
-    print('--------------------------------')
-    print('Found instance ' + instanceId + '.')
-    print('Name: ' + instanceName)
-    print('Service IP: ' + serviceIp)
-    print('Flavor: ' + flavor)
-    print('Type: ' + type)
-    print('State: ' + state)
-    print('--------------------------------')
-  
-    # Upload the custom firmware package
-    print('Uploading the custom firmware package ...')
-    try:
-      api_response = await api_instance.v1_create_image('fwbinary', 'plain', 
-        name="zephyr.elf",
-        instance=instanceId,
-        file=os.path.join(sys.path[0], 'build/actuation_module/zephyr/zephyr.elf')
-      )
-    except AvhAPIException as e:
-      print('Exception when calling v1_create_image: %s\n' % e)
-      exit(1)
-    print('Uploaded image ' + api_response.id + '.')
 
-    # Reset the instance to use the new software
-    print('Resetting VM to use the new software')
-    try:
-        api_response = await api_instance.v1_reboot_instance(instanceId)
-        print('Reboot initiated successfully.')
-        if hasattr(api_response, 'state') and api_response.state:
-            print('Instance ' + instanceId + ' is ' + api_response.state + '.')
-        else:
-            print('Reboot response received, checking current state...')
-    except AvhAPIException as e:
-        print('Exception when calling v1_reboot_instance: %s\n' % e)
-        exit(1)
-    except Exception as e:
-        print(f'Unexpected error during reboot: {e}')
-        exit(1)
-
-    # Wait for the instance to be ready
-    count = 0
-    secondsToPause = 3
-    print('Waiting for the instance to boot up ...')
+async def reboot_instance(api_instance, instance_id):
+    """Reboot instance with new firmware"""
+    print("🔄 Rebooting instance...")
     
-    # Get the current state after reboot
     try:
-        api_response = await api_instance.v1_get_instance_state(instanceId)
-        state = api_response
-        print('Current state after reboot: ' + state)
-    except Exception as e:
-        print(f'Error getting initial state: {e}')
-        exit(1)
+        await api_instance.v1_reboot_instance(instance_id)
+        print("   Reboot initiated")
+    except AvhAPIException as e:
+        print(f"❌ Reboot failed: {e}")
+        sys.exit(1)
+
+
+async def wait_for_ready(api_instance, instance_id):
+    """Wait for instance to finish booting"""
+    print("⏳ Waiting for instance to boot...")
     
-    # Wait while the instance is not in a ready state
-    while state in ['creating', 'booting', 'rebooting', 'starting']:
-        count += 1
-        time.sleep(secondsToPause)
+    transitional_states = {'creating', 'booting', 'rebooting', 'starting'}
+    elapsed_time = 0
+    
+    while True:
         try:
-            api_response = await api_instance.v1_get_instance_state(instanceId)
-            state = api_response
-            print('After ' + str(secondsToPause*count) + ' seconds, the instance is ' + state + '.')
+            state = await api_instance.v1_get_instance_state(instance_id)
+            
+            if state not in transitional_states:
+                print(f"✅ Instance ready! State: {state}")
+                break
+                
+            print(f"    State: {state} (after {elapsed_time}s)")
+            await asyncio.sleep(STATE_CHECK_INTERVAL)
+            elapsed_time += STATE_CHECK_INTERVAL
+            
         except Exception as e:
-            print(f'Error checking instance state: {e}')
-            break
-    
-    print('Instance is now in state: ' + state)
-  
-    # Connect to the console WebSocket
-    print('Requesting the instance console WebSocket URL ...')
+            print(f"❌ Error checking state: {e}")
+            sys.exit(1)
+
+
+async def monitor_console(websocket):
+    """Display console output"""
     try:
-      api_response = await api_instance.v1_get_instance_console(instanceId)
-      consoleWebSocketURL = api_response.url
+        while True:
+            message = await websocket.recv()
+            decoded_message = message.decode('utf-8', errors='replace')
+            print(decoded_message, end='')
+    except websockets.exceptions.ConnectionClosed:
+        print("\nConsole connection closed")
+    except KeyboardInterrupt:
+        print("\nDisconnecting from console...")
+
+
+async def connect_to_console(api_instance, instance_id):
+    """Connect to instance console WebSocket"""
+    print("   Connecting to console...")
+    
+    try:
+        console_response = await api_instance.v1_get_instance_console(instance_id)
+        websocket_url = console_response.url
+        
+        print("🖥️  Console connected")
+        print("Console output (Ctrl+C to exit):")
+        print("-" * 50)
+        
+        async with websockets.connect(websocket_url) as websocket:
+            await monitor_console(websocket)
+            
     except AvhAPIException as e:
-      print('Exception when calling v1_get_instance_console: %s\n' % e)
-      exit(1)
-    print('Connecting to the WebSocket ...')
-    async with websockets.connect(consoleWebSocketURL) as ws:
-      await handler(ws)
-      await asyncio.Future()  # keep WebSocket connection open
-  
-async def handler(websocket):
-  while True:
-    message = await websocket.recv() # encoded in Unicode
-    print(message.decode(encoding='UTF-8',errors='replace')) # decoded to UTF-8
-  
+        print(f"❌ Console connection failed: {e}")
+        sys.exit(1)
+
+
+async def main():
+    """Main script execution"""
+    print("=" * 40)
+    print("Starting AVH Firmware Upload")
+    print("=" * 40)
+    
+    # Load configuration
+    api_endpoint, api_token, instance_name = load_config()
+    
+    # Setup API client
+    configuration = AvhAPI.Configuration(host=api_endpoint)
+    
+    async with AvhAPI.ApiClient(configuration=configuration) as api_client:
+        api_instance = AvhAPI.ArmApi(api_client)
+        
+        # Authenticate
+        access_token = await authenticate(api_instance, api_token)
+        configuration.access_token = access_token
+        
+        # Find instance
+        instance_id = await find_instance(api_instance, instance_name)
+        
+        # Upload firmware
+        await upload_firmware(api_instance, instance_id)
+        
+        # Reboot with new firmware
+        await reboot_instance(api_instance, instance_id)
+        
+        # Wait for boot
+        await wait_for_ready(api_instance, instance_id)
+        
+        # Connect to console
+        await connect_to_console(api_instance, instance_id)
+
+
 if __name__ == '__main__':
-  print('Starting the script ...')
-  try:
-    asyncio.run(asyncio.wait_for(main(), 7200)) # The timeout is 2 hours.
-  except Exception as e:
-    print('Finished running main() due to AsyncIO timeout.')
-  print('Finished the script.')
-  exit(0)
+    try:
+        asyncio.run(asyncio.wait_for(main(), timeout=BOOT_TIMEOUT_SECONDS))
+    except asyncio.TimeoutError:
+        print(f"\nScript timed out after {BOOT_TIMEOUT_SECONDS} seconds")
+    except KeyboardInterrupt:
+        print("\nScript interrupted")
+    except Exception as e:
+        print(f"\n❌ Unexpected error: {e}")
+    finally:
+        print("\nDone")
