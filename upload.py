@@ -184,8 +184,7 @@ async def connect_to_console(api_instance, instance_id):
         console_response = await api_instance.v1_get_instance_console(instance_id)
         websocket_url = console_response.url
         
-        print("🖥️  Console connected")
-        print("Console output (Ctrl+C to exit):")
+        print("🖥️  Console connected (Ctrl+C to exit)")
         print("-" * 50)
         
         async with websockets.connect(websocket_url) as websocket:
@@ -215,7 +214,7 @@ async def main():
         access_token = await authenticate(api_instance, api_token)
         configuration.access_token = access_token
         
-        # Find instance
+        # Find instance or create new instance
         instance_id = await find_instance(api_instance, instance_name, instance_flavor)
         if instance_id is None:
             instance_id = await create_instance(api_instance, instance_name, instance_flavor)
