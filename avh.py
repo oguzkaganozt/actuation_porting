@@ -251,6 +251,10 @@ async def main():
     elif '--unit-test' in sys.argv:
         await build_firmware(unit_test=True)
     
+    if not any(arg in sys.argv for arg in ['--vpn', '--deploy', '--reboot', '--ssh']):
+        print("No AVH command provided. Exiting...")
+        return 0
+    
     # Load configuration
     api_endpoint, api_token, instance_name, instance_flavor = load_config()
     
@@ -272,7 +276,7 @@ async def main():
         # Connect to VPN if requested
         if '--vpn' in sys.argv:
             await connect_to_vpn(api_instance, project_id)
-            sys.exit(0)
+            return 0
         
         # Deploy new firmware if requested
         if '--deploy' in sys.argv:
