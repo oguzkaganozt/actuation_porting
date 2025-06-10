@@ -606,8 +606,71 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   log_debug("-------MPC-7-3-1--\n", 0);
   MatrixXd H = MatrixXd::Zero(DIM_U_N, DIM_U_N);
   log_debug("-------MPC-7-3-2--\n", 0);
-  H.triangularView<Eigen::Upper>() = CB.transpose() * QCB;
+
+  // Add debugging info to identify the root cause
+  log_debug("Matrix dimensions - CB: %ld x %ld, QCB: %ld x %ld, DIM_U_N: %d\n", 
+            CB.rows(), CB.cols(), QCB.rows(), QCB.cols(), DIM_U_N);
+
+  // Check for invalid values in matrices that could cause hangs
+  bool cb_has_nan = CB.array().isNaN().any();
+  bool cb_has_inf = CB.array().isInf().any();
+  bool qcb_has_nan = QCB.array().isNaN().any();
+  bool qcb_has_inf = QCB.array().isInf().any();
+
+  log_debug("CB has NaN: %s, has Inf: %s\n", cb_has_nan ? "YES" : "NO", cb_has_inf ? "YES" : "NO");
+  log_debug("QCB has NaN: %s, has Inf: %s\n", qcb_has_nan ? "YES" : "NO", qcb_has_inf ? "YES" : "NO");
+
+  if (cb_has_nan || cb_has_inf || qcb_has_nan || qcb_has_inf) {
+    log_error("MPC: Invalid values detected in matrices before expensive computation!");
+    return {ResultWithReason{false, "invalid matrix values (NaN/Inf)"}, {}};
+  }
+
+  // Check matrix norms to see if values are reasonable
+  double cb_norm = CB.norm();
+  double qcb_norm = QCB.norm();
+  log_debug("CB norm: %f, QCB norm: %f\n", cb_norm, qcb_norm);
+
+  if (cb_norm > 1e10 || qcb_norm > 1e10) {
+    log_warn("MPC: Very large matrix norms detected - CB: %f, QCB: %f", cb_norm, qcb_norm);
+  }
+
+  log_debug("About to start CB.transpose() computation...\n", 0);
+  auto transpose_start = Clock::now();
+  MatrixXd CB_transpose = CB.transpose();
+  auto transpose_end = Clock::now();
+  log_debug("CB.transpose() took %ld ms\n", (transpose_end - transpose_start));
+
+  log_debug("About to start matrix multiplication...\n", 0);
+  auto mult_start = Clock::now();
+
+  // Try a smaller test multiplication first to see if it's a general Eigen issue
+  log_debug("Testing small matrix multiplication...\n", 0);
+  auto test_start = Clock::now();
+  Eigen::Matrix2d test_a = Eigen::Matrix2d::Random();
+  Eigen::Matrix2d test_b = Eigen::Matrix2d::Random();
+  Eigen::Matrix2d test_result = test_a * test_b;
+  auto test_end = Clock::now();
+  log_debug("Small test multiplication took %ld ms\n", (test_end - test_start));
+
+  // Now try the actual multiplication with timeout check
+  MatrixXd result = CB_transpose * QCB;
+  auto mult_end = Clock::now();
+  log_debug("Matrix multiplication took %ld ms\n", (mult_end - mult_start));
+
+
+  log_debug("About to assign to triangular view...\n", 0);
+  auto assign_start = Clock::now();
+  H.triangularView<Eigen::Upper>() = result;
+  auto assign_end = Clock::now();
+  log_debug("Triangular assignment took %ld ms\n", (assign_end - assign_start));
+
   log_debug("-------MPC-7-3-3--\n", 0);
+
+  // Add a basic safety check for extremely large matrices
+  if (CB.rows() * CB.cols() > 100000) {
+    log_warn("MPC: Very large matrix detected - CB size: %ld x %ld", CB.rows(), CB.cols());
+  }
+
   H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
   log_debug("-------MPC-7-3-4--\n", 0);
   H.triangularView<Eigen::Lower>() = H.transpose();
