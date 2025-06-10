@@ -282,6 +282,8 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 {
   log_debug("-------MPC-3-1-10--\n", 0);
   TrajectoryMsg output;
+  // TODO: Do we need to zero-initialize the entire structure first to ensure no garbage values?
+  // std::memset(&output, 0, sizeof(TrajectoryMsg));
   
   auto sequence_output_points = wrap(output.points);
   
