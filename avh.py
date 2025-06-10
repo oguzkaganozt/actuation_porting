@@ -255,10 +255,8 @@ async def main():
         print("No AVH command provided. Exiting...")
         return 0
     
-    # Load configuration
-    api_endpoint, api_token, instance_name, instance_flavor = load_config()
-    
     # Setup API client
+    api_endpoint, api_token, instance_name, instance_flavor = load_config()
     configuration = AvhAPI.Configuration(host=api_endpoint)
     
     async with AvhAPI.ApiClient(configuration=configuration) as api_client:        
