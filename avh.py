@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-ARM Virtual Hardware (AVH) Firmware Upload Script
-Uploads firmware to an AVH instance and connects to its console.
+ARM Virtual Hardware (AVH) Firmware Management Script
+Manages firmware on an AVH instance.
 """
 
 import asyncio
@@ -217,6 +217,18 @@ async def connect_to_console(api_instance, instance_id):
         sys.exit(1)
 
 
+async def build_firmware(rebuild=False):
+    """Build firmware"""
+    print("🔄 Building firmware...")
+    if rebuild:
+        subprocess.run(['./build.sh', '-c'], check=True)
+        subprocess.run(['./build.sh'], check=True)
+    else:
+        subprocess.run(['./build.sh'], check=True)
+
+    print("✅ Firmware built")
+
+
 async def main():
     """Main script execution"""
     print("=" * 40)
@@ -230,9 +242,13 @@ async def main():
     configuration = AvhAPI.Configuration(host=api_endpoint)
     
     async with AvhAPI.ApiClient(configuration=configuration) as api_client:
-        api_instance = AvhAPI.ArmApi(api_client)
+        if '--build' in sys.argv:
+            await build_firmware(rebuild=False)
+        elif '--rebuild' in sys.argv:
+            await build_firmware(rebuild=True)
         
         # Authenticate
+        api_instance = AvhAPI.ArmApi(api_client)
         access_token = await authenticate(api_instance, api_token)
         configuration.access_token = access_token
 
