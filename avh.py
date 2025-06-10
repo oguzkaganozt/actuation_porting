@@ -237,22 +237,39 @@ async def build_firmware(rebuild=False, unit_test=False):
     print("✅ Firmware built")
 
 
+def print_help():
+    print("Usage: ./avh.py [OPTIONS]")
+    print("Options:")
+    print("  --build: Build firmware")
+    print("  --rebuild: Rebuild firmware")
+    print("  --build-unit-test: Build unit test")
+    print("  --vpn: Connect to VPN")
+    print("  --deploy: Deploy the firmware to the instance")
+    print("  --reboot: Reboot instance")
+    print("  --ssh: Connect to the instance console")
+    print("  --help: Print this help message")
+
+
 async def main():
     """Main script execution"""
     print("=" * 40)
     print("AVH Firmware Management Script")
     print("=" * 40)
 
+    if '--help' in sys.argv:
+        print_help()
+        return 0
+
     # Build firmware if requested
     if '--build' in sys.argv:
         await build_firmware(rebuild=False)
     elif '--rebuild' in sys.argv:
         await build_firmware(rebuild=True)
-    elif '--unit-test' in sys.argv:
+    elif '--build-unit-test' in sys.argv:
         await build_firmware(unit_test=True)
-    
+
     if not any(arg in sys.argv for arg in ['--vpn', '--deploy', '--reboot', '--ssh']):
-        print("No AVH command provided. Exiting...")
+        print("No AVH command provided. Please use --help to see the available commands.")
         return 0
     
     # Setup API client
