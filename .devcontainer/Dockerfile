@@ -35,7 +35,7 @@ RUN apt-get update && \
     ninja-build ccache dfu-util device-tree-compiler wget vim inetutils-ping \
     python3-dev python3-pip python3-setuptools python3-tk screen \ 
     python3-wheel xz-utils file make gcc libsdl2-dev libmagic1 pixz \
-    pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3 \
+    && pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3 dotenv \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install multilib to support native_sim zephyr runtime

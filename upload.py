@@ -106,7 +106,7 @@ async def main():
 
     # Wait for the instance to be ready
     count = 0
-    secondsToPause = 12
+    secondsToPause = 3
     print('Waiting for the instance to boot up ...')
     
     # Get the current state after reboot
