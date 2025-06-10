@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""
-ARM Virtual Hardware (AVH) Firmware Management Script
-Manages firmware on an AVH instance.
-"""
+
+# Copyright (c) 2025, Arm Limited.
+# SPDX-License-Identifier: Apache-2.0
+#
+# ARM Virtual Hardware (AVH) Firmware Management Script
+# Manages firmware on an AVH instance.
+#
+# Usage: ./avh.py [OPTIONS]
 
 import asyncio
 import os
