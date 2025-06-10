@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 import websockets
 import avh_api_async as AvhAPI
 from avh_api_async.rest import ApiException as AvhAPIException
+from datetime import datetime
 
 # Configuration
 FIRMWARE_PATH = 'build/actuation_module/zephyr/zephyr.elf'
@@ -194,8 +195,13 @@ async def wait_for_ready(api_instance, instance_id):
 async def monitor_console(websocket):
     """Display console output"""
     try:
-        with open("console.log.ansi", "w", encoding='utf-8') as log_file:
-            os.chmod("console.log.ansi", 0o666)
+        logs_dir = Path("log")
+        logs_dir.mkdir(exist_ok=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_filename = logs_dir / f"{timestamp}.log.ansi"
+        
+        with open(log_filename, "w", encoding='utf-8') as log_file:
+            os.chmod(log_filename, 0o666)
             while True:
                 message = await websocket.recv()
                 decoded_message = message.decode('utf-8', errors='replace')
