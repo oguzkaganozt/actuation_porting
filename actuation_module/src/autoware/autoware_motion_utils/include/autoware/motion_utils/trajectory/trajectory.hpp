@@ -200,7 +200,7 @@ T removeOverlapPoints(const T & points, const size_t start_idx = 0)
   // TODO: !!! Validate this implementation, especially check if sequence wrapper works as expected
   if (points.size() < start_idx + 1) {
     // Create a new empty sequence but with the same capacity as the original
-    T result(points.size());
+    T result;
     // Copy all data from the original points
     for (size_t i = 0; i < points.size(); ++i) {
       result.push_back(points.at(i));

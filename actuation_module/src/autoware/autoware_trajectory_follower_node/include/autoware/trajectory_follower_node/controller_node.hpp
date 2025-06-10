@@ -102,11 +102,17 @@ private:
   static void callbackTrajectory(const TrajectoryMsg* msg, void* arg);
 
   // Current Data
-  const TrajectoryMsg* current_trajectory_ptr_;
-  const OdometryMsg* current_odometry_ptr_;
-  const SteeringReportMsg* current_steering_ptr_;
-  const AccelWithCovarianceStampedMsg* current_accel_ptr_;
-  const OperationModeStateMsg* current_operation_mode_ptr_;
+  TrajectoryMsg current_trajectory_;
+  OdometryMsg current_odometry_;
+  SteeringReportMsg current_steering_;
+  AccelWithCovarianceStampedMsg current_accel_;
+  OperationModeStateMsg current_operation_mode_;
+
+  bool has_trajectory_ = false;
+  bool has_odometry_ = false;
+  bool has_steering_ = false;
+  bool has_accel_ = false;
+  bool has_operation_mode_ = false;
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;

@@ -151,7 +151,8 @@ void Controller::callbackSteeringStatus(const SteeringReportMsg* msg, void* arg)
 
   // Put data into state pointers
   Controller* controller = static_cast<Controller*>(arg);
-  controller->current_steering_ptr_ = msg;
+  controller->current_steering_ = *msg;
+  controller->has_steering_ = true;
 }
 
 void Controller::callbackOperationModeState(const OperationModeStateMsg* msg, void* arg) {
@@ -165,7 +166,8 @@ void Controller::callbackOperationModeState(const OperationModeStateMsg* msg, vo
 
   // Put data into state pointers
   Controller* controller = static_cast<Controller*>(arg);
-  controller->current_operation_mode_ptr_ = msg;
+  controller->current_operation_mode_ = *msg;
+  controller->has_operation_mode_ = true;
 }
 
 void Controller::callbackOdometry(const OdometryMsg* msg, void* arg) {
@@ -178,7 +180,8 @@ void Controller::callbackOdometry(const OdometryMsg* msg, void* arg) {
 
   // Put data into state pointers
   Controller* controller = static_cast<Controller*>(arg);
-  controller->current_odometry_ptr_ = msg;
+  controller->current_odometry_ = *msg;
+  controller->has_odometry_ = true;
 }
 
 void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, void* arg) {
@@ -191,34 +194,21 @@ void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, 
 
   // Put data into state pointers
   Controller* controller = static_cast<Controller*>(arg);
-  controller->current_accel_ptr_ = msg;
+  controller->current_accel_ = *msg;
+  controller->has_accel_ = true;
 }
 
 void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
-  // static int count = 0;
-  // log_debug("-------TRAJECTORY----IDX %d----\n", count++);
-  // log_debug("Timestamp: %ld\n", Clock::toDouble(msg->header.stamp));
-  // log_debug("Trajectory size: %d\n", msg->points._length);
-  // log_debug("-------------------------------\n");
-  // auto points = wrap(msg.points);
-  // size_t count = 0;
-  // for (auto point : points) {
-  //     log_debug("--------------------------------\n");
-  //     if (count >= 10) break;
-  //     log_debug("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
-  //     log_debug("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
-  //     log_debug("Accelleration: %lf\n", point.acceleration_mps2);
-  //     log_debug("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
-  //     count++;
-  // }
-  // if (points.size() > 10) {
-  //     log_debug("... and %zu more points\n", points.size() - 10);
-  // }
-  // log_debug("-------------------------------\n");
+  static int count = 0;
+  log_debug("-------TRAJECTORY----IDX %d----\n", count++);
+  log_debug("Timestamp: %ld\n", Clock::toDouble(msg->header.stamp));
+  log_debug("Trajectory size: %d\n", msg->points._length);
+  log_debug("-------------------------------\n");
 
-  // Put data into state pointers
+  // Copy the data instead of storing the pointer
   Controller* controller = static_cast<Controller*>(arg);
-  controller->current_trajectory_ptr_ = msg;
+  controller->current_trajectory_ = *msg;  // Copy the entire message
+  controller->has_trajectory_ = true;
 }
 
 Controller::LateralControllerMode Controller::getLateralControllerMode(
@@ -245,19 +235,26 @@ bool Controller::processData()
     log_info_throttle(("Waiting for " + data_type + " data").c_str());
   };
 
-  const auto & getData = [&logData](auto & dest, const std::string & data_type = "") {
-    if (dest) {
-      return true;
-    }
-    if (!data_type.empty()) logData(data_type);
-    return false;
-  };
-
-  is_ready &= getData(current_accel_ptr_, "acceleration");
-  is_ready &= getData(current_steering_ptr_, "steering");
-  is_ready &= getData(current_trajectory_ptr_, "trajectory");
-  is_ready &= getData(current_odometry_ptr_, "odometry");
-  is_ready &= getData(current_operation_mode_ptr_, "operation mode");
+  if (!has_accel_) {
+    logData("acceleration");
+    is_ready = false;
+  }
+  if (!has_steering_) {
+    logData("steering");
+    is_ready = false;
+  }
+  if (!has_trajectory_) {
+    logData("trajectory");
+    is_ready = false;
+  }
+  if (!has_odometry_) {
+    logData("odometry");
+    is_ready = false;
+  }
+  if (!has_operation_mode_) {
+    logData("operation mode");
+    is_ready = false;
+  }
 
   return is_ready;
 }
@@ -286,11 +283,31 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
   }
 
   trajectory_follower::InputData input_data;
-  input_data.current_trajectory = *current_trajectory_ptr_;
-  input_data.current_odometry = *current_odometry_ptr_;
-  input_data.current_steering = *current_steering_ptr_;
-  input_data.current_accel = *current_accel_ptr_;
-  input_data.current_operation_mode = *current_operation_mode_ptr_;
+  input_data.current_trajectory = current_trajectory_;
+  input_data.current_odometry = current_odometry_;
+  input_data.current_steering = current_steering_;
+  input_data.current_accel = current_accel_;
+  input_data.current_operation_mode = current_operation_mode_;
+
+  // log_debug("-------INPUT--2--\n", 0);
+  // log_debug("Timestamp: %ld\n", Clock::toDouble(input_data.current_trajectory.header.stamp));
+  // log_debug("Trajectory size: %d\n", input_data.current_trajectory.points._length);
+  // log_debug("-------------------------------\n");
+  // auto points = wrap(input_data.current_trajectory.points);
+  // size_t idx = 0;
+  // for (auto point : points) {
+  //     log_debug("--------------------------------\n");
+  //     if (idx >= 3) break;
+  //     log_debug("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
+  //     log_debug("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
+  //     log_debug("Accelleration: %lf\n", point.acceleration_mps2);
+  //     log_debug("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
+  //     idx++;
+  // }
+  // if (points.size() > 3) {
+  //     log_debug("... and %zu more points\n", points.size() - 3);
+  // }
+  // log_debug("-------------------------------\n");
 
   return input_data;
 }
@@ -317,16 +334,23 @@ void Controller::callbackTimerControl(void* arg)
   }
 
   log_debug("Controllers are ready\n");
-  std::exit(0); // TODO: DEBUG REMOVE
 
   // 3. run controllers
-  controller->stop_watch_.tic("lateral");
+  // controller->stop_watch_.tic("lateral");
   const auto lat_out = controller->lateral_controller_->run(*input_data);
-  controller->publishProcessingTime(controller->stop_watch_.toc("lateral"), controller->pub_processing_time_lat_ms_);
+  log_debug("Lateral controller ran\n");
+  std::exit(0); // TODO: DEBUG REMOVE
+  // controller->stop_watch_.toc("lateral");
+  // controller->publishProcessingTime(controller->stop_watch_.toc("lateral"), controller->pub_processing_time_lat_ms_);
 
-  controller->stop_watch_.tic("longitudinal");
+  // controller->stop_watch_.tic("longitudinal");
   const auto lon_out = controller->longitudinal_controller_->run(*input_data);
-  controller->publishProcessingTime(controller->stop_watch_.toc("longitudinal"), controller->pub_processing_time_lon_ms_);
+  log_debug("Longitudinal controller ran\n");
+  // controller->stop_watch_.toc("longitudinal");
+  // controller->publishProcessingTime(controller->stop_watch_.toc("longitudinal"), controller->pub_processing_time_lon_ms_);
+
+  log_debug("Controllers ran\n");
+  std::exit(0); // TODO: DEBUG REMOVE
 
   // 4. sync with each other controllers
   controller->longitudinal_controller_->sync(lat_out.sync_data);

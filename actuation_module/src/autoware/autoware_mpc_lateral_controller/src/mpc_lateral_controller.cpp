@@ -248,9 +248,13 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     m_is_ctrl_cmd_prev_initialized = true;
   }
 
+  log_debug("-------MPC--1--\n", 0);
+
   trajectory_follower::LateralHorizon ctrl_cmd_horizon{};
   const auto mpc_solved_status = m_mpc->calculateMPC(
     m_current_steering, m_current_kinematic_state, ctrl_cmd, predicted_traj, ctrl_cmd_horizon);
+
+  std::exit(0); // TODO: DEBUG REMOVE
 
   if (
     (m_mpc_solved_status.result == true && mpc_solved_status.result == false) ||
