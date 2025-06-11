@@ -183,6 +183,8 @@ struct MPCData
  */
 struct MPCMatrix
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   MatrixXd Aex;
   MatrixXd Bex;
   MatrixXd Wex;
@@ -207,6 +209,8 @@ struct ResultWithReason
  */
 class MPC
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 private:
   // Vehicle model used for MPC.
   std::shared_ptr<VehicleModelInterface> m_vehicle_model_ptr;

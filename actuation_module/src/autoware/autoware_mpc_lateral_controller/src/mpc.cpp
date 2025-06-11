@@ -607,57 +607,25 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   MatrixXd H = MatrixXd::Zero(DIM_U_N, DIM_U_N);
   log_debug("-------MPC-7-3-2--\n", 0);
 
-  // Add debugging info to identify the root cause
-  log_debug("Matrix dimensions - CB: %ld x %ld, QCB: %ld x %ld, DIM_U_N: %d\n", 
-            CB.rows(), CB.cols(), QCB.rows(), QCB.cols(), DIM_U_N);
-
-  // Check for invalid values in matrices that could cause hangs
-  bool cb_has_nan = CB.array().isNaN().any();
-  bool cb_has_inf = CB.array().isInf().any();
-  bool qcb_has_nan = QCB.array().isNaN().any();
-  bool qcb_has_inf = QCB.array().isInf().any();
-
-  log_debug("CB has NaN: %s, has Inf: %s\n", cb_has_nan ? "YES" : "NO", cb_has_inf ? "YES" : "NO");
-  log_debug("QCB has NaN: %s, has Inf: %s\n", qcb_has_nan ? "YES" : "NO", qcb_has_inf ? "YES" : "NO");
-
-  if (cb_has_nan || cb_has_inf || qcb_has_nan || qcb_has_inf) {
-    log_error("MPC: Invalid values detected in matrices before expensive computation!");
-    return {ResultWithReason{false, "invalid matrix values (NaN/Inf)"}, {}};
-  }
-
-  // Check matrix norms to see if values are reasonable
-  double cb_norm = CB.norm();
-  double qcb_norm = QCB.norm();
-  log_debug("CB norm: %f, QCB norm: %f\n", cb_norm, qcb_norm);
-
-  if (cb_norm > 1e10 || qcb_norm > 1e10) {
-    log_warn("MPC: Very large matrix norms detected - CB: %f, QCB: %f", cb_norm, qcb_norm);
-  }
-
-  log_debug("About to start CB.transpose() computation...\n", 0);
   log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
-  MatrixXd CB_transpose = CB.transpose();
+  MatrixXd CB_transpose = CB.transpose();  // TODO: We can force evaluation here with .eval()
   log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
 
-  // TODO: Strange section
-  Eigen::Matrix2d test_a = Eigen::Matrix2d::Random();
-  Eigen::Matrix2d test_b = Eigen::Matrix2d::Random();
+  // Use heap allocation and explicit computation to avoid stack issues
+  MatrixXd result = MatrixXd::Zero(CB_transpose.rows(), QCB.cols());
+  
+  // Perform multiplication in chunks to avoid potential memory issues
+  const int chunk_size = 10;  // Process 10 rows at a time
+  for (int i = 0; i < CB_transpose.rows(); i += chunk_size) {
+    int end_row = std::min(i + chunk_size, static_cast<int>(CB_transpose.rows()));
+    result.block(i, 0, end_row - i, QCB.cols()).noalias() = 
+      CB_transpose.block(i, 0, end_row - i, CB_transpose.cols()) * QCB;
+  }
+  log_debug("Multiplication result size: %ld x %ld\n", result.rows(), result.cols());
 
-  log_debug("About to start matrix multiplication...\n", 0);
-  log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
-  log_debug("QCB size: %ld x %ld\n", QCB.rows(), QCB.cols());
-  MatrixXd result = CB_transpose * QCB;
-  log_debug("result size: %ld x %ld\n", result.rows(), result.cols());
-
-  log_debug("About to assign to triangular view...\n", 0);
   H.triangularView<Eigen::Upper>() = result;
 
   log_debug("-------MPC-7-3-3--\n", 0);
-
-  // Add a basic safety check for extremely large matrices
-  if (CB.rows() * CB.cols() > 100000) {
-    log_warn("MPC: Very large matrix detected - CB size: %ld x %ld", CB.rows(), CB.cols());
-  }
 
   H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
   log_debug("-------MPC-7-3-4--\n", 0);
