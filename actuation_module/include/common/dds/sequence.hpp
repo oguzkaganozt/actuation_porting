@@ -151,7 +151,7 @@ private:
         return false;
     }
     
-    void auto_initialize_sequence(T* seq) {
+    void initialize_sequence(T* seq) {
         if (!seq) return;
         
         log_info("Auto-initializing DDS sequence to safe defaults");
@@ -226,8 +226,8 @@ public:
         : sequence(&existing_seq), owns_sequence_(false), is_constructed_successfully_(true) {
         
         if constexpr (!std::is_const_v<T>) {
-            if (sequence && needs_auto_initialization(sequence)) {
-                auto_initialize_sequence(sequence);
+            if (sequence) {
+                initialize_sequence(sequence);
             }
         } else {
             if (sequence && needs_auto_initialization(sequence)) {

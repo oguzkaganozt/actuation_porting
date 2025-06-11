@@ -639,14 +639,9 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   MatrixXd CB_transpose = CB.transpose();
   log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
 
-  // Try a smaller test multiplication first to see if it's a general Eigen issue
-  log_debug("Testing small matrix multiplication...\n", 0);
+  // TODO: Strange section
   Eigen::Matrix2d test_a = Eigen::Matrix2d::Random();
   Eigen::Matrix2d test_b = Eigen::Matrix2d::Random();
-  log_debug("test_a size: %ld x %ld\n", test_a.rows(), test_a.cols());
-  log_debug("test_b size: %ld x %ld\n", test_b.rows(), test_b.cols());
-  Eigen::Matrix2d test_result = test_a * test_b;
-  log_debug("test_result size: %ld x %ld\n", test_result.rows(), test_result.cols());
 
   log_debug("About to start matrix multiplication...\n", 0);
   log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
