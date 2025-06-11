@@ -202,7 +202,7 @@ void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
   static int count = 0;
   log_debug("-------TRAJECTORY----IDX %d----\n", count++);
   log_debug("Timestamp: %ld\n", Clock::toDouble(msg->header.stamp));
-  log_debug("Trajectory size: %d\n", msg->points._length);
+  log_debug("Trajectory size: %u\n", msg->points._length);
   log_debug("-------------------------------\n");
 
   // Copy the data instead of storing the pointer

@@ -122,31 +122,31 @@ private:
     void check_validity(T* seq) const {
         if (!seq) {
             log_error("Detected corrupted sequence: null pointer");
-            throw std::runtime_error("Detected corrupted sequence: null pointer");
+            std::exit(1);
         }
 
         if (seq->_maximum == 0 && seq->_buffer != nullptr) {
             log_error("Detected corrupted sequence: non-null buffer");
-            throw std::runtime_error("Detected corrupted sequence: non-null buffer");
+            std::exit(1);
         }
         
-        if (seq->_maximum > MAX_SEQUENCE_SIZE) {
-            log_error("Detected corrupted sequence: _maximum=%u exceeds MAX_SEQUENCE_SIZE=%zu", 
-                     seq->_maximum, MAX_SEQUENCE_SIZE);
-            throw std::runtime_error("Detected corrupted sequence: _maximum exceeds MAX_SEQUENCE_SIZE");
-        }
+        // if (seq->_maximum > MAX_SEQUENCE_SIZE) {
+        //     log_error("Detected corrupted sequence: _maximum=%u exceeds MAX_SEQUENCE_SIZE=%zu", 
+        //              seq->_maximum, MAX_SEQUENCE_SIZE);
+        //     throw std::runtime_error("Detected corrupted sequence: _maximum exceeds MAX_SEQUENCE_SIZE");
+        // }
         
         if (seq->_length > seq->_maximum) {
             log_error("Detected corrupted sequence: _length=%u > _maximum=%u", 
                      seq->_length, seq->_maximum);
-            throw std::runtime_error("Detected corrupted sequence: _length exceeds _maximum");
+            std::exit(1);
         }
 
         if (seq->_buffer != nullptr) {
             uintptr_t addr = reinterpret_cast<uintptr_t>(seq->_buffer);
             if (addr > 0x100000000000ULL) {
                 log_error("Detected corrupted sequence: suspicious buffer address %p", seq->_buffer);
-                throw std::runtime_error("Detected corrupted sequence: suspicious buffer address");
+                std::exit(1);
             }
         }
     }
@@ -167,7 +167,7 @@ private:
         if (required_capacity > MAX_SEQUENCE_SIZE) {
             log_error("ensure_capacity: Requested capacity %zu exceeds maximum allowed (%zu)", 
                       required_capacity, MAX_SEQUENCE_SIZE);
-            return false;
+            std::exit(1);
         }
         
         size_t new_capacity = std::max(required_capacity, 
@@ -183,7 +183,7 @@ private:
         
         if (!new_buffer) {
             log_error("ensure_capacity: Failed to allocate DDS memory for sequence buffer");
-            return false;
+            std::exit(1);
         }
         
         if (sequence->_buffer && sequence->_length > 0) {
@@ -220,7 +220,7 @@ public:
         sequence = static_cast<T*>(dds_alloc(sizeof(T)));
         if (!sequence) {
             log_error("Failed to allocate DDS sequence structure");
-            return;
+            std::exit(1);
         }
         
         sequence->_length = 0;
@@ -231,6 +231,7 @@ public:
         if (initial_capacity > 0) {
             if (!ensure_capacity(initial_capacity)) {
                 log_error("Failed to allocate DDS sequence buffer");
+                std::exit(1);
             }
         }
     }
@@ -292,8 +293,8 @@ public:
         check_validity(sequence);
         
         if (index >= sequence->_length) {
-            throw std::out_of_range("Index " + std::to_string(index) + 
-                                  " out of range (size: " + std::to_string(sequence->_length) + ")");
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
@@ -302,24 +303,24 @@ public:
         check_validity(sequence);
         
         if (index >= sequence->_length) {
-            throw std::out_of_range("Index " + std::to_string(index) + 
-                                  " out of range (size: " + std::to_string(sequence->_length) + ")");
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
     
     reference operator[](size_type index) noexcept {
-        if (!sequence || !sequence->_buffer) {
-            static value_type dummy{};
-            return dummy;
+        if (index >= sequence->_length) {
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
     
     const_reference operator[](size_type index) const noexcept {
-        if (!sequence || !sequence->_buffer) {
-            static const value_type dummy{};
-            return dummy;
+        if (index >= sequence->_length) {
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
@@ -328,7 +329,8 @@ public:
         check_validity(sequence);
         
         if (empty()) {
-            throw std::runtime_error("Cannot access front() of empty sequence");
+            log_error("Cannot access front() of empty sequence");
+            std::exit(1);
         }
         
         return sequence->_buffer[0];
@@ -338,7 +340,8 @@ public:
         check_validity(sequence);
         
         if (empty()) {
-            throw std::runtime_error("Cannot access front() of empty sequence");
+            log_error("Cannot access front() of empty sequence");
+            std::exit(1);
         }
         
         return sequence->_buffer[0];
@@ -348,7 +351,8 @@ public:
         check_validity(sequence);
         
         if (empty()) {
-            throw std::runtime_error("Cannot access back() of empty sequence");
+            log_error("Cannot access back() of empty sequence");
+            std::exit(1);
         }
         
         return sequence->_buffer[sequence->_length - 1];
@@ -358,7 +362,8 @@ public:
         check_validity(sequence);
         
         if (empty()) {
-            throw std::runtime_error("Cannot access back() of empty sequence");
+            log_error("Cannot access back() of empty sequence");
+            std::exit(1);
         }
         
         return sequence->_buffer[sequence->_length - 1];
@@ -380,8 +385,6 @@ public:
     pointer end() noexcept { return data() + size(); }
     const_pointer begin() const noexcept { return data(); }
     const_pointer end() const noexcept { return data() + size(); }
-    const_pointer cbegin() const noexcept { return begin(); }
-    const_pointer cend() const noexcept { return end(); }
     
     bool reserve(size_type new_capacity) {
         return ensure_capacity(new_capacity);
@@ -418,8 +421,9 @@ public:
     void pop_back() {
         check_validity(sequence);
         
-        if (empty() || !sequence) {
-            throw std::runtime_error("Cannot pop_back() from empty or invalid sequence");
+        if (empty()) {
+            log_error("Cannot pop_back() from empty sequence");
+            std::exit(1);
         }
         --sequence->_length;
     }
