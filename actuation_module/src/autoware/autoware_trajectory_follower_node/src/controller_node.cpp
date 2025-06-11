@@ -203,7 +203,7 @@ void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, 
 void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
   static int count = 0;
   log_debug("-------TRAJECTORY----IDX %d----\n", count++);
-  log_debug("Timestamp: %ld\n", Clock::toDouble(msg->header.stamp));
+  log_debug("Timestamp: %f\n", Clock::toDouble(msg->header.stamp));
   log_debug("Trajectory size: %u\n", msg->points._length);
   log_debug("-------------------------------\n");
 
@@ -300,26 +300,6 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
   input_data.current_steering = current_steering_;
   input_data.current_accel = current_accel_;
   input_data.current_operation_mode = current_operation_mode_;
-
-  // log_debug("-------INPUT--2--\n", 0);
-  // log_debug("Timestamp: %ld\n", Clock::toDouble(input_data.current_trajectory.header.stamp));
-  // log_debug("Trajectory size: %d\n", input_data.current_trajectory.points._length);
-  // log_debug("-------------------------------\n");
-  // auto points = wrap_sequence(input_data.current_trajectory.points);
-  // size_t idx = 0;
-  // for (auto point : points) {
-  //     log_debug("--------------------------------\n");
-  //     if (idx >= 3) break;
-  //     log_debug("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
-  //     log_debug("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
-  //     log_debug("Accelleration: %lf\n", point.acceleration_mps2);
-  //     log_debug("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
-  //     idx++;
-  // }
-  // if (points.size() > 3) {
-  //     log_debug("... and %zu more points\n", points.size() - 3);
-  // }
-  // log_debug("-------------------------------\n");
 
   return input_data;
 }
