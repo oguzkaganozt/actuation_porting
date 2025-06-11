@@ -237,7 +237,6 @@ async def connect_to_console(api_instance, instance_id):
 
 async def build_firmware(rebuild=False, unit_test=False):
     """Build firmware"""
-    print(f"🔄 Building firmware (build logs: log/build.log.ansi)")
     
     log_dir = Path("log")
     log_dir.mkdir(exist_ok=True)
@@ -246,12 +245,15 @@ async def build_firmware(rebuild=False, unit_test=False):
     with open(log_file, 'w') as f:
         os.chmod(log_file, 0o666)
         if rebuild:
+            print(f"🔨 Rebuilding firmware (build logs: log/build.log.ansi)")
             subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
             subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
         elif unit_test:
+            print(f"🔨 Building unit test firmware (build logs: log/build.log.ansi)")
             subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
             subprocess.run(['./build.sh', '--unit-test'], check=True, stdout=f, stderr=subprocess.STDOUT)
         else:
+            print(f"🔨 Building firmware (build logs: log/build.log.ansi)")
             subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
     
     print(f"✅ Firmware built")
