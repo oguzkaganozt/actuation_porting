@@ -64,7 +64,6 @@ ResultWithReason MPC::calculateMPC(
 
   log_debug("-------MPC-4--\n", 0);
 
-
   // calculate initial state of the error dynamics
   const auto x0 = getInitialState(mpc_data);
 
@@ -78,7 +77,6 @@ ResultWithReason MPC::calculateMPC(
   }
 
   log_debug("-------MPC-5--\n", 0);
-  // std::exit(0); // TODO: DEBUG REMOVE
 
   // resample reference trajectory with mpc sampling time
   const double mpc_start_time = mpc_data.nearest_time + m_param.input_delay;
@@ -135,22 +133,23 @@ ResultWithReason MPC::calculateMPC(
 
   log_debug("-------MPC-11--\n", 0);
 
-  /* calculate predicted trajectory */
-  Eigen::VectorXd initial_state = m_use_delayed_initial_state ? x0_delayed : x0;
-  predicted_trajectory = calculatePredictedTrajectory(
-    mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "world");
+  // TODO: REMOVED FOR SIMPLIFICATION
+  // /* calculate predicted trajectory */
+  // Eigen::VectorXd initial_state = m_use_delayed_initial_state ? x0_delayed : x0;
+  // predicted_trajectory = calculatePredictedTrajectory(
+  //   mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "world");
 
-  log_debug("-------MPC-12--\n", 0);
+  // log_debug("-------MPC-12--\n", 0);
 
-  // Publish predicted trajectories in different coordinates for debugging purposes
-  if (m_publish_debug_trajectories) {
-    // Calculate and publish predicted trajectory in Frenet coordinate
-    auto predicted_trajectory_frenet = calculatePredictedTrajectory(
-      mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "frenet");
-    predicted_trajectory_frenet.header.stamp = Clock::toRosTime(Clock::now());
-    predicted_trajectory_frenet.header.frame_id = "map";
-    m_debug_frenet_predicted_trajectory_pub->publish(predicted_trajectory_frenet);
-  }
+  // // Publish predicted trajectories in different coordinates for debugging purposes
+  // if (m_publish_debug_trajectories) {
+  //   // Calculate and publish predicted trajectory in Frenet coordinate
+  //   auto predicted_trajectory_frenet = calculatePredictedTrajectory(
+  //     mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "frenet");
+  //   predicted_trajectory_frenet.header.stamp = Clock::toRosTime(Clock::now());
+  //   predicted_trajectory_frenet.header.frame_id = "map";
+  //   m_debug_frenet_predicted_trajectory_pub->publish(predicted_trajectory_frenet);
+  // }
 
   log_debug("-------MPC-13--\n", 0);
 

@@ -18,6 +18,7 @@ services:
 
   actuation-module:
     image: ghcr.io/autowarefoundation/autoware:universe-20250207
+    network_mode: host
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
       - ./control-module/control-module.launch.xml:/autoware/control-module.launch.xml

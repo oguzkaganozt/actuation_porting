@@ -330,6 +330,12 @@ void Controller::callbackTimerControl(void* arg)
   // 3. run controllers
   // controller->stop_watch_.tic("lateral");
   const auto lat_out = controller->lateral_controller_->run(*input_data);
+  log_debug("-------LAT OUT--\n", 0);
+  log_debug("Lateral output: %f\n", lat_out.control_cmd.steering_tire_angle);
+  log_debug("Lateral steering tire rotation rate: %f\n", lat_out.control_cmd.steering_tire_rotation_rate);
+  log_debug("Lateral is defined steering tire rotation rate: %d\n", lat_out.control_cmd.is_defined_steering_tire_rotation_rate);
+  // log_debug("Lateral horizon: %f\n", lat_out.control_cmd_horizon.time_step_ms);
+  // log_debug("Lateral sync data: %f\n", lat_out.sync_data.is_steer_converged);
   log_debug("Lateral controller ran\n");
   std::exit(0); // TODO: DEBUG REMOVE
   // controller->stop_watch_.toc("lateral");
