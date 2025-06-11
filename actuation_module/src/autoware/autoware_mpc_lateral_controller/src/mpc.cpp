@@ -635,34 +635,27 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   }
 
   log_debug("About to start CB.transpose() computation...\n", 0);
-  auto transpose_start = Clock::now();
+  log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
   MatrixXd CB_transpose = CB.transpose();
-  auto transpose_end = Clock::now();
-  log_debug("CB.transpose() took %ld ms\n", (transpose_end - transpose_start));
-
-  log_debug("About to start matrix multiplication...\n", 0);
-  auto mult_start = Clock::now();
+  log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
 
   // Try a smaller test multiplication first to see if it's a general Eigen issue
   log_debug("Testing small matrix multiplication...\n", 0);
-  auto test_start = Clock::now();
   Eigen::Matrix2d test_a = Eigen::Matrix2d::Random();
   Eigen::Matrix2d test_b = Eigen::Matrix2d::Random();
+  log_debug("test_a size: %ld x %ld\n", test_a.rows(), test_a.cols());
+  log_debug("test_b size: %ld x %ld\n", test_b.rows(), test_b.cols());
   Eigen::Matrix2d test_result = test_a * test_b;
-  auto test_end = Clock::now();
-  log_debug("Small test multiplication took %ld ms\n", (test_end - test_start));
+  log_debug("test_result size: %ld x %ld\n", test_result.rows(), test_result.cols());
 
-  // Now try the actual multiplication with timeout check
+  log_debug("About to start matrix multiplication...\n", 0);
+  log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
+  log_debug("QCB size: %ld x %ld\n", QCB.rows(), QCB.cols());
   MatrixXd result = CB_transpose * QCB;
-  auto mult_end = Clock::now();
-  log_debug("Matrix multiplication took %ld ms\n", (mult_end - mult_start));
-
+  log_debug("result size: %ld x %ld\n", result.rows(), result.cols());
 
   log_debug("About to assign to triangular view...\n", 0);
-  auto assign_start = Clock::now();
   H.triangularView<Eigen::Upper>() = result;
-  auto assign_end = Clock::now();
-  log_debug("Triangular assignment took %ld ms\n", (assign_end - assign_start));
 
   log_debug("-------MPC-7-3-3--\n", 0);
 

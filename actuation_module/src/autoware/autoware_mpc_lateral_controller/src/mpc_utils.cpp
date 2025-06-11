@@ -300,24 +300,19 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
     p.pose.position.x = input.x.at(i);
     p.pose.position.y = input.y.at(i);
     p.pose.position.z = input.z.at(i);
-
-    log_debug("-------MPC-3-1-12-1--\n", 0);
     p.pose.orientation = autoware::universe_utils::createQuaternionFromYaw(input.yaw.at(i));
     p.longitudinal_velocity_mps =
       static_cast<decltype(p.longitudinal_velocity_mps)>(input.vx.at(i));
-    log_debug("-------START-CASE--\n", 0);
     
     if (!sequence_output_points.push_back(p)) {
       log_error("Failed to add trajectory point at index %zu", i);
       break;
     }
     
-    log_debug("-------END-CASE--\n", 0);
     if (sequence_output_points.size() == sequence_output_points.max_size()) {
       log_debug("Reached maximum sequence size, stopping at %zu points", i + 1);
       break;
     }
-    log_debug("-------MPC-3-1-12-3--\n", 0);
   }
 
   log_debug("-------MPC-3-1-13-- Created trajectory with %zu points\n", sequence_output_points.size());

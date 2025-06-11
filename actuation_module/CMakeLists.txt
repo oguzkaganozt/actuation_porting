@@ -39,7 +39,7 @@ set(external_project_cxxflags "${CXXincludes} ${CXXsystem_includes} ${CXXoptions
 # cmake derives the C++ compiler from the path to the C compiler.
 set(CMAKE_ARGS
     "-DROS_DISTRO=humble"
-    "-DCMAKE_BUILD_TYPE=Debug"
+    "-DCMAKE_BUILD_TYPE=Release"  # TODO: Change to Debug when needed
     "-DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install"
     "-DBUILD_TESTING=OFF"
     "-DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY"
