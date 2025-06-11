@@ -20,6 +20,9 @@
 #include <utility>
 #include <vector>
 
+#include "common/logger/logger.hpp"
+using namespace common::logger;
+
 namespace autoware::motion::control::pid_longitudinal_controller
 {
 PIDController::PIDController()
@@ -36,7 +39,8 @@ double PIDController::calculate(
   std::vector<double> & pid_contributions)
 {
   if (!m_is_gains_set || !m_is_limits_set) {
-    throw std::runtime_error("Trying to calculate uninitialized PID");
+    log_error("Trying to calculate uninitialized PID");
+    std::exit(1);
   }
 
   const auto & p = m_params;

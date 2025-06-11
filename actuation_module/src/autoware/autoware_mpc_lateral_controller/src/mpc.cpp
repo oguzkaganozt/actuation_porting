@@ -907,7 +907,8 @@ TrajectoryMsg MPC::calculatePredictedTrajectory(
       mpc_matrix.Aex, mpc_matrix.Bex, mpc_matrix.Cex, mpc_matrix.Wex, x0, Uex, reference_trajectory,
       dt);
   } else {
-    throw std::invalid_argument("Invalid coordinate system specified. Use 'world' or 'frenet'.");
+    log_error("Invalid coordinate system specified. Use 'world' or 'frenet'.");
+    std::exit(1);
   }
 
   // do not over the reference trajectory

@@ -130,11 +130,11 @@ private:
             std::exit(1);
         }
         
-        // if (seq->_maximum > MAX_SEQUENCE_SIZE) {
-        //     log_error("Detected corrupted sequence: _maximum=%u exceeds MAX_SEQUENCE_SIZE=%zu", 
-        //              seq->_maximum, MAX_SEQUENCE_SIZE);
-        //     throw std::runtime_error("Detected corrupted sequence: _maximum exceeds MAX_SEQUENCE_SIZE");
-        // }
+        if (seq->_maximum > MAX_SEQUENCE_SIZE) {
+            log_error("Detected corrupted sequence: _maximum=%u exceeds MAX_SEQUENCE_SIZE=%zu", 
+                     seq->_maximum, MAX_SEQUENCE_SIZE);
+            std::exit(1);
+        }
         
         if (seq->_length > seq->_maximum) {
             log_error("Detected corrupted sequence: _length=%u > _maximum=%u", 

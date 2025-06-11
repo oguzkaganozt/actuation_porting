@@ -83,7 +83,8 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
       break;
     }
     default:
-      throw std::domain_error("[LateralController] invalid algorithm");
+      log_error("[LateralController] invalid algorithm");
+      std::exit(1);
   }
 
   const auto longitudinal_controller_mode =
@@ -96,7 +97,8 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
       break;
     }
     default:
-      throw std::domain_error("[LongitudinalController] invalid algorithm");
+      log_error("[LongitudinalController] invalid algorithm");
+      std::exit(1);
   }
 
   // Timer
@@ -204,6 +206,16 @@ void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
   log_debug("Timestamp: %ld\n", Clock::toDouble(msg->header.stamp));
   log_debug("Trajectory size: %u\n", msg->points._length);
   log_debug("-------------------------------\n");
+
+  if (msg->points._length > 4000) {
+    log_warn("Trajectory size is too large: %u\n", msg->points._length);
+    return;
+  }
+
+  if (msg->points._maximum > 200000) {
+    log_warn("Trajectory maximum is too large: %u\n", msg->points._maximum);
+    return;
+  }
 
   // Copy the data instead of storing the pointer
   Controller* controller = static_cast<Controller*>(arg);

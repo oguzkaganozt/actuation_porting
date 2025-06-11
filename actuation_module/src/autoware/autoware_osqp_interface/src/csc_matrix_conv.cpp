@@ -79,7 +79,8 @@ CSC_Matrix calCSCMatrixTrapezoidal(const Eigen::MatrixXd & mat)
   const Eigen::Index cols = mat.cols();
 
   if (rows != cols) {
-    throw std::invalid_argument("Matrix must be square (n, n)");
+    log_error("Matrix must be square (n, n)");
+    std::exit(1);
   }
 
   std::vector<c_float> vals;

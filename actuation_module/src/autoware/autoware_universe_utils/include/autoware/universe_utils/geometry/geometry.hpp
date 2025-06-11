@@ -30,6 +30,9 @@
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 
+#include "common/logger/logger.hpp"
+using namespace common::logger;
+
 // Msgs
 #include "Point.h"
 #include "Pose.h"
@@ -96,7 +99,8 @@ template <class T>
 PoseMsg getPose([[maybe_unused]] const T & p)
 {
   static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
-  throw std::logic_error("Only specializations of getPose can be used.");
+  log_error("Only specializations of getPose can be used.");
+  std::exit(1);
 }
 template <>
 inline PoseMsg getPose(const PoseMsg & p) { return p; }
@@ -118,7 +122,8 @@ template <class T>
 void setPose([[maybe_unused]] const PoseMsg & pose, [[maybe_unused]] T & p)
 {
   static_assert(sizeof(T) == 0, "Only specializations of getPose can be used.");
-  throw std::logic_error("Only specializations of getPose can be used.");
+  log_error("Only specializations of getPose can be used.");
+  std::exit(1);
 }
 template <>
 inline void setPose(const PoseMsg & pose, PoseMsg & p) { p = pose; }
@@ -140,7 +145,8 @@ template <class T>
 double getLongitudinalVelocity([[maybe_unused]] const T & p)
 {
   static_assert(sizeof(T) == 0, "Only specializations of getVelocity can be used.");
-  throw std::logic_error("Only specializations of getVelocity can be used.");
+  log_error("Only specializations of getVelocity can be used.");
+  std::exit(1);
 }
 template <>
 inline double getLongitudinalVelocity(const PathPointMsg & p) { return p.longitudinal_velocity_mps; }
@@ -158,7 +164,8 @@ template <class T>
 void setLongitudinalVelocity([[maybe_unused]] const float velocity, [[maybe_unused]] T & p)
 {
   static_assert(sizeof(T) == 0, "Only specializations of getLongitudinalVelocity can be used.");
-  throw std::logic_error("Only specializations of getLongitudinalVelocity can be used.");
+  log_error("Only specializations of getLongitudinalVelocity can be used.");
+  std::exit(1);
 }
 template <>
 inline void setLongitudinalVelocity(const float velocity, TrajectoryPointMsg & p) { p.longitudinal_velocity_mps = velocity; }
