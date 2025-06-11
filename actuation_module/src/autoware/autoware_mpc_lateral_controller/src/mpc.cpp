@@ -174,7 +174,7 @@ void MPC::setReferenceTrajectory(
   const TrajectoryMsg & trajectory_msg, const TrajectoryFilteringParam & param,
   const OdometryMsg & current_kinematics)
 {
-  auto sequence_trajectory_msg_points = wrap(trajectory_msg.points);
+  auto sequence_trajectory_msg_points = wrap_sequence(trajectory_msg.points);
   const size_t nearest_seg_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
       sequence_trajectory_msg_points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
@@ -414,7 +414,7 @@ MPCTrajectory MPC::applyVelocityDynamicsFilter(
   log_debug("-------MPC-2-3--\n", 0);
 
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
-  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
   if (sequence_autoware_traj_points.empty()) {
     return input;
   }
@@ -787,7 +787,7 @@ double MPC::getPredictionDeltaTime(
 {
   // Calculate the time min_prediction_length ahead from current_pose
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
-  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
   const size_t nearest_idx = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
     sequence_autoware_traj_points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
     ego_nearest_yaw_threshold);

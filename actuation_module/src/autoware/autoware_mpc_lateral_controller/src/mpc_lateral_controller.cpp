@@ -361,7 +361,7 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
 void MpcLateralController::setTrajectory(
   const TrajectoryMsg & msg, const OdometryMsg & current_kinematics)
 {
-  auto sequence_points = wrap(msg.points);
+  auto sequence_points = wrap_sequence(msg.points);
   m_current_trajectory = msg;
 
   if (sequence_points.size() < 3) {
@@ -411,7 +411,7 @@ LateralMsg MpcLateralController::getInitialControlCommand() const
 
 bool MpcLateralController::isStoppedState() const
 {
-  auto sequence_points = wrap(m_current_trajectory.points);
+  auto sequence_points = wrap_sequence(m_current_trajectory.points);
   // If the nearest index is not found, return false
   if (sequence_points.empty()) {
     return false;
@@ -574,8 +574,8 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
   // TODO(Horibe): update implementation to check trajectory shape around ego vehicle.
   // Now temporally check the goal position.
   for (const auto & trajectory : m_trajectory_buffer) {
-    auto sequence_points = wrap(trajectory.points);
-    auto current_points = wrap(m_current_trajectory.points);
+    auto sequence_points = wrap_sequence(trajectory.points);
+    auto current_points = wrap_sequence(m_current_trajectory.points);
     const auto change_distance = autoware::universe_utils::calcDistance2d(
       sequence_points.back().pose, current_points.back().pose);
     if (change_distance > m_new_traj_end_dist) {
@@ -587,7 +587,7 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
 
 bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
 {
-  auto sequence_points = wrap(traj.points);
+  auto sequence_points = wrap_sequence(traj.points);
   for (const auto & p : sequence_points) {
     if (
       !std::isfinite(p.pose.position.x) || !std::isfinite(p.pose.position.y) ||

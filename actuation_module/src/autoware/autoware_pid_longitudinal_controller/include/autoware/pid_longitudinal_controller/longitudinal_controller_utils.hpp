@@ -90,7 +90,7 @@ std::pair<TrajectoryPointMsg, size_t> lerpTrajectoryPoint(
   const T & points, const PoseMsg & pose, const double max_dist, const double max_yaw)
 {
   TrajectoryPointMsg interpolated_point;
-  auto points_seq = wrap(points);
+  auto points_seq = wrap_sequence(points);
 
   // TODO: check sequence wrapper validity
   const size_t seg_idx = autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(

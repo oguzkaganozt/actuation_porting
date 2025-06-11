@@ -293,7 +293,7 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
   // log_debug("Timestamp: %ld\n", Clock::toDouble(input_data.current_trajectory.header.stamp));
   // log_debug("Trajectory size: %d\n", input_data.current_trajectory.points._length);
   // log_debug("-------------------------------\n");
-  // auto points = wrap(input_data.current_trajectory.points);
+  // auto points = wrap_sequence(input_data.current_trajectory.points);
   // size_t idx = 0;
   // for (auto point : points) {
   //     log_debug("--------------------------------\n");
@@ -439,7 +439,7 @@ void Controller::publishProcessingTime(
 //       control.longitudinal = longitudinal;
 //       control.lateral = lateral;
 //       control.stamp = Clock::toRosTime(stamp);
-//       auto sequence_controls = wrap(control_horizon.controls);
+//       auto sequence_controls = wrap_sequence(control_horizon.controls);
 //       sequence_controls.push_back(control);
 //     }
 //     return control_horizon;
@@ -454,7 +454,7 @@ void Controller::publishProcessingTime(
 //       control.longitudinal = longitudinal;
 //       control.lateral = lateral;
 //       control.stamp = Clock::toRosTime(stamp);
-//       auto sequence_controls = wrap(control_horizon.controls);
+//       auto sequence_controls = wrap_sequence(control_horizon.controls);
 //       sequence_controls.push_back(control);
 //     }
 //     return control_horizon;
@@ -494,7 +494,7 @@ void Controller::publishProcessingTime(
 //     control.stamp = Clock::toRosTime(stamp);
 //     control.lateral = lateral_controls.at(i);
 //     control.longitudinal = longitudinal_controls.at(i);
-//     auto sequence_controls = wrap(control_horizon.controls);
+//     auto sequence_controls = wrap_sequence(control_horizon.controls);
 //     sequence_controls.push_back(control);
 //   }
   

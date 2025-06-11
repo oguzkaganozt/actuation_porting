@@ -455,7 +455,7 @@ public:
 };
 
 template<typename T>
-Sequence<T> wrap(T& dds_sequence) {
+Sequence<T> wrap_sequence(T& dds_sequence) {
     return Sequence<T>(dds_sequence);
 }
 

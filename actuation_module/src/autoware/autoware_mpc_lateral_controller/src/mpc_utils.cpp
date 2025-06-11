@@ -262,7 +262,7 @@ std::vector<double> calcTrajectoryCurvature(
 
 MPCTrajectory convertToMPCTrajectory(const TrajectoryMsg & input)
 {
-  auto sequence_input_points = wrap(input.points);
+  auto sequence_input_points = wrap_sequence(input.points);
   MPCTrajectory output;
   for (const TrajectoryPointMsg & p : sequence_input_points) {
     const double x = p.pose.position.x;
@@ -282,7 +282,7 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 {
   log_debug("-------MPC-3-1-10--\n", 0);
   TrajectoryMsg output = {};
-  auto sequence_output_points = wrap(output.points);
+  auto sequence_output_points = wrap_sequence(output.points);
   
   if (!sequence_output_points.reserve(input.size())) {
     log_error("Failed to reserve capacity for trajectory points");
@@ -368,7 +368,7 @@ bool calcNearestPoseInterp(
   log_debug("-------MPC-3-1-2--\n", 0);
 
   const auto autoware_traj = convertToAutowareTrajectory(traj);
-  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
   if (sequence_autoware_traj_points.empty()) {
     log_warn_throttle("[calcNearestPoseInterp] input trajectory is empty - 2");
     return false;
@@ -458,7 +458,7 @@ bool calcNearestPoseInterp(
 
 double calcStopDistance(const TrajectoryMsg & current_trajectory, const int origin)
 {
-  auto sequence_current_trajectory_points = wrap(current_trajectory.points);
+  auto sequence_current_trajectory_points = wrap_sequence(current_trajectory.points);
 
   constexpr float zero_velocity = std::numeric_limits<float>::epsilon();
   const float origin_velocity =
@@ -499,7 +499,7 @@ void extendTrajectoryInYawDirection(
 
   // get terminal pose
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(traj);
-  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
   auto extended_pose = sequence_autoware_traj_points.back().pose;
 
   constexpr double extend_dist = 10.0;
