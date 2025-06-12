@@ -76,16 +76,12 @@ public:
      * This method will update the last execution time after calling the callback.
      */
     void execute() {
-
-        // Check timer is ready to execute
         if (!is_ready()) {
             return;
         }
 
         // Update execution time before calling callback to maintain consistent intervals
         last_execution_time_ = Clock::now();
-        
-        // Execute the user callback
         user_callback_();
     }
 
