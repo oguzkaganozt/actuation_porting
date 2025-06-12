@@ -4,6 +4,7 @@
 // Standard Library
 #include <string>
 #include <cstdint>
+#include <functional>
 
 // Project headers
 #include "common/logger/logger.hpp"
@@ -12,23 +13,20 @@ using namespace common::logger;
 
 class Timer {
 public:
-    Timer(const std::string& node_name, void* stack_area = nullptr, size_t stack_size = 0)
+    Timer(const std::string& node_name)
     : node_name_(node_name),
       timer_active_(false),
       period_ms_(0),
       last_execution_time_(0.0),
-      user_callback_(nullptr),
-      user_arg_(nullptr)
+      user_callback_(nullptr)
     {
-        // stack_area and stack_size parameters are kept for compatibility but not used
-        // since we're not creating separate threads anymore
     }
 
     ~Timer() {
         stop();
     }
 
-    bool start(uint32_t period_ms, void (*user_callback)(void*), void* user_arg = nullptr) {
+    bool start(uint32_t period_ms, std::function<void()> user_callback) {
         if (timer_active_) {
             log_warn("%s -> Timer already active. Cannot create new timer.\n", node_name_.c_str());
             return false;
@@ -41,7 +39,6 @@ public:
 
         period_ms_ = period_ms;
         user_callback_ = user_callback;
-        user_arg_ = user_arg;
         last_execution_time_ = Clock::now();
         timer_active_ = true;
 
@@ -53,7 +50,6 @@ public:
         if (timer_active_) {
             timer_active_ = false;
             user_callback_ = nullptr;
-            user_arg_ = nullptr;
             period_ms_ = 0;
             last_execution_time_ = 0.0;
             log_info("%s -> Timer stopped.\n", node_name_.c_str());
@@ -79,12 +75,9 @@ public:
      * @brief Executes the timer callback if the timer is active and ready.
      * This method will update the last execution time after calling the callback.
      */
-    void execute_callback() {
-        if (!timer_active_ || !user_callback_) {
-            return;
-        }
+    void execute() {
 
-        // Check if it's time to execute
+        // Check timer is ready to execute
         if (!is_ready()) {
             return;
         }
@@ -93,7 +86,7 @@ public:
         last_execution_time_ = Clock::now();
         
         // Execute the user callback
-        user_callback_(user_arg_);
+        user_callback_();
     }
 
 private:
@@ -103,8 +96,7 @@ private:
     double last_execution_time_;
     
     // Timer callback data
-    void (*user_callback_)(void*);
-    void* user_arg_;
+    std::function<void()> user_callback_;
 };
 
 #endif  // COMMON__TIMER_HPP_

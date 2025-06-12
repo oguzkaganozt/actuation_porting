@@ -11,6 +11,7 @@
 #include <optional>
 #include <pthread.h>
 #include <cstring>
+#include <functional>
 
 // Project headers
 #include "common/dds/dds.hpp"
@@ -223,15 +224,14 @@ public:
      * @brief Create a timer
      * @param period_ms Period in milliseconds
      * @param callback Callback function
-     * @param arg Callback argument
      * @return true if timer was created, false otherwise
      */
-    bool create_timer(uint32_t period_ms, void (*callback)(void*), void* arg = nullptr) {
+    bool create_timer(uint32_t period_ms, std::function<void()> callback) {
         if (!timer_) {
             log_error("%s -> Timer object not initialized!\n", node_name_.c_str());
             return false;
         }
-        return timer_->start(period_ms, callback, arg);
+        return timer_->start(period_ms, callback);
     }
 
     /**
@@ -268,16 +268,14 @@ private:
         Node* node = static_cast<Node*>(arg);
 
         while (1) {
-            if (node->timer_) { // Check and execute the timer callback
-                if (node->timer_->is_ready()) {
-                    node->timer_->execute_callback();
-                }
+            if (node->timer_) {
+                node->timer_->execute();
             }
 
             if (node->dds_.has_subscriptions()) {   // Check and execute the subscriptions callbacks
                 node->dds_.execute_subscriptions();
             }
-            usleep(3000);   // 1ms, if nothing else yields
+            usleep(3000);   // 1ms, if nothing else yields  // TODO: TUNE THIS
         }
         return nullptr; // Should never reach here
     }

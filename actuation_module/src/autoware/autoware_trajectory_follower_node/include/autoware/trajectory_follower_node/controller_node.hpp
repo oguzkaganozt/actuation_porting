@@ -36,9 +36,7 @@
 #include "common/node/node.hpp"
 
 //Msgs
-// #include <autoware_control_msgs/msg/detail/control_horizon__struct.hpp> //TODO: check if we are using this
 #include "Control.h"
-#include "ControlHorizon.h"
 #include "Longitudinal.h"
 #include "Trajectory.h"
 #include "AccelStamped.h"
@@ -52,7 +50,6 @@
 #include "TrajectoryPoint.h"
 #include "OperationModeState.h"
 using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
-using ControlHorizonMsg = autoware_control_msgs_msg_ControlHorizon;
 using Float64StampedMsg = tier4_debug_msgs_msg_Float64Stamped;
 using MarkerArrayMsg = visualization_msgs_msg_MarkerArray;
 using ControlMsg = autoware_control_msgs_msg_Control;
@@ -65,9 +62,7 @@ using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
 
 namespace autoware::motion::control
 {
-using trajectory_follower::LateralHorizon;
 using trajectory_follower::LateralOutput;
-using trajectory_follower::LongitudinalHorizon;
 using trajectory_follower::LongitudinalOutput;
 
 namespace trajectory_follower_node
@@ -87,7 +82,6 @@ public:
 
 private:
   double timeout_thr_sec_;
-  bool enable_control_cmd_horizon_pub_{false};
   std::optional<LongitudinalOutput> longitudinal_output_{std::nullopt};
 
   std::shared_ptr<trajectory_follower::LongitudinalControllerBase> longitudinal_controller_;
@@ -118,8 +112,6 @@ private:
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
   std::shared_ptr<Publisher<Float64StampedMsg>> pub_processing_time_lat_ms_;
   std::shared_ptr<Publisher<Float64StampedMsg>> pub_processing_time_lon_ms_;
-  std::shared_ptr<Publisher<ControlHorizonMsg>> control_cmd_horizon_pub_;
-  // std::shared_ptr<Publisher<MarkerArrayMsg>> debug_marker_pub_;
   
   enum class LateralControllerMode {
     INVALID = 0,
@@ -137,7 +129,7 @@ private:
   std::optional<trajectory_follower::InputData> createInputData();
 
   //
-  static void callbackTimerControl(void* arg);
+  void callbackTimerControl();
 
   //
   bool processData();
@@ -151,26 +143,6 @@ private:
   //
   LongitudinalControllerMode getLongitudinalControllerMode(
     const std::string & algorithm_name) const;
-
-  //
-  void publishDebugMarker(
-    const trajectory_follower::InputData & input_data,
-    const trajectory_follower::LateralOutput & lat_out) const;
-
-  //
-  /**
-   * @brief merge lateral and longitudinal horizons
-   * @details If one of the commands has only one control, repeat the control to match the other
-   *          horizon. If each horizon has different time intervals, resample them to match the size
-   *          with the greatest common divisor.
-   * @param lateral_horizon lateral horizon
-   * @param longitudinal_horizon longitudinal horizon
-   * @param stamp stamp
-   * @return merged control horizon
-   */
-  static std::optional<ControlHorizonMsg> mergeLatLonHorizon(
-    const LateralHorizon & lateral_horizon, const LongitudinalHorizon & longitudinal_horizon,
-    const double & stamp);
 
   //
   void publishProcessingTime(
