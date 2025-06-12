@@ -20,6 +20,7 @@
 #include "autoware/universe_utils/ros/marker_helper.hpp"
 #include <autoware/trajectory_follower_base/lateral_controller_base.hpp>
 #include "common/logger/logger.hpp"
+#include "common/clock/clock.hpp"
 using namespace common::logger;
 
 #include <algorithm>
@@ -31,10 +32,9 @@ using namespace common::logger;
 
 #if defined(NATIVE_SIM)
 static unsigned char node_stack[CONFIG_THREAD_STACK_SIZE];
-static unsigned char timer_stack[CONFIG_THREAD_STACK_SIZE];
 #else
-static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
-static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
+static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE)  __aligned(4);
+// static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 #endif
 
@@ -60,7 +60,7 @@ std::vector<T> resampleHorizonByZeroOrderHold(
 
 namespace autoware::motion::control::trajectory_follower_node
 {
-Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stack, STACK_SIZE)
+Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
 {
   using std::placeholders::_1;
 
@@ -306,6 +306,8 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
 
 void Controller::callbackTimerControl(void* arg)
 {
+  log_debug("Timer control callback\n");
+
   Controller* controller = static_cast<Controller*>(arg);
 
   // 1. create input data
@@ -328,8 +330,13 @@ void Controller::callbackTimerControl(void* arg)
   log_debug("Controllers are ready\n");
 
   // 3. run controllers
-  // controller->stop_watch_.tic("lateral");
+  controller->stop_watch_.tic("lateral");
+  auto start = Clock::now();
   const auto lat_out = controller->lateral_controller_->run(*input_data);
+  auto end = Clock::now();
+  controller->stop_watch_.toc("lateral");
+  log_debug("Lateral controller clock time: %f\n", end - start);
+  log_debug("Lateral controller stop watch time: %f\n", controller->stop_watch_.toc("lateral"));
   log_debug("-------LAT OUT--\n", 0);
   log_debug("Lateral output: %f\n", lat_out.control_cmd.steering_tire_angle);
   log_debug("Lateral steering tire rotation rate: %f\n", lat_out.control_cmd.steering_tire_rotation_rate);
@@ -337,32 +344,32 @@ void Controller::callbackTimerControl(void* arg)
   // log_debug("Lateral horizon: %f\n", lat_out.control_cmd_horizon.time_step_ms);
   // log_debug("Lateral sync data: %f\n", lat_out.sync_data.is_steer_converged);
   log_debug("Lateral controller ran\n");
-  std::exit(0); // TODO: DEBUG REMOVE
+  // std::exit(0); // TODO: DEBUG REMOVE
   // controller->stop_watch_.toc("lateral");
   // controller->publishProcessingTime(controller->stop_watch_.toc("lateral"), controller->pub_processing_time_lat_ms_);
 
   // controller->stop_watch_.tic("longitudinal");
-  const auto lon_out = controller->longitudinal_controller_->run(*input_data);
-  log_debug("Longitudinal controller ran\n");
+  // const auto lon_out = controller->longitudinal_controller_->run(*input_data);
+  // log_debug("Longitudinal controller ran\n");
   // controller->stop_watch_.toc("longitudinal");
   // controller->publishProcessingTime(controller->stop_watch_.toc("longitudinal"), controller->pub_processing_time_lon_ms_);
 
   log_debug("Controllers ran\n");
-  std::exit(0); // TODO: DEBUG REMOVE
+  // std::exit(0); // TODO: DEBUG REMOVE
 
   // 4. sync with each other controllers
-  controller->longitudinal_controller_->sync(lat_out.sync_data);
-  controller->lateral_controller_->sync(lon_out.sync_data);
+  // controller->longitudinal_controller_->sync(lat_out.sync_data);
+  // controller->lateral_controller_->sync(lon_out.sync_data);
 
   // TODO(Horibe): Think specification. This comes from the old implementation.
-  if (controller->isTimeOut(lon_out, lat_out)) return;
+  // if (controller->isTimeOut(lon_out, lat_out)) return;
 
   // 5. publish control command
   ControlMsg out;
   out.stamp = Clock::toRosTime(Clock::now());
   out.lateral = lat_out.control_cmd;
-  out.longitudinal = lon_out.control_cmd;
-  controller->control_cmd_pub_->publish(out);
+  // out.longitudinal = lon_out.control_cmd;
+  // controller->control_cmd_pub_->publish(out);
 
   //TODO: we are not publishing these for the sake of simplicity
   // // 6. publish debug

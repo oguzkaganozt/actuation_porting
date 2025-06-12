@@ -44,7 +44,7 @@ public:
      * @brief Construct a new Node object
      * @param node_name Name of the node
      */
-    Node(const std::string& node_name, void* stack_area, size_t stack_size, void* timer_stack_area, size_t timer_stack_size)
+    Node(const std::string& node_name, void* stack_area, size_t stack_size)
     : node_name_(node_name)
     , param_mutex_(PTHREAD_MUTEX_INITIALIZER)
     , dds_(node_name)
@@ -56,7 +56,7 @@ public:
                       node_name_.c_str(), strerror(ret));
             std::exit(1);
         }
-        timer_ = std::make_unique<Timer>(node_name_, timer_stack_area, timer_stack_size);
+        timer_ = std::make_unique<Timer>(node_name_);
     }
     
     /**
