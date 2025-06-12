@@ -209,15 +209,6 @@ PidLongitudinalController::PidLongitudinalController(Node & node)
     node.has_parameter("ego_nearest_yaw_threshold")
       ? node.get_parameter<double>("ego_nearest_yaw_threshold")
       : node.declare_parameter<double>("ego_nearest_yaw_threshold");  // [rad]
-
-  // subscriber, publisher
-  m_pub_slope = node.create_publisher<Float32MultiArrayStampedMsg>(
-    "~/output/slope_angle", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
-  // m_pub_debug = node.create_publisher<Float32MultiArrayStampedMsg>(
-  //   "~/output/longitudinal_diagnostic", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
-  m_pub_stop_reason_marker = node.create_publisher<MarkerMsg>(
-    "~/output/stop_reason", &visualization_msgs_msg_Marker_desc);
-
 }
 
 void PidLongitudinalController::setKinematicState(const OdometryMsg & msg)

@@ -104,11 +104,6 @@ private:
     double slope_angle{0.0};
     double dt{0.0};
   };
-  
-  // ros variables
-  std::shared_ptr<Publisher<Float32MultiArrayStampedMsg>> m_pub_slope;
-  std::shared_ptr<Publisher<Float32MultiArrayStampedMsg>> m_pub_debug;
-  std::shared_ptr<Publisher<MarkerMsg>> m_pub_stop_reason_marker;
 
   // pointers for ros topic
   OdometryMsg m_current_kinematic_state;

@@ -143,12 +143,10 @@ MpcLateralController::MpcLateralController(Node & node)
 
   m_mpc->m_use_delayed_initial_state = node.declare_parameter<bool>("use_delayed_initial_state", true);
 
-  m_mpc->m_publish_debug_trajectories = node.declare_parameter<bool>("publish_debug_trajectories", true);
+  m_mpc->m_publish_debug_trajectories = node.declare_parameter<bool>("publish_debug_trajectories", false);
 
-  m_pub_predicted_traj = node.create_publisher<TrajectoryMsg>("~/output/predicted_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
-  m_pub_debug_values =
-    node.create_publisher<Float32MultiArrayStampedMsg>("~/output/lateral_diagnostic", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
-  m_pub_steer_offset = node.create_publisher<Float32StampedMsg>("~/output/estimated_steer_offset", &tier4_debug_msgs_msg_Float32Stamped_desc);
+  // m_pub_predicted_traj = node.create_publisher<TrajectoryMsg>("~/output/predicted_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
+  // m_pub_steer_offset = node.create_publisher<Float32StampedMsg>("~/output/estimated_steer_offset", &tier4_debug_msgs_msg_Float32Stamped_desc);
 
   declareMPCparameters(node);
 
