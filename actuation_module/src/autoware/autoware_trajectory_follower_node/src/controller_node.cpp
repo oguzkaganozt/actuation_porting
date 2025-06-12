@@ -64,7 +64,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
 {
   using std::placeholders::_1;
 
-  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.5); // 0.03
+  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.15); // 0.03
   timeout_thr_sec_ = declare_parameter<double>("timeout_thr_sec", 0.5);
 
   // NOTE: It is possible that using control_horizon could be expected to enhance performance,
@@ -378,16 +378,17 @@ void Controller::callbackTimerControl(void* arg)
   // }
 }
 
-void Controller::publishProcessingTime(
-  const double t_ms, const std::shared_ptr<Publisher<Float64StampedMsg>> pub)
-{
-  Float64StampedMsg msg{};
-  msg.stamp = Clock::toRosTime(Clock::now());
-  msg.data = t_ms;
-  pub->publish(msg);
-}
-
 // TODO: we are not publishing these for the sake of simplicity
+
+// void Controller::publishProcessingTime(
+//   const double t_ms, const std::shared_ptr<Publisher<Float64StampedMsg>> pub)
+// {
+//   Float64StampedMsg msg{};
+//   msg.stamp = Clock::toRosTime(Clock::now());
+//   msg.data = t_ms;
+//   pub->publish(msg);
+// }
+
 // void Controller::publishDebugMarker(
 //   const trajectory_follower::InputData & input_data,
 //   const trajectory_follower::LateralOutput & lat_out) const

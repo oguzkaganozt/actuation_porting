@@ -12,7 +12,7 @@
             <AllowMulticast>spdp</AllowMulticast>
             <MaxMessageSize>1456B</MaxMessageSize> <!--Accommodate for Zephyr's MTU-->
             <Interfaces>
-                <NetworkInterface autodetermine="false" priority="default" multicast="default" name="wlp2s0"/>    <!-- TODO: Using VPN interface -->
+                <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>    <!-- TODO: Using VPN interface -->
                 <!-- <NetworkInterface autodetermine="true" priority="default" multicast="default"/> -->
             </Interfaces>
         </General>
