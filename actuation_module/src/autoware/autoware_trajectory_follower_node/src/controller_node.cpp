@@ -127,10 +127,10 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE, timer_stac
   // Publishers
   control_cmd_pub_ = create_publisher<ControlMsg>(
     "~/output/control_cmd", &autoware_control_msgs_msg_Control_desc);
-  pub_processing_time_lat_ms_ =
-    create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
-  pub_processing_time_lon_ms_ =
-    create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+  // pub_processing_time_lat_ms_ =
+  //   create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+  // pub_processing_time_lon_ms_ =
+  //   create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
   
   // TODO: we are not publishing these for the sake of simplicity
   // debug_marker_pub_ =
