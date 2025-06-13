@@ -620,6 +620,7 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
 
   H.triangularView<Eigen::Upper>() = result;
 
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   log_debug("-------MPC-7-3-3--\n", 0);
 
   H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
