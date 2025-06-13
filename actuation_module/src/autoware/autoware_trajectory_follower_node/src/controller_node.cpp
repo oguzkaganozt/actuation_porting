@@ -47,9 +47,6 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
   const double ctrl_period = declare_parameter<double>("ctrl_period", 0.15); // 0.03
   timeout_thr_sec_ = declare_parameter<double>("timeout_thr_sec", 0.5);
 
-  // NOTE: Not used for the simplicity
-  // enable_control_cmd_horizon_pub_ = false;
-
   const auto lateral_controller_mode =
     getLateralControllerMode(declare_parameter<std::string>("lateral_controller_mode", "mpc"));
   log_debug("Lateral controller mode: %d\n", lateral_controller_mode);
@@ -79,27 +76,27 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
   }
 
   // Timer
-  {
-    const auto period_ms = ctrl_period*1000;
-    create_timer(period_ms, [this]() { callbackTimerControl(); });
-  }
+  // {
+  //   const auto period_ms = ctrl_period*1000;
+  //   create_timer(period_ms, [this]() { callbackTimerControl(); });
+  // }
 
   // Subscribers
-    auto subscriber_steering_status = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
-                                                                &autoware_vehicle_msgs_msg_SteeringReport_desc,
-                                                                callbackSteeringStatus, this);
-    auto subscriber_trajectory = create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
-                                                                &autoware_planning_msgs_msg_Trajectory_desc,
-                                                                callbackTrajectory, this);
-    auto subscriber_odometry = create_subscription<OdometryMsg>("/localization/kinematic_state",
-                                                                &nav_msgs_msg_Odometry_desc,
-                                                                callbackOdometry, this);
-    auto subscriber_acceleration = create_subscription<AccelWithCovarianceStampedMsg>("/localization/acceleration",
-                                                                &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
-                                                                callbackAcceleration, this);
-    auto subscriber_operation_mode_state = create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
-                                                                &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
-                                                                callbackOperationModeState, this);
+  auto subscriber_steering_status = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
+                                                              &autoware_vehicle_msgs_msg_SteeringReport_desc,
+                                                              callbackSteeringStatus, this);
+  auto subscriber_trajectory = create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+                                                              &autoware_planning_msgs_msg_Trajectory_desc,
+                                                              callbackTrajectory, this);
+  auto subscriber_odometry = create_subscription<OdometryMsg>("/localization/kinematic_state",
+                                                              &nav_msgs_msg_Odometry_desc,
+                                                              callbackOdometry, this);
+  auto subscriber_acceleration = create_subscription<AccelWithCovarianceStampedMsg>("/localization/acceleration",
+                                                              &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
+                                                              callbackAcceleration, this);
+  auto subscriber_operation_mode_state = create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
+                                                              &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
+                                                              callbackOperationModeState, this);
     
   // Publishers
   control_cmd_pub_ = create_publisher<ControlMsg>(
@@ -297,20 +294,15 @@ void Controller::callbackTimerControl()
 
   // 3. run controllers
   stop_watch_.tic("lateral");
-  auto start = Clock::now();
   const auto lat_out = lateral_controller_->run(*input_data);
-  auto end = Clock::now();
   stop_watch_.toc("lateral");
-  log_debug("Lateral controller clock time: %f\n", end - start);
-  log_debug("Lateral controller stop watch time: %f\n", stop_watch_.toc("lateral"));
+  log_debug("Lateral controller elapsed time: %f\n", stop_watch_.toc("lateral"));
+
   log_debug("-------LAT OUT--\n", 0);
   log_debug("Lateral output: %f\n", lat_out.control_cmd.steering_tire_angle);
   log_debug("Lateral steering tire rotation rate: %f\n", lat_out.control_cmd.steering_tire_rotation_rate);
   log_debug("Lateral is defined steering tire rotation rate: %s\n", lat_out.control_cmd.is_defined_steering_tire_rotation_rate ? "true" : "false");
-  // log_debug("Lateral horizon: %f\n", lat_out.control_cmd_horizon.time_step_ms);
-  // log_debug("Lateral sync data: %f\n", lat_out.sync_data.is_steer_converged);
 
-  // std::exit(0); // TODO: DEBUG REMOVE
   // controller->stop_watch_.toc("lateral");
   // controller->publishProcessingTime(controller->stop_watch_.toc("lateral"), controller->pub_processing_time_lat_ms_);
 
@@ -321,7 +313,6 @@ void Controller::callbackTimerControl()
   // controller->publishProcessingTime(controller->stop_watch_.toc("longitudinal"), controller->pub_processing_time_lon_ms_);
 
   log_debug("Controllers ran\n");
-  // std::exit(0); // TODO: DEBUG REMOVE
 
   // 4. sync with each other controllers
   // controller->longitudinal_controller_->sync(lat_out.sync_data);

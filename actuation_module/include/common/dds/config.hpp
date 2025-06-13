@@ -55,12 +55,12 @@ inline static void init_config(struct ddsi_config & cfg)
 
   // Processing
   cfg.retransmit_merging = DDSI_REXMIT_MERGE_ALWAYS;
-  cfg.multiple_recv_threads = DDSI_BOOLDEF_FALSE;  // TODO: Check if this is required
+  // cfg.multiple_recv_threads = DDSI_BOOLDEF_FALSE;  // TODO: Check if this is required
 
   // Buffers
-  cfg.rbuf_size = 32 * 1024;
-  cfg.rmsg_chunk_size = 8 * 1024;
-  cfg.max_msg_size = 1456;
+  cfg.rbuf_size = 128 * 1024;
+  cfg.rmsg_chunk_size = 32 * 1024;
+  cfg.max_msg_size = 1400;
 
   // Discovery
 #ifndef NATIVE_SIM

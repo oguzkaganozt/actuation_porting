@@ -4,10 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # ARM Virtual Hardware (AVH) Firmware Management Script
-# Manages firmware on an AVH instance.
+# Builds and manages firmware on an AVH instance.
 #
 # Usage: ./avh.py [OPTIONS]
 
+import argparse
 import asyncio
 import os
 import sys
@@ -16,7 +17,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import websockets
 import avh_api_async as AvhAPI
-from avh_api_async.rest import ApiException as AvhAPIException
+from avh_api_async.exceptions import ApiException as AvhAPIException
 from datetime import datetime
 
 # Configuration
@@ -213,7 +214,7 @@ async def monitor_console(websocket):
     except websockets.exceptions.ConnectionClosed:
         print("\nConsole connection closed")
     except KeyboardInterrupt:
-        print("\nDisconnecting from console...")
+        print("\nKeyboard interrupt")
 
 
 async def connect_to_console(api_instance, instance_id):
@@ -235,63 +236,89 @@ async def connect_to_console(api_instance, instance_id):
         sys.exit(1)
 
 
-async def build_firmware(rebuild=False, unit_test=False):
+async def build_firmware(build_type='main', clean=False):
     """Build firmware"""
     
     log_dir = Path("log")
     log_dir.mkdir(exist_ok=True)
     log_file = log_dir / "build.log.ansi"
+
+    if clean:
+        print("   Cleaning build directory")
+        subprocess.run(['./build.sh', '-c'], check=True)
     
     with open(log_file, 'w') as f:
         os.chmod(log_file, 0o666)
-        if rebuild:
-            print(f"🔨 Rebuilding firmware (build logs: log/build.log.ansi)")
-            subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        if build_type == 'main':
+            print(f"🔨 Building main firmware (build logs: log/build.log.ansi)")
             subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
-        elif unit_test:
-            print(f"🔨 Building unit test firmware (build logs: log/build.log.ansi)")
-            subprocess.run(['./build.sh', '-c'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        elif build_type == 'test':
+            print(f"🔨 Building test firmware (build logs: log/build.log.ansi)")
             subprocess.run(['./build.sh', '--unit-test'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        elif build_type == 'test-subscriber':
+            print(f"🔨 Building DDS test subscriber firmware (build logs: log/build.log.ansi)")
+            subprocess.run(['./build.sh', '--dds-subscriber'], check=True, stdout=f, stderr=subprocess.STDOUT)
+        elif build_type == 'test-publisher':
+            print(f"🔨 Building DDS test publisher firmware (build logs: log/build.log.ansi)")
+            subprocess.run(['./build.sh', '--dds-publisher'], check=True, stdout=f, stderr=subprocess.STDOUT)
         else:
-            print(f"🔨 Building firmware (build logs: log/build.log.ansi)")
-            subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
-    
+            print(f"Invalid build type: {build_type}")
+            sys.exit(1)
+           
     print(f"✅ Firmware built")
 
 
-def print_help():
-    print("Usage: ./avh.py [OPTIONS]")
-    print("Options:")
-    print("  --build: Build firmware")
-    print("  --rebuild: Rebuild firmware")
-    print("  --build-unit-test: Build unit test")
-    print("  --vpn: Connect to VPN")
-    print("  --deploy: Deploy the firmware to the instance")
-    print("  --reboot: Reboot instance")
-    print("  --ssh: Connect to the instance console")
-    print("  --help: Print this help message")
+def parse_arguments():
+    """Parse and validate command line arguments"""
+    parser = argparse.ArgumentParser(
+        description='AVH Firmware Management Script',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    
+    # Build options
+    build_group = parser.add_mutually_exclusive_group()
+    build_group.add_argument('--build', 
+                           nargs='?',
+                           const='main',
+                           choices=['main', 'test', 'test-subscriber', 'test-publisher'],
+                           help='Build firmware (main, test, test-subscriber, test-publisher). Defaults to main if no choice specified.')
+    build_group.add_argument('--rebuild', 
+                           nargs='?',
+                           const='main',
+                           choices=['main', 'test', 'test-subscriber', 'test-publisher'],
+                           help='Rebuild firmware from clean state. Defaults to main if no choice specified.')
+    
+    # AVH operations
+    parser.add_argument('--test-auth', action='store_true', help='Test AVH API authentication')
+    parser.add_argument('--vpn', action='store_true', help='Connect to VPN')
+    parser.add_argument('--deploy', action='store_true', help='Deploy firmware to instance')
+    parser.add_argument('--reboot', action='store_true', help='Reboot instance')
+    parser.add_argument('--ssh', action='store_true', help='Connect to instance console')
+    
+    args = parser.parse_args()
+    
+    actions = [args.build, args.rebuild, args.vpn, args.deploy, args.reboot, args.ssh, args.test_auth]
+    if not any(actions):
+        parser.error("No action specified. Use --help to see available options.")
+    
+    return args
 
 
-async def main():
+async def main(args):
     """Main script execution"""
     print("=" * 40)
     print("AVH Firmware Management Script")
     print("=" * 40)
 
-    if '--help' in sys.argv:
-        print_help()
-        return 0
+    # Build firmware
+    if args.build:
+        await build_firmware(args.build)
+    elif args.rebuild:
+        await build_firmware(args.rebuild, clean=True)
 
-    # Build firmware if requested
-    if '--build' in sys.argv:
-        await build_firmware(rebuild=False)
-    elif '--rebuild' in sys.argv:
-        await build_firmware(rebuild=True)
-    elif '--build-unit-test' in sys.argv:
-        await build_firmware(unit_test=True)
-
-    if not any(arg in sys.argv for arg in ['--vpn', '--deploy', '--reboot', '--ssh']):
-        print("No AVH command provided. Please use --help to see the available commands.")
+    # Check if any AVH operations are requested
+    avh_operations = [args.vpn, args.deploy, args.reboot, args.ssh, args.test_auth]
+    if not any(avh_operations):
         return 0
     
     # Setup API client
@@ -302,6 +329,12 @@ async def main():
         # Authenticate
         api_instance = AvhAPI.ArmApi(api_client)
         access_token = await authenticate(api_instance, api_token)
+
+        # Test authentication
+        if args.test_auth:
+            print("✅ Authentication test successful")
+            return 0
+
         configuration.access_token = access_token
         project_id = await get_project_id(api_instance, project_name)
 
@@ -310,28 +343,29 @@ async def main():
         if instance_id is None:
             instance_id = await create_instance(api_instance, project_id, instance_name, instance_flavor)
 
-        # Connect to VPN if requested
-        if '--vpn' in sys.argv:
+        # Connect to VPN
+        if args.vpn:
             await connect_to_vpn(api_instance, project_id)
             return 0
         
-        # Deploy new firmware if requested
-        if '--deploy' in sys.argv:
+        # Deploy new firmware
+        if args.deploy:
             await upload_firmware(api_instance, instance_id)
         
-        # Reboot instance if requested
-        if '--reboot' in sys.argv:
+        # Reboot instance
+        if args.reboot:
             await reboot_instance(api_instance, instance_id)
             await wait_for_ready(api_instance, instance_id)
 
-        # Connect to console if requested
-        if '--ssh' in sys.argv:
+        # Connect to console
+        if args.ssh:
             await connect_to_console(api_instance, instance_id)
 
 
 if __name__ == '__main__':
     try:
-        asyncio.run(asyncio.wait_for(main(), timeout=BOOT_TIMEOUT_SECONDS))
+        args = parse_arguments()
+        asyncio.run(asyncio.wait_for(main(args), timeout=BOOT_TIMEOUT_SECONDS))
     except asyncio.TimeoutError:
         print(f"\nScript timed out after {BOOT_TIMEOUT_SECONDS} seconds")
     except KeyboardInterrupt:

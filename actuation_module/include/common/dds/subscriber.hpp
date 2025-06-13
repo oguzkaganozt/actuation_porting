@@ -62,11 +62,18 @@ public:
     }
 
     void process_next_message() override {
+        // TODO: Check if this is required
+        // Disable preemption for this critical section
+        k_sched_lock();
+
         int count = 0;
         static void* msg_ptr = nullptr;
         dds_sample_info_t info;
 
         count = dds_take(m_reader_entity, &msg_ptr, &info, 1, 1);
+        if (count == 0) {
+            return;
+        }
         if (count < 0) {
             if (count != DDS_RETCODE_NO_DATA && count != DDS_RETCODE_TRY_AGAIN) {
                  log_debug("Error: %s -> dds_take failed for topic %s: %s\n", 
@@ -78,6 +85,10 @@ public:
             T msg = *static_cast<T*>(msg_ptr);
             callback_(&msg, callback_arg_);
         }
+
+        // Re-enable preemption
+        // TODO: finetuning threads for maximum network performance
+        k_sched_unlock();
     }
 
 private:
