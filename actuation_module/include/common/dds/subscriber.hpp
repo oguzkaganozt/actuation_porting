@@ -64,7 +64,7 @@ public:
     void process_next_message() override {
         // TODO: Check if this is required
         // Disable preemption for this critical section
-        k_sched_lock();
+        // k_sched_lock();
 
         int count = 0;
         static void* msg_ptr = nullptr;
@@ -88,7 +88,7 @@ public:
 
         // Re-enable preemption
         // TODO: finetuning threads for maximum network performance
-        k_sched_unlock();
+        // k_sched_unlock();
     }
 
 private:

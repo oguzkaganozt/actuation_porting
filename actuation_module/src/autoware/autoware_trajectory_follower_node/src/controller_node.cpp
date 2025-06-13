@@ -76,10 +76,10 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
   }
 
   // Timer
-  // {
-  //   const auto period_ms = ctrl_period*1000;
-  //   create_timer(period_ms, [this]() { callbackTimerControl(); });
-  // }
+  {
+    const auto period_ms = ctrl_period*1000;
+    create_timer(period_ms, [this]() { callbackTimerControl(); });
+  }
 
   // Subscribers
   auto subscriber_steering_status = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",

@@ -62,7 +62,8 @@ static void handle_acceleration(const AccelerationMsg* msg, void* arg) {
 }
 
 static void handle_trajectory(const TrajectoryMsg* msg, void* arg) {
-    log_success("\n------ TRAJECTORY ------\n");
+    static int count = 0;
+    log_success("\n------ TRAJECTORY IDX: %d ------\n", count++);
     log_success("Timestamp: %f\n", Clock::toDouble(msg->header.stamp));
     log_success("Trajectory size: %d\n", msg->points._length);
     // auto points = wrap(msg->points);
@@ -110,21 +111,21 @@ int main(void) {
     node.create_timer(500, std::bind(&callbackTimer));
 
     // Create subscribers
-    // node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
-    //                                                             &autoware_vehicle_msgs_msg_SteeringReport_desc,
-    //                                                             handle_steering_report, &node);
+    node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
+                                                                &autoware_vehicle_msgs_msg_SteeringReport_desc,
+                                                                handle_steering_report, &node);
     node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
                                                                 &autoware_planning_msgs_msg_Trajectory_desc,
                                                                 handle_trajectory, &node);
-    // node.create_subscription<OdometryMsg>("/localization/kinematic_state",
-    //                                                             &nav_msgs_msg_Odometry_desc,
-    //                                                             handle_odometry, &node);
-    // node.create_subscription<AccelerationMsg>("/localization/acceleration",
-    //                                                             &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
-    //                                                             handle_acceleration, &node);
-    // node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
-    //                                                             &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
-    //                                                             handle_operation_mode_state, &node);
+    node.create_subscription<OdometryMsg>("/localization/kinematic_state",
+                                                                &nav_msgs_msg_Odometry_desc,
+                                                                handle_odometry, &node);
+    node.create_subscription<AccelerationMsg>("/localization/acceleration",
+                                                                &geometry_msgs_msg_AccelWithCovarianceStamped_desc,
+                                                                handle_acceleration, &node);
+    node.create_subscription<OperationModeStateMsg>("/system/operation_mode/state",
+                                                                &autoware_adapi_v1_msgs_msg_OperationModeState_desc,
+                                                                handle_operation_mode_state, &node);
 
     log_info("--------------------------------\n");
     log_info("DDS subscriber started\n");

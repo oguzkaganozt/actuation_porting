@@ -45,7 +45,7 @@ config DDS_DOMAIN_ID
 
 config DDS_LOG_LEVEL
 	int "Log level for CycloneDDS"
-	default 2
+	default 0
 	range 0 2
 	help
 	  This config sets the log level for CycloneDDS.
