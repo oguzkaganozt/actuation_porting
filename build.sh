@@ -6,7 +6,6 @@
 # Build script for the Zephyr Actuation Module
 #
 # This script builds the Zephyr Actuation Module for the specified target board.
-# It also builds the Autoware Packages for the demo.
 #
 # Usage: ./build.sh [OPTIONS]
 
@@ -22,8 +21,6 @@ set -e
 set -u
 
 # Build options
-BUILD_AUTOWARE_PACKAGES=1
-BUILD_ACTUATION_MODULE=1
 BUILD_TEST_FLAG=0
 ZEPHYR_TARGET_LIST=("fvp_baser_aemv8r_smp" "s32z270dc2_rtu0_r52")
 ZEPHYR_TARGET=${ZEPHYR_TARGET_LIST[0]} # Default target is FVP
@@ -33,8 +30,6 @@ function usage() {
   echo -e "------------------------------------------------"
   echo -e "${GREEN}    -t    ${NC}Zephyr target board: ${ZEPHYR_TARGET_LIST[*]}"
   echo -e "${GREEN}            default: ${ZEPHYR_TARGET_LIST[0]}.${NC}"
-  echo -e "${GREEN}    -z    ${NC}Only build the Zephyr Actuation Module."
-  echo -e "${GREEN}    -a    ${NC}Only build the Autoware Packages for the demo."
   echo -e "${GREEN}    -c    ${NC}Clean all builds and exit."
   echo -e "${GREEN}    -h    ${NC}Display the usage and exit."
   echo -e "${GREEN}    Optional arguments to build Zephyr test programs:${NC}"
@@ -43,28 +38,20 @@ function usage() {
   echo -e "${GREEN}    --dds-subscriber    ${NC}Build Zephyr DDS subscriber."
 }
 
-function clean() {
-  rm -rf "${ROOT_DIR}"/build "${ROOT_DIR}"/install
-}
-
 function parse_args() {
-  # Manual parsing for long options like --test
   new_args=()
   for arg in "$@"; do
     case $arg in
       --unit-test)
         BUILD_TEST_FLAG=1
-        BUILD_AUTOWARE_PACKAGES=0
         shift
         ;;
       --dds-publisher)
         BUILD_TEST_FLAG=2
-        BUILD_AUTOWARE_PACKAGES=0
         shift
         ;;
       --dds-subscriber)
         BUILD_TEST_FLAG=3
-        BUILD_AUTOWARE_PACKAGES=0
         shift
         ;;
       *)
@@ -74,14 +61,8 @@ function parse_args() {
   done
   set -- "${new_args[@]}" # Reset the positional parameters to the remaining arguments
 
-  while getopts "zat:ch" opt; do
+  while getopts "t:ch" opt; do
     case ${opt} in
-      z )
-        BUILD_AUTOWARE_PACKAGES=0
-        ;;
-      a )
-        BUILD_ACTUATION_MODULE=0
-        ;;
       t )
         ZEPHYR_TARGET=""
         for t in "${ZEPHYR_TARGET_LIST[@]}"; do
@@ -114,6 +95,10 @@ function parse_args() {
   shift $((OPTIND -1))
 }
 
+function clean() {
+  rm -rf "${ROOT_DIR}"/build "${ROOT_DIR}"/install
+}
+
 function build_cyclonedds_host() {
   # Build CycloneDDS host tools
   mkdir -p build/cyclonedds_host
@@ -123,7 +108,7 @@ function build_cyclonedds_host() {
   popd
 }
 
-function build_zephyr() {
+function build_actuation_module() {
   typeset PATH="${ROOT_DIR}"/build/cyclonedds_host/out/bin:$PATH
   typeset LD_LIBRARY_PATH="${ROOT_DIR}"/build/cyclonedds_host/out/lib
   typeset CMAKE_PREFIX_PATH=""
@@ -149,11 +134,4 @@ mkdir -p build
 build_cyclonedds_host
 
 # Build Zephyr Actuation Module
-if [ "${BUILD_ACTUATION_MODULE}" = "1" ]; then build_zephyr; fi
-
-# Build Autoware Packages for the demo
-# if [ "${BUILD_AUTOWARE_PACKAGES}" = "1" ]; then
-#   colcon build --packages-select actuation_demos actuation_message_converter actuation_msgs \
-#     --build-base build/autoware --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON \
-#     --base-paths actuation_packages
-# fi
+build_actuation_module
