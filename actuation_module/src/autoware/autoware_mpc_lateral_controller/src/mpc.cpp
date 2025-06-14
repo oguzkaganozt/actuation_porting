@@ -596,42 +596,15 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   log_debug("-------MPC-7-3--\n", 0);
 
   // cost function: 1/2 * Uex' * H * Uex + f' * Uex,  H = B' * C' * Q * C * B + R
-  // Force evaluation to avoid alignment issues and ensure proper memory allocation
-  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> CB(m.Cex.rows(), m.Bex.cols());
-  log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
-  CB = m.Cex * m.Bex;
-  log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
-  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> QCB(m.Qex.rows(), CB.cols());
-  log_debug("QCB size: %ld x %ld\n", QCB.rows(), QCB.cols());
-  QCB = m.Qex * CB;
-  log_debug("QCB size: %ld x %ld\n", QCB.rows(), QCB.cols());
+  const MatrixXd CB = m.Cex * m.Bex;
+  const MatrixXd QCB = m.Qex * CB;
   // MatrixXd H = CB.transpose() * QCB + m.R1ex + m.R2ex; // This calculation is heavy. looking for
   // a good way.  //NOLINT
   log_debug("-------MPC-7-3-1--\n", 0);
   MatrixXd H = MatrixXd::Zero(DIM_U_N, DIM_U_N);
   log_debug("-------MPC-7-3-2--\n", 0);
-
-  log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
-  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> CB_transpose = CB.transpose();  // TODO: We can force evaluation here with .eval()
-  log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
-
-  // Use heap allocation and explicit computation to avoid stack issues
-  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> result = MatrixXd::Zero(CB_transpose.rows(), QCB.cols());
-  
-  // Perform multiplication in chunks to avoid potential memory issues
-  const int chunk_size = 10;  // Process 10 rows at a time
-  for (int i = 0; i < CB_transpose.rows(); i += chunk_size) {
-    int end_row = std::min(i + chunk_size, static_cast<int>(CB_transpose.rows()));
-    result.block(i, 0, end_row - i, QCB.cols()).noalias() = 
-      CB_transpose.block(i, 0, end_row - i, CB_transpose.cols()) * QCB;
-  }
-  log_debug("Multiplication result size: %ld x %ld\n", result.rows(), result.cols());
-
-  H.triangularView<Eigen::Upper>() = result;
-
-  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
+  H.triangularView<Eigen::Upper>() = CB.transpose() * QCB;
   log_debug("-------MPC-7-3-3--\n", 0);
-
   H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
   log_debug("-------MPC-7-3-4--\n", 0);
   H.triangularView<Eigen::Lower>() = H.transpose();

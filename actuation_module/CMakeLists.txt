@@ -93,13 +93,13 @@ if(${ZEPHYR_TARGET} STREQUAL "native_sim")
 endif()
 
 # TODO: Check if these are needed
-target_compile_definitions(app PRIVATE
-  EIGEN_DONT_VECTORIZE
-  EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
-  # EIGEN_MAX_ALIGN_BYTES=0
-  EIGEN_DONT_ALIGN
-  EIGEN_DONT_ALIGN_STATICALLY
-)
+# target_compile_definitions(app PRIVATE
+#   EIGEN_DONT_VECTORIZE
+#   EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+#   # EIGEN_MAX_ALIGN_BYTES=0
+#   EIGEN_DONT_ALIGN
+#   EIGEN_DONT_ALIGN_STATICALLY
+# )
 
 target_include_directories(app PRIVATE
   include
