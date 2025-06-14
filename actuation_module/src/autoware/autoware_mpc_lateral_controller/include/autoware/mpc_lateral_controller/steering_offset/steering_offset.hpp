@@ -19,9 +19,7 @@
 #include <deque>
 #include <vector>
 
-// Msgs
-#include "Twist.h"
-using TwistMsg = geometry_msgs_msg_Twist;
+#include "common/dds/messages.hpp"
 
 class SteeringOffsetEstimator
 {

@@ -25,29 +25,17 @@
 #include <numeric>
 #include <cmath>
 
+#include <Eigen/Geometry>
+
 #include "autoware/universe_utils/geometry/geometry.hpp"
 #include "autoware/universe_utils/geometry/pose_deviation.hpp"
 #include "autoware/universe_utils/math/constants.hpp"
 
 #include "common/logger/logger.hpp"
+#include "common/dds/messages.hpp"
 using namespace common::logger;
 
-#include <Eigen/Geometry>
-
-// Msgs
-#include "common/dds/sequence.hpp"
-#include "Point.h"
-#include "Path.h"
-#include "Pose.h"
-#include "PathPoint.h"
-#include "PathPointWithLaneId.h"
-#include "TrajectoryPoint.h"
-#include "Trajectory.h"
-using PointMsg = geometry_msgs_msg_Point;
-using PoseMsg = geometry_msgs_msg_Pose;
-using PathPointSeq = Sequence<dds_sequence_autoware_planning_msgs_msg_PathPoint>;
-using PathPointWithLaneIdSeq = Sequence<dds_sequence_tier4_planning_msgs_msg_PathPointWithLaneId>;
-using TrajectoryPointSeq = Sequence<dds_sequence_autoware_planning_msgs_msg_TrajectoryPoint>;
+using TrajectoryPointSeq = std::vector<TrajectoryPointMsg>;
 
 namespace autoware::motion_utils
 {
@@ -65,10 +53,6 @@ void validateNonEmpty(const T & points)
   }
 }
 
-extern template void validateNonEmpty<PathPointSeq>(
-  const PathPointSeq &);
-extern template void validateNonEmpty<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq &);
 extern template void validateNonEmpty<TrajectoryPointSeq>(
   const TrajectoryPointSeq &);
 
@@ -100,12 +84,6 @@ size_t findNearestIndex(const T & points, const PointMsg & point)
   return min_idx;
 }
 
-extern template size_t findNearestIndex<PathPointSeq>(
-  const PathPointSeq & points,
-  const PointMsg & point);
-extern template size_t findNearestIndex<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const PointMsg & point);
 extern template size_t findNearestIndex<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,
   const PointMsg & point);
@@ -165,16 +143,7 @@ std::optional<size_t> findNearestIndex(
   return std::nullopt;
 }
 
-extern template std::optional<size_t>
-findNearestIndex<PathPointSeq>(
-  const PathPointSeq & points,
-  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
-  const double max_yaw = std::numeric_limits<double>::max());
-extern template std::optional<size_t>
-findNearestIndex<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
-  const double max_yaw = std::numeric_limits<double>::max());
+
 extern template std::optional<size_t>
 findNearestIndex<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,
@@ -193,19 +162,13 @@ findNearestIndex<TrajectoryPointSeq>(
 template <class T>
 T removeOverlapPoints(const T & points, const size_t start_idx = 0)
 {
-  // TODO: !!! Validate this implementation, especially check if sequence wrapper works as expected
   if (points.size() < start_idx + 1) {
-    // Create a new empty sequence but with the same capacity as the original
-    T result;
-    // Copy all data from the original points
-    for (size_t i = 0; i < points.size(); ++i) {
-      result.push_back(points.at(i));
-    }
-    return result;
+    return points;
   }
 
-  T dst(points.size());  // Create with capacity
-  
+  T dst;
+  dst.reserve(points.size());
+
   for (size_t i = 0; i <= start_idx; ++i) {
     dst.push_back(points.at(i));
   }
@@ -223,51 +186,6 @@ T removeOverlapPoints(const T & points, const size_t start_idx = 0)
   return dst;
 }
 
-// Specialization for Sequence<const T> types
-// TODO: !!! Validate this implementation, especially check if sequence wrapper works as expected
-template <class T>
-auto removeOverlapPoints(const Sequence<const T> & points, const size_t start_idx = 0)
-{
-  // For const sequences, convert to a non-const sequence type
-  using NonConstType = typename std::remove_const<T>::type;
-  using ResultType = Sequence<NonConstType>;
-  
-  if (points.size() < start_idx + 1) {
-    // Create a new empty sequence but with the same capacity as the original
-    ResultType result(points.size());
-    // Copy all data from the original points
-    for (size_t i = 0; i < points.size(); ++i) {
-      result.push_back(points.at(i));
-    }
-    return result;
-  }
-
-  ResultType dst(points.size());  // Create with capacity
-  
-  for (size_t i = 0; i <= start_idx; ++i) {
-    dst.push_back(points.at(i));
-  }
-
-  constexpr double eps = 1.0E-08;
-  for (size_t i = start_idx + 1; i < points.size(); ++i) {
-    const auto prev_p = autoware::universe_utils::getPoint(dst.back());
-    const auto curr_p = autoware::universe_utils::getPoint(points.at(i));
-    if (std::abs(prev_p.x - curr_p.x) < eps && std::abs(prev_p.y - curr_p.y) < eps) {
-      continue;
-    }
-    dst.push_back(points.at(i));
-  }
-
-  return dst;
-}
-
-extern template PathPointSeq
-removeOverlapPoints<PathPointSeq>(
-  const PathPointSeq & points, const size_t start_idx = 0);
-extern template PathPointWithLaneIdSeq
-removeOverlapPoints<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const size_t start_idx = 0);
 extern template TrajectoryPointSeq
 removeOverlapPoints<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,
@@ -334,162 +252,10 @@ double calcLongitudinalOffsetToSegment(
   return segment_vec.dot(target_vec) / segment_vec.norm();
 }
 
-// Specialization for Sequence<const T> types
-template <class T>
-double calcLongitudinalOffsetToSegment(
-  const Sequence<const T> & points, const size_t seg_idx, const PointMsg & p_target,
-  const bool throw_exception = false)
-{
-  if (seg_idx >= points.size() - 1) {
-    const std::string error_message(
-      "[autoware_motion_utils] " + std::string(__func__) +
-      ": Failed to calculate longitudinal offset because the given segment index is out of the "
-      "points size.");
-    log_error("Trajectory: Error: %s", error_message.c_str());
-    if (throw_exception) {
-      std::exit(1);
-    }
-    log_error("Trajectory: Return NaN since no_throw option is enabled. The maintainer must check the code.");
-    return std::nan("");
-  }
-
-  const auto overlap_removed_points = removeOverlapPoints(points, seg_idx);
-
-  if (throw_exception) {
-    validateNonEmpty(overlap_removed_points);
-  } else {
-    try {
-      validateNonEmpty(overlap_removed_points);
-    } catch (const std::exception & e) {
-      log_error("Trajectory: Error: %s", e.what());
-      return std::nan("");
-    }
-  }
-
-  if (seg_idx >= overlap_removed_points.size() - 1) {
-    const std::string error_message(
-      "[autoware_motion_utils] " + std::string(__func__) +
-      ": Longitudinal offset calculation is not supported for the same points.");
-    log_error("Trajectory: Error: %s", error_message.c_str());
-    return std::nan("");
-  }
-
-  const auto p_front = autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx));
-  const auto p_back = autoware::universe_utils::getPoint(overlap_removed_points.at(seg_idx + 1));
-
-  const Eigen::Vector3d segment_vec{p_back.x - p_front.x, p_back.y - p_front.y, 0};
-  const Eigen::Vector3d target_vec{p_target.x - p_front.x, p_target.y - p_front.y, 0};
-
-  return segment_vec.dot(target_vec) / segment_vec.norm();
-}
-
-extern template double
-calcLongitudinalOffsetToSegment<PathPointSeq>(
-  const PathPointSeq & points, const size_t seg_idx,
-  const PointMsg & p_target, const bool throw_exception = false);
-extern template double
-calcLongitudinalOffsetToSegment<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points, const size_t seg_idx,
-  const PointMsg & p_target, const bool throw_exception = false);
 extern template double
 calcLongitudinalOffsetToSegment<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points, const size_t seg_idx,
   const PointMsg & p_target, const bool throw_exception = false);
-
-/**
- * @brief find nearest segment index to point.
- * Segment is straight path between two continuous points of trajectory.
- * When point is on a trajectory point whose index is nearest_idx, return nearest_idx - 1
- * @param points points of trajectory, path, ...
- * @param point point to which to find nearest segment index
- * @return nearest index
- */
-template <class T>
-size_t findNearestSegmentIndex(const T & points, const PointMsg & point)
-{
-  const size_t nearest_idx = findNearestIndex(points, point);
-
-  if (nearest_idx == 0) {
-    return 0;
-  }
-  if (nearest_idx == points.size() - 1) {
-    return points.size() - 2;
-  }
-
-  const double signed_length = calcLongitudinalOffsetToSegment(points, nearest_idx, point);
-
-  if (signed_length <= 0) {
-    return nearest_idx - 1;
-  }
-
-  return nearest_idx;
-}
-
-extern template size_t findNearestSegmentIndex<PathPointSeq>(
-  const PathPointSeq & points,
-  const PointMsg & point);
-extern template size_t
-findNearestSegmentIndex<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const PointMsg & point);
-extern template size_t
-findNearestSegmentIndex<TrajectoryPointSeq>(
-  const TrajectoryPointSeq & points,
-  const PointMsg & point);
-
-/**
- * @brief find nearest segment index to pose
- * Segment is straight path between two continuous points of trajectory.
- * When pose is on a trajectory point whose index is nearest_idx, return nearest_idx - 1
- * @param points points of trajectory, path, ..
- * @param pose pose to which to find nearest segment index
- * @param max_dist max distance used for finding the nearest index to given pose
- * @param max_yaw max yaw used for finding nearest index to given pose
- * @return nearest index
- */
-template <class T>
-std::optional<size_t> findNearestSegmentIndex(
-  const T & points, const PoseMsg & pose,
-  const double max_dist = std::numeric_limits<double>::max(),
-  const double max_yaw = std::numeric_limits<double>::max())
-{
-  const auto nearest_idx = findNearestIndex(points, pose, max_dist, max_yaw);
-
-  if (!nearest_idx) {
-    return std::nullopt;
-  }
-
-  if (*nearest_idx == 0) {
-    return 0;
-  }
-  if (*nearest_idx == points.size() - 1) {
-    return points.size() - 2;
-  }
-
-  const double signed_length = calcLongitudinalOffsetToSegment(points, *nearest_idx, pose.position);
-
-  if (signed_length <= 0) {
-    return *nearest_idx - 1;
-  }
-
-  return *nearest_idx;
-}
-
-extern template std::optional<size_t>
-findNearestSegmentIndex<PathPointSeq>(
-  const PathPointSeq & points,
-  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
-  const double max_yaw = std::numeric_limits<double>::max());
-extern template std::optional<size_t>
-findNearestSegmentIndex<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
-  const double max_yaw = std::numeric_limits<double>::max());
-extern template std::optional<size_t>
-findNearestSegmentIndex<TrajectoryPointSeq>(
-  const TrajectoryPointSeq & points,
-  const PoseMsg & pose, const double max_dist = std::numeric_limits<double>::max(),
-  const double max_yaw = std::numeric_limits<double>::max());
 
 /**
  * @brief calculate curvature through points container.
@@ -520,12 +286,6 @@ std::vector<double> calcCurvature(const T & points)
   return curvature_vec;
 }
 
-extern template std::vector<double>
-calcCurvature<PathPointSeq>(
-  const PathPointSeq & points);
-extern template std::vector<double>
-calcCurvature<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points);
 extern template std::vector<double>
 calcCurvature<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points);
@@ -638,18 +398,6 @@ size_t findFirstNearestIndexWithSoftConstraints(
 }
 
 extern template size_t
-findFirstNearestIndexWithSoftConstraints<PathPointSeq>(
-  const PathPointSeq & points,
-  const PoseMsg & pose,
-  const double dist_threshold = std::numeric_limits<double>::max(),
-  const double yaw_threshold = std::numeric_limits<double>::max());
-extern template size_t findFirstNearestIndexWithSoftConstraints<
-  PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const PoseMsg & pose,
-  const double dist_threshold = std::numeric_limits<double>::max(),
-  const double yaw_threshold = std::numeric_limits<double>::max());
-extern template size_t
 findFirstNearestIndexWithSoftConstraints<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,
   const PoseMsg & pose,
@@ -693,23 +441,11 @@ size_t findFirstNearestSegmentIndexWithSoftConstraints(
   return nearest_idx;
 }
 
-extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<PathPointSeq>(
-  const PathPointSeq & points,
-  const PoseMsg & pose,
-  const double dist_threshold = std::numeric_limits<double>::max(),
-  const double yaw_threshold = std::numeric_limits<double>::max());
-extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const PoseMsg & pose,
-  const double dist_threshold = std::numeric_limits<double>::max(),
-  const double yaw_threshold = std::numeric_limits<double>::max());
 extern template size_t findFirstNearestSegmentIndexWithSoftConstraints<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,
   const PoseMsg & pose,
   const double dist_threshold = std::numeric_limits<double>::max(),
   const double yaw_threshold = std::numeric_limits<double>::max());
-
-
 
 /**
  * @brief search through points container from specified start and end indices about first matching
@@ -818,14 +554,6 @@ double calcSignedArcLength(const T & points, const size_t src_idx, const size_t 
 }
 
 extern template double
-calcSignedArcLength<PathPointSeq>(
-  const PathPointSeq & points, const size_t src_idx,
-  const size_t dst_idx);
-extern template double
-calcSignedArcLength<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points, const size_t src_idx,
-  const size_t dst_idx);
-extern template double
 calcSignedArcLength<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points, const size_t src_idx,
   const size_t dst_idx);
@@ -858,16 +586,6 @@ double calcSignedArcLength(
   return signed_length_on_traj - signed_length_src_offset + signed_length_dst_offset;
 }
 
-extern template double
-calcSignedArcLength<PathPointSeq>(
-  const PathPointSeq & points,
-  const PointMsg & src_point, const size_t src_seg_idx,
-  const PointMsg & dst_point, const size_t dst_seg_idx);
-extern template double
-calcSignedArcLength<PathPointWithLaneIdSeq>(
-  const PathPointWithLaneIdSeq & points,
-  const PointMsg & src_point, const size_t src_seg_idx,
-  const PointMsg & dst_point, const size_t dst_seg_idx);
 extern template double
 calcSignedArcLength<TrajectoryPointSeq>(
   const TrajectoryPointSeq & points,

@@ -262,9 +262,8 @@ std::vector<double> calcTrajectoryCurvature(
 
 MPCTrajectory convertToMPCTrajectory(const TrajectoryMsg & input)
 {
-  auto sequence_input_points = wrap_sequence(input.points);
   MPCTrajectory output;
-  for (const TrajectoryPointMsg & p : sequence_input_points) {
+  for (const TrajectoryPointMsg & p : input.points) {
     const double x = p.pose.position.x;
     const double y = p.pose.position.y;
     const double z = p.pose.position.z;
@@ -281,18 +280,8 @@ MPCTrajectory convertToMPCTrajectory(const TrajectoryMsg & input)
 TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
 {
   log_debug("-------MPC-3-1-10--\n", 0);
-  TrajectoryMsg output = {};
-  auto sequence_output_points = wrap_sequence(output.points);
-  
-  if (!sequence_output_points.reserve(input.size())) {
-    log_error("Failed to reserve capacity for trajectory points");
-    return output;
-  }
-  
+  TrajectoryMsg output;
   TrajectoryPointMsg p;
-
-  log_debug("-------MPC-3-1-11--\n", 0);
-  
   for (size_t i = 0; i < input.size(); ++i) {
     p.pose.position.x = input.x.at(i);
     p.pose.position.y = input.y.at(i);
@@ -300,19 +289,14 @@ TrajectoryMsg convertToAutowareTrajectory(const MPCTrajectory & input)
     p.pose.orientation = autoware::universe_utils::createQuaternionFromYaw(input.yaw.at(i));
     p.longitudinal_velocity_mps =
       static_cast<decltype(p.longitudinal_velocity_mps)>(input.vx.at(i));
-    
-    if (!sequence_output_points.push_back(p)) {
-      log_error("Failed to add trajectory point at index %zu", i);
-      break;
-    }
-    
-    if (sequence_output_points.size() == sequence_output_points.max_size()) {
-      log_debug("Reached maximum sequence size, stopping at %zu points", i + 1);
+    output.points.push_back(p);
+    if (output.points.size() == output.points.max_size()) {
       break;
     }
   }
+  return output;
 
-  log_debug("-------MPC-3-1-13-- Created trajectory with %zu points\n", sequence_output_points.size());
+  log_debug("-------MPC-3-1-13-- Created trajectory with %zu points\n", output.points.size());
   
   return output;
 }
@@ -368,8 +352,8 @@ bool calcNearestPoseInterp(
   log_debug("-------MPC-3-1-2--\n", 0);
 
   const auto autoware_traj = convertToAutowareTrajectory(traj);
-  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
-  if (sequence_autoware_traj_points.empty()) {
+
+  if (autoware_traj.points.empty()) {
     log_warn_throttle("[calcNearestPoseInterp] input trajectory is empty - 2");
     return false;
   }
@@ -377,7 +361,7 @@ bool calcNearestPoseInterp(
   log_debug("-------MPC-3-1-3--\n", 0);
 
   *nearest_index = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
-    sequence_autoware_traj_points, self_pose, max_dist, max_yaw);
+    autoware_traj.points, self_pose, max_dist, max_yaw);
   const size_t traj_size = traj.size();
 
   log_debug("-------MPC-3-1-4--\n", 0);
@@ -458,18 +442,16 @@ bool calcNearestPoseInterp(
 
 double calcStopDistance(const TrajectoryMsg & current_trajectory, const int origin)
 {
-  auto sequence_current_trajectory_points = wrap_sequence(current_trajectory.points);
-
   constexpr float zero_velocity = std::numeric_limits<float>::epsilon();
   const float origin_velocity =
-    sequence_current_trajectory_points.at(static_cast<size_t>(origin)).longitudinal_velocity_mps;
+    current_trajectory.points.at(static_cast<size_t>(origin)).longitudinal_velocity_mps;
   double stop_dist = 0.0;
 
   // search forward
   if (std::fabs(origin_velocity) > zero_velocity) {
-    for (int i = origin + 1; i < static_cast<int>(sequence_current_trajectory_points.size()) - 1; ++i) {
-      const auto & p0 = sequence_current_trajectory_points.at(i);
-      const auto & p1 = sequence_current_trajectory_points.at(i - 1);
+    for (int i = origin + 1; i < static_cast<int>(current_trajectory.points.size()) - 1; ++i) {
+      const auto & p0 = current_trajectory.points.at(i);
+      const auto & p1 = current_trajectory.points.at(i - 1);
       stop_dist += calcDistance2d(p0, p1);
       if (std::fabs(p0.longitudinal_velocity_mps) < zero_velocity) {
         break;
@@ -480,8 +462,8 @@ double calcStopDistance(const TrajectoryMsg & current_trajectory, const int orig
 
   // search backward
   for (int i = origin - 1; 0 < i; --i) {
-    const auto & p0 = sequence_current_trajectory_points.at(i);
-    const auto & p1 = sequence_current_trajectory_points.at(i + 1);
+    const auto & p0 = current_trajectory.points.at(i);
+    const auto & p1 = current_trajectory.points.at(i + 1);
     if (std::fabs(p0.longitudinal_velocity_mps) > zero_velocity) {
       break;
     }
@@ -490,7 +472,6 @@ double calcStopDistance(const TrajectoryMsg & current_trajectory, const int orig
   return stop_dist;
 }
 
-//TODO: check sequence validity in extend operation
 void extendTrajectoryInYawDirection(
   const double yaw, const double interval, const bool is_forward_shift, MPCTrajectory & traj)
 {
@@ -499,8 +480,8 @@ void extendTrajectoryInYawDirection(
 
   // get terminal pose
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(traj);
-  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
-  auto extended_pose = sequence_autoware_traj_points.back().pose;
+
+  auto extended_pose = autoware_traj.points.back().pose;
 
   constexpr double extend_dist = 10.0;
   constexpr double extend_vel = 10.0;

@@ -27,16 +27,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-// Msgs
-#include "Trajectory.h"
-#include "Pose.h"
-#include "Point.h"
-#include "Quaternion.h"
-using PointMsg = geometry_msgs_msg_Point;
-using PoseMsg = geometry_msgs_msg_Pose;
-using QuaternionMsg = geometry_msgs_msg_Quaternion;
-using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
-using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
@@ -87,38 +78,36 @@ std::pair<TrajectoryPointMsg, size_t> lerpTrajectoryPoint(
   const T & points, const PoseMsg & pose, const double max_dist, const double max_yaw)
 {
   TrajectoryPointMsg interpolated_point;
-  auto points_seq = wrap_sequence(points);
 
-  // TODO: check sequence wrapper validity
   const size_t seg_idx = autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
-    points_seq, pose, max_dist, max_yaw);
+    points, pose, max_dist, max_yaw);
 
   const double len_to_interpolated =
-    autoware::motion_utils::calcLongitudinalOffsetToSegment(points_seq, seg_idx, pose.position);
+    autoware::motion_utils::calcLongitudinalOffsetToSegment(points, seg_idx, pose.position);
   const double len_segment =
-    autoware::motion_utils::calcSignedArcLength(points_seq, seg_idx, seg_idx + 1);
+    autoware::motion_utils::calcSignedArcLength(points, seg_idx, seg_idx + 1);
   const double interpolate_ratio = std::clamp(len_to_interpolated / len_segment, 0.0, 1.0);
 
   {
     const size_t i = seg_idx;
 
     interpolated_point.pose.position.x = autoware::interpolation::lerp(
-      points_seq.at(i).pose.position.x, points_seq.at(i + 1).pose.position.x, interpolate_ratio);
+      points.at(i).pose.position.x, points.at(i + 1).pose.position.x, interpolate_ratio);
     interpolated_point.pose.position.y = autoware::interpolation::lerp(
-      points_seq.at(i).pose.position.y, points_seq.at(i + 1).pose.position.y, interpolate_ratio);
+      points.at(i).pose.position.y, points.at(i + 1).pose.position.y, interpolate_ratio);
     interpolated_point.pose.position.z = autoware::interpolation::lerp(
-      points_seq.at(i).pose.position.z, points_seq.at(i + 1).pose.position.z, interpolate_ratio);
+      points.at(i).pose.position.z, points.at(i + 1).pose.position.z, interpolate_ratio);
     interpolated_point.pose.orientation = autoware::interpolation::lerpOrientation(
-      points_seq.at(i).pose.orientation, points_seq.at(i + 1).pose.orientation, interpolate_ratio);
+      points.at(i).pose.orientation, points.at(i + 1).pose.orientation, interpolate_ratio);
     interpolated_point.longitudinal_velocity_mps = autoware::interpolation::lerp(
-      points_seq.at(i).longitudinal_velocity_mps, points_seq.at(i + 1).longitudinal_velocity_mps,
+      points.at(i).longitudinal_velocity_mps, points.at(i + 1).longitudinal_velocity_mps,
       interpolate_ratio);
     interpolated_point.lateral_velocity_mps = autoware::interpolation::lerp(
-      points_seq.at(i).lateral_velocity_mps, points_seq.at(i + 1).lateral_velocity_mps, interpolate_ratio);
+      points.at(i).lateral_velocity_mps, points.at(i + 1).lateral_velocity_mps, interpolate_ratio);
     interpolated_point.acceleration_mps2 = autoware::interpolation::lerp(
-      points_seq.at(i).acceleration_mps2, points_seq.at(i + 1).acceleration_mps2, interpolate_ratio);
+      points.at(i).acceleration_mps2, points.at(i + 1).acceleration_mps2, interpolate_ratio);
     interpolated_point.heading_rate_rps = autoware::interpolation::lerp(
-      points_seq.at(i).heading_rate_rps, points_seq.at(i + 1).heading_rate_rps, interpolate_ratio);
+      points.at(i).heading_rate_rps, points.at(i + 1).heading_rate_rps, interpolate_ratio);
   }
 
   return std::make_pair(interpolated_point, seg_idx);

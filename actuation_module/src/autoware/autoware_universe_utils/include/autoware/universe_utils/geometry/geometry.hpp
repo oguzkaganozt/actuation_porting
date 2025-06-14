@@ -28,34 +28,9 @@
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 
+#include "common/dds/messages.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
-
-// Msgs
-#include "Point.h"
-#include "Pose.h"
-#include "PoseStamped.h"
-#include "PoseWithCovarianceStamped.h"
-#include "PathPoint.h"
-#include "Vector3.h"
-#include "Quaternion.h"
-#include "PathPointWithLaneId.h"
-#include "PathWithLaneId.h"
-#include "TrajectoryPoint.h"
-#include "Transform.h"
-#include "TransformStamped.h"
-using PointMsg = geometry_msgs_msg_Point;
-using PoseMsg = geometry_msgs_msg_Pose;
-using Vector3Msg = geometry_msgs_msg_Vector3;
-using QuaternionMsg = geometry_msgs_msg_Quaternion;
-using PathWithLaneIdMsg = tier4_planning_msgs_msg_PathWithLaneId;
-using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
-using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
-using PoseWithCovarianceStampedMsg = geometry_msgs_msg_PoseWithCovarianceStamped;
-using PathPointMsg = autoware_planning_msgs_msg_PathPoint;
-using TransformMsg = geometry_msgs_msg_Transform;
-using TransformStampedMsg = geometry_msgs_msg_TransformStamped;
-using PathPointWithLaneIdMsg = tier4_planning_msgs_msg_PathPointWithLaneId;
 
 namespace autoware::universe_utils
 {
@@ -82,10 +57,6 @@ inline PointMsg getPoint(const PoseStampedMsg & p)  { return p.pose.position; }
 template <>
 inline PointMsg getPoint(const PoseWithCovarianceStampedMsg & p)  { return p.pose.pose.position; }
 template <>
-inline PointMsg getPoint(const PathPointMsg & p) { return p.pose.position; }
-template <>
-inline PointMsg getPoint(const PathPointWithLaneIdMsg & p)  { return p.point.pose.position; }
-template <>
 inline PointMsg getPoint(const TrajectoryPointMsg & p) { return p.pose.position; }
 
 /**
@@ -104,10 +75,6 @@ template <>
 inline PoseMsg getPose(const PoseMsg & p) { return p; }
 template <>
 inline PoseMsg getPose(const PoseStampedMsg & p) { return p.pose; }
-template <>
-inline PoseMsg getPose(const PathPointMsg & p) { return p.pose; }
-template <>
-inline PoseMsg getPose(const PathPointWithLaneIdMsg & p) { return p.point.pose; }
 template <>
 inline PoseMsg getPose(const TrajectoryPointMsg & p) { return p.pose; }
 
@@ -128,10 +95,6 @@ inline void setPose(const PoseMsg & pose, PoseMsg & p) { p = pose; }
 template <>
 inline void setPose(const PoseMsg & pose, PoseStampedMsg & p) { p.pose = pose; }
 template <>
-inline void setPose(const PoseMsg & pose, PathPointMsg & p)  { p.pose = pose; }
-template <>
-inline void setPose(const PoseMsg & pose, PathPointWithLaneIdMsg & p) { p.point.pose = pose; }
-template <>
 inline void setPose(const PoseMsg & pose, TrajectoryPointMsg & p) { p.pose = pose; }
 
 /**
@@ -146,10 +109,7 @@ double getLongitudinalVelocity([[maybe_unused]] const T & p)
   log_error("Only specializations of getVelocity can be used.");
   std::exit(1);
 }
-template <>
-inline double getLongitudinalVelocity(const PathPointMsg & p) { return p.longitudinal_velocity_mps; }
-template <>
-inline double getLongitudinalVelocity(const PathPointWithLaneIdMsg & p) { return p.point.longitudinal_velocity_mps; }
+
 template <>
 inline double getLongitudinalVelocity(const TrajectoryPointMsg & p) { return p.longitudinal_velocity_mps; }
 
@@ -167,10 +127,6 @@ void setLongitudinalVelocity([[maybe_unused]] const float velocity, [[maybe_unus
 }
 template <>
 inline void setLongitudinalVelocity(const float velocity, TrajectoryPointMsg & p) { p.longitudinal_velocity_mps = velocity; }
-template <>
-inline void setLongitudinalVelocity(const float velocity, PathPointMsg & p) { p.longitudinal_velocity_mps = velocity; }
-template <>
-inline void setLongitudinalVelocity(const float velocity, PathPointWithLaneIdMsg & p) { p.point.longitudinal_velocity_mps = velocity; }
 
 /**
  * @brief Create a translation vector

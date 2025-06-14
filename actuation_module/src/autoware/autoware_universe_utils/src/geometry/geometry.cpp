@@ -84,7 +84,7 @@ QuaternionMsg createQuaternionFromRPY(
   const double cy = std::cos(yaw * 0.5);
   const double sy = std::sin(yaw * 0.5);
 
-  // Convert to quaternion using the rotation matrix to quaternion formulas
+  // Convert to quaternion  the rotation matrix to quaternion formulas
   QuaternionMsg q;
   q.w = cr * cp * cy + sr * sp * sy;
   q.x = sr * cp * cy - cr * sp * sy;

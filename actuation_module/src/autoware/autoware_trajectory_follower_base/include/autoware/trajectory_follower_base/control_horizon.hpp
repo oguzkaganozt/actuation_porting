@@ -17,11 +17,7 @@
 
 #include <vector>
 
-// Msgs
-#include "Lateral.h"
-#include "Longitudinal.h"
-using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
-using LateralMsg = autoware_control_msgs_msg_Lateral;
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {

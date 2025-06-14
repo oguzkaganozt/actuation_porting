@@ -15,17 +15,7 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__INPUT_DATA_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__INPUT_DATA_HPP_
 
-// Msgs
-#include "Trajectory.h"
-#include "Odometry.h"
-#include "SteeringReport.h"
-#include "OperationModeState.h"
-#include "AccelWithCovarianceStamped.h"
-using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
-using OdometryMsg = nav_msgs_msg_Odometry;
-using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
-using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
-using AccelWithCovarianceStampedMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {

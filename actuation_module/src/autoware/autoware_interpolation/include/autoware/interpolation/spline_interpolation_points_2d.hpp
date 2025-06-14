@@ -19,11 +19,7 @@
 
 #include "autoware/interpolation/spline_interpolation.hpp"
 
-// Msgs
-#include "Point.h"
-#include "Pose.h"
-using PointMsg = geometry_msgs_msg_Point;
-using PoseMsg = geometry_msgs_msg_Pose;
+#include "common/dds/messages.hpp"
 
 namespace autoware::interpolation
 {

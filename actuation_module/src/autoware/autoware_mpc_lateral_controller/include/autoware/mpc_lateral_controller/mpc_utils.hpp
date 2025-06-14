@@ -24,18 +24,7 @@
 
 #include <Eigen/Core>
 #include "common/clock/clock.hpp"
-
-//Msgs
-#include "Trajectory.h"
-#include "TrajectoryPoint.h"
-#include "PoseStamped.h"
-#include "Pose.h"
-#include "TwistStamped.h"
-using PoseMsg = geometry_msgs_msg_Pose;
-using TwistStampedMsg = geometry_msgs_msg_TwistStamped;
-using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
-using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
-using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {

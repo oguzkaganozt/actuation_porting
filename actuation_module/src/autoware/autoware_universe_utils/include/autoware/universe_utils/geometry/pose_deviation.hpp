@@ -18,11 +18,7 @@
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-// Msgs
-#include "Pose.h"
-#include "Point.h"
-using PoseMsg = geometry_msgs_msg_Pose;
-using PointMsg = geometry_msgs_msg_Point;
+#include "common/dds/messages.hpp"
 
 namespace autoware::universe_utils
 {
