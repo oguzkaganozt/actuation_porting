@@ -17,12 +17,8 @@ using AccelerationMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
 using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
 
 // Stack sizes for node and timer threads
-#if defined(NATIVE_SIM)
-static unsigned char node_stack[CONFIG_THREAD_STACK_SIZE];
-#else
 static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
-#endif
 
 /*
     This test is used to test the DDS communication between ROS2 and Zephyr

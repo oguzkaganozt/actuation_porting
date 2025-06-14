@@ -14,14 +14,9 @@ include(GNUInstallDirs)
 include(ExternalProject)
 
 ### CYCLONEDDS ###
-if(${ZEPHYR_TARGET} STREQUAL "native_sim")
-  message("Building native simulator")
-  target_compile_options(app PRIVATE "-DNATIVE_SIM")
-else()
-  message("Building cyclonedds for ${ZEPHYR_TARGET}")
-  include(cyclonedds_config.cmake)
-  create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
-endif()
+message("Building cyclonedds for ${ZEPHYR_TARGET}")
+include(cyclonedds_config.cmake)
+create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
 ### SET ZEPHYR COMPILER AND FLAGS ###
 # Get compile options from Zephyr to be passed to the Autoware packages.
@@ -88,10 +83,6 @@ message("=== Build Summary ===")
 message("App sources: ${APP_SOURCES}")
 message("App headers: ${APP_INCLUDE_DIRS}")
 
-if(${ZEPHYR_TARGET} STREQUAL "native_sim")
-  set(CycloneDDS_INCLUDE_DIR "/opt/ros/humble/include")
-endif()
-
 # TODO: Check if these are needed
 # target_compile_definitions(app PRIVATE
 #   EIGEN_DONT_VECTORIZE
@@ -111,8 +102,4 @@ target_include_directories(app PRIVATE
 
 # Link actuation messages and CycloneDDS library
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
-if(${ZEPHYR_TARGET} STREQUAL "native_sim")
-  target_link_libraries(app PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/../cyclonedds_native_sim/out/lib/libddsc.a  actuation_msgs)
-else()
-  target_link_libraries(app PRIVATE cdds_lib actuation_msgs)
-endif()
+target_link_libraries(app PRIVATE cdds_lib actuation_msgs)

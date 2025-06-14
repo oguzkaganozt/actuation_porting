@@ -15,9 +15,7 @@
 #ifndef AUTOWARE__MPC_LATERAL_CONTROLLER__QP_SOLVER__QP_SOLVER_INTERFACE_HPP_
 #define AUTOWARE__MPC_LATERAL_CONTROLLER__QP_SOLVER__QP_SOLVER_INTERFACE_HPP_
 
-#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
-#endif
 #include <Eigen/Core>
 
 namespace autoware::motion::control::mpc_lateral_controller

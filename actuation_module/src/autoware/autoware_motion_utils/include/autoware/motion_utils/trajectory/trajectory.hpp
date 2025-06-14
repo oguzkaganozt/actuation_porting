@@ -32,10 +32,7 @@
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 
-
-#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
-#endif
 #include <Eigen/Geometry>
 
 // Msgs

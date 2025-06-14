@@ -63,11 +63,9 @@ inline static void init_config(struct ddsi_config & cfg)
   cfg.max_msg_size = 1400;
 
   // Discovery
-#ifndef NATIVE_SIM
-    cfg.participantIndex = DDSI_PARTICIPANT_INDEX_AUTO;
-    cfg.maxAutoParticipantIndex = 60;
-    cfg.allowMulticast = DDSI_AMC_SPDP;
-#endif
+  cfg.participantIndex = DDSI_PARTICIPANT_INDEX_AUTO;
+  cfg.maxAutoParticipantIndex = 60;
+  cfg.allowMulticast = DDSI_AMC_SPDP;
 
   // Trace
   cfg.tracefp = NULL;

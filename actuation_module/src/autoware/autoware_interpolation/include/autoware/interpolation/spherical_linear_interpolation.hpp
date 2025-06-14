@@ -19,9 +19,7 @@
 
 #include "autoware/interpolation/interpolation_utils.hpp"
 
-#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
-#endif
 #include <Eigen/Geometry>
 
 // Msgs

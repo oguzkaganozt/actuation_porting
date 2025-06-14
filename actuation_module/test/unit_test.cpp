@@ -217,14 +217,8 @@ void test_clock_utils() {
     TEST_END(Clock Utilities)
 }
 
-#if defined(NATIVE_SIM)
-static unsigned char node_stack[CONFIG_THREAD_STACK_SIZE];
-static unsigned char timer_stack[CONFIG_THREAD_STACK_SIZE];
-#else
 static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
-static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
-#endif
 
 int main() {
     log_info("=== Starting Node Test Suite ===\n");

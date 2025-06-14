@@ -22,9 +22,7 @@
 #include "autoware/universe_utils/system/stop_watch.hpp"
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
 
-#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
-#endif
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
