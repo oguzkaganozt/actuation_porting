@@ -22,7 +22,6 @@
 #include "autoware/universe_utils/system/stop_watch.hpp"
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 

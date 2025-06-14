@@ -43,7 +43,6 @@
 
 #include "autoware/mpc_lateral_controller/vehicle_model/vehicle_model_interface.hpp"
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include <Eigen/LU>
 

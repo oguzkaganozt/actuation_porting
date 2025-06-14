@@ -17,7 +17,6 @@
 
 // Libs
 #include <vector>
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include "osqp/glob_opts.h"  // for 'c_int' type ('long' or 'long long')
 

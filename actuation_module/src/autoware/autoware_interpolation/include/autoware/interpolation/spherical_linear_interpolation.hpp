@@ -19,7 +19,6 @@
 
 #include "autoware/interpolation/interpolation_utils.hpp"
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Geometry>
 
 // Msgs

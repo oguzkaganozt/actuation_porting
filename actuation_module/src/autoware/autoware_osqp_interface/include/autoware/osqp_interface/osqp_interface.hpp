@@ -28,7 +28,6 @@
 #include <tuple>
 #include <vector>
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 
 namespace autoware::osqp_interface
