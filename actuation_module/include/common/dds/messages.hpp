@@ -10,26 +10,19 @@
 #include "OperationModeState.h"
 #include "Control.h"
 #include "Longitudinal.h"
-#include "AccelStamped.h"
+#include "Lateral.h"
 #include "PoseStamped.h"
 #include "Float64Stamped.h"
 #include "TrajectoryPoint.h"
 #include "Point.h"
-#include "Path.h"
 #include "Pose.h"
-#include "PathPoint.h"
-#include "PathPointWithLaneId.h"
 #include "PoseWithCovarianceStamped.h"
 #include "Vector3.h"
 #include "Quaternion.h"
-#include "PathWithLaneId.h"
 #include "Transform.h"
 #include "TransformStamped.h"
-#include "TwistStamped.h"
-#include "Longitudinal.h"
 #include "Float32MultiArrayStamped.h"
 #include "Float32Stamped.h"
-#include "Lateral.h"
 #include "Twist.h"
 
 using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
@@ -37,15 +30,11 @@ using Float32StampedMsg = tier4_debug_msgs_msg_Float32Stamped;
 using TwistMsg = geometry_msgs_msg_Twist;
 using LateralMsg = autoware_control_msgs_msg_Lateral;
 using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
-using TwistStampedMsg = geometry_msgs_msg_TwistStamped;
 using Vector3Msg = geometry_msgs_msg_Vector3;
 using QuaternionMsg = geometry_msgs_msg_Quaternion;
-using PathWithLaneIdMsg = tier4_planning_msgs_msg_PathWithLaneId;
 using PoseWithCovarianceStampedMsg = geometry_msgs_msg_PoseWithCovarianceStamped;
-using PathPointMsg = autoware_planning_msgs_msg_PathPoint;
 using TransformMsg = geometry_msgs_msg_Transform;
 using TransformStampedMsg = geometry_msgs_msg_TransformStamped;
-using PathPointWithLaneIdMsg = tier4_planning_msgs_msg_PathPointWithLaneId;
 using PointMsg = geometry_msgs_msg_Point;
 using PoseMsg = geometry_msgs_msg_Pose;
 using TrajectoryMsg_Raw = autoware_planning_msgs_msg_Trajectory;
