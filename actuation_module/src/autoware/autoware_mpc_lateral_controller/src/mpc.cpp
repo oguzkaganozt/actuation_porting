@@ -86,6 +86,7 @@ ResultWithReason MPC::calculateMPC(
       false, std::string("trajectory resampling (") + resample_result.reason + std::string(").")};
   }
 
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   log_debug("-------MPC-6--\n", 0);
 
   // generate mpc matrix : predict equation Xec = Aex * x0 + Bex * Uex + Wex
@@ -591,11 +592,19 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
 
   const int DIM_U_N = m_param.prediction_horizon * m_vehicle_model_ptr->getDimU();
 
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   log_debug("-------MPC-7-3--\n", 0);
 
   // cost function: 1/2 * Uex' * H * Uex + f' * Uex,  H = B' * C' * Q * C * B + R
-  const MatrixXd CB = m.Cex * m.Bex;
-  const MatrixXd QCB = m.Qex * CB;
+  // Force evaluation to avoid alignment issues and ensure proper memory allocation
+  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> CB(m.Cex.rows(), m.Bex.cols());
+  log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
+  CB = m.Cex * m.Bex;
+  log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
+  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> QCB(m.Qex.rows(), CB.cols());
+  log_debug("QCB size: %ld x %ld\n", QCB.rows(), QCB.cols());
+  QCB = m.Qex * CB;
+  log_debug("QCB size: %ld x %ld\n", QCB.rows(), QCB.cols());
   // MatrixXd H = CB.transpose() * QCB + m.R1ex + m.R2ex; // This calculation is heavy. looking for
   // a good way.  //NOLINT
   log_debug("-------MPC-7-3-1--\n", 0);
@@ -603,11 +612,11 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   log_debug("-------MPC-7-3-2--\n", 0);
 
   log_debug("CB size: %ld x %ld\n", CB.rows(), CB.cols());
-  MatrixXd CB_transpose = CB.transpose();  // TODO: We can force evaluation here with .eval()
+  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> CB_transpose = CB.transpose();  // TODO: We can force evaluation here with .eval()
   log_debug("CB_transpose size: %ld x %ld\n", CB_transpose.rows(), CB_transpose.cols());
 
   // Use heap allocation and explicit computation to avoid stack issues
-  MatrixXd result = MatrixXd::Zero(CB_transpose.rows(), QCB.cols());
+  Eigen::Matrix<double, -1, -1, Eigen::DontAlign> result = MatrixXd::Zero(CB_transpose.rows(), QCB.cols());
   
   // Perform multiplication in chunks to avoid potential memory issues
   const int chunk_size = 10;  // Process 10 rows at a time

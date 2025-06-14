@@ -271,7 +271,7 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
 void Controller::callbackTimerControl()
 {
   log_debug("Timer control callback\n");
-  return;
+  // return;
 
   // 1. create input data
   const auto input_data = createInputData();

@@ -92,6 +92,15 @@ if(${ZEPHYR_TARGET} STREQUAL "native_sim")
   set(CycloneDDS_INCLUDE_DIR "/opt/ros/humble/include")
 endif()
 
+# TODO: Check if these are needed
+target_compile_definitions(app PRIVATE
+  EIGEN_DONT_VECTORIZE
+  EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+  # EIGEN_MAX_ALIGN_BYTES=0
+  EIGEN_DONT_ALIGN
+  EIGEN_DONT_ALIGN_STATICALLY
+)
+
 target_include_directories(app PRIVATE
   include
   ${CMAKE_CURRENT_BINARY_DIR}/install/include
