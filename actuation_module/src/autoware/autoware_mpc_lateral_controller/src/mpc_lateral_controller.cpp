@@ -143,12 +143,10 @@ MpcLateralController::MpcLateralController(Node & node)
 
   m_mpc->m_use_delayed_initial_state = node.declare_parameter<bool>("use_delayed_initial_state", true);
 
-  m_mpc->m_publish_debug_trajectories = node.declare_parameter<bool>("publish_debug_trajectories", true);
+  m_mpc->m_publish_debug_trajectories = node.declare_parameter<bool>("publish_debug_trajectories", false);
 
-  m_pub_predicted_traj = node.create_publisher<TrajectoryMsg>("~/output/predicted_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
-  m_pub_debug_values =
-    node.create_publisher<Float32MultiArrayStampedMsg>("~/output/lateral_diagnostic", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
-  m_pub_steer_offset = node.create_publisher<Float32StampedMsg>("~/output/estimated_steer_offset", &tier4_debug_msgs_msg_Float32Stamped_desc);
+  // m_pub_predicted_traj = node.create_publisher<TrajectoryMsg>("~/output/predicted_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
+  // m_pub_steer_offset = node.create_publisher<Float32StampedMsg>("~/output/estimated_steer_offset", &tier4_debug_msgs_msg_Float32Stamped_desc);
 
   declareMPCparameters(node);
 
@@ -254,7 +252,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
   const auto mpc_solved_status = m_mpc->calculateMPC(
     m_current_steering, m_current_kinematic_state, ctrl_cmd, predicted_traj, ctrl_cmd_horizon);
 
-  std::exit(0); // TODO: DEBUG REMOVE
+  log_debug("-------MPC--2--\n", 0);
 
   if (
     (m_mpc_solved_status.result == true && mpc_solved_status.result == false) ||
@@ -262,6 +260,8 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     log_error("MPC: failed due to %s", mpc_solved_status.reason.c_str());
   }
   m_mpc_solved_status = mpc_solved_status;  // for diagnostic updater
+
+  log_debug("-------MPC--3--\n", 0);
 
   // reset previous MPC result
   // Note: When a large deviation from the trajectory occurs, the optimization stops and
@@ -274,6 +274,8 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     setSteeringToHistory(ctrl_cmd);
   }
 
+  log_debug("-------MPC--4--\n", 0);
+
   if (enable_auto_steering_offset_removal_) {
     steering_offset_->updateOffset(
       m_current_kinematic_state.twist.twist,
@@ -281,7 +283,9 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     ctrl_cmd.steering_tire_angle += steering_offset_->getOffset();
   }
 
-  publishPredictedTraj(predicted_traj);
+  log_debug("-------MPC--5--\n", 0);
+
+  // publishPredictedTraj(predicted_traj);  // TODO: REMOVED FOR SIMPLIFICATION
   // publishDebugValues(debug_values);  //TODO: removed sake of simplicity
 
   const auto createLateralOutput =
@@ -302,6 +306,8 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     return output;
   };
 
+  log_debug("-------MPC--6--\n", 0);
+
   if (isStoppedState()) {
     // Reset input buffer
     for (auto & value : m_mpc->m_input_buffer) {
@@ -312,9 +318,13 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     return createLateralOutput(m_ctrl_cmd_prev, false, ctrl_cmd_horizon);
   }
 
+  log_debug("-------MPC--7--\n", 0);
+
   if (!mpc_solved_status.result) {
     ctrl_cmd = getStopControlCommand();
   }
+
+  log_debug("-------MPC--8--\n", 0);
 
   m_ctrl_cmd_prev = ctrl_cmd;
   return createLateralOutput(ctrl_cmd, mpc_solved_status.result, ctrl_cmd_horizon);
@@ -325,7 +335,7 @@ bool MpcLateralController::isSteerConverged(const LateralMsg & cmd) const
   // wait for a while to propagate the trajectory shape to the output command when the trajectory
   // shape is changed.
   if (!m_has_received_first_trajectory || isTrajectoryShapeChanged()) {
-    log_error("MPC: trajectory shaped is changed");
+    log_info("MPC: trajectory shaped is changed");
     return false;
   }
 
@@ -361,7 +371,7 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
 void MpcLateralController::setTrajectory(
   const TrajectoryMsg & msg, const OdometryMsg & current_kinematics)
 {
-  auto sequence_points = wrap(msg.points);
+  auto sequence_points = wrap_sequence(msg.points);
   m_current_trajectory = msg;
 
   if (sequence_points.size() < 3) {
@@ -411,7 +421,7 @@ LateralMsg MpcLateralController::getInitialControlCommand() const
 
 bool MpcLateralController::isStoppedState() const
 {
-  auto sequence_points = wrap(m_current_trajectory.points);
+  auto sequence_points = wrap_sequence(m_current_trajectory.points);
   // If the nearest index is not found, return false
   if (sequence_points.empty()) {
     return false;
@@ -574,8 +584,8 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
   // TODO(Horibe): update implementation to check trajectory shape around ego vehicle.
   // Now temporally check the goal position.
   for (const auto & trajectory : m_trajectory_buffer) {
-    auto sequence_points = wrap(trajectory.points);
-    auto current_points = wrap(m_current_trajectory.points);
+    auto sequence_points = wrap_sequence(trajectory.points);
+    auto current_points = wrap_sequence(m_current_trajectory.points);
     const auto change_distance = autoware::universe_utils::calcDistance2d(
       sequence_points.back().pose, current_points.back().pose);
     if (change_distance > m_new_traj_end_dist) {
@@ -587,7 +597,7 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
 
 bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
 {
-  auto sequence_points = wrap(traj.points);
+  auto sequence_points = wrap_sequence(traj.points);
   for (const auto & p : sequence_points) {
     if (
       !std::isfinite(p.pose.position.x) || !std::isfinite(p.pose.position.y) ||

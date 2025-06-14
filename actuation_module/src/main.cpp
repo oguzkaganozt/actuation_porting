@@ -1,12 +1,6 @@
 // Copyright (c) 2024-2025, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
-#define COLOR_GREEN "\033[32m"
-#define COLOR_RED "\033[31m"
-#define COLOR_RESET "\033[0m"
-
-#include <iostream>
-#include "common/dds/network_config.hpp"
 #include "common/clock/clock.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
@@ -30,14 +24,6 @@ int main(void)
     //     std::exit(1);
     // }
 
-    // TODO: we are not configuring the network as we are using DHCP and other configurations will be done by cyclonedds
-    // log_info("Configuring Network...\n");
-    // if(configure_network()) {
-    //     log_error("Failed to configure network\n");
-    //     std::exit(1);
-    // }
-    // log_info("Network configured\n");
-
     log_info("Starting Controller Node...\n");
     try
     {
@@ -59,9 +45,10 @@ int main(void)
     log_success("Actuation Safety Island is Live\n");
     log_success("-----------------------------------------\n");
 
-    while (1) {
-        sleep(1);
-    }
+    controller->wait_for_completion();
+
+    log_info("Actuation Safety Island is Shutting Down\n");
+    log_success("-----------------------------------------\n");
 
     return 0;
 }

@@ -14,7 +14,7 @@
 using namespace common::logger;
 
 #define DEFAULT_SEQUENCE_SIZE 128
-#define MAX_SEQUENCE_SIZE 2048
+#define MAX_SEQUENCE_SIZE 8192
 
 /**
  * @file sequence.hpp
@@ -118,54 +118,41 @@ private:
     
     T* sequence;
     bool owns_sequence_;
-    bool is_constructed_successfully_;
     
-    bool needs_auto_initialization(T* seq) const {
-        if (!seq) return false;
+    void check_validity(T* seq) const {
+        if (!seq) {
+            log_error("Detected corrupted sequence: null pointer");
+            std::exit(1);
+        }
+
+        if (seq->_maximum == 0 && seq->_buffer != nullptr) {
+            log_error("Detected corrupted sequence: non-null buffer");
+            std::exit(1);
+        }
         
         if (seq->_maximum > MAX_SEQUENCE_SIZE) {
-            log_warn("Detected corrupted sequence: _maximum=%u exceeds MAX_SEQUENCE_SIZE=%zu", 
+            log_error("Detected corrupted sequence: _maximum=%u exceeds MAX_SEQUENCE_SIZE=%zu", 
                      seq->_maximum, MAX_SEQUENCE_SIZE);
-            return true;
+            std::exit(1);
         }
         
-        if (seq->_length > seq->_maximum && seq->_maximum > 0) {
-            log_warn("Detected corrupted sequence: _length=%u > _maximum=%u", 
+        if (seq->_length > seq->_maximum) {
+            log_error("Detected corrupted sequence: _length=%u > _maximum=%u", 
                      seq->_length, seq->_maximum);
-            return true;
+            std::exit(1);
         }
-        
-        if (seq->_buffer != nullptr && seq->_maximum == 0) {
-            log_warn("Detected corrupted sequence: non-null buffer with zero maximum");
-            return true;
-        }
-        
+
         if (seq->_buffer != nullptr) {
             uintptr_t addr = reinterpret_cast<uintptr_t>(seq->_buffer);
             if (addr > 0x100000000000ULL) {
-                log_warn("Detected corrupted sequence: suspicious buffer address %p", seq->_buffer);
-                return true;
+                log_error("Detected corrupted sequence: suspicious buffer address %p", seq->_buffer);
+                std::exit(1);
             }
         }
-        
-        return false;
-    }
-    
-    void auto_initialize_sequence(T* seq) {
-        if (!seq) return;
-        
-        log_info("Auto-initializing DDS sequence to safe defaults");
-        seq->_buffer = nullptr;
-        seq->_length = 0;
-        seq->_maximum = 0;
-        seq->_release = true;
     }
     
     bool ensure_capacity(size_t required_capacity) {
-        if (!sequence) {
-            log_error("ensure_capacity: Invalid sequence state - null sequence pointer");
-            return false;
-        }
+        check_validity(sequence);
         
         if (!sequence->_buffer) {
             sequence->_length = 0;
@@ -180,7 +167,7 @@ private:
         if (required_capacity > MAX_SEQUENCE_SIZE) {
             log_error("ensure_capacity: Requested capacity %zu exceeds maximum allowed (%zu)", 
                       required_capacity, MAX_SEQUENCE_SIZE);
-            return false;
+            std::exit(1);
         }
         
         size_t new_capacity = std::max(required_capacity, 
@@ -196,7 +183,7 @@ private:
         
         if (!new_buffer) {
             log_error("ensure_capacity: Failed to allocate DDS memory for sequence buffer");
-            return false;
+            std::exit(1);
         }
         
         if (sequence->_buffer && sequence->_length > 0) {
@@ -223,27 +210,17 @@ public:
     using size_type = size_t;
     
     explicit Sequence(T& existing_seq) 
-        : sequence(&existing_seq), owns_sequence_(false), is_constructed_successfully_(true) {
-        
-        if constexpr (!std::is_const_v<T>) {
-            if (sequence && needs_auto_initialization(sequence)) {
-                auto_initialize_sequence(sequence);
-            }
-        } else {
-            if (sequence && needs_auto_initialization(sequence)) {
-                log_warn("Const sequence appears corrupted but cannot be auto-initialized");
-            }
-        }
+        : sequence(&existing_seq), owns_sequence_(false) {
+        check_validity(sequence);
     }
     
     explicit Sequence(size_type initial_capacity = DEFAULT_SEQUENCE_SIZE) 
-        : sequence(nullptr), owns_sequence_(true), is_constructed_successfully_(true) {
+        : sequence(nullptr), owns_sequence_(true) {
         
         sequence = static_cast<T*>(dds_alloc(sizeof(T)));
         if (!sequence) {
             log_error("Failed to allocate DDS sequence structure");
-            is_constructed_successfully_ = false;
-            return;
+            std::exit(1);
         }
         
         sequence->_length = 0;
@@ -254,7 +231,7 @@ public:
         if (initial_capacity > 0) {
             if (!ensure_capacity(initial_capacity)) {
                 log_error("Failed to allocate DDS sequence buffer");
-                is_constructed_successfully_ = false;
+                std::exit(1);
             }
         }
     }
@@ -263,11 +240,9 @@ public:
     Sequence& operator=(const Sequence&) = delete;
     
     Sequence(Sequence&& other) noexcept 
-        : sequence(other.sequence), owns_sequence_(other.owns_sequence_), 
-          is_constructed_successfully_(other.is_constructed_successfully_) {
+        : sequence(other.sequence), owns_sequence_(other.owns_sequence_) {
         other.sequence = nullptr;
         other.owns_sequence_ = false;
-        other.is_constructed_successfully_ = false;
     }
     
     Sequence& operator=(Sequence&& other) noexcept {
@@ -282,10 +257,8 @@ public:
             
             sequence = other.sequence;
             owns_sequence_ = other.owns_sequence_;
-            is_constructed_successfully_ = other.is_constructed_successfully_;
             other.sequence = nullptr;
             other.owns_sequence_ = false;
-            other.is_constructed_successfully_ = false;
         }
         return *this;
     }
@@ -317,85 +290,101 @@ public:
     }
     
     reference at(size_type index) {
-        if (!sequence || !sequence->_buffer) {
-            throw std::runtime_error("Invalid sequence - null buffer");
-        }
+        check_validity(sequence);
+        
         if (index >= sequence->_length) {
-            throw std::out_of_range("Index " + std::to_string(index) + 
-                                  " out of range (size: " + std::to_string(sequence->_length) + ")");
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
     
     const_reference at(size_type index) const {
-        if (!sequence || !sequence->_buffer) {
-            throw std::runtime_error("Invalid sequence - null buffer");
-        }
+        check_validity(sequence);
+        
         if (index >= sequence->_length) {
-            throw std::out_of_range("Index " + std::to_string(index) + 
-                                  " out of range (size: " + std::to_string(sequence->_length) + ")");
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
     
     reference operator[](size_type index) noexcept {
-        if (!sequence || !sequence->_buffer) {
-            static value_type dummy{};
-            return dummy;
+        if (index >= sequence->_length) {
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
     
     const_reference operator[](size_type index) const noexcept {
-        if (!sequence || !sequence->_buffer) {
-            static const value_type dummy{};
-            return dummy;
+        if (index >= sequence->_length) {
+            log_error("Index %u out of range (size: %u)", index, sequence->_length);
+            std::exit(1);
         }
         return sequence->_buffer[index];
     }
     
     reference front() {
-        if (!sequence || !sequence->_buffer || empty()) {
-            throw std::runtime_error("Cannot access front() of empty or invalid sequence");
+        check_validity(sequence);
+        
+        if (empty()) {
+            log_error("Cannot access front() of empty sequence");
+            std::exit(1);
         }
+        
         return sequence->_buffer[0];
     }
     
     const_reference front() const {
-        if (!sequence || !sequence->_buffer || empty()) {
-            throw std::runtime_error("Cannot access front() of empty or invalid sequence");
+        check_validity(sequence);
+        
+        if (empty()) {
+            log_error("Cannot access front() of empty sequence");
+            std::exit(1);
         }
+        
         return sequence->_buffer[0];
     }
     
     reference back() {
-        if (!sequence || !sequence->_buffer || empty()) {
-            throw std::runtime_error("Cannot access back() of empty or invalid sequence");
+        check_validity(sequence);
+        
+        if (empty()) {
+            log_error("Cannot access back() of empty sequence");
+            std::exit(1);
         }
+        
         return sequence->_buffer[sequence->_length - 1];
     }
     
     const_reference back() const {
-        if (!sequence || !sequence->_buffer || empty()) {
-            throw std::runtime_error("Cannot access back() of empty or invalid sequence");
+        check_validity(sequence);
+        
+        if (empty()) {
+            log_error("Cannot access back() of empty sequence");
+            std::exit(1);
         }
+        
         return sequence->_buffer[sequence->_length - 1];
     }
     
     pointer data() noexcept {
-        return sequence ? sequence->_buffer : nullptr;
+        // return sequence ? sequence->_buffer : nullptr;
+        check_validity(sequence);
+        return sequence->_buffer;
     }
     
     const_pointer data() const noexcept {
-        return sequence ? sequence->_buffer : nullptr;
+        // return sequence ? sequence->_buffer : nullptr;
+        check_validity(sequence);
+        return sequence->_buffer;
     }
     
     pointer begin() noexcept { return data(); }
     pointer end() noexcept { return data() + size(); }
     const_pointer begin() const noexcept { return data(); }
     const_pointer end() const noexcept { return data() + size(); }
-    const_pointer cbegin() const noexcept { return begin(); }
-    const_pointer cend() const noexcept { return end(); }
     
     bool reserve(size_type new_capacity) {
         return ensure_capacity(new_capacity);
@@ -408,10 +397,7 @@ public:
     }
     
     bool push_back(const value_type& value) {
-        if (!sequence || !is_constructed_successfully_) {
-            log_error("Cannot push_back to invalid sequence");
-            return false;
-        }
+        check_validity(sequence);
         
         if (!ensure_capacity(size() + 1)) {
             return false;
@@ -422,10 +408,7 @@ public:
     }
     
     bool push_back(value_type&& value) {
-        if (!sequence || !is_constructed_successfully_) {
-            log_error("Cannot push_back to invalid sequence");
-            return false;
-        }
+        check_validity(sequence);
         
         if (!ensure_capacity(size() + 1)) {
             return false;
@@ -436,35 +419,18 @@ public:
     }
     
     void pop_back() {
-        if (empty() || !sequence) {
-            throw std::runtime_error("Cannot pop_back() from empty or invalid sequence");
+        check_validity(sequence);
+        
+        if (empty()) {
+            log_error("Cannot pop_back() from empty sequence");
+            std::exit(1);
         }
         --sequence->_length;
     }
     
-    bool resize(size_type new_size) {
-        if (!sequence || !is_constructed_successfully_) {
-            log_error("Cannot resize invalid sequence");
-            return false;
-        }
-        
-        if (new_size > max_size()) {
-            return false;
-        }
-        
-        if (new_size > capacity() && !ensure_capacity(new_size)) {
-            return false;
-        }
-        
-        for (size_type i = sequence->_length; i < new_size; ++i) {
-            sequence->_buffer[i] = value_type{};
-        }
-        
-        sequence->_length = static_cast<uint32_t>(new_size);
-        return true;
-    }
-    
     bool insert(size_type position, const value_type& value) {
+        check_validity(sequence);
+        
         if (position > size()) {
             return false;
         }
@@ -485,22 +451,15 @@ public:
     T* get_dds_sequence() noexcept { return sequence; }
     const T* get_dds_sequence() const noexcept { return sequence; }
     
-    bool is_valid() const noexcept {
-        return sequence != nullptr && is_constructed_successfully_;
-    }
-    
     void debug_info(const char* name = "Sequence") const {
-        if (!is_valid()) {
-            log_info("%s: Invalid sequence", name);
-            return;
-        }
+        check_validity(sequence);
         log_info("%s: size=%zu, capacity=%zu, release=%s", 
                 name, size(), capacity(), sequence->_release ? "true" : "false");
     }
 };
 
 template<typename T>
-Sequence<T> wrap(T& dds_sequence) {
+Sequence<T> wrap_sequence(T& dds_sequence) {
     return Sequence<T>(dds_sequence);
 }
 

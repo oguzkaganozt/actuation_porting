@@ -36,10 +36,6 @@ using autoware::universe_utils::rad2deg;
 
 MPC::MPC(Node & node)
 {
-  m_debug_frenet_predicted_trajectory_pub = node.create_publisher<TrajectoryMsg>(
-    "~/debug/predicted_trajectory_in_frenet_coordinate", &autoware_planning_msgs_msg_Trajectory_desc);
-  m_debug_resampled_reference_trajectory_pub =
-    node.create_publisher<TrajectoryMsg>("~/debug/resampled_reference_trajectory", &autoware_planning_msgs_msg_Trajectory_desc);
 }
 
 ResultWithReason MPC::calculateMPC(
@@ -64,7 +60,6 @@ ResultWithReason MPC::calculateMPC(
 
   log_debug("-------MPC-4--\n", 0);
 
-
   // calculate initial state of the error dynamics
   const auto x0 = getInitialState(mpc_data);
 
@@ -78,7 +73,6 @@ ResultWithReason MPC::calculateMPC(
   }
 
   log_debug("-------MPC-5--\n", 0);
-  // std::exit(0); // TODO: DEBUG REMOVE
 
   // resample reference trajectory with mpc sampling time
   const double mpc_start_time = mpc_data.nearest_time + m_param.input_delay;
@@ -92,6 +86,7 @@ ResultWithReason MPC::calculateMPC(
       false, std::string("trajectory resampling (") + resample_result.reason + std::string(").")};
   }
 
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   log_debug("-------MPC-6--\n", 0);
 
   // generate mpc matrix : predict equation Xec = Aex * x0 + Bex * Uex + Wex
@@ -135,22 +130,23 @@ ResultWithReason MPC::calculateMPC(
 
   log_debug("-------MPC-11--\n", 0);
 
-  /* calculate predicted trajectory */
-  Eigen::VectorXd initial_state = m_use_delayed_initial_state ? x0_delayed : x0;
-  predicted_trajectory = calculatePredictedTrajectory(
-    mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "world");
+  // TODO: REMOVED FOR SIMPLIFICATION
+  // /* calculate predicted trajectory */
+  // Eigen::VectorXd initial_state = m_use_delayed_initial_state ? x0_delayed : x0;
+  // predicted_trajectory = calculatePredictedTrajectory(
+  //   mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "world");
 
-  log_debug("-------MPC-12--\n", 0);
+  // log_debug("-------MPC-12--\n", 0);
 
-  // Publish predicted trajectories in different coordinates for debugging purposes
-  if (m_publish_debug_trajectories) {
-    // Calculate and publish predicted trajectory in Frenet coordinate
-    auto predicted_trajectory_frenet = calculatePredictedTrajectory(
-      mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "frenet");
-    predicted_trajectory_frenet.header.stamp = Clock::toRosTime(Clock::now());
-    predicted_trajectory_frenet.header.frame_id = "map";
-    m_debug_frenet_predicted_trajectory_pub->publish(predicted_trajectory_frenet);
-  }
+  // // Publish predicted trajectories in different coordinates for debugging purposes
+  // if (m_publish_debug_trajectories) {
+  //   // Calculate and publish predicted trajectory in Frenet coordinate
+  //   auto predicted_trajectory_frenet = calculatePredictedTrajectory(
+  //     mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "frenet");
+  //   predicted_trajectory_frenet.header.stamp = Clock::toRosTime(Clock::now());
+  //   predicted_trajectory_frenet.header.frame_id = "map";
+  //   m_debug_frenet_predicted_trajectory_pub->publish(predicted_trajectory_frenet);
+  // }
 
   log_debug("-------MPC-13--\n", 0);
 
@@ -174,7 +170,7 @@ void MPC::setReferenceTrajectory(
   const TrajectoryMsg & trajectory_msg, const TrajectoryFilteringParam & param,
   const OdometryMsg & current_kinematics)
 {
-  auto sequence_trajectory_msg_points = wrap(trajectory_msg.points);
+  auto sequence_trajectory_msg_points = wrap_sequence(trajectory_msg.points);
   const size_t nearest_seg_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
       sequence_trajectory_msg_points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
@@ -414,7 +410,7 @@ MPCTrajectory MPC::applyVelocityDynamicsFilter(
   log_debug("-------MPC-2-3--\n", 0);
 
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
-  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
   if (sequence_autoware_traj_points.empty()) {
     return input;
   }
@@ -596,6 +592,7 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
 
   const int DIM_U_N = m_param.prediction_horizon * m_vehicle_model_ptr->getDimU();
 
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   log_debug("-------MPC-7-3--\n", 0);
 
   // cost function: 1/2 * Uex' * H * Uex + f' * Uex,  H = B' * C' * Q * C * B + R
@@ -736,7 +733,7 @@ double MPC::getPredictionDeltaTime(
 {
   // Calculate the time min_prediction_length ahead from current_pose
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
-  auto sequence_autoware_traj_points = wrap(autoware_traj.points);
+  auto sequence_autoware_traj_points = wrap_sequence(autoware_traj.points);
   const size_t nearest_idx = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
     sequence_autoware_traj_points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
     ego_nearest_yaw_threshold);
@@ -856,7 +853,8 @@ TrajectoryMsg MPC::calculatePredictedTrajectory(
       mpc_matrix.Aex, mpc_matrix.Bex, mpc_matrix.Cex, mpc_matrix.Wex, x0, Uex, reference_trajectory,
       dt);
   } else {
-    throw std::invalid_argument("Invalid coordinate system specified. Use 'world' or 'frenet'.");
+    log_error("Invalid coordinate system specified. Use 'world' or 'frenet'.");
+    std::exit(1);
   }
 
   // do not over the reference trajectory

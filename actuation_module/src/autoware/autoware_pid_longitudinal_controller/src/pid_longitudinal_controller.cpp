@@ -209,15 +209,6 @@ PidLongitudinalController::PidLongitudinalController(Node & node)
     node.has_parameter("ego_nearest_yaw_threshold")
       ? node.get_parameter<double>("ego_nearest_yaw_threshold")
       : node.declare_parameter<double>("ego_nearest_yaw_threshold");  // [rad]
-
-  // subscriber, publisher
-  m_pub_slope = node.create_publisher<Float32MultiArrayStampedMsg>(
-    "~/output/slope_angle", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
-  // m_pub_debug = node.create_publisher<Float32MultiArrayStampedMsg>(
-  //   "~/output/longitudinal_diagnostic", &tier4_debug_msgs_msg_Float32MultiArrayStamped_desc);
-  m_pub_stop_reason_marker = node.create_publisher<MarkerMsg>(
-    "~/output/stop_reason", &visualization_msgs_msg_Marker_desc);
-
 }
 
 void PidLongitudinalController::setKinematicState(const OdometryMsg & msg)
@@ -243,7 +234,7 @@ void PidLongitudinalController::setTrajectory(const TrajectoryMsg & msg)
     return;
   }
 
-  auto sequence_points = wrap(msg.points);
+  auto sequence_points = wrap_sequence(msg.points);
   if (sequence_points.size() < 2) {
     log_warn_throttle("Unexpected trajectory size < 2. Ignored.");
     return;
@@ -329,7 +320,7 @@ PidLongitudinalController::ControlData PidLongitudinalController::getControlData
     calcInterpolatedTrajPointAndSegment(control_data.interpolated_traj, current_pose);
 
   // Insert the interpolated point
-  auto sequence_points = wrap(control_data.interpolated_traj.points);
+  auto sequence_points = wrap_sequence(control_data.interpolated_traj.points);
   sequence_points.insert(current_interpolated_pose.second + 1, current_interpolated_pose.first);
   control_data.nearest_idx = current_interpolated_pose.second + 1;
   control_data.target_idx = control_data.nearest_idx;
@@ -520,7 +511,7 @@ void PidLongitudinalController::updateControlState(const ControlData & control_d
   // NOTE: due to removeOverlapPoints() in getControlData() m_trajectory and
   // control_data.interpolated_traj have different size.
   // ==========================================================================================
-  auto sequence_points = wrap(control_data.interpolated_traj.points);
+  auto sequence_points = wrap_sequence(control_data.interpolated_traj.points);
   const double current_vel_cmd = std::fabs(
     sequence_points.at(control_data.nearest_idx).longitudinal_velocity_mps);
   const auto emergency_condition = [&]() {
@@ -669,7 +660,7 @@ PidLongitudinalController::Motion PidLongitudinalController::calcCtrlCmd(
 
   // velocity and acceleration command
   //TODO: check wrapping
-  auto sequence_points = wrap(control_data.interpolated_traj.points);
+  auto sequence_points = wrap_sequence(control_data.interpolated_traj.points);
   Motion ctrl_cmd_as_pedal_pos{
     sequence_points.at(target_idx).longitudinal_velocity_mps,
     sequence_points.at(target_idx).acceleration_mps2};
@@ -829,7 +820,7 @@ enum PidLongitudinalController::Shift PidLongitudinalController::getCurrentShift
 {
   constexpr double epsilon = 1e-5;
 
-  auto sequence_points = wrap(control_data.interpolated_traj.points);
+  auto sequence_points = wrap_sequence(control_data.interpolated_traj.points);
   const double target_vel =
     sequence_points.at(control_data.target_idx).longitudinal_velocity_mps;
 
@@ -890,7 +881,7 @@ PidLongitudinalController::Motion PidLongitudinalController::keepBrakeBeforeStop
     return output_motion;
   }
   const auto traj = control_data.interpolated_traj;
-  auto sequence_points = wrap(traj.points);
+  auto sequence_points = wrap_sequence(traj.points);
 
   const auto stop_idx = autoware::motion_utils::searchZeroVelocityIndex(sequence_points);
   if (!stop_idx) {
@@ -920,7 +911,7 @@ std::pair<TrajectoryPointMsg, size_t>
 PidLongitudinalController::calcInterpolatedTrajPointAndSegment(
   const TrajectoryMsg & traj, const PoseMsg & pose) const
 {
-  auto sequence_points = wrap(traj.points);
+  auto sequence_points = wrap_sequence(traj.points);
   if (sequence_points.size() == 1) {
     return std::make_pair(sequence_points.at(0), 0);
   }
@@ -985,7 +976,7 @@ PidLongitudinalController::StateAfterDelay PidLongitudinalController::predictedS
 
 double PidLongitudinalController::applyVelocityFeedback(const ControlData & control_data)
 {
-  auto sequence_points = wrap(control_data.interpolated_traj.points);
+  auto sequence_points = wrap_sequence(control_data.interpolated_traj.points);
   // NOTE: Acceleration command is always positive even if the ego drives backward.
   const double vel_sign = (control_data.shift == Shift::Forward)
                             ? 1.0
@@ -1052,7 +1043,7 @@ void PidLongitudinalController::updatePitchDebugValues(
 
 void PidLongitudinalController::updateDebugVelAcc(const ControlData & control_data)
 {
-  auto sequence_points = wrap(control_data.interpolated_traj.points);
+  auto sequence_points = wrap_sequence(control_data.interpolated_traj.points);
   m_debug_values.setValues(DebugValues::TYPE::CURRENT_VEL, control_data.current_motion.vel);
   m_debug_values.setValues(
     DebugValues::TYPE::TARGET_VEL,

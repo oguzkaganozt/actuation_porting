@@ -11,6 +11,7 @@
 #include <optional>
 #include <pthread.h>
 #include <cstring>
+#include <functional>
 
 // Project headers
 #include "common/dds/dds.hpp"
@@ -44,9 +45,8 @@ public:
      * @brief Construct a new Node object
      * @param node_name Name of the node
      */
-    Node(const std::string& node_name, void* stack_area, size_t stack_size, void* timer_stack_area, size_t timer_stack_size)
+    Node(const std::string& node_name, void* stack_area, size_t stack_size)
     : node_name_(node_name)
-    , param_mutex_(PTHREAD_MUTEX_INITIALIZER)
     , dds_(node_name)
     {
         pthread_attr_init(&main_thread_attr_);
@@ -56,7 +56,7 @@ public:
                       node_name_.c_str(), strerror(ret));
             std::exit(1);
         }
-        timer_ = std::make_unique<Timer>(node_name_, timer_stack_area, timer_stack_size);
+        timer_ = std::make_unique<Timer>(node_name_);
     }
     
     /**
@@ -64,7 +64,6 @@ public:
      */
     ~Node() {
         stop();
-        pthread_mutex_destroy(&param_mutex_);
         pthread_attr_destroy(&main_thread_attr_);
     }
 
@@ -74,6 +73,13 @@ public:
      */
     int spin() {
         return pthread_create(&main_thread_, &main_thread_attr_, main_thread_entry_, this);
+    }
+
+    /**
+     * @brief Wait for the node thread to complete
+     */
+    void wait_for_completion() {
+        pthread_join(main_thread_, nullptr);
     }
     
     /**
@@ -125,21 +131,16 @@ public:
         static_assert(std::is_constructible_v<param_type, ParamT>, 
                      "Parameter type must be one of the supported types in param_type variant");
         
-        pthread_mutex_lock(&param_mutex_);
-        
         auto it = parameters_map_.find(name);
         if (it == parameters_map_.end()) {
             parameters_map_[name] = default_value;
-            pthread_mutex_unlock(&param_mutex_);
             return default_value;
         } else {
             try {
                 ParamT value = std::get<ParamT>(it->second);
-                pthread_mutex_unlock(&param_mutex_);
                 return value;
             } catch (const std::bad_variant_access&) {
                 log_warn("Warning: Parameter '%s' exists with different type. Not overwriting.\n", name.c_str());
-                pthread_mutex_unlock(&param_mutex_);
                 return default_value;
             }
         }
@@ -180,22 +181,17 @@ public:
         static_assert(std::is_constructible_v<param_type, ParamT>, 
                      "Parameter type must be one of the supported types in param_type variant");
         
-        pthread_mutex_lock(&param_mutex_);
-        
         auto it = parameters_map_.find(name);
         if (it != parameters_map_.end()) {
             // Check if the new value's type matches the existing parameter's type
             if (it->second.index() == param_type(value).index()) {
                 it->second = value;
-                pthread_mutex_unlock(&param_mutex_);
                 return true;
             }
             log_warn("%s -> Cannot set parameter '%s' with different type\n", node_name_.c_str(), name.c_str());
-            pthread_mutex_unlock(&param_mutex_);
             return false;
         }
         
-        pthread_mutex_unlock(&param_mutex_);
         return false;
     }
 
@@ -205,9 +201,7 @@ public:
      * @return true if parameter exists, false otherwise
      */
     inline bool has_parameter(const std::string& name) const {
-        pthread_mutex_lock(&param_mutex_);
         bool exists = parameters_map_.find(name) != parameters_map_.end();
-        pthread_mutex_unlock(&param_mutex_);
         return exists;
     }
 
@@ -223,15 +217,14 @@ public:
      * @brief Create a timer
      * @param period_ms Period in milliseconds
      * @param callback Callback function
-     * @param arg Callback argument
      * @return true if timer was created, false otherwise
      */
-    bool create_timer(uint32_t period_ms, void (*callback)(void*), void* arg = nullptr) {
+    bool create_timer(uint32_t period_ms, std::function<void()> callback) {
         if (!timer_) {
             log_error("%s -> Timer object not initialized!\n", node_name_.c_str());
             return false;
         }
-        return timer_->start(period_ms, callback, arg);
+        return timer_->start(period_ms, callback);
     }
 
     /**
@@ -252,7 +245,6 @@ private:
 
     // Parameter storage
     std::unordered_map<std::string, param_type> parameters_map_;
-    mutable pthread_mutex_t param_mutex_;
 
     // DDS
     DDS dds_;
@@ -268,30 +260,25 @@ private:
         Node* node = static_cast<Node*>(arg);
 
         while (1) {
-            if (node->timer_) { // Check and execute the timer callback
-                if (node->timer_->is_ready()) {
-                    node->timer_->execute_callback();
-                }
+            if (node->timer_) {
+                node->timer_->execute();
             }
 
             if (node->dds_.has_subscriptions()) {   // Check and execute the subscriptions callbacks
                 node->dds_.execute_subscriptions();
             }
-            usleep(1000);   // 1ms, if nothing else yields
+            usleep(3000);   // 1ms, if nothing else yields  // TODO: TUNE THIS
         }
         return nullptr; // Should never reach here
     }
 
     std::optional<param_type> search_parameter_(const std::string& name) const {
-        pthread_mutex_lock(&param_mutex_);
-        
         auto it = parameters_map_.find(name);
         std::optional<param_type> result = std::nullopt;
         if (it != parameters_map_.end()) {
             result = it->second;
         }
         
-        pthread_mutex_unlock(&param_mutex_);
         return result;
     }
 };

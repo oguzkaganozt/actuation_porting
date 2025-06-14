@@ -53,6 +53,8 @@ std::vector<double> splineByAkima(
 // ```
 class SplineInterpolation
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 public:
   SplineInterpolation() = default;
   SplineInterpolation(

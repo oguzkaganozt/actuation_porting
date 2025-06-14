@@ -19,10 +19,8 @@ using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
 // Stack sizes for node and timer threads
 #if defined(NATIVE_SIM)
 static unsigned char node_stack[CONFIG_THREAD_STACK_SIZE];
-static unsigned char timer_stack[CONFIG_THREAD_STACK_SIZE];
 #else
 static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
-static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 #endif
 
@@ -33,60 +31,60 @@ static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
 */
 static void handle_steering_report(const SteeringReportMsg* msg, void* arg) {
     log_info("\n------ STEERING REPORT ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg->stamp));
-    log_info("Steering tire angle: %lf\n", msg->steering_tire_angle);
+    log_info("Timestamp: %f\n", Clock::toDouble(msg->stamp));
+    // log_info("Steering tire angle: %lf\n", msg->steering_tire_angle);
     log_info("-------------------------------\n");
 }
 
 static void handle_operation_mode_state(const OperationModeStateMsg* msg, void* arg) {
     log_info("\n------ OPERATION MODE STATE ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg->stamp));
-    log_info("Mode: %d\n", msg->mode);
-    log_info("Autoware control enabled: %d\n", msg->is_autoware_control_enabled);
-    log_info("In transition: %d\n", msg->is_in_transition);
+    log_info("Timestamp: %f\n", Clock::toDouble(msg->stamp));
+    // log_info("Mode: %d\n", msg->mode);
+    // log_info("Autoware control enabled: %d\n", msg->is_autoware_control_enabled);
+    // log_info("In transition: %d\n", msg->is_in_transition);
     log_info("-------------------------------\n");
 }
 
 static void handle_odometry(const OdometryMsg* msg, void* arg) {
     log_info("\n------ ODOMETRY ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg->header.stamp));
-    log_info("Position: %lf, %lf, %lf\n", msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
-    log_info("Linear Twist: %lf, %lf, %lf\n", msg->twist.twist.linear.x, msg->twist.twist.linear.y, msg->twist.twist.linear.z);
+    log_info("Timestamp: %f\n", Clock::toDouble(msg->header.stamp));
+    // log_info("Position: %lf, %lf, %lf\n", msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
+    // log_info("Linear Twist: %lf, %lf, %lf\n", msg->twist.twist.linear.x, msg->twist.twist.linear.y, msg->twist.twist.linear.z);
     log_info("-------------------------------\n");
 }
 
 static void handle_acceleration(const AccelerationMsg* msg, void* arg) {
     log_info("\n------ ACCELERATION ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg->header.stamp));
-    log_info("Linear acceleration: %lf, %lf, %lf\n", msg->accel.accel.linear.x, msg->accel.accel.linear.y, msg->accel.accel.linear.z);
-    log_info("Angular acceleration: %lf, %lf, %lf\n", msg->accel.accel.angular.x, msg->accel.accel.angular.y, msg->accel.accel.angular.z);
+    log_info("Timestamp: %f\n", Clock::toDouble(msg->header.stamp));
+    // log_info("Linear acceleration: %lf, %lf, %lf\n", msg->accel.accel.linear.x, msg->accel.accel.linear.y, msg->accel.accel.linear.z);
+    // log_info("Angular acceleration: %lf, %lf, %lf\n", msg->accel.accel.angular.x, msg->accel.accel.angular.y, msg->accel.accel.angular.z);
     log_info("-------------------------------\n");
 }
 
 static void handle_trajectory(const TrajectoryMsg* msg, void* arg) {
-    log_info("\n------ TRAJECTORY ------\n");
-    log_info("Timestamp: %d\n", Clock::toDouble(msg->header.stamp));
-    log_info("Trajectory size: %d\n", msg->points._length);
-    auto points = wrap(msg->points);
-    size_t count = 0;
-    for (auto point : points) {
-        log_info("--------------------------------\n");
-        if (count >= 10) break;
-        log_info("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
-        log_info("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
-        log_info("Accelleration: %lf\n", point.acceleration_mps2);
-        log_info("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
-        count++;
-    }
-    if (points.size() > 10) {
-        log_info("... and %zu more points\n", points.size() - 10);
-    }
-    log_info("-------------------------------\n");
+    static int count = 0;
+    log_success("\n------ TRAJECTORY IDX: %d ------\n", count++);
+    log_success("Timestamp: %f\n", Clock::toDouble(msg->header.stamp));
+    log_success("Trajectory size: %d\n", msg->points._length);
+    // auto points = wrap(msg->points);
+    // size_t count = 0;
+    // for (auto point : points) {
+    //     log_info("--------------------------------\n");
+    //     if (count >= 10) break;
+    //     log_info("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
+    //     log_info("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
+    //     log_info("Accelleration: %lf\n", point.acceleration_mps2);
+    //     log_info("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
+    //     count++;
+    // }
+    // if (points.size() > 10) {
+    //     log_info("... and %zu more points\n", points.size() - 10);
+    // }
+    log_success("-------------------------------\n");
 }
 
 
-static void callbackTimer(void* arg) {
-    Node* node = static_cast<Node*>(arg);
+static void callbackTimer() {
     log_info("Callback timer\n");
 }
 
@@ -98,7 +96,7 @@ int main(void) {
     sleep(5);
 
     // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
-    // // Setting time using SNTP
+    // Setting time using SNTP
     // if (Clock::init_clock_via_sntp() < 0) {
     //     log_error("Failed to set time using SNTP\n");
     // }
@@ -107,10 +105,10 @@ int main(void) {
     // }
     
     // Create a node
-    Node node("dds_test_sub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
+    Node node("dds_test_sub", node_stack, STACK_SIZE);
 
     // Create test timer
-    node.create_timer(500, callbackTimer, &node);
+    node.create_timer(500, std::bind(&callbackTimer));
 
     // Create subscribers
     node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",

@@ -39,7 +39,7 @@ set(external_project_cxxflags "${CXXincludes} ${CXXsystem_includes} ${CXXoptions
 # cmake derives the C++ compiler from the path to the C compiler.
 set(CMAKE_ARGS
     "-DROS_DISTRO=humble"
-    "-DCMAKE_BUILD_TYPE=Debug"
+    "-DCMAKE_BUILD_TYPE=Release"  # TODO: Change to Debug when needed
     "-DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install"
     "-DBUILD_TESTING=OFF"
     "-DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY"
@@ -91,6 +91,15 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 if(${ZEPHYR_TARGET} STREQUAL "native_sim")
   set(CycloneDDS_INCLUDE_DIR "/opt/ros/humble/include")
 endif()
+
+# TODO: Check if these are needed
+# target_compile_definitions(app PRIVATE
+#   EIGEN_DONT_VECTORIZE
+#   EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+#   # EIGEN_MAX_ALIGN_BYTES=0
+#   EIGEN_DONT_ALIGN
+#   EIGEN_DONT_ALIGN_STATICALLY
+# )
 
 target_include_directories(app PRIVATE
   include

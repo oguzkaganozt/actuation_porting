@@ -1,10 +1,4 @@
-# PRIMARY
-
-*. processData, callbackTimerControl, mergeLatLonHorizon check
-*. Use dds_alloc within sequence wrapper to remove duality with malloc vs dds_alloc, even better we can use k_malloc and k_free both within app and dds -> https://cyclonedds.io/docs/cyclonedds/latest/config/allocation-config.html
-*. Check TODOs
-
-## IF ANYTHING IS NOT WORKING AS EXPECTED
+# IF ANYTHING IS NOT WORKING AS EXPECTED
 
 - subscribers, publishers ve timers
 - check default values of parameters
@@ -19,7 +13,7 @@
 - Try with SMP enabled
 - Validate side by side all nodes with Autoware original code
 
-### Key points of porting
+## Key points of porting
 
 1. We dont have boost, rclcpp, osqp, tf2 or any other dependencies installed, except for eigen3, cyclonedds, and actuation_msgs.
 2. We need to use C equivalent messages of CPP messages.

@@ -27,7 +27,7 @@ namespace longitudinal_utils
 
 bool isValidTrajectory(const TrajectoryMsg & traj)
 {
-  auto sequence_points = wrap(traj.points);
+  auto sequence_points = wrap_sequence(traj.points);
   for (const auto & p : sequence_points) {
     if (
       !isfinite(p.pose.position.x) || !isfinite(p.pose.position.y) ||
@@ -51,7 +51,7 @@ bool isValidTrajectory(const TrajectoryMsg & traj)
 double calcStopDistance(
   const PoseMsg & current_pose, const TrajectoryMsg & traj, const double max_dist, const double max_yaw)
 {
-  auto sequence_points = wrap(traj.points);
+  auto sequence_points = wrap_sequence(traj.points);
   const auto stop_idx_opt = autoware::motion_utils::searchZeroVelocityIndex(sequence_points);
 
   const size_t end_idx = stop_idx_opt ? *stop_idx_opt : sequence_points.size() - 1;
@@ -95,7 +95,7 @@ double getPitchByTraj(
   const TrajectoryMsg & trajectory, const size_t start_idx, const double wheel_base)
 {
   // cannot calculate pitch
-  auto sequence_points = wrap(trajectory.points);
+  auto sequence_points = wrap_sequence(trajectory.points);
   if (sequence_points.size() <= 1) {
     return 0.0;
   }
@@ -174,7 +174,7 @@ PoseMsg findTrajectoryPoseAfterDistance(
   const TrajectoryMsg & trajectory)
 {
   double remain_dist = distance;
-  auto sequence_points = wrap(trajectory.points);
+  auto sequence_points = wrap_sequence(trajectory.points);
   PoseMsg p = sequence_points.back().pose;
 
   for (size_t i = src_idx; i < sequence_points.size() - 1; ++i) {
