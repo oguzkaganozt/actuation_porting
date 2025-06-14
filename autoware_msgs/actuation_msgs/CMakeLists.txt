@@ -22,18 +22,6 @@ project(actuation_msgs)
 find_package(autoware_cmake REQUIRED)
 autoware_package()
 
-# Fix message includes in msgs
-execute_process(
-    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix_messages.sh ${CMAKE_CURRENT_SOURCE_DIR}/msg
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    RESULT_VARIABLE SCRIPT_RESULT
-)
-
-# Check if script executed successfully
-if(NOT SCRIPT_RESULT EQUAL 0)
-    message(FATAL_ERROR "fix_messages.sh script failed with exit code: ${SCRIPT_RESULT}")
-endif()
-
 # idlc is a host tool, and doesn't care about the architecture of the target platform.
 # Prevent cmake from checking the architecture by temporarily unsetting CMAKE_SIZEOF_VOID_P.
 set(TMP_CMAKE_SIZEOF_VOID_P ${CMAKE_SIZEOF_VOID_P})
