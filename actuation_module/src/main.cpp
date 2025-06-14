@@ -30,14 +30,6 @@ int main(void)
     //     std::exit(1);
     // }
 
-    // TODO: we are not configuring the network as we are using DHCP and other configurations will be done by cyclonedds
-    // log_info("Configuring Network...\n");
-    // if(configure_network()) {
-    //     log_error("Failed to configure network\n");
-    //     std::exit(1);
-    // }
-    // log_info("Network configured\n");
-
     log_info("Starting Controller Node...\n");
     try
     {
