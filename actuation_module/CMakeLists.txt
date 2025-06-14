@@ -45,12 +45,12 @@ set(CMAKE_ARGS
 
 ### BUILD ACTUATION MESSAGES ###
 externalproject_add(autoware_cmake_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../autoware_packages/autoware_cmake
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../autoware_msgs/autoware_cmake
   CMAKE_ARGS ${CMAKE_ARGS}
 )
 externalproject_add(actuation_msgs_pkg
   DEPENDS autoware_cmake_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../autoware_packages/actuation_msgs
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../autoware_msgs/actuation_msgs
   CMAKE_ARGS ${CMAKE_ARGS}
 )
 add_dependencies(app actuation_msgs_pkg)
