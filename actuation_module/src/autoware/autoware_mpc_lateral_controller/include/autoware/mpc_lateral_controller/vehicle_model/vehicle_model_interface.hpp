@@ -17,7 +17,6 @@
 
 #include "autoware/mpc_lateral_controller/mpc_trajectory.hpp"
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 
 #include <string>

@@ -83,7 +83,7 @@ message("=== Build Summary ===")
 message("App sources: ${APP_SOURCES}")
 message("App headers: ${APP_INCLUDE_DIRS}")
 
-# TODO: Check if these are needed
+# TODO: Eigen fine tuning settings for possible memory alignment issues
 # target_compile_definitions(app PRIVATE
 #   EIGEN_DONT_VECTORIZE
 #   EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
@@ -91,6 +91,11 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 #   EIGEN_DONT_ALIGN
 #   EIGEN_DONT_ALIGN_STATICALLY
 # )
+
+# TODO: we dont have fabsl in zephyr, so we need to define it here
+target_compile_options(app PRIVATE 
+  "-Dfabsl(x)=((long double)fabs((double)(x)))"
+)
 
 target_include_directories(app PRIVATE
   include

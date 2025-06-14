@@ -22,7 +22,6 @@ using namespace common::logger;
 // Libs
 #include <string>
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Geometry>
 
 namespace autoware::universe_utils

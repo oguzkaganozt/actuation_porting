@@ -32,7 +32,6 @@
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Geometry>
 
 // Msgs

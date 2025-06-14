@@ -18,7 +18,6 @@
 
 // Libs
 #define EIGEN_MPL2_ONLY
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 

@@ -24,7 +24,6 @@
 #include "autoware/interpolation/interpolation_utils.hpp"
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-#define fabsl(x) fabs(x)  //TODO:Check compatibility
 #include <Eigen/Core>
 
 namespace autoware::interpolation
