@@ -1,12 +1,6 @@
 // Copyright (c) 2024-2025, Arm Limited.
 // SPDX-License-Identifier: Apache-2.0
 
-#define COLOR_GREEN "\033[32m"
-#define COLOR_RED "\033[31m"
-#define COLOR_RESET "\033[0m"
-
-#include <iostream>
-#include "common/dds/network_config.hpp"
 #include "common/clock/clock.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
