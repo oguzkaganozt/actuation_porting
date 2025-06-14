@@ -15,9 +15,6 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LONGITUDINAL_CONTROLLER_BASE_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__LONGITUDINAL_CONTROLLER_BASE_HPP_
 
-// #define EIGEN_MAX_STATIC_ALIGN_BYTES 0
-#define EIGEN_DONT_VECTORIZE
-
 #include "autoware/trajectory_follower_base/control_horizon.hpp"
 #include "autoware/trajectory_follower_base/input_data.hpp"
 #include "autoware/trajectory_follower_base/sync_data.hpp"
