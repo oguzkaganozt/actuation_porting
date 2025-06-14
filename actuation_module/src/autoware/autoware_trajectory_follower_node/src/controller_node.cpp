@@ -256,7 +256,6 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
 void Controller::callbackTimerControl()
 {
   log_debug("Timer control callback\n");
-  // return;
 
   // 1. create input data
   const auto input_data = createInputData();
@@ -290,20 +289,22 @@ void Controller::callbackTimerControl()
 
   publishProcessingTime(stop_watch_.toc("lateral"), pub_processing_time_lat_ms_);
 
-  // controller->stop_watch_.tic("longitudinal");
-  // const auto lon_out = controller->longitudinal_controller_->run(*input_data);
+  // stop_watch_.tic("longitudinal");
+  // const auto lon_out = longitudinal_controller_->run(*input_data);
   // log_debug("Longitudinal controller ran\n");
-  // controller->stop_watch_.toc("longitudinal");
-  // controller->publishProcessingTime(controller->stop_watch_.toc("longitudinal"), controller->pub_processing_time_lon_ms_);
+  // stop_watch_.toc("longitudinal");
+  // log_debug("Longitudinal controller elapsed time: %f\n", stop_watch_.toc("longitudinal"));
+
+  // publishProcessingTime(stop_watch_.toc("longitudinal"), pub_processing_time_lon_ms_);
 
   log_debug("Controllers ran\n");
 
   // 4. sync with each other controllers
-  // controller->longitudinal_controller_->sync(lat_out.sync_data);
-  // controller->lateral_controller_->sync(lon_out.sync_data);
+  // longitudinal_controller_->sync(lat_out.sync_data);
+  // lateral_controller_->sync(lon_out.sync_data);
 
   // TODO(Horibe): Think specification. This comes from the old implementation.
-  // if (controller->isTimeOut(lon_out, lat_out)) return;
+  // if (isTimeOut(lon_out, lat_out)) return;
 
   // 5. publish control command
   ControlMsg out;

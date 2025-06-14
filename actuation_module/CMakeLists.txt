@@ -92,7 +92,7 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 #   EIGEN_DONT_ALIGN_STATICALLY
 # )
 
-# TODO: we dont have fabsl in zephyr, so we need to define it here
+# TODO: we dont have fabsl in zephyr, so we provide a substitute for eigen
 target_compile_options(app PRIVATE 
   "-Dfabsl(x)=((long double)fabs((double)(x)))"
 )
