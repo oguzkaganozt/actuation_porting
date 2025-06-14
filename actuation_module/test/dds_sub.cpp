@@ -1,20 +1,8 @@
 #include "common/node/node.hpp"
 #include "common/clock/clock.hpp"
-#include "common/dds/sequence.hpp"
 #include "common/logger/logger.hpp"
+#include "common/dds/messages.hpp"
 using namespace common::logger;
-
-// Msgs
-#include "SteeringReport.h"
-#include "Trajectory.h"
-#include "Odometry.h"
-#include "AccelWithCovarianceStamped.h"
-#include "OperationModeState.h"
-using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
-using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
-using OdometryMsg = nav_msgs_msg_Odometry;
-using AccelerationMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
-using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
 
 // Stack sizes for node and timer threads
 static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
@@ -57,11 +45,12 @@ static void handle_acceleration(const AccelerationMsg* msg, void* arg) {
     log_info("-------------------------------\n");
 }
 
-static void handle_trajectory(const TrajectoryMsg* msg, void* arg) {
+static void handle_trajectory(const TrajectoryMsg_Raw* msg, void* arg) {
     static int count = 0;
-    log_success("\n------ TRAJECTORY IDX: %d ------\n", count++);
-    log_success("Timestamp: %f\n", Clock::toDouble(msg->header.stamp));
-    log_success("Trajectory size: %d\n", msg->points._length);
+    TrajectoryMsg trajectory_msg(msg);  // Convert the raw DDS sequence to a vector
+    log_success("\n------ TRAJECTORY --IDX: %d ------\n", count++);
+    log_success("Timestamp: %f\n", Clock::toDouble(trajectory_msg.header.stamp));
+    log_success("Trajectory size: %d\n", trajectory_msg.points.size());
     // auto points = wrap(msg->points);
     // size_t count = 0;
     // for (auto point : points) {
@@ -110,7 +99,7 @@ int main(void) {
     node.create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
                                                                 &autoware_vehicle_msgs_msg_SteeringReport_desc,
                                                                 handle_steering_report, &node);
-    node.create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+    node.create_subscription<TrajectoryMsg_Raw>("/planning/scenario_planning/trajectory",
                                                                 &autoware_planning_msgs_msg_Trajectory_desc,
                                                                 handle_trajectory, &node);
     node.create_subscription<OdometryMsg>("/localization/kinematic_state",

@@ -18,12 +18,9 @@
 #include <vector>
 
 #include "autoware/interpolation/interpolation_utils.hpp"
+#include "common/dds/messages.hpp"
 
 #include <Eigen/Geometry>
-
-// Msgs
-#include "Quaternion.h"
-using QuaternionMsg = geometry_msgs_msg_Quaternion;
 
 namespace autoware::interpolation
 {

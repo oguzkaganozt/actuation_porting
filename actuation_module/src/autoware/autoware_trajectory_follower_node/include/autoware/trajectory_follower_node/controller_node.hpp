@@ -31,31 +31,7 @@
 #include <vector>
 
 #include "common/node/node.hpp"
-
-//Msgs
-#include "Control.h"
-#include "Longitudinal.h"
-#include "Trajectory.h"
-#include "AccelStamped.h"
-#include "AccelWithCovarianceStamped.h"
-#include "PoseStamped.h"
-#include "Odometry.h"
-#include "MarkerArray.h"
-#include "Float64Stamped.h"
-#include "OperationModeState.h"
-#include "SteeringReport.h"
-#include "TrajectoryPoint.h"
-#include "OperationModeState.h"
-using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
-using Float64StampedMsg = tier4_debug_msgs_msg_Float64Stamped;
-using MarkerArrayMsg = visualization_msgs_msg_MarkerArray;
-using ControlMsg = autoware_control_msgs_msg_Control;
-using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
-using OdometryMsg = nav_msgs_msg_Odometry;
-using SteeringReportMsg = autoware_vehicle_msgs_msg_SteeringReport;
-using AccelWithCovarianceStampedMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
-using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
-using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control
 {
@@ -90,7 +66,7 @@ private:
   static void callbackOperationModeState(const OperationModeStateMsg* msg, void* arg);
   static void callbackOdometry(const OdometryMsg* msg, void* arg);
   static void callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, void* arg);
-  static void callbackTrajectory(const TrajectoryMsg* msg, void* arg);
+  static void callbackTrajectory(const TrajectoryMsg_Raw* msg, void* arg);
 
   // Current Data
   TrajectoryMsg current_trajectory_;

@@ -30,16 +30,8 @@
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
 
 #include "common/logger/logger.hpp"
+#include "common/dds/messages.hpp"
 using namespace common::logger;
-
-// Msgs
-#include "OperationModeState.h"
-using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
-#define OPERATION_MODE_STATE_UNKNOWN autoware_adapi_v1_msgs_msg_OperationModeState_Constants_UNKNOWN
-#define OPERATION_MODE_STATE_STOP autoware_adapi_v1_msgs_msg_OperationModeState_Constants_STOP
-#define OPERATION_MODE_STATE_AUTONOMOUS autoware_adapi_v1_msgs_msg_OperationModeState_Constants_AUTONOMOUS
-#define OPERATION_MODE_STATE_LOCAL autoware_adapi_v1_msgs_msg_OperationModeState_Constants_LOCAL
-#define OPERATION_MODE_STATE_REMOTE autoware_adapi_v1_msgs_msg_OperationModeState_Constants_REMOTE
 
 namespace autoware::motion::control::mpc_lateral_controller
 {
@@ -371,10 +363,9 @@ bool MpcLateralController::isReady(const trajectory_follower::InputData & input_
 void MpcLateralController::setTrajectory(
   const TrajectoryMsg & msg, const OdometryMsg & current_kinematics)
 {
-  auto sequence_points = wrap_sequence(msg.points);
   m_current_trajectory = msg;
 
-  if (sequence_points.size() < 3) {
+  if (msg.points.size() < 3) {
     log_error("MPC: received path size is < 3, not enough.");
     return;
   }
@@ -421,9 +412,8 @@ LateralMsg MpcLateralController::getInitialControlCommand() const
 
 bool MpcLateralController::isStoppedState() const
 {
-  auto sequence_points = wrap_sequence(m_current_trajectory.points);
   // If the nearest index is not found, return false
-  if (sequence_points.empty()) {
+  if (m_current_trajectory.points.empty()) {
     return false;
   }
 
@@ -432,11 +422,11 @@ bool MpcLateralController::isStoppedState() const
   // control was turned off when approaching/exceeding the stop line on a curve or
   // emergency stop situation and it caused large tracking error.
   const size_t nearest = autoware::motion_utils::findFirstNearestIndexWithSoftConstraints(
-    sequence_points, m_current_kinematic_state.pose.pose, m_ego_nearest_dist_threshold,
+    m_current_trajectory.points, m_current_kinematic_state.pose.pose, m_ego_nearest_dist_threshold,
     m_ego_nearest_yaw_threshold);
 
   const double current_vel = m_current_kinematic_state.twist.twist.linear.x;
-  const double target_vel = sequence_points.at(nearest).longitudinal_velocity_mps;
+  const double target_vel = m_current_trajectory.points.at(nearest).longitudinal_velocity_mps;
 
   const auto latest_published_cmd = m_ctrl_cmd_prev;  // use prev_cmd as a latest published command
   if (m_keep_steer_control_until_converged && !isSteerConverged(latest_published_cmd)) {
@@ -584,10 +574,8 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
   // TODO(Horibe): update implementation to check trajectory shape around ego vehicle.
   // Now temporally check the goal position.
   for (const auto & trajectory : m_trajectory_buffer) {
-    auto sequence_points = wrap_sequence(trajectory.points);
-    auto current_points = wrap_sequence(m_current_trajectory.points);
     const auto change_distance = autoware::universe_utils::calcDistance2d(
-      sequence_points.back().pose, current_points.back().pose);
+      trajectory.points.back().pose, m_current_trajectory.points.back().pose);
     if (change_distance > m_new_traj_end_dist) {
       return true;
     }
@@ -597,8 +585,7 @@ bool MpcLateralController::isTrajectoryShapeChanged() const
 
 bool MpcLateralController::isValidTrajectory(const TrajectoryMsg & traj) const
 {
-  auto sequence_points = wrap_sequence(traj.points);
-  for (const auto & p : sequence_points) {
+  for (const auto & p : traj.points) {
     if (
       !std::isfinite(p.pose.position.x) || !std::isfinite(p.pose.position.y) ||
       !std::isfinite(p.pose.orientation.w) || !std::isfinite(p.pose.orientation.x) ||

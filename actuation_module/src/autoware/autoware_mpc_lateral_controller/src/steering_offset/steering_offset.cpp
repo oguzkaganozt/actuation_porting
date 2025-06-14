@@ -18,9 +18,7 @@
 #include <iostream>
 #include <numeric>
 
-// Msgs
-#include "Twist.h"
-using TwistMsg = geometry_msgs_msg_Twist;
+#include "common/dds/messages.hpp"
 
 SteeringOffsetEstimator::SteeringOffsetEstimator(
   double wheelbase, double average_num, double vel_thres, double steer_thres, double offset_limit)

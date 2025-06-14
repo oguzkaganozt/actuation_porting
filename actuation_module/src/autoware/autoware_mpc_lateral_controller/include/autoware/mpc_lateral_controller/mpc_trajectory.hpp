@@ -20,12 +20,7 @@
 #include <iostream>
 #include <vector>
 #include "common/clock/clock.hpp"
-
-//Msgs
-#include "Point.h"
-#include "TrajectoryPoint.h"
-using PointMsg = geometry_msgs_msg_Point;
-using TrajectoryPointMsg = autoware_planning_msgs_msg_TrajectoryPoint;
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {

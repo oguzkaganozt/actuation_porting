@@ -21,7 +21,6 @@
 #include "autoware/pid_longitudinal_controller/pid.hpp"
 #include "autoware/pid_longitudinal_controller/smooth_stop.hpp"
 #include "autoware/trajectory_follower_base/longitudinal_controller_base.hpp"
-#include "autoware/universe_utils/ros/marker_helper.hpp"
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
 
 #include <deque>
@@ -35,27 +34,7 @@
 #include <Eigen/Geometry>
 
 #include "common/clock/clock.hpp"
-
-// Msgs
-#include "Trajectory.h"
-#include "OperationModeState.h"
-#include "Marker.h"
-#include "Odometry.h"
-#include "Longitudinal.h"
-#include "Float32MultiArrayStamped.h"
-#include "PoseStamped.h"
-using TrajectoryMsg = autoware_planning_msgs_msg_Trajectory;
-using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
-using MarkerMsg = visualization_msgs_msg_Marker;
-using OdometryMsg = nav_msgs_msg_Odometry;
-using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
-using Float32MultiArrayStampedMsg = tier4_debug_msgs_msg_Float32MultiArrayStamped;
-using PoseStampedMsg = geometry_msgs_msg_PoseStamped;
-#define OPERATION_MODE_STATE_UNKNOWN autoware_adapi_v1_msgs_msg_OperationModeState_Constants_UNKNOWN
-#define OPERATION_MODE_STATE_STOP autoware_adapi_v1_msgs_msg_OperationModeState_Constants_STOP
-#define OPERATION_MODE_STATE_AUTONOMOUS autoware_adapi_v1_msgs_msg_OperationModeState_Constants_AUTONOMOUS
-#define OPERATION_MODE_STATE_LOCAL autoware_adapi_v1_msgs_msg_OperationModeState_Constants_LOCAL
-#define OPERATION_MODE_STATE_REMOTE autoware_adapi_v1_msgs_msg_OperationModeState_Constants_REMOTE
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {
@@ -230,9 +209,15 @@ private:
   // debug values
   DebugValues m_debug_values;
 
+  struct DiagnosticData
+  {
+    double trans_deviation{0.0};  // translation deviation between nearest point and current_pose
+    double rot_deviation{0.0};    // rotation deviation between nearest point and current_pose
+  };
+  DiagnosticData m_diagnostic_data;
+
   std::optional<bool> m_prev_keep_stopped_condition{std::nullopt};
 
-  // TODO: check clock::now() validity
   double m_last_running_time{Clock::now()};
 
   struct ResultWithReason

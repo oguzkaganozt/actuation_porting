@@ -19,9 +19,7 @@
 #include "autoware/trajectory_follower_base/input_data.hpp"
 #include "autoware/trajectory_follower_base/sync_data.hpp"
 
-// Msgs
-#include "Longitudinal.h"
-using LongitudinalMsg = autoware_control_msgs_msg_Longitudinal;
+#include "common/dds/messages.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {

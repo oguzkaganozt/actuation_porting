@@ -14,11 +14,10 @@
 // limitations under the License.
 
 #include "autoware/trajectory_follower_node/controller_node.hpp"
-
 #include "autoware/mpc_lateral_controller/mpc_lateral_controller.hpp"
 #include "autoware/pid_longitudinal_controller/pid_longitudinal_controller.hpp"
-#include "autoware/universe_utils/ros/marker_helper.hpp"
 #include <autoware/trajectory_follower_base/lateral_controller_base.hpp>
+
 #include "common/logger/logger.hpp"
 #include "common/clock/clock.hpp"
 using namespace common::logger;
@@ -30,7 +29,7 @@ using namespace common::logger;
 #include <utility>
 #include <vector>
 
-// static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE)  __aligned(4);
+// static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE)  __aligned(4);  // TODO: may be needed for possible eigen memory issues
 static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
 
@@ -81,7 +80,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
   auto subscriber_steering_status = create_subscription<SteeringReportMsg>("/vehicle/status/steering_status",
                                                               &autoware_vehicle_msgs_msg_SteeringReport_desc,
                                                               callbackSteeringStatus, this);
-  auto subscriber_trajectory = create_subscription<TrajectoryMsg>("/planning/scenario_planning/trajectory",
+  auto subscriber_trajectory = create_subscription<TrajectoryMsg_Raw>("/planning/scenario_planning/trajectory",
                                                               &autoware_planning_msgs_msg_Trajectory_desc,
                                                               callbackTrajectory, this);
   auto subscriber_odometry = create_subscription<OdometryMsg>("/localization/kinematic_state",
@@ -96,11 +95,11 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
     
   // Publishers
   control_cmd_pub_ = create_publisher<ControlMsg>(
-    "~/output/control_cmd", &autoware_control_msgs_msg_Control_desc);
+    "/control/control_cmd", &autoware_control_msgs_msg_Control_desc);
   pub_processing_time_lat_ms_ =
-    create_publisher<Float64StampedMsg>("~/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+    create_publisher<Float64StampedMsg>("/control/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
   pub_processing_time_lon_ms_ =
-    create_publisher<Float64StampedMsg>("~/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+    create_publisher<Float64StampedMsg>("/control/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
 }
 
 // SUBSCRIBER CALLBACKS
@@ -160,26 +159,16 @@ void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, 
   controller->has_accel_ = true;
 }
 
-void Controller::callbackTrajectory(const TrajectoryMsg* msg, void* arg) {
+void Controller::callbackTrajectory(const TrajectoryMsg_Raw* msg, void* arg) {
   static int count = 0;
   log_debug("-------TRAJECTORY----IDX %d----\n", count++);
   log_debug("Timestamp: %f\n", Clock::toDouble(msg->header.stamp));
   log_debug("Trajectory size: %u\n", msg->points._length);
   log_debug("-------------------------------\n");
 
-  if (msg->points._length > 4000) {
-    log_warn("Trajectory size is too large: %u\n", msg->points._length);
-    return;
-  }
-
-  if (msg->points._maximum > 200000) {
-    log_warn("Trajectory maximum is too large: %u\n", msg->points._maximum);
-    return;
-  }
-
   // Copy the data instead of storing the pointer
   Controller* controller = static_cast<Controller*>(arg);
-  controller->current_trajectory_ = *msg;  // Copy the entire message
+  controller->current_trajectory_ = TrajectoryMsg(msg);  // Copy the entire message
   controller->has_trajectory_ = true;
 }
 
@@ -299,8 +288,7 @@ void Controller::callbackTimerControl()
   log_debug("Lateral steering tire rotation rate: %f\n", lat_out.control_cmd.steering_tire_rotation_rate);
   log_debug("Lateral is defined steering tire rotation rate: %s\n", lat_out.control_cmd.is_defined_steering_tire_rotation_rate ? "true" : "false");
 
-  // controller->stop_watch_.toc("lateral");
-  // controller->publishProcessingTime(controller->stop_watch_.toc("lateral"), controller->pub_processing_time_lat_ms_);
+  publishProcessingTime(stop_watch_.toc("lateral"), pub_processing_time_lat_ms_);
 
   // controller->stop_watch_.tic("longitudinal");
   // const auto lon_out = controller->longitudinal_controller_->run(*input_data);
