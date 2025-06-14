@@ -38,12 +38,6 @@ RUN apt-get update && \
     && pip3 install avh-api avh-api-async websockets python-dateutil aiohttp six urllib3 dotenv \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install multilib to support native_sim zephyr runtime
-#TODO: Getting package not found error for multilib on github actions
-# RUN if [ "${TARGETARCH}" = "amd64" ]; then \
-#         apt install --no-install-recommends -y gcc-multilib g++-multilib; \
-#     fi
-
 # Install west
 RUN pip3 install -U west pyelftools
 

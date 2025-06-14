@@ -30,13 +30,9 @@ using namespace common::logger;
 #include <utility>
 #include <vector>
 
-#if defined(NATIVE_SIM)
-static unsigned char node_stack[CONFIG_THREAD_STACK_SIZE];
-#else
-static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE)  __aligned(4);
-// static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
+// static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE)  __aligned(4);
+static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
-#endif
 
 namespace autoware::motion::control::trajectory_follower_node
 {

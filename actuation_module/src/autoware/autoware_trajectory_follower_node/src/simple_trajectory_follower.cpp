@@ -21,12 +21,8 @@ using namespace common::logger;
 
 #include <algorithm>
 
-#if defined(NATIVE_SIM)
-static unsigned char node_stack[CONFIG_THREAD_STACK_SIZE];
-#else
 static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
-#endif
 
 namespace simple_trajectory_follower
 {

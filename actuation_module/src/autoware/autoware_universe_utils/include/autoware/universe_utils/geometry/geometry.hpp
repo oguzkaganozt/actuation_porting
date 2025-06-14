@@ -20,9 +20,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
-#endif
 #include <Eigen/Core>
 
 // Autoware

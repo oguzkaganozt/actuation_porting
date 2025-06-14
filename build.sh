@@ -25,7 +25,7 @@ set -u
 BUILD_AUTOWARE_PACKAGES=1
 BUILD_ACTUATION_MODULE=1
 BUILD_TEST_FLAG=0
-ZEPHYR_TARGET_LIST=("fvp_baser_aemv8r_smp" "s32z270dc2_rtu0_r52" "native_sim")
+ZEPHYR_TARGET_LIST=("fvp_baser_aemv8r_smp" "s32z270dc2_rtu0_r52")
 ZEPHYR_TARGET=${ZEPHYR_TARGET_LIST[0]} # Default target is FVP
 
 function usage() {
@@ -128,20 +128,6 @@ function build_zephyr() {
   typeset LD_LIBRARY_PATH="${ROOT_DIR}"/build/cyclonedds_host/out/lib
   typeset CMAKE_PREFIX_PATH=""
   typeset AMENT_PREFIX_PATH=""
-
-  # Build CycloneDDS for native simulator
-  if [ "${ZEPHYR_TARGET}" = "native_sim" ]; then
-    echo -e "${GREEN}Building CYCLONEDDS for native simulator${NC}"
-    mkdir -p build/cyclonedds_native_sim
-    pushd build/cyclonedds_native_sim
-    cmake_flags="-DCMAKE_C_FLAGS= \
-      -fno-pic \
-      -m32"
-    cmake -DCMAKE_INSTALL_PREFIX="$(pwd)"/out -DENABLE_SECURITY=OFF -DENABLE_SSL=OFF -DBUILD_IDLC=OFF -DBUILD_SHARED_LIBS=OFF -DENABLE_SHM=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DBUILD_DDSPERF=OFF "${cmake_flags}" "${ROOT_DIR}"/cyclonedds
-    cmake --build . --target install -- -j"$(nproc)"
-    popd
-    typeset LD_LIBRARY_PATH="${ROOT_DIR}"/build/cyclonedds_native_sim/out/lib
-  fi
 
   # Build Zephyr elf
   west build -p auto -d build/actuation_module -b "${ZEPHYR_TARGET}" actuation_module/ -- \

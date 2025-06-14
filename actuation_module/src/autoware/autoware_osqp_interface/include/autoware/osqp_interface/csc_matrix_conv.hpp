@@ -17,9 +17,7 @@
 
 // Libs
 #include <vector>
-#ifndef NATIVE_SIM
 #define fabsl(x) fabs(x)  //TODO:Check compatibility
-#endif
 #include <Eigen/Core>
 #include "osqp/glob_opts.h"  // for 'c_int' type ('long' or 'long long')
 

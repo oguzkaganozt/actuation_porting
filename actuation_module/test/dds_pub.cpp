@@ -16,14 +16,8 @@ using OdometryMsg = nav_msgs_msg_Odometry;
 using AccelerationMsg = geometry_msgs_msg_AccelWithCovarianceStamped;
 using OperationModeStateMsg = autoware_adapi_v1_msgs_msg_OperationModeState;
 
-#if defined(NATIVE_SIM)
-static unsigned char node_stack[CONFIG_THREAD_STACK_SIZE];
-static unsigned char timer_stack[CONFIG_THREAD_STACK_SIZE];
-#else
 static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
-static K_THREAD_STACK_DEFINE(timer_stack, CONFIG_THREAD_STACK_SIZE);
 #define STACK_SIZE (K_THREAD_STACK_SIZEOF(node_stack))
-#endif
 
 #define PUBLISH_PERIOD_MS (2000)
 

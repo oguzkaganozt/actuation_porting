@@ -32,7 +32,7 @@ config LOG_THROTTLE_RATE
 	  It is used to limit the rate of messages being published to the console.
 
 config DDS_NETWORK_INTERFACE
-	string "Name of the network interface to be used by CycloneDDS, should not be used for native_sim"
+	string "Name of the network interface to be used by CycloneDDS"
 	default ""
 	help
 	  When left undefined, CycloneDDS will automatically select an interface
