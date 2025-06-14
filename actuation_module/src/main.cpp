@@ -59,9 +59,10 @@ int main(void)
     log_success("Actuation Safety Island is Live\n");
     log_success("-----------------------------------------\n");
 
-    while (1) {
-        sleep(1);
-    }
+    controller->wait_for_completion();
+
+    log_info("Actuation Safety Island is Shutting Down\n");
+    log_success("-----------------------------------------\n");
 
     return 0;
 }
