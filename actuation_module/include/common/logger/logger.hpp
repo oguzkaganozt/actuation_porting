@@ -33,7 +33,7 @@ inline void vprint_color_(const char * format, va_list args, const char * color)
     // Print message with time and color
     fprintf(stderr, "%s[%s] | ", color, time_str);
     vfprintf(stderr, format, args);
-    fprintf(stderr, "%s", COLOR_RESET);
+    fprintf(stderr, "%s\n", COLOR_RESET);
 }
 
 inline void log_success(const char * format, ...) {
@@ -115,7 +115,7 @@ inline void log_info_throttle_(const char * file, int line, const char * format,
         va_start(args, format);
         vsnprintf(formatted_msg_buffer, sizeof(formatted_msg_buffer), format, args);
         va_end(args);
-        log_info("%s\n", formatted_msg_buffer);
+        log_info("%s", formatted_msg_buffer);
     }
 }
 
@@ -154,7 +154,7 @@ inline void log_warn_throttle_(const char * file, int line, const char * format,
         va_start(args, format);
         vsnprintf(formatted_msg_buffer, sizeof(formatted_msg_buffer), format, args);
         va_end(args);
-        log_warn("%s\n", formatted_msg_buffer);
+        log_warn("%s", formatted_msg_buffer);
     }
 }
 

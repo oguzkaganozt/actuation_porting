@@ -11,10 +11,10 @@ int main(void)
 {   
     autoware::motion::control::trajectory_follower_node::Controller* controller;
     
-    log_success("-----------------------------------------\n");
-    log_success("ARM - Autoware: Actuation Safety Island\n");
-    log_success("-----------------------------------------\n");
-    log_info("Waiting for DHCP to get IP address...\n");
+    log_success("-----------------------------------------");
+    log_success("ARM - Autoware: Actuation Safety Island");
+    log_success("-----------------------------------------");
+    log_info("Waiting for DHCP to get IP address...");
     sleep(7);
 
     // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
@@ -24,31 +24,31 @@ int main(void)
     //     std::exit(1);
     // }
 
-    log_info("Starting Controller Node...\n");
+    log_info("Starting Controller Node...");
     try
     {
         controller = new autoware::motion::control::trajectory_follower_node::Controller();
         int ret = controller->spin();
         if (ret != 0) {
-            log_error("Failed to start Controller Node\n");
+            log_error("Failed to start Controller Node");
             std::exit(1);
         }
-        log_success("Controller Node Started\n");
-        log_success("-----------------------------------------\n");
+        log_success("Controller Node Started");
+        log_success("-----------------------------------------");
     }
     catch(const std::exception& e)
     {
-        log_error("Failed to start Controller Node: %s\n", e.what());
+        log_error("Failed to start Controller Node: %s", e.what());
         std::exit(1);
     }
 
-    log_success("Actuation Safety Island is Live\n");
-    log_success("-----------------------------------------\n");
+    log_success("Actuation Safety Island is Live");
+    log_success("-----------------------------------------");
 
     controller->wait_for_completion();
 
-    log_info("Actuation Safety Island is Shutting Down\n");
-    log_success("-----------------------------------------\n");
+    log_info("Actuation Safety Island is Shutting Down");
+    log_success("-----------------------------------------");
 
     return 0;
 }
