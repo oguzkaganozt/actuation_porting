@@ -42,14 +42,14 @@ ResultWithReason MPC::calculateMPC(
   const SteeringReportMsg & current_steer, const OdometryMsg & current_kinematics, LateralMsg & ctrl_cmd,
   TrajectoryMsg & predicted_trajectory, LateralHorizon & ctrl_cmd_horizon)
 {
-  log_debug("-------MPC--2--\n", 0);
+  log_debug("MPC: Start Calculating");
 
   // since the reference trajectory does not take into account the current velocity of the ego
   // vehicle, it needs to calculate the trajectory velocity considering the longitudinal dynamics.
   const auto reference_trajectory =
     applyVelocityDynamicsFilter(m_reference_trajectory, current_kinematics);
 
-    log_debug("-------MPC-3--\n", 0);
+  log_debug("MPC: Reference Trajectory Applied");
 
   // get the necessary data
   const auto [get_data_result, mpc_data] =
@@ -58,21 +58,20 @@ ResultWithReason MPC::calculateMPC(
     return ResultWithReason{false, std::string("getting MPC Data (") + get_data_result.reason + std::string(").")};
   }
 
-  log_debug("-------MPC-4--\n", 0);
+  log_debug("MPC: Data Got");
 
   // calculate initial state of the error dynamics
   const auto x0 = getInitialState(mpc_data);
-
-  log_debug("-------MPC-4-1--\n", 0);
 
   // apply time delay compensation to the initial state
   const auto [success_delay, x0_delayed] =
     updateStateForDelayCompensation(reference_trajectory, mpc_data.nearest_time, x0);
   if (!success_delay) {
+    log_error("MPC: Delay Compensation Failed");
     return ResultWithReason{false, std::string("delay compensation.")};
   }
 
-  log_debug("-------MPC-5--\n", 0);
+  log_debug("MPC: Delay Compensation Applied");
 
   // resample reference trajectory with mpc sampling time
   const double mpc_start_time = mpc_data.nearest_time + m_param.input_delay;
@@ -82,18 +81,20 @@ ResultWithReason MPC::calculateMPC(
   const auto [resample_result, mpc_resampled_ref_trajectory] =
     resampleMPCTrajectoryByTime(mpc_start_time, prediction_dt, reference_trajectory);
   if (!resample_result.result) {
+    log_error("MPC: Trajectory Resampling Failed");
     return ResultWithReason{
       false, std::string("trajectory resampling (") + resample_result.reason + std::string(").")};
   }
+  
+  log_debug("MPC: Resampled Reference Trajectory Size: %zu", mpc_resampled_ref_trajectory.size());
 
   // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
-  log_debug("-------MPC-6--\n", 0);
-
   // generate mpc matrix : predict equation Xec = Aex * x0 + Bex * Uex + Wex
   const auto mpc_matrix = generateMPCMatrix(mpc_resampled_ref_trajectory, prediction_dt);
 
-  log_debug("-------MPC-7--\n", 0);
+  log_debug("MPC: MPC Matrix Generated");
 
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   // solve Optimization problem
   const auto [opt_result, Uex] = executeOptimization(
     mpc_matrix, x0_delayed, prediction_dt, mpc_resampled_ref_trajectory,
@@ -102,20 +103,20 @@ ResultWithReason MPC::calculateMPC(
     return ResultWithReason{false, std::string("optimization failure (") + opt_result.reason + std::string(").")};
   }
 
-  log_debug("-------MPC-8--\n", 0);
+  log_debug("MPC: Optimization Problem Solved");
 
   // apply filters for the input limitation and low pass filter
   const double u_saturated = std::clamp(Uex(0), -m_steer_lim, m_steer_lim);
   const double u_filtered = m_lpf_steering_cmd.filter(u_saturated);
 
-  log_debug("-------MPC-9--\n", 0);
+  log_debug("MPC: Input Limitation Applied");
 
   // set control command
   ctrl_cmd.steering_tire_angle = static_cast<float>(u_filtered);
   ctrl_cmd.steering_tire_rotation_rate = static_cast<float>(calcDesiredSteeringRate(
     mpc_matrix, x0_delayed, Uex, u_filtered, current_steer.steering_tire_angle, prediction_dt));
 
-  log_debug("-------MPC-10--\n", 0);
+  log_debug("MPC: Control Command Set");
 
   // save the control command for the steering prediction
   m_steering_predictor->storeSteerCmd(u_filtered);
@@ -128,15 +129,13 @@ ResultWithReason MPC::calculateMPC(
   m_raw_steer_cmd_pprev = m_raw_steer_cmd_prev;
   m_raw_steer_cmd_prev = Uex(0);
 
-  log_debug("-------MPC-11--\n", 0);
+  log_debug("MPC: Control Command Stored");
 
   // TODO: REMOVED FOR SIMPLIFICATION
   // /* calculate predicted trajectory */
   // Eigen::VectorXd initial_state = m_use_delayed_initial_state ? x0_delayed : x0;
   // predicted_trajectory = calculatePredictedTrajectory(
   //   mpc_matrix, initial_state, Uex, mpc_resampled_ref_trajectory, prediction_dt, "world");
-
-  // log_debug("-------MPC-12--\n", 0);
 
   // // Publish predicted trajectories in different coordinates for debugging purposes
   // if (m_publish_debug_trajectories) {
@@ -147,8 +146,6 @@ ResultWithReason MPC::calculateMPC(
   //   predicted_trajectory_frenet.header.frame_id = "map";
   //   m_debug_frenet_predicted_trajectory_pub->publish(predicted_trajectory_frenet);
   // }
-
-  log_debug("-------MPC-13--\n", 0);
 
   // create LateralHorizon command
   ctrl_cmd_horizon.time_step_ms = prediction_dt * 1000.0;
@@ -163,6 +160,8 @@ ResultWithReason MPC::calculateMPC(
     ctrl_cmd_horizon.controls.push_back(lateral);
   }
 
+  log_debug("MPC: Lateral Horizon Command Set");
+  
   return ResultWithReason{true};
 }
 
@@ -259,11 +258,9 @@ std::pair<ResultWithReason, MPCData> MPC::getData(
   const MPCTrajectory & traj, const SteeringReportMsg & current_steer,
   const OdometryMsg & current_kinematics)
 {
-  log_debug("-------MPC-3-1--\n", 0);
+  log_debug("MPC: Getting Data");
 
   const auto current_pose = current_kinematics.pose.pose;
-
-  log_debug("-------MPC-3-2--\n", 0);
 
   MPCData data;
   if (!MPCUtils::calcNearestPoseInterp(
@@ -272,7 +269,7 @@ std::pair<ResultWithReason, MPCData> MPC::getData(
     return {ResultWithReason{false, "error in calculating nearest pose"}, MPCData{}};
   }
 
-  log_debug("-------MPC-3-3--\n", 0);
+  log_debug("MPC: Nearest Pose Calculated");
 
   // get data
   data.steer = static_cast<double>(current_steer.steering_tire_angle);
@@ -283,7 +280,7 @@ std::pair<ResultWithReason, MPCData> MPC::getData(
   // get predicted steer
   data.predicted_steer = m_steering_predictor->calcSteerPrediction();
 
-  log_debug("-------MPC-3-4--\n", 0);
+  log_debug("MPC: Predicted Steer Calculated");
 
   // check error limit
   const double dist_err = calcDistance2d(current_pose, data.nearest_pose);
@@ -291,14 +288,14 @@ std::pair<ResultWithReason, MPCData> MPC::getData(
     return {ResultWithReason{false, "too large position error"}, MPCData{}};
   }
 
-  log_debug("-------MPC-3-5--\n", 0);
+  log_debug("MPC: Position Error Checked");
 
   // check yaw error limit
   if (std::fabs(data.yaw_err) > m_admissible_yaw_error_rad) {
     return {ResultWithReason{false, "too large yaw error"}, MPCData{}};
   }
 
-  log_debug("-------MPC-3-6--\n", 0);
+  log_debug("MPC: Yaw Error Checked");
 
   // check trajectory time length
   const double max_prediction_time =
@@ -308,7 +305,7 @@ std::pair<ResultWithReason, MPCData> MPC::getData(
     return {ResultWithReason{false, "path is too short for prediction."}, MPCData{}};
   }
 
-  log_debug("-------MPC-3-7--\n", 0);
+  log_debug("MPC: Trajectory Time Length Checked");
 
   return {ResultWithReason{true}, data};
 }
@@ -406,35 +403,33 @@ std::pair<bool, VectorXd> MPC::updateStateForDelayCompensation(
 MPCTrajectory MPC::applyVelocityDynamicsFilter(
   const MPCTrajectory & input, const OdometryMsg & current_kinematics) const
 {
-  log_debug("-------MPC-2-3--\n", 0);
+  log_debug("MPC: Applying Velocity Dynamics Filter");
 
   const auto autoware_traj = MPCUtils::convertToAutowareTrajectory(input);
   if (autoware_traj.points.empty()) {
     return input;
   }
 
-  log_debug("-------MPC-2-4--\n", 0);
-
   const size_t nearest_seg_idx =
     autoware::motion_utils::findFirstNearestSegmentIndexWithSoftConstraints(
       autoware_traj.points, current_kinematics.pose.pose, ego_nearest_dist_threshold,
       ego_nearest_yaw_threshold);
 
-  log_debug("-------MPC-2-5--\n", 0);
+  log_debug("MPC: Nearest Segment Index Found");
 
   MPCTrajectory output = input;
   MPCUtils::dynamicSmoothingVelocity(
     nearest_seg_idx, current_kinematics.twist.twist.linear.x, m_param.acceleration_limit,
     m_param.velocity_time_constant, output);
 
-  log_debug("-------MPC-2-6--\n", 0);
+  log_debug("MPC: Dynamic Smoothing Velocity Applied");
 
   auto last_point = output.back();
   last_point.relative_time += 100.0;  // extra time to prevent mpc calc failure due to short time
   last_point.vx = 0.0;                // stop velocity at a terminal point
   output.push_back(last_point);
 
-  log_debug("-------MPC-2-7--\n", 0);
+  log_debug("MPC: Velocity Dynamics Filter Applied");
 
   return output;
 }
@@ -579,52 +574,44 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   const MPCMatrix & m, const VectorXd & x0, const double prediction_dt, const MPCTrajectory & traj,
   const double current_velocity)
 {
-  log_debug("-------MPC-7-1--\n", 0);
+  log_debug("MPC: Executing Optimization");
   VectorXd Uex;
 
   if (!isValid(m)) {
+    log_error("MPC: Invalid Model Matrix");
     return {ResultWithReason{false, "invalid model matrix"}, {}};
   }
 
-  log_debug("-------MPC-7-2--\n", 0);
+  log_debug("MPC: Model Matrix Valid");
 
   const int DIM_U_N = m_param.prediction_horizon * m_vehicle_model_ptr->getDimU();
 
   // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
-  log_debug("-------MPC-7-3--\n", 0);
-
   // cost function: 1/2 * Uex' * H * Uex + f' * Uex,  H = B' * C' * Q * C * B + R
   const MatrixXd CB = m.Cex * m.Bex;
   const MatrixXd QCB = m.Qex * CB;
   // MatrixXd H = CB.transpose() * QCB + m.R1ex + m.R2ex; // This calculation is heavy. looking for
   // a good way.  //NOLINT
-  log_debug("-------MPC-7-3-1--\n", 0);
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   MatrixXd H = MatrixXd::Zero(DIM_U_N, DIM_U_N);
-  log_debug("-------MPC-7-3-2--\n", 0);
   H.triangularView<Eigen::Upper>() = CB.transpose() * QCB;
-  log_debug("-------MPC-7-3-3--\n", 0);
   H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
-  log_debug("-------MPC-7-3-4--\n", 0);
   H.triangularView<Eigen::Lower>() = H.transpose();
-  log_debug("-------MPC-7-3-5--\n", 0);
   MatrixXd f = (m.Cex * (m.Aex * x0 + m.Wex)).transpose() * QCB - m.Uref_ex.transpose() * m.R1ex;
-  log_debug("-------MPC-7-3-6--\n", 0);
   addSteerWeightF(prediction_dt, f);
-  log_debug("-------MPC-7-3-7--\n", 0);
 
-  log_debug("-------MPC-7-4--\n", 0);
   MatrixXd A = MatrixXd::Identity(DIM_U_N, DIM_U_N);
   for (int i = 1; i < DIM_U_N; i++) {
     A(i, i - 1) = -1.0;
   }
 
-  log_debug("-------MPC-7-5--\n", 0);
+  log_debug("MPC: Cost Function Set");
 
   // steering angle limit
   VectorXd lb = VectorXd::Constant(DIM_U_N, -m_steer_lim);  // min steering angle
   VectorXd ub = VectorXd::Constant(DIM_U_N, m_steer_lim);   // max steering angle
 
-  log_debug("-------MPC-7-6--\n", 0);
+  log_debug("MPC: Steering Angle Limit Set");
 
   // steering angle rate limit
   VectorXd steer_rate_limits = calcSteerRateLimitOnTrajectory(traj, current_velocity);
@@ -633,27 +620,31 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   ubA(0) = m_raw_steer_cmd_prev + steer_rate_limits(0) * m_ctrl_period;
   lbA(0) = m_raw_steer_cmd_prev - steer_rate_limits(0) * m_ctrl_period;
 
-  log_debug("-------MPC-7-7--\n", 0);
+  log_debug("MPC: Steering Angle Rate Limit Set");
 
+  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   auto t_start = Clock::now();
   bool solve_result = m_qpsolver_ptr->solve(H, f.transpose(), A, lb, ub, lbA, ubA, Uex);
   auto t_end = Clock::now();
   if (!solve_result) {
+    log_error("MPC: QP Solver Error");
     return {ResultWithReason{false, "qp solver error"}, {}};
   }
 
-  log_debug("-------MPC-7-8--\n", 0);
+  log_debug("MPC: QP Solver Finished");
 
   {
     auto t = t_end - t_start;
     log_info("MPC: qp solver calculation time = %ld [ms]", t);
   }
 
-  log_debug("-------MPC-7-9--\n", 0);
-
   if (Uex.array().isNaN().any()) {
+    log_error("MPC: Model Uex including NaN");
     return {ResultWithReason{false, "model Uex including NaN"}, {}};
   }
+
+  log_debug("MPC: Optimization Finished");
+
   return {ResultWithReason{true}, Uex};
 }
 

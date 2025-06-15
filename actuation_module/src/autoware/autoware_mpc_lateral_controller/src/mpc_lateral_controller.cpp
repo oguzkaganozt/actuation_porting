@@ -217,6 +217,8 @@ std::shared_ptr<SteeringOffsetEstimator> MpcLateralController::createSteerOffset
 trajectory_follower::LateralOutput MpcLateralController::run(
   trajectory_follower::InputData const & input_data)
 {
+  log_debug("MPC: Running");
+
   // set input data
   setTrajectory(input_data.current_trajectory, input_data.current_odometry);
 
@@ -235,16 +237,17 @@ trajectory_follower::LateralOutput MpcLateralController::run(
 
   if (!m_is_ctrl_cmd_prev_initialized || !is_under_control) {
     m_ctrl_cmd_prev = getInitialControlCommand();
+    log_debug("MPC: Initial control command");
     m_is_ctrl_cmd_prev_initialized = true;
   }
 
-  log_debug("-------MPC--1--\n", 0);
+  log_debug("MPC: Calculating");
 
   trajectory_follower::LateralHorizon ctrl_cmd_horizon{};
   const auto mpc_solved_status = m_mpc->calculateMPC(
     m_current_steering, m_current_kinematic_state, ctrl_cmd, predicted_traj, ctrl_cmd_horizon);
 
-  log_debug("-------MPC--2--\n", 0);
+  log_debug("MPC: Calculated");
 
   if (
     (m_mpc_solved_status.result == true && mpc_solved_status.result == false) ||
@@ -253,7 +256,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
   }
   m_mpc_solved_status = mpc_solved_status;  // for diagnostic updater
 
-  log_debug("-------MPC--3--\n", 0);
+  log_debug("MPC: Solved status: %s", mpc_solved_status.result ? "true" : "false");
 
   // reset previous MPC result
   // Note: When a large deviation from the trajectory occurs, the optimization stops and
@@ -266,7 +269,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     setSteeringToHistory(ctrl_cmd);
   }
 
-  log_debug("-------MPC--4--\n", 0);
+  log_debug("MPC: Steering Offset Removed");
 
   if (enable_auto_steering_offset_removal_) {
     steering_offset_->updateOffset(
@@ -275,7 +278,7 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     ctrl_cmd.steering_tire_angle += steering_offset_->getOffset();
   }
 
-  log_debug("-------MPC--5--\n", 0);
+  log_debug("MPC: Steering Offset Added");
 
   // publishPredictedTraj(predicted_traj);  // TODO: REMOVED FOR SIMPLIFICATION
   // publishDebugValues(debug_values);  //TODO: removed sake of simplicity
@@ -298,25 +301,24 @@ trajectory_follower::LateralOutput MpcLateralController::run(
     return output;
   };
 
-  log_debug("-------MPC--6--\n", 0);
-
   if (isStoppedState()) {
     // Reset input buffer
     for (auto & value : m_mpc->m_input_buffer) {
       value = m_ctrl_cmd_prev.steering_tire_angle;
     }
+    log_debug("MPC: is stopped");
     // Use previous command value as previous raw steer command
     m_mpc->m_raw_steer_cmd_prev = m_ctrl_cmd_prev.steering_tire_angle;
     return createLateralOutput(m_ctrl_cmd_prev, false, ctrl_cmd_horizon);
   }
 
-  log_debug("-------MPC--7--\n", 0);
+  log_debug("MPC: is not stopped");
 
   if (!mpc_solved_status.result) {
     ctrl_cmd = getStopControlCommand();
   }
 
-  log_debug("-------MPC--8--\n", 0);
+  log_debug("MPC: Control Command Created");
 
   m_ctrl_cmd_prev = ctrl_cmd;
   return createLateralOutput(ctrl_cmd, mpc_solved_status.result, ctrl_cmd_horizon);
