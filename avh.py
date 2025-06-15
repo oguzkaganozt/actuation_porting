@@ -69,7 +69,7 @@ async def get_project_id(api_instance, project_name):
     return projectId
 
 
-async def connect_to_vpn(api_instance, project_id):
+async def connect_vpn(api_instance, project_id):
     """Connect to VPN"""
     print(f"   Connecting to VPN for project: {project_id}")
     
@@ -79,11 +79,25 @@ async def connect_to_vpn(api_instance, project_id):
             f.write(vpn_config)
             
         print(f"   VPN config written to avh.ovpn")
-        subprocess.run(['openvpn', './avh.ovpn'], check=True)
+        subprocess.Popen(['openvpn --log vpn.log', './avh.ovpn'])
+
+        # Wait for VPN to connect (check if we have tap0 interface)
+        while True:
+            result = subprocess.run(['ip', 'addr', 'show', 'tap0'], capture_output=True, text=True)
+            if 'tap0' in result.stdout:
+                print("   VPN connected")
+                break
+            await asyncio.sleep(1)
 
     except AvhAPIException as e:
         print(f"❌ VPN connection failed: {e}")
         sys.exit(1)
+
+
+async def disconnect_vpn():
+    """Disconnect from VPN"""
+    print("   Disconnecting from VPN")
+    subprocess.run(['pkill', 'openvpn'])
 
 
 async def create_instance(api_instance, project_id, instance_name, instance_flavor):
@@ -290,14 +304,15 @@ def parse_arguments():
     
     # AVH operations
     parser.add_argument('--test-auth', action='store_true', help='Test AVH API authentication')
-    parser.add_argument('--vpn', action='store_true', help='Connect to VPN')
+    parser.add_argument('--vpn-connect', action='store_true', help='Connect to VPN')
+    parser.add_argument('--vpn-disconnect', action='store_true', help='Disconnect from VPN')
     parser.add_argument('--deploy', action='store_true', help='Deploy firmware to instance')
     parser.add_argument('--reboot', action='store_true', help='Reboot instance')
     parser.add_argument('--ssh', action='store_true', help='Connect to instance console')
     
     args = parser.parse_args()
     
-    actions = [args.build, args.rebuild, args.vpn, args.deploy, args.reboot, args.ssh, args.test_auth]
+    actions = [args.build, args.rebuild, args.vpn_connect, args.vpn_disconnect, args.deploy, args.reboot, args.ssh, args.test_auth]
     if not any(actions):
         parser.error("No action specified. Use --help to see available options.")
     
@@ -309,6 +324,11 @@ async def main(args):
     print("=" * 40)
     print("AVH Firmware Management Script")
     print("=" * 40)
+
+    # Disconnect VPN
+    if args.vpn_disconnect:
+        await disconnect_vpn()
+        return 0
 
     # Build firmware
     if args.build:
@@ -343,9 +363,9 @@ async def main(args):
         if instance_id is None:
             instance_id = await create_instance(api_instance, project_id, instance_name, instance_flavor)
 
-        # Connect to VPN
+        # Connect VPN
         if args.vpn:
-            await connect_to_vpn(api_instance, project_id)
+            await connect_vpn(api_instance, project_id)
             return 0
         
         # Deploy new firmware
@@ -357,7 +377,7 @@ async def main(args):
             await reboot_instance(api_instance, instance_id)
             await wait_for_ready(api_instance, instance_id)
 
-        # Connect to console
+        # Connect console
         if args.ssh:
             await connect_to_console(api_instance, instance_id)
 
