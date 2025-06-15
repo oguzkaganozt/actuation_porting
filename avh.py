@@ -79,7 +79,7 @@ async def connect_vpn(api_instance, project_id):
             f.write(vpn_config)
             
         print(f"   VPN config written to avh.ovpn")
-        subprocess.Popen(['openvpn --log vpn.log', './avh.ovpn'])
+        subprocess.Popen(['openvpn', '--log', 'vpn.log', '--config', './avh.ovpn'])
 
         # Wait for VPN to connect (check if we have tap0 interface)
         while True:
@@ -337,7 +337,7 @@ async def main(args):
         await build_firmware(args.rebuild, clean=True)
 
     # Check if any AVH operations are requested
-    avh_operations = [args.vpn, args.deploy, args.reboot, args.ssh, args.test_auth]
+    avh_operations = [args.vpn_connect, args.deploy, args.reboot, args.ssh, args.test_auth]
     if not any(avh_operations):
         return 0
     
@@ -364,7 +364,7 @@ async def main(args):
             instance_id = await create_instance(api_instance, project_id, instance_name, instance_flavor)
 
         # Connect VPN
-        if args.vpn:
+        if args.vpn_connect:
             await connect_vpn(api_instance, project_id)
             return 0
         
