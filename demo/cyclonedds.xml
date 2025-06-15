@@ -21,8 +21,9 @@
             <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
         </Sizing>
         <Discovery>
-            <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex>
-            <ParticipantIndex>auto</ParticipantIndex>
+            <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
+            <!-- <ParticipantIndex>auto</ParticipantIndex> -->
+            <ParticipantIndex>none</ParticipantIndex>
             <!-- <Peers> -->
                 <!-- <Peer Address="10.11.0.1" /> IP of the remote machine, should not be needed in case of local network -->
             <!-- </Peers> -->

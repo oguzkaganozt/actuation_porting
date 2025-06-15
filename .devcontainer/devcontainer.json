@@ -1,6 +1,6 @@
 {
     "name": "zephyr",
     "build": {
-      "dockerfile": "../Dockerfile"
+      "dockerfile": "./Dockerfile"
     }
   }

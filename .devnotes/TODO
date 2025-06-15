@@ -3,20 +3,16 @@
 - subscribers, publishers ve timers
 - check default values of parameters
 - Compare launch structure and synchronization with the native ROS2 nodes
-- OSQP vs unconstraint_qp
 - Check clock:now and toRosTime functions, they start from 0 not from epoch, as they can return some arbitrary values somehow.
-- check if sequence wrapper working as expected, if not, maybe we can try with libcpp for direct cpp interoperability ?
-- Another solution maybe create vectors in place when sequence got with -> std::vector<int> vec(c_array, c_array + size). This would do a block copy and allocate the space beforehand.
-- Give Sequence<T> as the only parameter for the functions that require priorly wrapped sequence to remove duality with wrapped and unwrapped sequence. Or may be better solution is to do not pass any sequence into any function just keep the sequence wrapper inside the function block, and only pass or return the real sequence instead of Sequence<T>
-- We can tune the lifespan of dds messages with -> https://cyclonedds.io/docs/cyclonedds/latest/api/qos.html#c.dds_qset_lifespan
-- Do we need param callbacks ? We cant use them in zephyr, do we strictly need them ?
+- We can tune the lifespan of dds messages on "actuation_module/include/common/dds/dds.hpp" -> <https://cyclonedds.io/docs/cyclonedds/latest/api/qos.html#c.dds_qset_lifespan>
 - Try with SMP enabled
+- OSQP vs unconstraint_qp
 - Validate side by side all nodes with Autoware original code
 
 ## Key points of porting
 
 1. We dont have boost, rclcpp, osqp, tf2 or any other dependencies installed, except for eigen3, cyclonedds, and actuation_msgs.
 2. We need to use C equivalent messages of CPP messages.
-3. We dont have direct bindings for cycloneddscpp, so we need to manually interface sequences by using sequence wrapper class.
+3. We dont have direct bindings for cycloneddscpp, so we need to manually interface sequences by converting them into vector.
 4. We dont have Node utils like declare_parameter(), create_timer(), create_subscription(), create_publisher(), get_logger(), clock, etc. For this we have custom Node class that implements the utils.
 5. We dont have any kind of logging system, so we need to manually print messages to the console, by using printf() to keep it portable.
