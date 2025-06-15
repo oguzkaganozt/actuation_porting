@@ -3,4 +3,5 @@
 Eigen provides some preprocessor directives to tune the compilation process.
 
 ## More Information
-http://eigen.tuxfamily.org/dox/TopicPreprocessorDirectives.html
+
+<http://eigen.tuxfamily.org/dox/TopicPreprocessorDirectives.html>

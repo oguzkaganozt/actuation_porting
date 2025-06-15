@@ -4,10 +4,10 @@ Zephyr provides a subset of POSIX APIs through the `posix` module with `CONFIG_P
 
 ## Supported POSIX APIs
 
-https://docs.zephyrproject.org/3.6.0/services/portability/posix/option_groups/index.html
+<https://docs.zephyrproject.org/3.6.0/services/portability/posix/option_groups/index.html>
 
 ## Important Notes
 
 * Since Zephyr does not support multi-processing, POSIX threads are implemented as kernel threads.
 
-## More info at https://docs.zephyrproject.org/3.6.0/services/portability/posix/overview/index.html
+## More info at <https://docs.zephyrproject.org/3.6.0/services/portability/posix/overview/index.html>

@@ -28,4 +28,4 @@ While not an exhaustive list, support for the following functionality is include
 * Static global object constructors are initialized after the drivers are initialized but before the application `main()` function. Therefore, use of C++ is restricted to application code.
 * In order to make use of C++ exceptions, the `CONFIG_CPP_EXCEPTIONS` must be selected in the application configuration file.
 
-## More info at https://docs.zephyrproject.org/3.6.0/develop/languages/cpp/index.html
+## More info at <https://docs.zephyrproject.org/3.6.0/develop/languages/cpp/index.html>
