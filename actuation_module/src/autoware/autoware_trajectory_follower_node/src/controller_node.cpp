@@ -95,11 +95,11 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
     
   // Publishers
   control_cmd_pub_ = create_publisher<ControlMsg>(
-    "/control/control_cmd", &autoware_control_msgs_msg_Control_desc);
+    "/control/trajectory_follower/control_cmd", &autoware_control_msgs_msg_Control_desc);
   pub_processing_time_lat_ms_ =
-    create_publisher<Float64StampedMsg>("/control/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+    create_publisher<Float64StampedMsg>("/control/trajectory_follower/lateral/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
   pub_processing_time_lon_ms_ =
-    create_publisher<Float64StampedMsg>("/control/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
+    create_publisher<Float64StampedMsg>("/control/trajectory_follower/longitudinal/debug/processing_time_ms", &tier4_debug_msgs_msg_Float64Stamped_desc);
 }
 
 // SUBSCRIBER CALLBACKS
@@ -239,7 +239,6 @@ bool Controller::isTimeOut(
 std::optional<trajectory_follower::InputData> Controller::createInputData()
 {
   if (!processData()) {
-    log_info_throttle("Control is skipped since input data is not ready.");
     return {};
   }
 
