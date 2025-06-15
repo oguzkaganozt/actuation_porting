@@ -1,6 +1,6 @@
 services:
   safety-island-autoware:
-    # network_mode: host
+    network_mode: host
     image: ghcr.io/autowarefoundation/autoware:universe-20250207
     volumes:
       - $HOME/autoware_map/sample-map-planning:/root/autoware_map
@@ -20,7 +20,7 @@ services:
       rviz:=false
 
   safety-island-actuation:
-    # network_mode: host
+    network_mode: host
     image: ghcr.io/autowarefoundation/autoware:universe-20250207
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
@@ -34,7 +34,7 @@ services:
       vehicle_model:=sample_vehicle
   
   safety-island-visualizer:
-    # network_mode: host
+    network_mode: host
     build:
       context: .
       dockerfile: visualizer/Dockerfile
