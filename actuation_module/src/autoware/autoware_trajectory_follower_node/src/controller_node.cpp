@@ -288,19 +288,26 @@ void Controller::callbackTimerControl()
 
   publishProcessingTime(stop_watch_.toc("lateral"), pub_processing_time_lat_ms_);
 
-  // stop_watch_.tic("longitudinal");
-  // const auto lon_out = longitudinal_controller_->run(*input_data);
-  // log_debug("Longitudinal controller ran");
-  // stop_watch_.toc("longitudinal");
-  // log_debug("Longitudinal controller elapsed time: %f", stop_watch_.toc("longitudinal"));
+  stop_watch_.tic("longitudinal");
+  const auto lon_out = longitudinal_controller_->run(*input_data);
+  stop_watch_.toc("longitudinal");
+  log_debug("Longitudinal controller elapsed time: %f", stop_watch_.toc("longitudinal"));
 
-  // publishProcessingTime(stop_watch_.toc("longitudinal"), pub_processing_time_lon_ms_);
+  // TODO: do not calculate jerk here, it is not used !
+  log_debug("-------LON OUT--", 0);
+  log_debug("Longitudinal output: %f", lon_out.control_cmd.velocity);
+  log_debug("Longitudinal acceleration: %f", lon_out.control_cmd.acceleration);
+  log_debug("Longitudinal is defined acceleration: %s", lon_out.control_cmd.is_defined_acceleration ? "true" : "false");
+  log_debug("Longitudinal is defined jerk: %s", lon_out.control_cmd.is_defined_jerk ? "true" : "false");
+  log_debug("-------------------------------");
+
+  publishProcessingTime(stop_watch_.toc("longitudinal"), pub_processing_time_lon_ms_);
 
   log_debug("Controllers ran");
 
   // 4. sync with each other controllers
-  // longitudinal_controller_->sync(lat_out.sync_data);
-  // lateral_controller_->sync(lon_out.sync_data);
+  longitudinal_controller_->sync(lat_out.sync_data);
+  lateral_controller_->sync(lon_out.sync_data);
 
   // TODO(Horibe): Think specification. This comes from the old implementation.
   // if (isTimeOut(lon_out, lat_out)) return;
@@ -309,8 +316,10 @@ void Controller::callbackTimerControl()
   ControlMsg out;
   out.stamp = Clock::toRosTime(Clock::now());
   out.lateral = lat_out.control_cmd;
-  // out.longitudinal = lon_out.control_cmd;
-  // control_cmd_pub_->publish(out);
+  out.longitudinal = lon_out.control_cmd;
+  control_cmd_pub_->publish(out);
+
+  log_debug("Control command published");
 }
 
 void Controller::publishProcessingTime(

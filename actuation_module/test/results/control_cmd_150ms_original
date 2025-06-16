@@ -1,0 +1,6177 @@
+stamp:
+  sec: 1750030442
+  nanosec: 352914420
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030442
+    nanosec: 352687717
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.15665021538734436
+  steering_tire_rotation_rate: -0.6103690266609192
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030442
+    nanosec: 352842332
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030442
+  nanosec: 502405743
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030442
+    nanosec: 502297902
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.2245490550994873
+  steering_tire_rotation_rate: -0.3945283591747284
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030442
+    nanosec: 502368567
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030442
+  nanosec: 652421677
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030442
+    nanosec: 652185328
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1720702201128006
+  steering_tire_rotation_rate: -0.1787131279706955
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030442
+    nanosec: 652325547
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030442
+  nanosec: 802772275
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030442
+    nanosec: 802666237
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.2077559381723404
+  steering_tire_rotation_rate: -0.19802817702293396
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030442
+    nanosec: 802730311
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030442
+  nanosec: 952530853
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030442
+    nanosec: 952400702
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.18485978245735168
+  steering_tire_rotation_rate: -0.1898166984319687
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030442
+    nanosec: 952479662
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030443
+  nanosec: 102783201
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030443
+    nanosec: 102486004
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1977410763502121
+  steering_tire_rotation_rate: -0.19351257383823395
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030443
+    nanosec: 102672484
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030443
+  nanosec: 252452577
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030443
+    nanosec: 252311066
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19231653213500977
+  steering_tire_rotation_rate: -0.1936338245868683
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030443
+    nanosec: 252394714
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030443
+  nanosec: 402217121
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030443
+    nanosec: 402085949
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1925271898508072
+  steering_tire_rotation_rate: -0.1910545825958252
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030443
+    nanosec: 402157977
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030443
+  nanosec: 552433147
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030443
+    nanosec: 552192641
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1956740766763687
+  steering_tire_rotation_rate: -0.19499802589416504
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030443
+    nanosec: 552353075
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030443
+  nanosec: 702333643
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030443
+    nanosec: 702195889
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19050641357898712
+  steering_tire_rotation_rate: -0.1636761873960495
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030443
+    nanosec: 702281410
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030443
+  nanosec: 852475217
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030443
+    nanosec: 852161550
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1960190385580063
+  steering_tire_rotation_rate: -0.10481281578540802
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030443
+    nanosec: 852354924
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030444
+  nanosec: 2435739
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030444
+    nanosec: 2309966
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.18981583416461945
+  steering_tire_rotation_rate: -0.05441095679998398
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030444
+    nanosec: 2390128
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030444
+  nanosec: 152389967
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030444
+    nanosec: 152184643
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19513574242591858
+  steering_tire_rotation_rate: -0.032869502902030945
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030444
+    nanosec: 152305387
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030444
+  nanosec: 302430177
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030444
+    nanosec: 302304605
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19030281901359558
+  steering_tire_rotation_rate: -0.015629172325134277
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030444
+    nanosec: 302385598
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030444
+  nanosec: 452667298
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030444
+    nanosec: 452324219
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19415609538555145
+  steering_tire_rotation_rate: -0.010611393488943577
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030444
+    nanosec: 452604887
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030444
+  nanosec: 602000113
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030444
+    nanosec: 601883285
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19108694791793823
+  steering_tire_rotation_rate: -0.0043128966353833675
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030444
+    nanosec: 601955614
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030444
+  nanosec: 751823629
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030444
+    nanosec: 751709556
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19332225620746613
+  steering_tire_rotation_rate: -0.003486994421109557
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030444
+    nanosec: 751785501
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.2524537742137909
+  acceleration: 0.273799866437912
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030444
+  nanosec: 902361452
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030444
+    nanosec: 902271903
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19175438582897186
+  steering_tire_rotation_rate: -0.0011722003109753132
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030444
+    nanosec: 902317554
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.2524537742137909
+  acceleration: 0.29645204544067383
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030445
+  nanosec: 51898000
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030445
+    nanosec: 51813310
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19275327026844025
+  steering_tire_rotation_rate: -0.001143882516771555
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030445
+    nanosec: 51856407
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.2524665594100952
+  acceleration: 0.31652024388313293
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030445
+  nanosec: 202592258
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030445
+    nanosec: 202375544
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.19189460575580597
+  steering_tire_rotation_rate: 0.0008116207900457084
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030445
+    nanosec: 202519319
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.2524598240852356
+  acceleration: 0.3314695656299591
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030445
+  nanosec: 352329938
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030445
+    nanosec: 352187916
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1909025013446808
+  steering_tire_rotation_rate: 0.004670771770179272
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030445
+    nanosec: 352269791
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.2522123157978058
+  acceleration: 0.34044715762138367
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030445
+  nanosec: 501934762
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030445
+    nanosec: 501860180
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.18394264578819275
+  steering_tire_rotation_rate: 0.028600584715604782
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030445
+    nanosec: 501901984
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.2616911232471466
+  acceleration: 0.34642407298088074
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030445
+  nanosec: 652307539
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030445
+    nanosec: 652231715
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.16946879029273987
+  steering_tire_rotation_rate: 0.06375136971473694
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030445
+    nanosec: 652272106
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.290802001953125
+  acceleration: 0.410737544298172
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030445
+  nanosec: 802455608
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030445
+    nanosec: 802165954
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.15391729772090912
+  steering_tire_rotation_rate: 0.08627047389745712
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030445
+    nanosec: 802241899
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.32980358600616455
+  acceleration: 0.4648524224758148
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030445
+  nanosec: 951998252
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030445
+    nanosec: 951917669
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.13713964819908142
+  steering_tire_rotation_rate: 0.10110993683338165
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030445
+    nanosec: 951959142
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.3753223121166229
+  acceleration: 0.5122287273406982
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030446
+  nanosec: 102350136
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030446
+    nanosec: 102216519
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.11825091391801834
+  steering_tire_rotation_rate: 0.11770928651094437
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030446
+    nanosec: 102301089
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.43134430050849915
+  acceleration: 0.55040043592453
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030446
+  nanosec: 251971947
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030446
+    nanosec: 251901823
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09839590638875961
+  steering_tire_rotation_rate: 0.12717685103416443
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030446
+    nanosec: 251940461
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.4924987852573395
+  acceleration: 0.5822861194610596
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030446
+  nanosec: 402115103
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030446
+    nanosec: 402040130
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.07982667535543442
+  steering_tire_rotation_rate: 0.13001739978790283
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030446
+    nanosec: 402082084
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.5611189603805542
+  acceleration: 0.6061318516731262
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030446
+  nanosec: 552001473
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030446
+    nanosec: 551915962
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.05791644752025604
+  steering_tire_rotation_rate: 0.1427432894706726
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030446
+    nanosec: 551957906
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.634141743183136
+  acceleration: 0.6220240592956543
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030446
+  nanosec: 702177328
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030446
+    nanosec: 702023004
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.03769901394844055
+  steering_tire_rotation_rate: 0.14092285931110382
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030446
+    nanosec: 702097626
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.7110104560852051
+  acceleration: 0.6283317804336548
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030446
+  nanosec: 851956067
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030446
+    nanosec: 851882176
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.01900675892829895
+  steering_tire_rotation_rate: 0.13885384798049927
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030446
+    nanosec: 851923139
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.7865812182426453
+  acceleration: 0.5836008787155151
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030447
+  nanosec: 2604159
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030447
+    nanosec: 2466374
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.004311179742217064
+  steering_tire_rotation_rate: 0.11796669661998749
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030447
+    nanosec: 2532081
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.8601973056793213
+  acceleration: 0.5867677330970764
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030447
+  nanosec: 151964983
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030447
+    nanosec: 151894889
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.009738948196172714
+  steering_tire_rotation_rate: 0.11441429704427719
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030447
+    nanosec: 151932967
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.9343476295471191
+  acceleration: 0.5798433423042297
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030447
+  nanosec: 301978225
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030447
+    nanosec: 301899616
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.023772798478603363
+  steering_tire_rotation_rate: 0.10182466357946396
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030447
+    nanosec: 301942602
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.0094183683395386
+  acceleration: 0.565883457660675
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030447
+  nanosec: 452285850
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030447
+    nanosec: 452208863
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.029684295877814293
+  steering_tire_rotation_rate: 0.07584062218666077
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030447
+    nanosec: 452250808
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.082563042640686
+  acceleration: 0.5472180843353271
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030447
+  nanosec: 602375087
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030447
+    nanosec: 602267596
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.030748862773180008
+  steering_tire_rotation_rate: 0.03932972252368927
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030447
+    nanosec: 602322433
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.15617036819458
+  acceleration: 0.5247475504875183
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030447
+  nanosec: 752321781
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030447
+    nanosec: 752235197
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.027660494670271873
+  steering_tire_rotation_rate: 0.012923309579491615
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030447
+    nanosec: 752280027
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.2278263568878174
+  acceleration: 0.4999310076236725
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030447
+  nanosec: 902256984
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030447
+    nanosec: 902163749
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.02892361208796501
+  steering_tire_rotation_rate: 0.011985464952886105
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030447
+    nanosec: 902211003
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.2978030443191528
+  acceleration: 0.4733322560787201
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030448
+  nanosec: 52348978
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030448
+    nanosec: 52225028
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.034183818846940994
+  steering_tire_rotation_rate: 0.025372346863150597
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030448
+    nanosec: 52289843
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.3658188581466675
+  acceleration: 0.4458262622356415
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030448
+  nanosec: 201964271
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030448
+    nanosec: 201878168
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.037885189056396484
+  steering_tire_rotation_rate: 0.024579506367444992
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030448
+    nanosec: 201920603
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.4315465688705444
+  acceleration: 0.4179341495037079
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030448
+  nanosec: 352529899
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030448
+    nanosec: 352389790
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.03427046909928322
+  steering_tire_rotation_rate: -0.0018955165287479758
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030448
+    nanosec: 352460195
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.4947232007980347
+  acceleration: 0.39050811529159546
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030448
+  nanosec: 503067528
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030448
+    nanosec: 502929253
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.03351211920380592
+  steering_tire_rotation_rate: 0.001475313096307218
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030448
+    nanosec: 503002693
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.555466651916504
+  acceleration: 0.363604873418808
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030448
+  nanosec: 651911672
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030448
+    nanosec: 651828895
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.03243348002433777
+  steering_tire_rotation_rate: -0.009334472008049488
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030448
+    nanosec: 651872884
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.6138375997543335
+  acceleration: 0.3374573886394501
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030448
+  nanosec: 802892638
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030448
+    nanosec: 802804632
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.029431883245706558
+  steering_tire_rotation_rate: -0.007627536077052355
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030448
+    nanosec: 802847528
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.6697477102279663
+  acceleration: 0.31248438358306885
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030448
+  nanosec: 952415136
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030448
+    nanosec: 952260261
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.034412872046232224
+  steering_tire_rotation_rate: 0.008745859377086163
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030448
+    nanosec: 952333491
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.7232125997543335
+  acceleration: 0.28873682022094727
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030449
+  nanosec: 102098483
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030449
+    nanosec: 101998536
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.029916882514953613
+  steering_tire_rotation_rate: -0.011610498651862144
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030449
+    nanosec: 102052542
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.7743979692459106
+  acceleration: 0.26633596420288086
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030449
+  nanosec: 252351464
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030449
+    nanosec: 252239004
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.021357549354434013
+  steering_tire_rotation_rate: -0.03462137281894684
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030449
+    nanosec: 252296887
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.8234862089157104
+  acceleration: 0.2454063445329666
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030449
+  nanosec: 402834202
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030449
+    nanosec: 402746075
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.020680904388427734
+  steering_tire_rotation_rate: -0.017467359080910683
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030449
+    nanosec: 402791286
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.8701807260513306
+  acceleration: 0.2262834906578064
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030449
+  nanosec: 552061532
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030449
+    nanosec: 551980709
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.02042575739324093
+  steering_tire_rotation_rate: -0.012879973277449608
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030449
+    nanosec: 552020990
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.914867877960205
+  acceleration: 0.2084784358739853
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030449
+  nanosec: 702111542
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030449
+    nanosec: 702029427
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.017079226672649384
+  steering_tire_rotation_rate: -0.015933599323034286
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030449
+    nanosec: 702070089
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.9574624300003052
+  acceleration: 0.18822337687015533
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030449
+  nanosec: 852127682
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030449
+    nanosec: 852009513
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.013184761628508568
+  steering_tire_rotation_rate: -0.02416101284325123
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030449
+    nanosec: 852066023
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.9973424673080444
+  acceleration: 0.1633407473564148
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030450
+  nanosec: 2027256
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030450
+    nanosec: 1950770
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.010825788602232933
+  steering_tire_rotation_rate: -0.017277292907238007
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030450
+    nanosec: 1992795
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.0337846279144287
+  acceleration: 0.1367468386888504
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030450
+  nanosec: 153339964
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030450
+    nanosec: 153224769
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.011248747818171978
+  steering_tire_rotation_rate: -0.00966233853250742
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030450
+    nanosec: 153279286
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.066417694091797
+  acceleration: 0.11044635623693466
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030450
+  nanosec: 302478853
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030450
+    nanosec: 302342591
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.009440002962946892
+  steering_tire_rotation_rate: -0.01042139157652855
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030450
+    nanosec: 302403329
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.095226287841797
+  acceleration: 0.08562451601028442
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030450
+  nanosec: 452479503
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030450
+    nanosec: 452387279
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.006962510757148266
+  steering_tire_rotation_rate: -0.014612609520554543
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030450
+    nanosec: 452444200
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.120373010635376
+  acceleration: 0.06271237879991531
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030450
+  nanosec: 602819514
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030450
+    nanosec: 602725968
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.005710310768336058
+  steering_tire_rotation_rate: -0.01097855158150196
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030450
+    nanosec: 602776147
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.14201021194458
+  acceleration: 0.04185483977198601
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030450
+  nanosec: 752402121
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030450
+    nanosec: 752291535
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.00534310145303607
+  steering_tire_rotation_rate: -0.007309198845177889
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030450
+    nanosec: 752347544
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.160393714904785
+  acceleration: 0.02310178615152836
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030450
+  nanosec: 902514078
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030450
+    nanosec: 902433785
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.0038788507226854563
+  steering_tire_rotation_rate: -0.00925444159656763
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030450
+    nanosec: 902479747
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.1756932735443115
+  acceleration: 0.006538071669638157
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030451
+  nanosec: 52434126
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030451
+    nanosec: 52324992
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.0022462133783847094
+  steering_tire_rotation_rate: -0.009654788300395012
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030451
+    nanosec: 52383306
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.188197374343872
+  acceleration: -0.007773824036121368
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030451
+  nanosec: 202146370
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030451
+    nanosec: 202044078
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.0013290257193148136
+  steering_tire_rotation_rate: -0.008939412422478199
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030451
+    nanosec: 202101851
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.1981732845306396
+  acceleration: -0.0197472982108593
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030451
+  nanosec: 353693840
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030451
+    nanosec: 353537152
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0012737112119793892
+  steering_tire_rotation_rate: -0.013314290903508663
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030451
+    nanosec: 353622734
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2058863639831543
+  acceleration: -0.029304949566721916
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030451
+  nanosec: 502473850
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030451
+    nanosec: 502386364
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0036097578704357147
+  steering_tire_rotation_rate: -0.014859477058053017
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030451
+    nanosec: 502438297
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2116332054138184
+  acceleration: -0.036362338811159134
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030451
+  nanosec: 652139271
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030451
+    nanosec: 651935739
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0052549391984939575
+  steering_tire_rotation_rate: -0.012995462864637375
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030451
+    nanosec: 652027963
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.215733289718628
+  acceleration: -0.04095366969704628
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030451
+  nanosec: 802600573
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030451
+    nanosec: 802502149
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0071864970959723
+  steering_tire_rotation_rate: -0.013855451717972755
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030451
+    nanosec: 802553259
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2184932231903076
+  acceleration: -0.04315910115838051
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030451
+  nanosec: 952612609
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030451
+    nanosec: 952454669
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.010312977246940136
+  steering_tire_rotation_rate: -0.017746539786458015
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030451
+    nanosec: 952535052
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2202341556549072
+  acceleration: -0.04305126518011093
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030452
+  nanosec: 102466719
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030452
+    nanosec: 102387860
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.01426534354686737
+  steering_tire_rotation_rate: -0.02315150573849678
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030452
+    nanosec: 102427750
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2212438583374023
+  acceleration: -0.040982991456985474
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030452
+  nanosec: 252124894
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030452
+    nanosec: 252027120
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.016061024740338326
+  steering_tire_rotation_rate: -0.016408106312155724
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030452
+    nanosec: 252077510
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2217776775360107
+  acceleration: -0.03736089542508125
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030452
+  nanosec: 402718047
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030452
+    nanosec: 402643715
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.01893177069723606
+  steering_tire_rotation_rate: -0.020982205867767334
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030452
+    nanosec: 402684457
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2220277786254883
+  acceleration: -0.03258398920297623
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030452
+  nanosec: 552509959
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030452
+    nanosec: 552426440
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.023962225764989853
+  steering_tire_rotation_rate: -0.025810785591602325
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030452
+    nanosec: 552467794
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2221412658691406
+  acceleration: -0.027193596586585045
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030452
+  nanosec: 703253840
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030452
+    nanosec: 703122547
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.027396470308303833
+  steering_tire_rotation_rate: -0.026715386658906937
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030452
+    nanosec: 703184787
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222189426422119
+  acceleration: -0.02153991349041462
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030452
+  nanosec: 852147287
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030452
+    nanosec: 852017867
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.03556651622056961
+  steering_tire_rotation_rate: -0.042465802282094955
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030452
+    nanosec: 852076822
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222108840942383
+  acceleration: -0.015847602859139442
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030453
+  nanosec: 2553088
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030453
+    nanosec: 2473617
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.046000972390174866
+  steering_tire_rotation_rate: -0.05690889433026314
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030453
+    nanosec: 2517735
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222189903259277
+  acceleration: -0.010252093896269798
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030453
+  nanosec: 152503808
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030453
+    nanosec: 152428274
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.05178294703364372
+  steering_tire_rotation_rate: -0.047612592577934265
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030453
+    nanosec: 152466832
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222328186035
+  acceleration: -0.004850491881370544
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030453
+  nanosec: 302176464
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030453
+    nanosec: 302086965
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.06091427430510521
+  steering_tire_rotation_rate: -0.05934346467256546
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030453
+    nanosec: 302127687
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222232818603516
+  acceleration: 0.0002815797633957118
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030453
+  nanosec: 452615009
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030453
+    nanosec: 452538664
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.07617472112178802
+  steering_tire_rotation_rate: -0.08113131672143936
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030453
+    nanosec: 452576451
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222225666046143
+  acceleration: 0.005092149134725332
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030453
+  nanosec: 602629012
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030453
+    nanosec: 602525678
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0897907093167305
+  steering_tire_rotation_rate: -0.08902742713689804
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030453
+    nanosec: 602575296
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222328186035
+  acceleration: 0.009526164270937443
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030453
+  nanosec: 752451935
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030453
+    nanosec: 752338203
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.10666828602552414
+  steering_tire_rotation_rate: -0.1048668697476387
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030453
+    nanosec: 752380488
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222089767456
+  acceleration: 0.013546677306294441
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030453
+  nanosec: 902586110
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030453
+    nanosec: 902497793
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1266508400440216
+  steering_tire_rotation_rate: -0.12149005383253098
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030453
+    nanosec: 902539647
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222089767456
+  acceleration: 0.017126858234405518
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030454
+  nanosec: 52648039
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030454
+    nanosec: 52488195
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1434432417154312
+  steering_tire_rotation_rate: -0.11955774575471878
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030454
+    nanosec: 52581932
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221851348877
+  acceleration: 0.02024347521364689
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030454
+  nanosec: 202064167
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030454
+    nanosec: 201956886
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1612369269132614
+  steering_tire_rotation_rate: -0.12395603954792023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030454
+    nanosec: 202013256
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221612930298
+  acceleration: 0.022885072976350784
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030454
+  nanosec: 353597181
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030454
+    nanosec: 353470556
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.18509256839752197
+  steering_tire_rotation_rate: -0.14680975675582886
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030454
+    nanosec: 353527277
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221612930298
+  acceleration: 0.02504800818860531
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030454
+  nanosec: 502539017
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030454
+    nanosec: 502443397
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.20772038400173187
+  steering_tire_rotation_rate: -0.15080267190933228
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030454
+    nanosec: 502493115
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222213745117188
+  acceleration: 0.02672365866601467
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030454
+  nanosec: 652018366
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030454
+    nanosec: 651927154
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.22770459949970245
+  steering_tire_rotation_rate: -0.14828594028949738
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030454
+    nanosec: 651977914
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221612930298
+  acceleration: 0.027925042435526848
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030454
+  nanosec: 802642748
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030454
+    nanosec: 802544003
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.2510799765586853
+  steering_tire_rotation_rate: -0.15597902238368988
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030454
+    nanosec: 802592760
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222213745117188
+  acceleration: 0.028674252331256866
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030454
+  nanosec: 952721021
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030454
+    nanosec: 952606948
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.2712962329387665
+  steering_tire_rotation_rate: -0.1486927717924118
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030454
+    nanosec: 952665312
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221612930298
+  acceleration: 0.02897774800658226
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030455
+  nanosec: 102608399
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030455
+    nanosec: 102513610
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.2912478446960449
+  steering_tire_rotation_rate: -0.14727863669395447
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030455
+    nanosec: 102563830
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221851348877
+  acceleration: 0.028865186497569084
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030455
+  nanosec: 252594835
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030455
+    nanosec: 252521915
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.3075210750102997
+  steering_tire_rotation_rate: -0.12773247063159943
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030455
+    nanosec: 252560123
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221851348877
+  acceleration: 0.02819516509771347
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030455
+  nanosec: 402309789
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030455
+    nanosec: 402204782
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.32357677817344666
+  steering_tire_rotation_rate: -0.12674370408058167
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030455
+    nanosec: 402257917
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222089767456
+  acceleration: 0.027155721560120583
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030455
+  nanosec: 552506248
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030455
+    nanosec: 552430273
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.339565634727478
+  steering_tire_rotation_rate: -0.11421425640583038
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030455
+    nanosec: 552471246
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221851348877
+  acceleration: 0.025763381272554398
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030455
+  nanosec: 702482616
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030455
+    nanosec: 702352595
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.3516491651535034
+  steering_tire_rotation_rate: -0.10622256249189377
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030455
+    nanosec: 702408855
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222089767456
+  acceleration: 0.02405097521841526
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030455
+  nanosec: 852451951
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030455
+    nanosec: 852367782
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.3697409927845001
+  steering_tire_rotation_rate: -0.11449606716632843
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030455
+    nanosec: 852414284
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222230434417725
+  acceleration: 0.022059103474020958
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030456
+  nanosec: 2737108
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030456
+    nanosec: 2652117
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.3792937695980072
+  steering_tire_rotation_rate: -0.08978786319494247
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030456
+    nanosec: 2697668
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222328186035
+  acceleration: 0.019842764362692833
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030456
+  nanosec: 152658975
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030456
+    nanosec: 152554600
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.38497278094291687
+  steering_tire_rotation_rate: -0.06880011409521103
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030456
+    nanosec: 152606662
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222223997116089
+  acceleration: 0.01743541657924652
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030456
+  nanosec: 302868564
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030456
+    nanosec: 302741578
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.3993474841117859
+  steering_tire_rotation_rate: -0.08583477884531021
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030456
+    nanosec: 302807535
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224235534668
+  acceleration: 0.014889397658407688
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030456
+  nanosec: 452528136
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030456
+    nanosec: 452440610
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.4048137366771698
+  steering_tire_rotation_rate: -0.057781968265771866
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030456
+    nanosec: 452485781
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: 0.012249447405338287
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030456
+  nanosec: 602551404
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030456
+    nanosec: 602373798
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.40528449416160583
+  steering_tire_rotation_rate: -0.03714759647846222
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030456
+    nanosec: 602451627
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: 0.009559000842273235
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030456
+  nanosec: 752426488
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030456
+    nanosec: 752355993
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.4193499684333801
+  steering_tire_rotation_rate: -0.06822864711284637
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030456
+    nanosec: 752391115
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222249507904053
+  acceleration: 0.006858169101178646
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030456
+  nanosec: 902490939
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030456
+    nanosec: 902397634
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.42774128913879395
+  steering_tire_rotation_rate: -0.0590411052107811
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030456
+    nanosec: 902444817
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: 0.0041868481785058975
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030457
+  nanosec: 52401138
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030457
+    nanosec: 52324322
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.42064157128334045
+  steering_tire_rotation_rate: -0.006388321053236723
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030457
+    nanosec: 52363872
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: 0.0016250098124146461
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030457
+  nanosec: 202445430
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030457
+    nanosec: 202370667
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.4109942317008972
+  steering_tire_rotation_rate: 0.029852628707885742
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030457
+    nanosec: 202411740
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224473953247
+  acceleration: -0.0008416881901212037
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030457
+  nanosec: 352189057
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030457
+    nanosec: 352118813
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.40846022963523865
+  steering_tire_rotation_rate: 0.019218623638153076
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030457
+    nanosec: 352156139
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: -0.003178813261911273
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030457
+  nanosec: 501945919
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030457
+    nanosec: 501858003
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.40949660539627075
+  steering_tire_rotation_rate: 0.00938404630869627
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030457
+    nanosec: 501903423
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224473953247
+  acceleration: -0.005360511131584644
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030457
+  nanosec: 652116053
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030457
+    nanosec: 651987365
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.4100393056869507
+  steering_tire_rotation_rate: -0.0007977806963026524
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030457
+    nanosec: 652052481
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: -0.007367096841335297
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030457
+  nanosec: 802397035
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030457
+    nanosec: 802320579
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.4000599682331085
+  steering_tire_rotation_rate: 0.04331778734922409
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030457
+    nanosec: 802362574
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: -0.009182673878967762
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030457
+  nanosec: 951877095
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030457
+    nanosec: 951791263
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.3618929982185364
+  steering_tire_rotation_rate: 0.1545855551958084
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030457
+    nanosec: 951834089
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222249507904053
+  acceleration: -0.010793408378958702
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030458
+  nanosec: 102504696
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030458
+    nanosec: 102369206
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.34672093391418457
+  steering_tire_rotation_rate: 0.1143265813589096
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030458
+    nanosec: 102440733
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222224712371826
+  acceleration: -0.012191133573651314
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030458
+  nanosec: 252418342
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030458
+    nanosec: 252344771
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.33885911107063293
+  steering_tire_rotation_rate: 0.1045256033539772
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030458
+    nanosec: 252383249
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222249507904053
+  acceleration: -0.01336907222867012
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030458
+  nanosec: 402421116
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030458
+    nanosec: 402316590
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.2974114418029785
+  steering_tire_rotation_rate: 0.18848076462745667
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030458
+    nanosec: 402370717
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222249507904053
+  acceleration: -0.014325571246445179
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030458
+  nanosec: 552132072
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030458
+    nanosec: 551994758
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.26692208647727966
+  steering_tire_rotation_rate: 0.200943261384964
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030458
+    nanosec: 552074169
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222251892089844
+  acceleration: -0.015060994774103165
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030458
+  nanosec: 701881497
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030458
+    nanosec: 701784034
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.2473757565021515
+  steering_tire_rotation_rate: 0.16907177865505219
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030458
+    nanosec: 701836777
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222249507904053
+  acceleration: -0.015577686950564384
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030458
+  nanosec: 851846013
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030458
+    nanosec: 851751615
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.21587403118610382
+  steering_tire_rotation_rate: 0.2011091113090515
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030458
+    nanosec: 851803547
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222251892089844
+  acceleration: -0.014389174990355968
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030459
+  nanosec: 2375121
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030459
+    nanosec: 2296942
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1967022567987442
+  steering_tire_rotation_rate: 0.15601970255374908
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030459
+    nanosec: 2337955
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222237586975098
+  acceleration: -0.012900098226964474
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030459
+  nanosec: 152344993
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030459
+    nanosec: 152274137
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.18148738145828247
+  steering_tire_rotation_rate: 0.14882998168468475
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030459
+    nanosec: 152311303
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222223997116089
+  acceleration: -0.010926586575806141
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030459
+  nanosec: 302695611
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030459
+    nanosec: 302563316
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.14285974204540253
+  steering_tire_rotation_rate: 0.20302192866802216
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030459
+    nanosec: 302638670
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222235202789307
+  acceleration: -0.008482912555336952
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030459
+  nanosec: 451844225
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030459
+    nanosec: 451754556
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.13294020295143127
+  steering_tire_rotation_rate: 0.12934818863868713
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030459
+    nanosec: 451804505
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222225666046143
+  acceleration: -0.005618514493107796
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030459
+  nanosec: 602027416
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030459
+    nanosec: 601954857
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.12269262224435806
+  steering_tire_rotation_rate: 0.11917256563901901
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030459
+    nanosec: 601993816
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222222328186035
+  acceleration: -0.002406797604635358
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030459
+  nanosec: 752343512
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030459
+    nanosec: 752273047
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08738704770803452
+  steering_tire_rotation_rate: 0.17261873185634613
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030459
+    nanosec: 752309522
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222221612930298
+  acceleration: 0.0010867641540244222
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030459
+  nanosec: 902158129
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030459
+    nanosec: 902066577
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.07389000803232193
+  steering_tire_rotation_rate: 0.13580085337162018
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030459
+    nanosec: 902114772
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222232818603516
+  acceleration: 0.0047812070697546005
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030460
+  nanosec: 51995908
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030460
+    nanosec: 51912079
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.06567171961069107
+  steering_tire_rotation_rate: 0.09916357696056366
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030460
+    nanosec: 51954985
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222251892089844
+  acceleration: 0.008616161532700062
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030460
+  nanosec: 202018880
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030460
+    nanosec: 201925064
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.04172259196639061
+  steering_tire_rotation_rate: 0.13909193873405457
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030460
+    nanosec: 201972648
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222249507904053
+  acceleration: 0.012531393207609653
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030460
+  nanosec: 352341565
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030460
+    nanosec: 352252867
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.03377486765384674
+  steering_tire_rotation_rate: 0.08435323089361191
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030460
+    nanosec: 352296164
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222259044647217
+  acceleration: 0.016459569334983826
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030460
+  nanosec: 502408345
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030460
+    nanosec: 502319938
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.037881240248680115
+  steering_tire_rotation_rate: 0.04416932910680771
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030460
+    nanosec: 502368444
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222256660461426
+  acceleration: 0.020342910662293434
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030460
+  nanosec: 652261677
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030460
+    nanosec: 652149508
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.02383706346154213
+  steering_tire_rotation_rate: 0.06457558274269104
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030460
+    nanosec: 652200859
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222256660461426
+  acceleration: 0.02412732131779194
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030460
+  nanosec: 803302926
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030460
+    nanosec: 803174038
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.017086688429117203
+  steering_tire_rotation_rate: 0.05891317501664162
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030460
+    nanosec: 803242629
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222254276275635
+  acceleration: 0.025171559303998947
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030460
+  nanosec: 952228452
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030460
+    nanosec: 952121922
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0014581283321604133
+  steering_tire_rotation_rate: 0.08910840004682541
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030460
+    nanosec: 952171541
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222254276275635
+  acceleration: 0.025772254914045334
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030461
+  nanosec: 102425137
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030461
+    nanosec: 102329958
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.007913080975413322
+  steering_tire_rotation_rate: 0.06626460701227188
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030461
+    nanosec: 102378183
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222256660461426
+  acceleration: 0.0256325863301754
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030461
+  nanosec: 252273906
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030461
+    nanosec: 252184939
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.007057216018438339
+  steering_tire_rotation_rate: 0.04209123179316521
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030461
+    nanosec: 252232824
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222259044647217
+  acceleration: 0.02473541349172592
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030461
+  nanosec: 402447082
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030461
+    nanosec: 402360358
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.0108783645555377
+  steering_tire_rotation_rate: 0.02521018497645855
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030461
+    nanosec: 402403054
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2222254276275635
+  acceleration: 0.02313826233148575
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030461
+  nanosec: 552232439
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030461
+    nanosec: 552105494
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.007917042821645737
+  steering_tire_rotation_rate: 0.010978943668305874
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030461
+    nanosec: 552158077
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222226142883301
+  acceleration: 0.02089643105864525
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030461
+  nanosec: 702293195
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030461
+    nanosec: 702213423
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.012956881895661354
+  steering_tire_rotation_rate: 0.02002645656466484
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030461
+    nanosec: 702251241
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222226142883301
+  acceleration: 0.017694946378469467
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030461
+  nanosec: 852329888
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030461
+    nanosec: 852180333
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.02986839786171913
+  steering_tire_rotation_rate: 0.07613951712846756
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030461
+    nanosec: 852253092
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.222111463546753
+  acceleration: 0.011488821357488632
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030462
+  nanosec: 1849824
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030462
+    nanosec: 1754545
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.03462991863489151
+  steering_tire_rotation_rate: 0.04017956182360649
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030462
+    nanosec: 1800617
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2214925289154053
+  acceleration: 0.0018487144261598587
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030462
+  nanosec: 152227549
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030462
+    nanosec: 152150222
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.022090859711170197
+  steering_tire_rotation_rate: -0.012184301391243935
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030462
+    nanosec: 152185845
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.21990704536438
+  acceleration: -0.01106137316673994
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030462
+  nanosec: 302290776
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030462
+    nanosec: 302202269
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.018044602125883102
+  steering_tire_rotation_rate: -0.025379180908203125
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030462
+    nanosec: 302250294
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.216956853866577
+  acceleration: -0.026784492656588554
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030462
+  nanosec: 452405144
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030462
+    nanosec: 452326674
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.011456634849309921
+  steering_tire_rotation_rate: -0.031786032021045685
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030462
+    nanosec: 452366595
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.21226167678833
+  acceleration: -0.04462139308452606
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030462
+  nanosec: 602217976
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030462
+    nanosec: 602126073
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.0072123040445148945
+  steering_tire_rotation_rate: -0.030732640996575356
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030462
+    nanosec: 602167526
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.2056381702423096
+  acceleration: -0.06391024589538574
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030462
+  nanosec: 751801280
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030462
+    nanosec: 751714306
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.015715356916189194
+  steering_tire_rotation_rate: 0.017994645982980728
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030462
+    nanosec: 751757973
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.1968376636505127
+  acceleration: -0.08589092642068863
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030462
+  nanosec: 903154908
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030462
+    nanosec: 903073914
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.016680339351296425
+  steering_tire_rotation_rate: 0.002807954326272011
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030462
+    nanosec: 903116620
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.185516834259033
+  acceleration: -0.11060121655464172
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030463
+  nanosec: 52156442
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030463
+    nanosec: 52083132
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.006415842566639185
+  steering_tire_rotation_rate: -0.027965763583779335
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030463
+    nanosec: 52121320
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.171276807785034
+  acceleration: -0.13782937824726105
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030463
+  nanosec: 202248276
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030463
+    nanosec: 202138882
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: 0.00021327212743926793
+  steering_tire_rotation_rate: -0.03914812207221985
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030463
+    nanosec: 202188179
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.1538257598876953
+  acceleration: -0.16724997758865356
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030463
+  nanosec: 352833886
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030463
+    nanosec: 352724793
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.003923974931240082
+  steering_tire_rotation_rate: -0.030414968729019165
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030463
+    nanosec: 352777336
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.1327614784240723
+  acceleration: -0.19855676591396332
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030463
+  nanosec: 502252906
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030463
+    nanosec: 502129737
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.007493492215871811
+  steering_tire_rotation_rate: -0.030464934185147285
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030463
+    nanosec: 502185126
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.107956886291504
+  acceleration: -0.2303212285041809
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030463
+  nanosec: 651840524
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030463
+    nanosec: 651753119
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.015696797519922256
+  steering_tire_rotation_rate: -0.043962329626083374
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030463
+    nanosec: 651793120
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.079315662384033
+  acceleration: -0.26201269030570984
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030463
+  nanosec: 802093534
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030463
+    nanosec: 802004006
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.02069777064025402
+  steering_tire_rotation_rate: -0.0368562676012516
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030463
+    nanosec: 802045980
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.0467772483825684
+  acceleration: -0.2931589186191559
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030463
+  nanosec: 951813829
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030463
+    nanosec: 951731272
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.024316342547535896
+  steering_tire_rotation_rate: -0.03543579578399658
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030463
+    nanosec: 951770612
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 2.0105113983154297
+  acceleration: -0.3233606219291687
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030464
+  nanosec: 102227889
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030464
+    nanosec: 102129254
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.02959790639579296
+  steering_tire_rotation_rate: -0.031858786940574646
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030464
+    nanosec: 102168784
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.9702682495117188
+  acceleration: -0.3524547517299652
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030464
+  nanosec: 251833295
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030464
+    nanosec: 251742484
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0292472206056118
+  steering_tire_rotation_rate: -0.018177976831793785
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030464
+    nanosec: 251790669
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.9272334575653076
+  acceleration: -0.37955865263938904
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030464
+  nanosec: 402536841
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030464
+    nanosec: 402287559
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.037086281925439835
+  steering_tire_rotation_rate: -0.03774695098400116
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030464
+    nanosec: 402350130
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.8805593252182007
+  acceleration: -0.4052388668060303
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030464
+  nanosec: 551839120
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030464
+    nanosec: 551767773
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.05167396739125252
+  steering_tire_rotation_rate: -0.06994945555925369
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030464
+    nanosec: 551804679
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.8306547403335571
+  acceleration: -0.4290162920951843
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030464
+  nanosec: 702236682
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030464
+    nanosec: 702134301
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.05776709318161011
+  steering_tire_rotation_rate: -0.05176829174160957
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030464
+    nanosec: 702181955
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.7778643369674683
+  acceleration: -0.4573184549808502
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030464
+  nanosec: 852515404
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030464
+    nanosec: 852332590
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.059013400226831436
+  steering_tire_rotation_rate: -0.03521968051791191
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030464
+    nanosec: 852436995
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.722367525100708
+  acceleration: -0.48452380299568176
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030465
+  nanosec: 2098932
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030465
+    nanosec: 2020062
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.06223456934094429
+  steering_tire_rotation_rate: -0.02535567432641983
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030465
+    nanosec: 2058881
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.6641582250595093
+  acceleration: -0.513155460357666
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030465
+  nanosec: 151838623
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030465
+    nanosec: 151754003
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.06562766432762146
+  steering_tire_rotation_rate: -0.029539797455072403
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030465
+    nanosec: 151797210
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.6031839847564697
+  acceleration: -0.5430836081504822
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030465
+  nanosec: 302089833
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030465
+    nanosec: 302001035
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.07312505692243576
+  steering_tire_rotation_rate: -0.03838665783405304
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030465
+    nanosec: 302045113
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.5394757986068726
+  acceleration: -0.5704368948936462
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030465
+  nanosec: 451698341
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030465
+    nanosec: 451606909
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08000808209180832
+  steering_tire_rotation_rate: -0.04537443444132805
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030465
+    nanosec: 451652399
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.4733577966690063
+  acceleration: -0.5999699234962463
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030465
+  nanosec: 602163520
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030465
+    nanosec: 602028050
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08547863364219666
+  steering_tire_rotation_rate: -0.03971584886312485
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030465
+    nanosec: 602073941
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.404731273651123
+  acceleration: -0.6270800232887268
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030465
+  nanosec: 751894596
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030465
+    nanosec: 751828659
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08660687506198883
+  steering_tire_rotation_rate: -0.02464635856449604
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030465
+    nanosec: 751862749
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.3337481021881104
+  acceleration: -0.6551427245140076
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030465
+  nanosec: 902092671
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030465
+    nanosec: 902002280
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08313701301813126
+  steering_tire_rotation_rate: 0.0006146543892100453
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030465
+    nanosec: 902046850
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.260485291481018
+  acceleration: -0.6806315779685974
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030466
+  nanosec: 52284286
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030466
+    nanosec: 52185291
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08857400715351105
+  steering_tire_rotation_rate: -0.024943208321928978
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030466
+    nanosec: 52235119
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.1850404739379883
+  acceleration: -0.7060385942459106
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030466
+  nanosec: 201701101
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030466
+    nanosec: 201632569
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09074030816555023
+  steering_tire_rotation_rate: -0.010832986794412136
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030466
+    nanosec: 201668302
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.1074211597442627
+  acceleration: -0.7281132340431213
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030466
+  nanosec: 351756008
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030466
+    nanosec: 351664465
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08361000567674637
+  steering_tire_rotation_rate: 0.011572775430977345
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030466
+    nanosec: 351711018
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 1.028352975845337
+  acceleration: -0.7448455691337585
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030466
+  nanosec: 501716407
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030466
+    nanosec: 501640302
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.08899624645709991
+  steering_tire_rotation_rate: -0.01150174904614687
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030466
+    nanosec: 501677839
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.9480839371681213
+  acceleration: -0.7625399827957153
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030466
+  nanosec: 651995031
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030466
+    nanosec: 651931057
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0968102216720581
+  steering_tire_rotation_rate: -0.0329027883708477
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030466
+    nanosec: 651964607
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.8659968376159668
+  acceleration: -0.7748945951461792
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030466
+  nanosec: 801725222
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030466
+    nanosec: 801651060
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.10679660737514496
+  steering_tire_rotation_rate: -0.053037866950035095
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030466
+    nanosec: 801686954
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.7841118574142456
+  acceleration: -0.7844253778457642
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030466
+  nanosec: 951695158
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030466
+    nanosec: 951625304
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.11501899361610413
+  steering_tire_rotation_rate: -0.05066434666514397
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030466
+    nanosec: 951660977
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.7014077305793762
+  acceleration: -0.788946270942688
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030467
+  nanosec: 102137647
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030467
+    nanosec: 101988793
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.11224991083145142
+  steering_tire_rotation_rate: -0.0170514564961195
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030467
+    nanosec: 102078482
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.8018501996994019
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030467
+  nanosec: 252128407
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030467
+    nanosec: 252018351
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.10872546583414078
+  steering_tire_rotation_rate: 0.003215511329472065
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030467
+    nanosec: 252079430
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.80488520860672
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030467
+  nanosec: 401984747
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030467
+    nanosec: 401912269
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1066175177693367
+  steering_tire_rotation_rate: 0.0076110404916107655
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030467
+    nanosec: 401948743
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.8077669739723206
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030467
+  nanosec: 552133587
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030467
+    nanosec: 552020567
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.10989902913570404
+  steering_tire_rotation_rate: -0.009446335025131702
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030467
+    nanosec: 552073230
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.5102859735488892
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030467
+  nanosec: 701795072
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030467
+    nanosec: 701714379
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.1080537810921669
+  steering_tire_rotation_rate: 0.006372243165969849
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030467
+    nanosec: 701755662
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.412151038646698
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030467
+  nanosec: 851976420
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030467
+    nanosec: 851899554
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.100179024040699
+  steering_tire_rotation_rate: 0.026672815904021263
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030467
+    nanosec: 851941628
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.4146183431148529
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030468
+  nanosec: 3458918
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030468
+    nanosec: 3064728
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.10003377497196198
+  steering_tire_rotation_rate: 0.014005977660417557
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030468
+    nanosec: 3237916
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.4169614017009735
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030468
+  nanosec: 152346375
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030468
+    nanosec: 152208840
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.10059104859828949
+  steering_tire_rotation_rate: 0.006131921894848347
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030468
+    nanosec: 152278204
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.4191865622997284
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030468
+  nanosec: 302380427
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030468
+    nanosec: 302281922
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0998532697558403
+  steering_tire_rotation_rate: 0.004627715330570936
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030468
+    nanosec: 302333985
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.42129984498023987
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030468
+  nanosec: 452255958
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030468
+    nanosec: 452130996
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09976848214864731
+  steering_tire_rotation_rate: 0.00414153840392828
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030468
+    nanosec: 452183179
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.423306941986084
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030468
+  nanosec: 601899157
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030468
+    nanosec: 601810099
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0991302952170372
+  steering_tire_rotation_rate: 0.0031403398606926203
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030468
+    nanosec: 601855109
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.4252133071422577
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030468
+  nanosec: 752426014
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030468
+    nanosec: 752311741
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09929324686527252
+  steering_tire_rotation_rate: 0.0021146945655345917
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030468
+    nanosec: 752361690
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.42702409625053406
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030468
+  nanosec: 902303789
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030468
+    nanosec: 902149185
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030468
+    nanosec: 902229367
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -0.42874419689178467
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030469
+  nanosec: 52391369
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030469
+    nanosec: 52252332
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030469
+    nanosec: 52316216
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030469
+  nanosec: 202009349
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030469
+    nanosec: 201896479
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030469
+    nanosec: 201941468
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030469
+  nanosec: 352012423
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030469
+    nanosec: 351904221
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030469
+    nanosec: 351952106
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030469
+  nanosec: 502339802
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030469
+    nanosec: 502229987
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030469
+    nanosec: 502279525
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030469
+  nanosec: 652109451
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030469
+    nanosec: 651973370
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030469
+    nanosec: 652031403
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030469
+  nanosec: 802100305
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030469
+    nanosec: 801991041
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030469
+    nanosec: 802039137
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030469
+  nanosec: 952087822
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030469
+    nanosec: 951960847
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09895801544189453
+  steering_tire_rotation_rate: 0.0014332685386762023
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030469
+    nanosec: 952016916
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030470
+  nanosec: 102055087
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030470
+    nanosec: 101934322
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09897403419017792
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030470
+    nanosec: 101994599
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030470
+  nanosec: 251933305
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030470
+    nanosec: 251829701
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896695613861084
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030470
+    nanosec: 251877596
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030470
+  nanosec: 402047021
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030470
+    nanosec: 401931095
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.0989658385515213
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030470
+    nanosec: 401981956
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030470
+  nanosec: 552101963
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030470
+    nanosec: 551995524
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896820783615112
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030470
+    nanosec: 552041776
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030470
+  nanosec: 702101707
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030470
+    nanosec: 701997562
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896745532751083
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030470
+    nanosec: 702044395
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030470
+  nanosec: 852300013
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030470
+    nanosec: 852186722
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896715730428696
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030470
+    nanosec: 852241049
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030471
+  nanosec: 2286404
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030471
+    nanosec: 2048081
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896749258041382
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030471
+    nanosec: 2160450
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030471
+  nanosec: 152101717
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030471
+    nanosec: 151987404
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896742552518845
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030471
+    nanosec: 152040268
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030471
+  nanosec: 301999726
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030471
+    nanosec: 301928480
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896736592054367
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030471
+    nanosec: 301964484
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030471
+  nanosec: 452067207
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030471
+    nanosec: 451952353
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896741062402725
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030471
+    nanosec: 452004526
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030471
+  nanosec: 602235346
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030471
+    nanosec: 602123497
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030471
+    nanosec: 602170411
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030471
+  nanosec: 752085020
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030471
+    nanosec: 751990031
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896739572286606
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030471
+    nanosec: 752031475
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030471
+  nanosec: 902063823
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030471
+    nanosec: 901963375
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030471
+    nanosec: 902009086
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030472
+  nanosec: 52231493
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030472
+    nanosec: 52089301
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030472
+    nanosec: 52151261
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030472
+  nanosec: 201928172
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030472
+    nanosec: 201843571
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030472
+    nanosec: 201882901
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030472
+  nanosec: 351800702
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030472
+    nanosec: 351725739
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030472
+    nanosec: 351761072
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030472
+  nanosec: 502112282
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030472
+    nanosec: 502011283
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030472
+    nanosec: 502057014
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030472
+  nanosec: 652626212
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030472
+    nanosec: 652544256
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030472
+    nanosec: 652580531
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030472
+  nanosec: 802371386
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030472
+    nanosec: 802232700
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030472
+    nanosec: 802307062
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030472
+  nanosec: 951839629
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030472
+    nanosec: 951766940
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030472
+    nanosec: 951799447
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030473
+  nanosec: 102259816
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030473
+    nanosec: 102179483
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030473
+    nanosec: 102222339
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030473
+  nanosec: 253250388
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030473
+    nanosec: 253025499
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030473
+    nanosec: 253134702
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030473
+  nanosec: 401818879
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030473
+    nanosec: 401753072
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030473
+    nanosec: 401785770
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030473
+  nanosec: 552583690
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030473
+    nanosec: 552486738
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030473
+    nanosec: 552535895
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030473
+  nanosec: 701686630
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030473
+    nanosec: 701621755
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030473
+    nanosec: 701653011
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030473
+  nanosec: 852909024
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030473
+    nanosec: 852638794
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030473
+    nanosec: 852751945
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030474
+  nanosec: 2371763
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030474
+    nanosec: 2245840
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030474
+    nanosec: 2311917
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---
+stamp:
+  sec: 1750030474
+  nanosec: 152238496
+control_time:
+  sec: 0
+  nanosec: 0
+lateral:
+  stamp:
+    sec: 1750030474
+    nanosec: 152164043
+  control_time:
+    sec: 0
+    nanosec: 0
+  steering_tire_angle: -0.09896740317344666
+  steering_tire_rotation_rate: 0.0
+  is_defined_steering_tire_rotation_rate: false
+longitudinal:
+  stamp:
+    sec: 1750030474
+    nanosec: 152193957
+  control_time:
+    sec: 0
+    nanosec: 0
+  velocity: 0.0
+  acceleration: -3.4000000953674316
+  jerk: 0.0
+  is_defined_acceleration: false
+  is_defined_jerk: false
+---

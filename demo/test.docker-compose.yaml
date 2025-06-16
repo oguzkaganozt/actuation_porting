@@ -1,0 +1,48 @@
+services:
+  safety-island-autoware:
+    network_mode: host
+    image: ghcr.io/autowarefoundation/autoware:universe-20250207
+    volumes:
+      - $HOME/autoware_map/sample-map-planning:/root/autoware_map
+      - ./cyclonedds.xml:/autoware/cyclonedds.xml
+      - ./autoware/control.launch.xml:/opt/autoware/share/tier4_control_launch/launch/control.launch.xml
+      # - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=2
+      - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
+      # - DISPLAY=$DISPLAY
+    command: >
+      ros2 launch autoware_launch planning_simulator.launch.xml
+      map_path:=/root/autoware_map
+      vehicle_model:=sample_vehicle
+      sensor_model:=sample_sensor_kit
+      rviz:=false
+  
+  safety-island-visualizer:
+    network_mode: host
+    build:
+      context: .
+      dockerfile: visualizer/Dockerfile
+    volumes:
+      - ./cyclonedds.xml:/autoware/cyclonedds.xml
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=2
+      - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
+    ports:
+      - 6080:6080
+
+  safety-island-actuation:
+    network_mode: host
+    image: ghcr.io/autowarefoundation/autoware:universe-20250207
+    volumes:
+      - ./cyclonedds.xml:/autoware/cyclonedds.xml
+      - ./control-module/control-module.launch.xml:/autoware/control-module.launch.xml
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=2
+      - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
+    command: >
+      ros2 launch /autoware/control-module.launch.xml
+      vehicle_model:=sample_vehicle

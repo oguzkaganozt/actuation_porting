@@ -41,7 +41,7 @@
     <param from="$(var lon_controller_param_path)"/>
     <param from="$(var lat_controller_param_path)"/>
     <param from="$(var vehicle_param_file)"/>
-    <param name="ctrl_period" value="0.12"/>
+    <param name="ctrl_period" value="0.15"/>
     <param name="timeout_thr_sec" value="0.5"/>
   </node>
 </launch>
