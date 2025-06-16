@@ -3,7 +3,7 @@ services:
     network_mode: host
     image: ghcr.io/autowarefoundation/autoware:universe-20250207
     volumes:
-      - $HOME/autoware_map/sample-map-planning:/root/autoware_map
+      - ./map/sample-map-planning:/root/autoware_map
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
       - ./autoware/control.launch.xml:/opt/autoware/share/tier4_control_launch/launch/control.launch.xml
       # - /tmp/.X11-unix:/tmp/.X11-unix
