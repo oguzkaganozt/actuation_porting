@@ -39,7 +39,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
 {
   using std::placeholders::_1;
 
-  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.15); // 0.03
+  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.14); // 0.03
   timeout_thr_sec_ = declare_parameter<double>("timeout_thr_sec", 0.5);
 
   const auto lateral_controller_mode =
@@ -254,7 +254,7 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
 
 void Controller::callbackTimerControl()
 {
-  log_debug("Timer control callback");
+  // log_debug("Timer control callback");
 
   // 1. create input data
   const auto input_data = createInputData();
@@ -309,17 +309,26 @@ void Controller::callbackTimerControl()
   longitudinal_controller_->sync(lat_out.sync_data);
   lateral_controller_->sync(lon_out.sync_data);
 
+  log_debug("Controllers synced");
+
   // TODO(Horibe): Think specification. This comes from the old implementation.
   // if (isTimeOut(lon_out, lat_out)) return;
 
   // 5. publish control command
-  ControlMsg out;
-  out.stamp = Clock::toRosTime(Clock::now());
-  out.lateral = lat_out.control_cmd;
-  out.longitudinal = lon_out.control_cmd;
-  control_cmd_pub_->publish(out);
+  publishControlCommand(lon_out, lat_out);
+}
 
-  log_debug("Control command published");
+void Controller::publishControlCommand(const trajectory_follower::LongitudinalOutput & lon_out, const trajectory_follower::LateralOutput & lat_out) {
+  ControlMsg out{0};
+  out.stamp = Clock::toRosTime(Clock::now());
+  out.lateral.steering_tire_angle = lat_out.control_cmd.steering_tire_angle;
+  out.lateral.steering_tire_rotation_rate = lat_out.control_cmd.steering_tire_rotation_rate;
+  out.longitudinal = lon_out.control_cmd;
+  if (control_cmd_pub_->publish(out)) {
+    log_debug("Control command published");
+  } else {
+    log_error("Control command not published");
+  }
 }
 
 void Controller::publishProcessingTime(

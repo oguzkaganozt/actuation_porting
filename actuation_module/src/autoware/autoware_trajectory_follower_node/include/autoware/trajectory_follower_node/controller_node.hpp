@@ -118,6 +118,9 @@ private:
     const std::string & algorithm_name) const;
 
   //
+  void publishControlCommand(const trajectory_follower::LongitudinalOutput & lon_out, const trajectory_follower::LateralOutput & lat_out);
+
+  //
   void publishProcessingTime(
     const double t_ms, const std::shared_ptr<Publisher<Float64StampedMsg>> pub);
 
