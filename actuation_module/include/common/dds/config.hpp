@@ -32,6 +32,12 @@ static struct ddsi_config_network_interface_listelem cfg_iface
   }
 };
 
+static struct ddsi_config_ignoredpartition_listelem cfg_ignoredpartition
+{
+  nullptr,
+  const_cast<char *>("*.*")
+};
+
 /**
  * @brief Initialize a given DDS configuration structure.
  * @param[out] cfg Configuration structure that will be filled.
@@ -53,13 +59,17 @@ inline static void init_config(struct ddsi_config & cfg)
   // Network interface
   cfg.network_interfaces = &cfg_iface;
 
+  // cfg.enable_topic_discovery_endpoints = DDSI_BOOLDEF_FALSE;
+
+  // cfg.ignoredPartitions = &cfg_ignoredpartition;
+
   // Processing
   cfg.retransmit_merging = DDSI_REXMIT_MERGE_ALWAYS;
   // cfg.multiple_recv_threads = DDSI_BOOLDEF_FALSE;  // TODO: Check if this is required
 
   // Buffers
-  cfg.rbuf_size = 128 * 1024;
-  cfg.rmsg_chunk_size = 32 * 1024;
+  cfg.rbuf_size = 32 * 1024;
+  cfg.rmsg_chunk_size = 8 * 1024;
   cfg.max_msg_size = 1400;
 
   // Discovery
