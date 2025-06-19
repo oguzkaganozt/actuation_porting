@@ -31,9 +31,99 @@ Island on an `Arm Virtual Hardware
   In the PDF document format, be aware that special characters are added when
   lines get wrapped.
 
+***********
+AVH script
+***********
+
+The ``avh.py`` script is provided to simplify the interaction with Arm Virtual
+Hardware. It automates many of the steps described in this guide, such as
+building the firmware, creating and managing AVH instances, and handling VPN
+connections.
+
+It is highly recommended to use this script for managing the AVH environment.
+
+Configuration
+=============
+
+The script requires API credentials and configuration details to be set as
+environment variables. These can be placed in a ``.env`` file in the root of
+the repository. A ``template.env`` file is provided as a starting point.
+
+.. code-block:: bash
+
+  # Copy the template file
+  cp template.env .env
+
+Edit the ``.env`` file with the following information:
+
+- ``AVH_API_ENDPOINT``: The API endpoint for your AVH service.
+- ``AVH_API_TOKEN``: Your AVH API token.
+- ``AVH_PROJECT_NAME``: The name of your AVH project.
+- ``AVH_INSTANCE_NAME``: The desired name for your AVH instance.
+- ``AVH_INSTANCE_FLAVOR``: The AVH instance flavor to use (e.g., ``cortex-r82-fvp``).
+
+Usage
+=====
+
+The script provides several options for managing the firmware and the AVH
+instance.
+
+.. code-block:: console
+
+  $ ./avh.py --help
+  usage: avh.py [-h] [--build [{main,test,test-subscriber,test-publisher}] | --rebuild [{main,test,test-subscriber,test-publisher}]] [--test-auth] [--vpn-connect] [--vpn-disconnect] [--deploy] [--reboot] [--ssh]
+
+  AVH Firmware Management Script
+
+  options:
+    -h, --help            show this help message and exit
+    --build [{main,test,test-subscriber,test-publisher}]
+                          Build firmware (main, test, test-subscriber, test-publisher). Defaults to main if no choice specified.
+    --rebuild [{main,test,test-subscriber,test-publisher}]
+                          Rebuild firmware from clean state. Defaults to main if no choice specified.
+    --test-auth           Test AVH API authentication
+    --vpn-connect         Connect to VPN
+    --vpn-disconnect      Disconnect from VPN
+    --deploy              Deploy firmware to instance
+    --reboot              Reboot instance
+    --ssh                 Connect to instance console
+
+
+Examples
+========
+
+Build the main firmware:
+
+.. code-block:: console
+
+    $ ./avh.py --build
+
+Build and deploy the main firmware:
+
+.. code-block:: console
+
+    $ ./avh.py --build --deploy
+
+Rebuild the firmware from a clean state and deploy it:
+
+.. code-block:: console
+
+    $ ./avh.py --rebuild --deploy
+
+Connect to the instance console:
+
+.. code-block:: console
+
+    $ ./avh.py --ssh
+
 ************************
 Zephyr application build
 ************************
+
+.. note::
+
+  The ``avh.py`` script can be used to build the firmware. See the `AVH script`
+  section for more details.
 
 On a local machine (validated with Ubuntu 22.04), a suitable environment is
 needed to build the Zephyr application. Please follow the official
@@ -60,6 +150,11 @@ The resulting Zephyr binary is located at
 ***********************
 Virtual machines launch
 ***********************
+
+.. note::
+
+    The ``avh.py`` script can be used to manage the AVH instance and VPN
+    connection. See the `AVH script` section for more details.
 
 AVH launch
 ==========
