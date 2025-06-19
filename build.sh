@@ -100,7 +100,7 @@ function clean() {
 }
 
 function build_cyclonedds_host() {
-  # Build CycloneDDS host tools
+  echo -e "${GREEN}Building CycloneDDS host tools...${NC}"
   mkdir -p build/cyclonedds_host
   pushd build/cyclonedds_host
   cmake -DCMAKE_INSTALL_PREFIX="$(pwd)"/out -DENABLE_SECURITY=OFF -DENABLE_SSL=OFF -DBUILD_IDLC=ON -DBUILD_SHARED_LIBS=ON -DENABLE_SHM=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DBUILD_DDSPERF=OFF "${ROOT_DIR}"/cyclonedds
@@ -109,12 +109,12 @@ function build_cyclonedds_host() {
 }
 
 function build_actuation_module() {
+  echo -e "${GREEN}Building Zephyr Actuation Module...${NC}"
   typeset PATH="${ROOT_DIR}"/build/cyclonedds_host/out/bin:$PATH
   typeset LD_LIBRARY_PATH="${ROOT_DIR}"/build/cyclonedds_host/out/lib
   typeset CMAKE_PREFIX_PATH=""
   typeset AMENT_PREFIX_PATH=""
 
-  # Build Zephyr elf
   west build -p auto -d build/actuation_module -b "${ZEPHYR_TARGET}" actuation_module/ -- \
     -DZEPHYR_TARGET="${ZEPHYR_TARGET}" \
     -DCYCLONEDDS_SRC="${ROOT_DIR}"/cyclonedds \
