@@ -16,11 +16,7 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-project(actuation_msgs)
-
-# Require that dependencies from package.xml be available
-find_package(autoware_cmake REQUIRED)
-autoware_package()
+project(autoware_msgs)
 
 # idlc is a host tool, and doesn't care about the architecture of the target platform.
 # Prevent cmake from checking the architecture by temporarily unsetting CMAKE_SIZEOF_VOID_P.
@@ -30,9 +26,9 @@ find_package(CycloneDDS REQUIRED COMPONENTS ddsc idlc)
 set(CMAKE_SIZEOF_VOID_P ${TMP_CMAKE_SIZEOF_VOID_P})
 
 file(GLOB IDL_FILES msg/*.idl)
-list(TRANSFORM IDL_FILES REPLACE "\.idl" "\.c" OUTPUT_VARIABLE SOURCES)
+list(TRANSFORM IDL_FILES REPLACE "\\.idl" ".c" OUTPUT_VARIABLE SOURCES)
 list(TRANSFORM SOURCES REPLACE ".*/" "${CMAKE_CURRENT_BINARY_DIR}/")
-list(TRANSFORM SOURCES REPLACE "\.c$" "\.h" OUTPUT_VARIABLE HEADERS)
+list(TRANSFORM SOURCES REPLACE "\\.c$" ".h" OUTPUT_VARIABLE HEADERS)
 
 execute_process(
   COMMAND idlc -v
@@ -51,33 +47,33 @@ endif()
 # Edit out potential absolute path to the source .idl from the resulting .c and .h files.
 add_custom_command(
   OUTPUT ${SOURCES} ${HEADERS}
-  COMMAND find ${CMAKE_CURRENT_SOURCE_DIR}/msg/ -maxdepth 1 -name "*.idl" -exec idlc {} "\;"
-  COMMAND sed -i -- "'s/\\(\\/.\\+\\/\\)\\(.\\+\\.idl\\)/\\2/'" *.h *.c
+  COMMAND /bin/sh -c "find ${CMAKE_CURRENT_SOURCE_DIR}/msg/ -maxdepth 1 -name '*.idl' -exec idlc {} \\; && sed -i -- 's|/\\(.\\+\\)/\\(.*\\.idl\\)|\\2|' *.h *.c"
   DEPENDS ${IDL_FILES}
+  VERBATIM
 )
 
-ament_auto_add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME}
   ${SOURCES}
   ${HEADERS}
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES
-  SOVERSION 1
   LINKER_LANGUAGE CXX
 )
 
 get_target_property(CycloneDDS_INCLUDE_DIR CycloneDDS::ddsc INTERFACE_INCLUDE_DIRECTORIES)
 target_include_directories(${PROJECT_NAME} SYSTEM BEFORE PUBLIC
   ${CycloneDDS_INCLUDE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
 
-ament_export_include_directories(${CMAKE_INSTALL_PREFIX}/include)
-install(FILES ${HEADERS} DESTINATION include)
-
-# Testing
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
-# Ament package generation and installation
-ament_auto_package()
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+install(
+  FILES ${HEADERS}
+  DESTINATION include/autoware/autoware_msgs
+)
+install(
+  DIRECTORY include/autoware/
+  DESTINATION include/autoware
+)

@@ -30,7 +30,7 @@
 #include "autoware_vehicle_info_utils/vehicle_info_utils.hpp"
 
 #include "common/logger/logger.hpp"
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 using namespace common::logger;
 
 namespace autoware::motion::control::mpc_lateral_controller

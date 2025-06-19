@@ -19,7 +19,7 @@
 
 #include "autoware/interpolation/spline_interpolation.hpp"
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::interpolation
 {

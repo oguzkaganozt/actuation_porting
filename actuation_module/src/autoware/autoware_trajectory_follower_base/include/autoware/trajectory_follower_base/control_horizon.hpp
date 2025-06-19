@@ -17,7 +17,7 @@
 
 #include <vector>
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {

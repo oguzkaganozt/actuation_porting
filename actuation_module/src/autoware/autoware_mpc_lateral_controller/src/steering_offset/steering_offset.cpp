@@ -18,7 +18,7 @@
 #include <iostream>
 #include <numeric>
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 SteeringOffsetEstimator::SteeringOffsetEstimator(
   double wheelbase, double average_num, double vel_thres, double steer_thres, double offset_limit)

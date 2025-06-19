@@ -15,7 +15,7 @@
 #ifndef AUTOWARE__TRAJECTORY_FOLLOWER_BASE__INPUT_DATA_HPP_
 #define AUTOWARE__TRAJECTORY_FOLLOWER_BASE__INPUT_DATA_HPP_
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::motion::control::trajectory_follower
 {
