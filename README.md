@@ -16,15 +16,34 @@
 | Autoware.Universe | [0.40.0](https://github.com/autowarefoundation/autoware.universe/tree/0.40.0) |
 | Autoware.msgs | [1.3.0](https://github.com/autowarefoundation/autoware_msgs/tree/1.3.0) |
 
-## Autoware Nodes
-| Node | Subscribed Topics | Published Topics | Status |
-|------|--------------------|-------------------|--------|
-| **vehicle_info** | None | None | ✅ Completed |
-| **autoware_pid_longitudinal_controller** | None | **Topic:** `longitudinal/diagnostic` <br>**Message:** `tier4_debug_msgs/Float32MultiArrayStamped`<br> **Description:** Longitidunal diagnostics. <hr>**Topic:** `longitudinal/slope_angle` <br>**Message:** `tier4_debug_msgs/Float32MultiArrayStamped`<br> **Description:** Longitidunal slope angle<hr>**Topic:** `longitudinal/stop_reason` <br>**Message:** `visualization_msgs/Marker`<br> **Description:** Stop reason<hr> | ✅ Completed |
-| **autoware_mpc_lateral_controller** | None |**Topic:** `lateral/diagnostic` <br>**Message:** `tier4_debug_msgs/Float32MultiArrayStamped`<br> **Description:** Lateral diagnostics <hr>**Topic:** `lateral/predicted_trajectory`<br>**Message:** `autoware_planning_msgs/Trajectory`<br>**Description:** (The trajectory size will be empty <br>when the controller is in an emergency such as,<br> too large deviation from the planning trajectory) | ✅ Completed |
-| **autoware_trajectory_follower_node** |**Topic:** `/planning/scenario_planning/trajectory` <br>**Message:** `autoware_planning_msgs/Trajectory`<br>**Description:** Reference trajectory to follow<hr>**Topic:** `/localization/kinematic_state`<br>**Message:** `nav_msgs/Odometry`<br>**Description:** Current odometry<hr>**Topic:** `/vehicle/status/steering_status` <br>**Message:**`autoware_vehicle_msgs/SteeringReport`<br>**Description:** Current steering <hr>**Topic:** `/localization/acceleration` <br>**Message:**`geometry_msgs/AccelWithCovarianceStamped`<br>**Description:** Current acceleration<hr>**Topic:** `/system/operation_mode/state` <br>**Message:**`autoware_adapi_v1_msgs/OperationModeState`<br>**Description:** System operation mode |**Topic:** `control_cmd` <br>**Message:** `autoware_control_msgs/Control`<br> **Description:** Message containing both lateral and longitudinal commands.| ✅ Completed |
+## Workflow
 
-![trajectory_follower](https://github.com/user-attachments/assets/327f9b8e-e089-4d9b-ada7-621fbcb20e97)
+```mermaid
+graph TD
+    subgraph Inputs
+        Trajectory["Trajectory<br/>(TrajectoryMsg_Raw)"]
+        Odometry["Odometry<br/>(OdometryMsg)"]
+        Steering["Steering<br/>(SteeringReportMsg)"]
+        Acceleration["Acceleration<br/>(AccelWithCovarianceStampedMsg)"]
+        OperationMode["Operation Mode<br/>(OperationModeStateMsg)"]
+    end
+
+    subgraph "Actuation Module"
+        ControllerNode["Controller Node<br/><br/>Lateral Controller: MPC or Pure Pursuit<br/>Longitudinal Controller: PID"]
+    end
+    
+    subgraph Outputs
+        ControlCommand["Control Command<br/>(ControlMsg)"]
+    end
+
+    Trajectory --> ControllerNode
+    Odometry --> ControllerNode
+    Steering --> ControllerNode
+    Acceleration --> ControllerNode
+    OperationMode --> ControllerNode
+    
+    ControllerNode --> ControlCommand
+```
 
 ## Autoware Node Dependencies
 
@@ -47,6 +66,6 @@
 |--------------|---------------|---------|
 | RCL Logging  | Custom Logger | ✅ Completed |
 | RCL Node     | POSIX Threads | ✅ Completed |
-| RCL Timers   | POSIX Timers | ✅ Completed |
+| RCL Timers   | Software Timers | ✅ Completed |
 | RCL Publisher | CycloneDDS | ✅ Completed |
 | RCL Subscriber | CycloneDDS | ✅ Completed |
