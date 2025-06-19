@@ -39,7 +39,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
 {
   using std::placeholders::_1;
 
-  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.15); // 0.03
+  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.14); // 0.03
   timeout_thr_sec_ = declare_parameter<double>("timeout_thr_sec", 0.5);
 
   const auto lateral_controller_mode =
@@ -254,7 +254,7 @@ std::optional<trajectory_follower::InputData> Controller::createInputData()
 
 void Controller::callbackTimerControl()
 {
-  log_debug("Timer control callback");
+  // log_debug("Timer control callback");
 
   // 1. create input data
   const auto input_data = createInputData();
@@ -288,29 +288,47 @@ void Controller::callbackTimerControl()
 
   publishProcessingTime(stop_watch_.toc("lateral"), pub_processing_time_lat_ms_);
 
-  // stop_watch_.tic("longitudinal");
-  // const auto lon_out = longitudinal_controller_->run(*input_data);
-  // log_debug("Longitudinal controller ran");
-  // stop_watch_.toc("longitudinal");
-  // log_debug("Longitudinal controller elapsed time: %f", stop_watch_.toc("longitudinal"));
+  stop_watch_.tic("longitudinal");
+  const auto lon_out = longitudinal_controller_->run(*input_data);
+  stop_watch_.toc("longitudinal");
+  log_debug("Longitudinal controller elapsed time: %f", stop_watch_.toc("longitudinal"));
 
-  // publishProcessingTime(stop_watch_.toc("longitudinal"), pub_processing_time_lon_ms_);
+  // TODO: do not calculate jerk here, it is not used !
+  log_debug("-------LON OUT--", 0);
+  log_debug("Longitudinal output: %f", lon_out.control_cmd.velocity);
+  log_debug("Longitudinal acceleration: %f", lon_out.control_cmd.acceleration);
+  log_debug("Longitudinal is defined acceleration: %s", lon_out.control_cmd.is_defined_acceleration ? "true" : "false");
+  log_debug("Longitudinal is defined jerk: %s", lon_out.control_cmd.is_defined_jerk ? "true" : "false");
+  log_debug("-------------------------------");
+
+  publishProcessingTime(stop_watch_.toc("longitudinal"), pub_processing_time_lon_ms_);
 
   log_debug("Controllers ran");
 
   // 4. sync with each other controllers
-  // longitudinal_controller_->sync(lat_out.sync_data);
-  // lateral_controller_->sync(lon_out.sync_data);
+  longitudinal_controller_->sync(lat_out.sync_data);
+  lateral_controller_->sync(lon_out.sync_data);
+
+  log_debug("Controllers synced");
 
   // TODO(Horibe): Think specification. This comes from the old implementation.
   // if (isTimeOut(lon_out, lat_out)) return;
 
   // 5. publish control command
-  ControlMsg out;
+  publishControlCommand(lon_out, lat_out);
+}
+
+void Controller::publishControlCommand(const trajectory_follower::LongitudinalOutput & lon_out, const trajectory_follower::LateralOutput & lat_out) {
+  ControlMsg out{0};
   out.stamp = Clock::toRosTime(Clock::now());
-  out.lateral = lat_out.control_cmd;
-  // out.longitudinal = lon_out.control_cmd;
-  // control_cmd_pub_->publish(out);
+  out.lateral.steering_tire_angle = lat_out.control_cmd.steering_tire_angle;
+  out.lateral.steering_tire_rotation_rate = lat_out.control_cmd.steering_tire_rotation_rate;
+  out.longitudinal = lon_out.control_cmd;
+  if (control_cmd_pub_->publish(out)) {
+    log_debug("Control command published");
+  } else {
+    log_error("Control command not published");
+  }
 }
 
 void Controller::publishProcessingTime(

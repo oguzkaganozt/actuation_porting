@@ -1,38 +1,39 @@
-<!--
-    # Copyright (c) 2024-2025, Arm Limited.
-    # SPDX-License-Identifier: Apache-2.0
--->
-
 <?xml version="1.0" encoding="UTF-8" ?>
 <CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+ <Domain id="2">
+    <General>
+      <AllowMulticast>spdp</AllowMulticast>
+      <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
+        <Interfaces>
+            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
+            <!-- <NetworkInterface autodetermine="false" priority="default" multicast="default" name="docker0"/> -->
+        </Interfaces>
+    </General>
 
-    <!--Safety Island-->
-    <Domain id="2"> <!--Should be aligned with the value of DDS_DOMAIN_ACTUATION in the code-->
-        <General>
-            <AllowMulticast>spdp</AllowMulticast>
-            <MaxMessageSize>1456B</MaxMessageSize> <!--Accommodate for Zephyr's MTU-->
-            <Interfaces>
-                <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
-                <!-- <NetworkInterface autodetermine="true" priority="default" multicast="default"/> -->
-            </Interfaces>
-        </General>
-        <Sizing>
-            <ReceiveBufferSize>16384B</ReceiveBufferSize>
-            <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
-        </Sizing>
-        <Discovery>
-            <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
-            <!-- <ParticipantIndex>auto</ParticipantIndex> -->
-            <ParticipantIndex>none</ParticipantIndex>
-            <!-- <Peers> -->
-                <!-- <Peer Address="10.11.0.1" /> IP of the remote machine, should not be needed in case of local network -->
-            <!-- </Peers> -->
-        </Discovery>
-        <!-- <Tracing>
-            <AppendToFile>true</AppendToFile>
-            <Category>trace</Category>
-            <Verbosity>finest</Verbosity>
-            <OutputFile>cyclonedds.log</OutputFile>
-        </Tracing> -->
-    </Domain>
+    <Sizing>
+      <ReceiveBufferSize>16384B</ReceiveBufferSize>
+      <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
+    </Sizing>
+
+    <Discovery>
+      <ParticipantIndex>none</ParticipantIndex>
+      <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
+      <!-- <ParticipantIndex>auto</ParticipantIndex> -->
+      <!-- <Peers> -->
+          <!-- <Peer Address="10.11.0.1" /> --> <!-- IP of the remote machine, should not be needed in case of local network -->
+      <!-- </Peers> -->
+    </Discovery>
+
+    <!-- <Partitioning>
+        <NetworkPartitions>
+            <NetworkPartition Name="LOCAL"   Address="172.17.0.1"/>
+            <NetworkPartition Name="NET"     Address="10.11.3.3"/>
+        </NetworkPartitions>
+
+        <PartitionMappings>
+            <PartitionMapping DCPSPartitionTopic="/debug/errors"   NetworkPartition="NET"/>
+            <PartitionMapping DCPSPartitionTopic="*"                NetworkPartition="LOCAL"/>
+        </PartitionMappings>
+    </Partitioning> -->
+  </Domain>
 </CycloneDDS>
