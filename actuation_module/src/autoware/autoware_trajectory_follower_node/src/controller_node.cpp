@@ -39,7 +39,7 @@ Controller::Controller() : Node("controller", node_stack, STACK_SIZE)
 {
   using std::placeholders::_1;
 
-  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.14); // 0.03
+  const double ctrl_period = declare_parameter<double>("ctrl_period", 0.15);  // TODO: Orignal autoware period is 0.03 30ms
   timeout_thr_sec_ = declare_parameter<double>("timeout_thr_sec", 0.5);
 
   const auto lateral_controller_mode =
@@ -316,6 +316,9 @@ void Controller::callbackTimerControl()
 
   // 5. publish control command
   publishControlCommand(lon_out, lat_out);
+
+  // 6. Reset flags for next cycle
+  reset_data_flags();
 }
 
 void Controller::publishControlCommand(const trajectory_follower::LongitudinalOutput & lon_out, const trajectory_follower::LateralOutput & lat_out) {

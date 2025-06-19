@@ -50,10 +50,18 @@ namespace trajectory_follower = ::autoware::motion::control::trajectory_follower
 class TRAJECTORY_FOLLOWER_PUBLIC Controller : public Node
 {
 public:
-  explicit Controller();
+  Controller();
   virtual ~Controller() {}
 
 private:
+  void reset_data_flags()
+  {
+    has_accel_ = false;
+    has_steering_ = false;
+    has_odometry_ = false;
+    has_trajectory_ = false;
+  }
+
   double timeout_thr_sec_;
   std::optional<LongitudinalOutput> longitudinal_output_{std::nullopt};
 
@@ -61,7 +69,6 @@ private:
   std::shared_ptr<trajectory_follower::LateralControllerBase> lateral_controller_;
 
   // Subscribers
-  //TODO: we don't need to store the subscribers as lifetime of the node is same as the application
   static void callbackSteeringStatus(const SteeringReportMsg* msg, void* arg);
   static void callbackOperationModeState(const OperationModeStateMsg* msg, void* arg);
   static void callbackOdometry(const OdometryMsg* msg, void* arg);
