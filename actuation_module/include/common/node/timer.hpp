@@ -88,6 +88,7 @@ public:
         // run the callback in a tight loop. We adjust last_execution_time_ to
         // the most recent "missed" tick.
         if ((current_time - last_execution_time_) > 2.0 * period_s) {
+            log_warn("%s -> Timer missed %f periods\n", node_name_.c_str(), (current_time - last_execution_time_) / period_s);
             const double num_periods_missed = floor((current_time - last_execution_time_) / period_s);
             last_execution_time_ += (num_periods_missed - 1) * period_s;
         }
