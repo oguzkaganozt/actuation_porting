@@ -318,7 +318,8 @@ void Controller::callbackTimerControl()
   publishControlCommand(lon_out, lat_out);
 
   // 6. Reset flags for next cycle
-  reset_data_flags();
+  // TODO: Check if this is required, autoware version keeps publishing even there is no new data
+  // reset_data_flags();
 }
 
 void Controller::publishControlCommand(const trajectory_follower::LongitudinalOutput & lon_out, const trajectory_follower::LateralOutput & lat_out) {
