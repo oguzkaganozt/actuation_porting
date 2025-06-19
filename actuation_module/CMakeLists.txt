@@ -22,22 +22,28 @@ set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
 set(APP_INCLUDE_DIRS "" CACHE INTERNAL "Global include directories list")
 
 # Build Type
-if(${BUILD_TEST} STREQUAL "1")
+if(BUILD_TEST STREQUAL "1")
   target_sources(app PRIVATE test/unit_test.cpp)
-elseif(${BUILD_TEST} STREQUAL "2")
+elseif(BUILD_TEST STREQUAL "2")
   target_sources(app PRIVATE test/dds_pub.cpp)
-elseif(${BUILD_TEST} STREQUAL "3")
+elseif(BUILD_TEST STREQUAL "3")
   target_sources(app PRIVATE test/dds_sub.cpp)
 else()
-  # Add Autoware components
-  include(src/autoware/autoware_universe_utils/autoware_universe_utils.cmake)
-  include(src/autoware/autoware_interpolation/autoware_interpolation.cmake)
-  include(src/autoware/autoware_motion_utils/autoware_motion_utils.cmake)
-  include(src/autoware/autoware_vehicle_info_utils/autoware_vehicle_info_utils.cmake)
-  include(src/autoware/autoware_trajectory_follower_base/autoware_trajectory_follower_base.cmake)
-  include(src/autoware/autoware_mpc_lateral_controller/autoware_mpc_lateral_controller.cmake)
-  include(src/autoware/autoware_pid_longitudinal_controller/autoware_pid_longitudinal_controller.cmake)
-  include(src/autoware/autoware_trajectory_follower_node/autoware_trajectory_follower_node.cmake)
+  set(AUTOWARE_COMPONENTS
+    autoware_universe_utils
+    autoware_interpolation
+    autoware_motion_utils
+    autoware_vehicle_info_utils
+    autoware_trajectory_follower_base
+    autoware_mpc_lateral_controller
+    autoware_pid_longitudinal_controller
+    autoware_trajectory_follower_node
+  )
+
+  foreach(component IN LISTS AUTOWARE_COMPONENTS)
+    include(src/autoware/${component}/${component}.cmake)
+  endforeach()
+
   target_sources(app PRIVATE src/main.cpp ${APP_SOURCES})
 endif()
 
