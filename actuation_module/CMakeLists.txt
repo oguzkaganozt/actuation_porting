@@ -1,49 +1,20 @@
 # Copyright (c) 2024-2025, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
 
-cmake_minimum_required(VERSION 3.22.1)
-
 # PROJECT SETUP
+cmake_minimum_required(VERSION 3.22.1)
 set(CONF_FILE "prj_actuation.conf")
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 find_package(Eigen3 REQUIRED)
 project(actuation_module)
-
-# INCLUDES
 include(GNUInstallDirs)
-include(ExternalProject)
 
-### CYCLONEDDS ###
+### BUILD CYCLONEDDS LIBRARY ###
 message("Building cyclonedds for ${ZEPHYR_TARGET}")
 include(cyclonedds_config.cmake)
 create_cdds_lib(${CMAKE_CURRENT_SOURCE_DIR}/../cyclonedds)
 
-### SET ZEPHYR COMPILER AND FLAGS ###
-# Get compile options from Zephyr to be passed to the Autoware packages.
-zephyr_get_include_directories_for_lang_as_string(C Cincludes)
-zephyr_get_include_directories_for_lang_as_string(CXX CXXincludes)
-zephyr_get_system_include_directories_for_lang_as_string(C Csystem_includes)
-zephyr_get_system_include_directories_for_lang_as_string(CXX CXXsystem_includes)
-zephyr_get_compile_options_for_lang_as_string(C Coptions)
-zephyr_get_compile_options_for_lang_as_string(CXX CXXoptions)
-
-set(external_project_cflags "${Cincludes} ${Csystem_includes} ${Coptions} -Wno-error")
-set(external_project_cxxflags "${CXXincludes} ${CXXsystem_includes} ${CXXoptions} -Wno-error")
-
-# Set current Zephyr compiler and flags.
-# cmake derives the C++ compiler from the path to the C compiler.
-set(CMAKE_ARGS
-    "-DROS_DISTRO=humble"
-    "-DCMAKE_BUILD_TYPE=Release"  # TODO: Change to Debug when needed
-    "-DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install"
-    "-DBUILD_TESTING=OFF"
-    "-DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY"
-    "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
-    "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
-    "-DCMAKE_C_FLAGS=${external_project_cflags}"
-    "-DCMAKE_CXX_FLAGS=${external_project_cxxflags}")
-
-### BUILD ACTUATION MESSAGES ###
+### BUILD AUTOWARE MESSAGES ###
 add_subdirectory(src/autoware/autoware_msgs)
 
 ### BUILD ACTUATION MODULE ###

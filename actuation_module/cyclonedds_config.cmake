@@ -11,12 +11,6 @@ macro(create_cdds_lib CYCLONEDDS_ROOT)
   zephyr_get_compile_options_for_lang_as_String(C ext_Copts)
   zephyr_get_compile_options_for_lang_as_String(CXX ext_CXXopts)
 
-  # if(CONFIG_POSIX_API)
-  #   get_target_property(posix_incs posix_subsys INTERFACE_INCLUDE_DIRECTORIES)
-  # else()
-  #   message(FATAL_ERROR "CycloneDDS requires POSIX API support (CONFIG_POSIX_API=y)")
-  # endif()
-
   set(ext_cflags
       "${ext_defs} -D_POSIX_C_SOURCE=200809L ${ext_system_includes} ${ext_includes} ${ext_Copts} -Wno-error -DDDSRT_HAVE_INET_PTON=1 -Wno-type-limits"
   )
