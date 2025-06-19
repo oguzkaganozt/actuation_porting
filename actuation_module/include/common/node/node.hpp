@@ -260,14 +260,14 @@ private:
         Node* node = static_cast<Node*>(arg);
 
         while (1) {
-            if (node->timer_) {
-                node->timer_->execute();
-            }
-
             if (node->dds_.has_subscriptions()) {   // Check and execute the subscriptions callbacks
                 node->dds_.execute_subscriptions();
             }
-            usleep(3000);   // 1ms, if nothing else yields  // TODO: TUNE THIS
+
+            if (node->timer_) {
+                node->timer_->execute();
+            }
+            usleep(1000);   // 1ms, if nothing else yields  // TODO: TUNE THIS
         }
         return nullptr; // Should never reach here
     }
