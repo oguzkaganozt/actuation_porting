@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdint>
 #include <functional>
+#include <cmath> // For std::floor
 
 // Project headers
 #include "common/logger/logger.hpp"
@@ -80,8 +81,19 @@ public:
             return;
         }
 
+        double current_time = Clock::now();
+        const double period_s = static_cast<double>(period_ms_) / 1000.0;
+
+        // If a long time has passed, we want to skip the missed intervals and not
+        // run the callback in a tight loop. We adjust last_execution_time_ to
+        // the most recent "missed" tick.
+        if ((current_time - last_execution_time_) > 2.0 * period_s) {
+            const double num_periods_missed = floor((current_time - last_execution_time_) / period_s);
+            last_execution_time_ += (num_periods_missed - 1) * period_s;
+        }
+
         // Update execution time before calling callback to maintain consistent intervals
-        last_execution_time_ = Clock::now();
+        last_execution_time_ += period_s;
         user_callback_();
     }
 

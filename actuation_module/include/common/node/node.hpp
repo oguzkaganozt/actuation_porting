@@ -267,7 +267,7 @@ private:
             if (node->dds_.has_subscriptions()) {   // Check and execute the subscriptions callbacks
                 node->dds_.execute_subscriptions();
             }
-            usleep(3000);   // 1ms, if nothing else yields  // TODO: TUNE THIS
+            usleep(1000);   // 1ms, if nothing else yields  // TODO: TUNE THIS
         }
         return nullptr; // Should never reach here
     }
