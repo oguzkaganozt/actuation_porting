@@ -214,6 +214,28 @@ async def monitor_console(websocket):
     try:
         logs_dir = Path("log")
         logs_dir.mkdir(exist_ok=True)
+
+        try:
+            log_files = []
+            for f in logs_dir.glob("*.log.ansi"):
+                try:
+                    # The timestamp is the first part of the filename, before the first dot.
+                    datetime.strptime(f.name.split(".")[0], "%Y%m%d_%H%M%S")
+                    log_files.append(f)
+                except ValueError:
+                    # Not a timestamped log file.
+                    pass
+            
+            log_files.sort()
+
+            # If we have 10 or more log files, remove the oldest ones until there are 9.
+            while len(log_files) >= 10:
+                oldest_log = log_files.pop(0)
+                print(f"   Log limit reached. Deleting oldest log: {oldest_log.name}")
+                oldest_log.unlink()
+        except Exception as e:
+            print(f"   Warning: Could not clean up old log files: {e}")
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         log_filename = logs_dir / f"{timestamp}.log.ansi"
         

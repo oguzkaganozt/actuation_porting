@@ -1,7 +1,7 @@
 #include "common/node/node.hpp"
 #include "common/clock/clock.hpp"
 #include "common/logger/logger.hpp"
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 using namespace common::logger;
 
 // Stack sizes for node and timer threads

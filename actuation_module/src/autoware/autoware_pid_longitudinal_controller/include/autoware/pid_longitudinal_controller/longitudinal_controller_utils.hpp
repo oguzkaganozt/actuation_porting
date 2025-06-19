@@ -27,7 +27,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {

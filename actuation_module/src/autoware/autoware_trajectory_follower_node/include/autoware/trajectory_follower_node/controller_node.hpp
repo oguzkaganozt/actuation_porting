@@ -31,7 +31,7 @@
 #include <vector>
 
 #include "common/node/node.hpp"
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::motion::control
 {

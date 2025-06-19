@@ -28,7 +28,7 @@
 #include "autoware/universe_utils/math/constants.hpp"
 #include "autoware/universe_utils/math/normalization.hpp"
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 

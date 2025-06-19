@@ -16,7 +16,7 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-project(actuation_msgs)
+project(autoware_msgs)
 
 # idlc is a host tool, and doesn't care about the architecture of the target platform.
 # Prevent cmake from checking the architecture by temporarily unsetting CMAKE_SIZEOF_VOID_P.
@@ -64,7 +64,16 @@ get_target_property(CycloneDDS_INCLUDE_DIR CycloneDDS::ddsc INTERFACE_INCLUDE_DI
 target_include_directories(${PROJECT_NAME} SYSTEM BEFORE PUBLIC
   ${CycloneDDS_INCLUDE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(FILES ${HEADERS} DESTINATION include)
+install(
+  FILES ${HEADERS}
+  DESTINATION include/autoware/autoware_msgs
+)
+install(
+  DIRECTORY include/autoware/
+  DESTINATION include/autoware
+)

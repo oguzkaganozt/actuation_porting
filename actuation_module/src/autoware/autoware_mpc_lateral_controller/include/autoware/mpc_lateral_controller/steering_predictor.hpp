@@ -18,7 +18,7 @@
 #include <memory>
 #include <vector>
 #include "common/clock/clock.hpp"
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::motion::control::mpc_lateral_controller
 {

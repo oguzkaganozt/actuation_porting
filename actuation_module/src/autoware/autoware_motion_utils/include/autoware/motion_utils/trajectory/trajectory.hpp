@@ -32,7 +32,7 @@
 #include "autoware/universe_utils/math/constants.hpp"
 
 #include "common/logger/logger.hpp"
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 using namespace common::logger;
 
 using TrajectoryPointSeq = std::vector<TrajectoryPointMsg>;

@@ -18,7 +18,7 @@
 // Autoware
 #include "autoware/universe_utils/geometry/geometry.hpp"
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::universe_utils
 {

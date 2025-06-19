@@ -34,7 +34,7 @@
 #include <Eigen/Geometry>
 
 #include "common/clock/clock.hpp"
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 namespace autoware::motion::control::pid_longitudinal_controller
 {

@@ -44,11 +44,7 @@ set(CMAKE_ARGS
     "-DCMAKE_CXX_FLAGS=${external_project_cxxflags}")
 
 ### BUILD ACTUATION MESSAGES ###
-externalproject_add(actuation_msgs_pkg
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../actuation_msgs
-  CMAKE_ARGS ${CMAKE_ARGS}
-)
-add_dependencies(app actuation_msgs_pkg)
+add_subdirectory(src/autoware/autoware_msgs)
 
 ### BUILD ACTUATION MODULE ###
 set(APP_SOURCES "" CACHE INTERNAL "Global source files list")
@@ -102,4 +98,4 @@ target_include_directories(app PRIVATE
 
 # Link actuation messages and CycloneDDS library
 target_link_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/install/lib)
-target_link_libraries(app PRIVATE cdds_lib actuation_msgs)
+target_link_libraries(app PRIVATE cdds_lib autoware_msgs)

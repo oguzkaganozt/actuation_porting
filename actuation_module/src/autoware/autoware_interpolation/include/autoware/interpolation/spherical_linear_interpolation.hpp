@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "autoware/interpolation/interpolation_utils.hpp"
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 #include <Eigen/Geometry>
 

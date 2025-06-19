@@ -19,7 +19,7 @@
 #include <deque>
 #include <vector>
 
-#include "common/dds/messages.hpp"
+#include "autoware/autoware_msgs/messages.hpp"
 
 class SteeringOffsetEstimator
 {
