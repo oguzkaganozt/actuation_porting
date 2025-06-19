@@ -11,6 +11,32 @@
 Changelog & Release Notes
 #########################
 
+***********************
+Refactoring and Porting
+***********************
+
+This version represents a major refactoring and porting of the original
+Actuation Demo. The project has been restructured to directly integrate Autoware
+components into the Zephyr application.
+
+New Features
+============
+
+- Direct integration of Autoware modules into the Zephyr application.
+- Simplified build system.
+- Updated documentation to reflect the new project structure.
+
+Changed
+=======
+
+- Removed the dependency on a separate Autoware workspace and pre-compiled
+  binaries. Autoware components are now compiled as part of the Zephyr
+  application.
+- Replaced the ROS2-based "Message Converter" and "Actuation Player" with direct
+  DDS communication and integrated control logic.
+- The project is now structured as a standalone Zephyr application with Autoware
+  libraries.
+
 ******
 latest
 ******

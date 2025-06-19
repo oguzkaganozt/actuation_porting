@@ -21,3 +21,4 @@ log/
 *.log
 
 TODO.md
+documentation/_build/

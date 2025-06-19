@@ -12,5 +12,4 @@ User Guide
    :maxdepth: 2
    :caption: Contents
 
-   ava_s32z
    avh
