@@ -1,5 +1,5 @@
 ..
- # Copyright (c) 2021-2023, Arm Limited.
+ # Copyright (c) 2021-2024, Arm Limited.
  #
  # SPDX-License-Identifier: Apache-2.0
 
@@ -7,14 +7,7 @@
 Solution Design
 ###############
 
-.. toctree::
-   :titlesonly:
-   :maxdepth: 2
-   :caption: Contents
+.. note::
 
-   feature_actuation_service
-   feature_converter
-   feature_autoware
-   feature_player
-   feature_packet_analyzer
-   usecase_communication
+   The detailed design documentation is currently under construction. Please
+   refer to the :doc:`/overview` for a high-level overview of the architecture.
