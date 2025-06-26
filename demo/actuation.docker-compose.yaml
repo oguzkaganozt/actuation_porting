@@ -4,11 +4,11 @@ services:
     image: ghcr.io/autowarefoundation/autoware:universe-20250207
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
-      - ./control-module/control-module.launch.xml:/autoware/control-module.launch.xml
+      - ./launch/actuation/actuation-module.launch.xml:/autoware/actuation-module.launch.xml
     environment:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
       - ROS_DOMAIN_ID=2
       - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
     command: >
-      ros2 launch /autoware/control-module.launch.xml
+      ros2 launch /autoware/actuation-module.launch.xml
       vehicle_model:=sample_vehicle
