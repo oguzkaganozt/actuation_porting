@@ -48,6 +48,12 @@ Clone the repository and its submodules:
   $ cd actuation_porting
   $ git submodule update --init --recursive
 
+Launch the development container:
+
+.. code-block:: console
+
+  $ ./launch-dev-container.sh
+
 Build the Zephyr application for the AVH target:
 
 .. code-block:: console
@@ -56,6 +62,18 @@ Build the Zephyr application for the AVH target:
 
 The resulting Zephyr binary is located at
 ``build/actuation_module/zephyr/zephyr.elf``.
+
+Deploy and connect to the Zephyr application on the AVH instance:
+
+.. note::
+
+  You can deploy and connect to the ARM instance on AVH both using WEB UI or the avh.py script.
+  The script is more convenient for automation and scripting. In order to use the script, you need to have the
+  ``.env`` file set up in the root directory of the repository. You can use the ``template.env`` file as a template.
+
+.. code-block:: console
+
+  $ ./avh.py --deploy --ssh
 
 ***********************
 Virtual machines launch
