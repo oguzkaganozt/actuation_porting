@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 -->
 
-# Autoware Actuation Module - ARM Safety Island
+# ARM Safety Island - Autoware Actuation Module
 
    [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://oguzkaganozt.github.io/actuation_porting/)
 
