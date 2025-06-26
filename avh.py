@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # ARM Virtual Hardware (AVH) Firmware Management Script
-# Builds and manages firmware on an AVH instance.
+# Manages firmware on an AVH instance.
 #
 # Usage: ./avh.py [OPTIONS]
 
@@ -272,57 +272,12 @@ async def connect_to_console(api_instance, instance_id):
         sys.exit(1)
 
 
-async def build_firmware(build_type='main', clean=False):
-    """Build firmware"""
-    
-    log_dir = Path("log")
-    log_dir.mkdir(exist_ok=True)
-    log_file = log_dir / "build.log.ansi"
-
-    if clean:
-        print("   Cleaning build directory")
-        subprocess.run(['./build.sh', '-c'], check=True)
-    
-    with open(log_file, 'w') as f:
-        os.chmod(log_file, 0o666)
-        if build_type == 'main':
-            print(f"🔨 Building main firmware (build logs: log/build.log.ansi)")
-            subprocess.run(['./build.sh'], check=True, stdout=f, stderr=subprocess.STDOUT)
-        elif build_type == 'test':
-            print(f"🔨 Building test firmware (build logs: log/build.log.ansi)")
-            subprocess.run(['./build.sh', '--unit-test'], check=True, stdout=f, stderr=subprocess.STDOUT)
-        elif build_type == 'test-subscriber':
-            print(f"🔨 Building DDS test subscriber firmware (build logs: log/build.log.ansi)")
-            subprocess.run(['./build.sh', '--dds-subscriber'], check=True, stdout=f, stderr=subprocess.STDOUT)
-        elif build_type == 'test-publisher':
-            print(f"🔨 Building DDS test publisher firmware (build logs: log/build.log.ansi)")
-            subprocess.run(['./build.sh', '--dds-publisher'], check=True, stdout=f, stderr=subprocess.STDOUT)
-        else:
-            print(f"Invalid build type: {build_type}")
-            sys.exit(1)
-           
-    print(f"✅ Firmware built")
-
-
 def parse_arguments():
     """Parse and validate command line arguments"""
     parser = argparse.ArgumentParser(
         description='AVH Firmware Management Script',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    
-    # Build options
-    build_group = parser.add_mutually_exclusive_group()
-    build_group.add_argument('--build', 
-                           nargs='?',
-                           const='main',
-                           choices=['main', 'test', 'test-subscriber', 'test-publisher'],
-                           help='Build firmware (main, test, test-subscriber, test-publisher). Defaults to main if no choice specified.')
-    build_group.add_argument('--rebuild', 
-                           nargs='?',
-                           const='main',
-                           choices=['main', 'test', 'test-subscriber', 'test-publisher'],
-                           help='Rebuild firmware from clean state. Defaults to main if no choice specified.')
     
     # AVH operations
     parser.add_argument('--test-auth', action='store_true', help='Test AVH API authentication')
@@ -334,7 +289,7 @@ def parse_arguments():
     
     args = parser.parse_args()
     
-    actions = [args.build, args.rebuild, args.vpn_connect, args.vpn_disconnect, args.deploy, args.reboot, args.ssh, args.test_auth]
+    actions = [args.vpn_connect, args.vpn_disconnect, args.deploy, args.reboot, args.ssh, args.test_auth]
     if not any(actions):
         parser.error("No action specified. Use --help to see available options.")
     
@@ -344,19 +299,13 @@ def parse_arguments():
 async def main(args):
     """Main script execution"""
     print("=" * 40)
-    print("AVH Firmware Management Script")
+    print("AVH Management Script")
     print("=" * 40)
 
     # Disconnect VPN
     if args.vpn_disconnect:
         await disconnect_vpn()
         return 0
-
-    # Build firmware
-    if args.build:
-        await build_firmware(args.build)
-    elif args.rebuild:
-        await build_firmware(args.rebuild, clean=True)
 
     # Check if any AVH operations are requested
     avh_operations = [args.vpn_connect, args.deploy, args.reboot, args.ssh, args.test_auth]
