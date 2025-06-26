@@ -6,11 +6,11 @@
 
 # Autoware Actuation Module - ARM Safety Island
 
-## Overview
+   [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://oguzkaganozt.github.io/actuation_porting/)
 
 This repository contains the Autoware Actuation Module for the ARM Safety Island.
 
-## Workflow
+### Workflow
 
 ```mermaid
 graph TD
@@ -64,12 +64,6 @@ graph TD
 | autoware_pid_longitudinal_controller | PID Longitudinal Controller |
 | autoware_trajectory_follower_node | Trajectory Follower Node |
 
-## ROS RCL Utils to Zephyr Migration
+## Getting Started
 
-| RCL Component | Zephyr Target |
-|--------------|---------------|
-| RCL Logging  | Custom Logger |
-| RCL Node     | POSIX Threads |
-| RCL Timers   | Software Timers |
-| RCL Publisher | CycloneDDS |
-| RCL Subscriber | CycloneDDS |
+Go to the [documentation](https://oguzkaganozt.github.io/actuation_porting/) for details.
