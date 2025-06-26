@@ -23,7 +23,7 @@ graph TD
     end
 
     subgraph "Actuation Module"
-        ControllerNode["Controller Node<br/><br/>Lateral Controller: MPC or Pure Pursuit<br/>Longitudinal Controller: PID"]
+        ControllerNode["Controller Node<br/><br/>Lateral Controller: MPC <br/>Longitudinal Controller: PID"]
     end
     
     subgraph Outputs
