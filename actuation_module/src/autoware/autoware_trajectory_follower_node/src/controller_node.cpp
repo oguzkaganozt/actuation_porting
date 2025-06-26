@@ -327,6 +327,7 @@ void Controller::publishControlCommand(const trajectory_follower::LongitudinalOu
   out.stamp = Clock::toRosTime(Clock::now());
   out.lateral.steering_tire_angle = lat_out.control_cmd.steering_tire_angle;
   out.lateral.steering_tire_rotation_rate = lat_out.control_cmd.steering_tire_rotation_rate;
+  out.lateral.stamp = out.stamp;
   out.longitudinal = lon_out.control_cmd;
   if (control_cmd_pub_->publish(out)) {
     log_debug("Control command published");
