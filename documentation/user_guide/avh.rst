@@ -63,24 +63,30 @@ Build the Zephyr application for the AVH target:
 The resulting Zephyr binary is located at
 ``build/actuation_module/zephyr/zephyr.elf``.
 
-Deploy and connect to the Zephyr application on the AVH instance:
-
-.. note::
-
-  You can deploy and connect to the ARM instance on AVH both using WEB UI or the avh.py script.
-  The script is more convenient for automation and scripting. In order to use the script, you need to have the
-  ``.env`` file set up in the root directory of the repository. You can use the ``template.env`` file as a template.
-
-.. code-block:: console
-
-  $ ./avh.py --deploy --ssh
-
 ***********************
 Virtual machines launch
 ***********************
 
 AVH launch
 ==========
+
+Deploy and connect to the Zephyr application on the AVH instance:
+
+.. note::
+
+  You can deploy and connect to the ARM instance on AVH both using WEB UI or the avh.py script.
+  The script is recommended and more convenient for automation and scripting. In order to use the script, you need to have the
+  ``.env`` file set up in the root directory of the repository. You can use the ``template.env`` file as a template.
+
+Option 1: Using the script
+=========================
+
+.. code-block:: console
+
+  $ ./avh.py --deploy --ssh
+
+Option 2: Using the WEB UI
+==========================
 
 Follow the instructions of the `Arm Virtual Hardware User Guide
 <https://developer.arm.com/documentation/107660/0600/Overview/Access-and-Costs?lang=en>`_
