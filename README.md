@@ -8,7 +8,9 @@
 
    [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://oguzkaganozt.github.io/actuation_porting/)
 
-This repository contains the Autoware Actuation Module for the ARM Safety Island.
+    The ARM Safety Island is responsible for generating the control commands for the vehicle actuators in autoware-compatible format, and publishing them to the DDS bus. 
+    
+    The implementation does not require any changes to the Autoware codebase, and can be used as a standalone component.
 
 ### Workflow
 
