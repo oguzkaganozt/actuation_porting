@@ -18,11 +18,11 @@ int main(void)
     sleep(7);
 
     // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
-    log_info("Setting time using SNTP...\n");
-    if (Clock::init_clock_via_sntp() < 0) {
-        log_error("Failed to set time using SNTP\n");
-        std::exit(1);
-    }
+    // log_info("Setting time using SNTP...\n");
+    // if (Clock::init_clock_via_sntp() < 0) {
+    //     log_error("Failed to set time using SNTP\n");
+    //     std::exit(1);
+    // }
 
     log_info("Starting Controller Node...");
     try
