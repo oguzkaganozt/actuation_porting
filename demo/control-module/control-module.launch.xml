@@ -22,7 +22,7 @@
     value="$(find-pkg-share autoware_launch)/config/control/trajectory_follower/$(var latlon_controller_param_path_dir)/longitudinal/$(var longitudinal_controller_mode).param.yaml"
   />
 
-  <node pkg="autoware_trajectory_follower_node" exec="controller_node_exe" name="controller_node_exe" namespace="/control/trajectory_follower">
+  <node pkg="autoware_trajectory_follower_node" exec="controller_node_exe" name="controller_node_exe" namespace="/nopublish">
     <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory"/>
     <remap from="~/input/current_odometry" to="/localization/kinematic_state"/>
     <remap from="~/input/current_steering" to="/vehicle/status/steering_status"/>
@@ -33,7 +33,7 @@
     <remap from="~/output/slope_angle" to="longitudinal/slope_angle_nopublish"/>
     <remap from="~/output/longitudinal_diagnostic" to="longitudinal/diagnostic_nopublish"/>
     <remap from="~/output/stop_reason" to="longitudinal/stop_reason_nopublish"/>
-    <remap from="~/output/control_cmd" to="control_cmd"/>
+    <remap from="~/output/control_cmd" to="/control/trajectory_follower/control_cmd"/>
     <param name="lateral_controller_mode" value="$(var lateral_controller_mode)"/>
     <param name="longitudinal_controller_mode" value="$(var longitudinal_controller_mode)"/>
     <param from="$(var nearest_search_param_path)"/>
