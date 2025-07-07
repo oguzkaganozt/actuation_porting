@@ -79,13 +79,13 @@ Deploy and connect to the Zephyr application on the AVH instance:
   
   In order to use the script, you need to have the ``.env`` file set up in the root directory of the repository.
   You can use the ``template.env`` file as a template. 
-  - If you are using staging environment, you can leave ``AVH_API_ENDPOINT`` as it is.
-  - If you are using production environment, you need to change the ``AVH_API_ENDPOINT`` to https://app.avh.arm.com/api or
-    another production environment endpoint.
+
+  - If you are using staging environment, you can leave ``AVH_API_ENDPOINT`` as it is or for production environment,
+   you need to change the ``AVH_API_ENDPOINT`` to https://app.avh.arm.com/api or another production environment endpoint.
   - You can find your ``AVH_API_TOKEN`` by going to Corellium dashboard then navigate to profile/api.
   - You can find your ``AVH_PROJECT_NAME`` by going to Corellium dashboard then navigate to projects.
   - You can choose any name for ``AVH_INSTANCE_NAME``.
-  - This application specifically designed for aem8r64-lan9c111 flavor. So changing the flavor is not recommended.
+  - This application specifically designed for **aem8r64-lan9c111** flavor. So changing the ``AVH_INSTANCE_FLAVOR`` is not recommended.
 
 Option 1: Using the script
 =========================
@@ -139,6 +139,22 @@ Read the `Connect to your Linux instance using an SSH client
 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connect-linux-inst-ssh.html#connect-linux-inst-sshClient>`_
 paragraph in order to find the SSH command to connect to the instance.
 
+Inside the EC2 instance, install Docker engine. Follow the official
+`Install Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_ instructions.
+
+VPN connection
+==============
+
+You can use the script to directly connect to the Corellium VPN.
+
+.. code-block:: console
+
+  $ ./avh.py --vpn-connect
+
+If you check with ``ip a`` command, you should see the ``tap0`` interface created.
+
+Or Manually:
+
 On the AVH website, in the "Connect" tab of the previously created device, use
 the "Download OVPN File" button to download the VPN configuration file.
 
@@ -148,17 +164,6 @@ follow the `Transfer files to Linux instances using an SCP client
 paragraph for instructions on how to do that. The following steps assume that
 the repository is in ``~/actuation_porting`` and ``~/avh.ovpn`` is the destination
 path for the configuration file.
-
-*****************************
-Autoware installation and run
-*****************************
-
-Inside the EC2 instance, install Docker and Docker Compose. Follow the official
-`Install Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_ and
-`Install Docker Compose <https://docs.docker.com/compose/install/>`_ instructions.
-
-VPN connection
-==============
 
 Install the OpenVPN package and use the VPN configuration
 file to connect to the local network of the Safety Island, leaving the VPN
