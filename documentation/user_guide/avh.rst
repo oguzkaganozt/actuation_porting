@@ -131,7 +131,7 @@ Launch an instance:
 - configuring 32GB of gp3 storage
 
 **************
-EC2 connection
+Running the Demo
 **************
 
 Read the `Connect to your Linux instance using an SSH client
@@ -189,7 +189,7 @@ The expected output ends with:
   If the name of the interface created is not "tap0", update the CycloneDDS
   configuration file at ``demo/cyclonedds.xml`` to reflect it.
 
-Running the Demo
+Launching Autoware
 ===================
 
 Navigate to the `demo` directory and start the Autoware container using
