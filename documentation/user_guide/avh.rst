@@ -75,8 +75,17 @@ Deploy and connect to the Zephyr application on the AVH instance:
 .. note::
 
   You can deploy and connect to the ARM instance on AVH both using WEB UI or the avh.py script.
-  The script is recommended and more convenient for automation and scripting. In order to use the script, you need to have the
-  ``.env`` file set up in the root directory of the repository. You can use the ``template.env`` file as a template.
+  The script is recommended and more convenient for automation and scripting. 
+  
+  In order to use the script, you need to have the ``.env`` file set up in the root directory of the repository.
+  You can use the ``template.env`` file as a template. 
+  - If you are using staging environment, you can leave ``AVH_API_ENDPOINT`` as it is.
+  - If you are using production environment, you need to change the ``AVH_API_ENDPOINT`` to https://app.avh.arm.com/api or
+    another production environment endpoint.
+  - You can find your ``AVH_API_TOKEN`` by going to Corellium dashboard then navigate to profile/api.
+  - You can find your ``AVH_PROJECT_NAME`` by going to Corellium dashboard then navigate to projects.
+  - You can choose any name for ``AVH_INSTANCE_NAME``.
+  - This application specifically designed for aem8r64-lan9c111 flavor. So changing the flavor is not recommended.
 
 Option 1: Using the script
 =========================
