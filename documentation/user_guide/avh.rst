@@ -200,5 +200,5 @@ Docker Compose:
   $ cd ~/actuation_porting/demo
   $ docker-compose -f autoware.docker-compose.yaml up
 
-This will start the Autoware without actuation pipeline, which will then connect to the Zephyr
-Safety Island Actuation Module running on the AVH instance through DDS over the VPN.
+This will start the **Autoware without actuation pipeline**, which will then connect to
+the **ARM Safety Island Actuation Module** running on the AVH instance through DDS over the VPN.
