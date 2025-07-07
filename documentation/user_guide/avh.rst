@@ -80,8 +80,7 @@ Deploy and connect to the Zephyr application on the AVH instance:
   In order to use the script, you need to have the ``.env`` file set up in the root directory of the repository.
   You can use the ``template.env`` file as a template. 
 
-  - If you are using staging environment, you can leave ``AVH_API_ENDPOINT`` as it is or for production environment,
-   you need to change the ``AVH_API_ENDPOINT`` to https://app.avh.arm.com/api or another production environment endpoint.
+  - If you are using staging environment, you can leave ``AVH_API_ENDPOINT`` as it is or for production environment, you need to change the ``AVH_API_ENDPOINT`` to https://app.avh.arm.com/api or another production environment endpoint.
   - You can find your ``AVH_API_TOKEN`` by going to Corellium dashboard then navigate to profile/api.
   - You can find your ``AVH_PROJECT_NAME`` by going to Corellium dashboard then navigate to projects.
   - You can choose any name for ``AVH_INSTANCE_NAME``.
@@ -153,7 +152,7 @@ You can use the script to directly connect to the Corellium VPN.
 
 If you check with ``ip a`` command, you should see the ``tap0`` interface created.
 
-Or Manually:
+**Or Manually:**
 
 On the AVH website, in the "Connect" tab of the previously created device, use
 the "Download OVPN File" button to download the VPN configuration file.
@@ -190,7 +189,7 @@ The expected output ends with:
   If the name of the interface created is not "tap0", update the CycloneDDS
   configuration file at ``demo/cyclonedds.xml`` to reflect it.
 
-Runtime environment
+Running the Demo
 ===================
 
 Navigate to the `demo` directory and start the Autoware container using
@@ -201,5 +200,5 @@ Docker Compose:
   $ cd ~/actuation_porting/demo
   $ docker-compose -f autoware.docker-compose.yaml up
 
-This will start the Autoware stack, which will then connect to the Zephyr
-application running on the AVH instance.
+This will start the Autoware without actuation pipeline, which will then connect to the Zephyr
+Safety Island Actuation Module running on the AVH instance through DDS over the VPN.
