@@ -45,7 +45,7 @@
   <let name="container_executable" value="component_container" unless="$(var use_multithread)"/>
   <let name="container_executable" value="component_container_mt" if="$(var use_multithread)"/>
 
-  <node pkg="autoware_trajectory_follower_node" exec="controller_node_exe" name="controller_node_exe" namespace="/nopublish">
+  <!-- <node pkg="autoware_trajectory_follower_node" exec="controller_node_exe" name="controller_node_exe" namespace="/nopublish">
     <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory_no_publish"/>
     <remap from="~/input/current_odometry" to="/localization/kinematic_state_no_publish"/>
     <remap from="~/input/current_steering" to="/vehicle/status/steering_status_no_publish"/>
@@ -61,13 +61,12 @@
     <param name="lateral_controller_mode" value="$(var lateral_controller_mode)"/>
     <param name="longitudinal_controller_mode" value="$(var longitudinal_controller_mode)"/>
     <param from="$(var nearest_search_param_path)"/>
-    <!-- <param from="$(var trajectory_follower_node_param_path)"/> -->
     <param from="$(var lon_controller_param_path)"/>
     <param from="$(var lat_controller_param_path)"/>
     <param from="$(var vehicle_param_file)"/>
     <param name="ctrl_period" value="0.15"/>
     <param name="timeout_thr_sec" value="0.5"/>
-  </node>
+  </node> -->
 
   <group>
     <push-ros-namespace namespace="control"/>
