@@ -22,18 +22,18 @@
     value="$(find-pkg-share autoware_launch)/config/control/trajectory_follower/$(var latlon_controller_param_path_dir)/longitudinal/$(var longitudinal_controller_mode).param.yaml"
   />
 
-  <node pkg="autoware_trajectory_follower_node" exec="controller_node_exe" name="controller_node_exe" namespace="/nopublish">
-    <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory_no_publish"/>
-    <remap from="~/input/current_odometry" to="/localization/kinematic_state_no_publish"/>
-    <remap from="~/input/current_steering" to="/vehicle/status/steering_status_no_publish"/>
-    <remap from="~/input/current_accel" to="/localization/acceleration_no_publish"/>
-    <remap from="~/input/current_operation_mode" to="/system/operation_mode/state_no_publish"/>
-    <remap from="~/output/predicted_trajectory" to="lateral/predicted_trajectory_no_publish"/>
-    <remap from="~/output/lateral_diagnostic" to="lateral/diagnostic_no_publish"/>
-    <remap from="~/output/slope_angle" to="longitudinal/slope_angle_no_publish"/>
-    <remap from="~/output/longitudinal_diagnostic" to="longitudinal/diagnostic_no_publish"/>
-    <remap from="~/output/stop_reason" to="longitudinal/stop_reason_no_publish"/>
-    <remap from="~/output/control_cmd" to="/control/trajectory_follower/control_cmd_no_publish"/>
+  <node pkg="autoware_trajectory_follower_node" exec="controller_node_exe" name="controller_node_exe" namespace="trajectory_follower">
+    <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory"/>
+    <remap from="~/input/current_odometry" to="/localization/kinematic_state"/>
+    <remap from="~/input/current_steering" to="/vehicle/status/steering_status"/>
+    <remap from="~/input/current_accel" to="/localization/acceleration"/>
+    <remap from="~/input/current_operation_mode" to="/system/operation_mode/state"/>
+    <remap from="~/output/predicted_trajectory" to="lateral/predicted_trajectory"/>
+    <remap from="~/output/lateral_diagnostic" to="lateral/diagnostic"/>
+    <remap from="~/output/slope_angle" to="longitudinal/slope_angle"/>
+    <remap from="~/output/longitudinal_diagnostic" to="longitudinal/diagnostic"/>
+    <remap from="~/output/stop_reason" to="longitudinal/stop_reason"/>
+    <remap from="~/output/control_cmd" to="/control/trajectory_follower/control_cmd"/>
     
     <param name="lateral_controller_mode" value="$(var lateral_controller_mode)"/>
     <param name="longitudinal_controller_mode" value="$(var longitudinal_controller_mode)"/>
