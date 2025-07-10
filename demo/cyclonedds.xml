@@ -9,10 +9,10 @@
         </Interfaces>
     </General>
 
-    <Sizing>
-      <ReceiveBufferSize>16384B</ReceiveBufferSize>
+    <!-- <Sizing>
+      <ReceiveBufferSize>32768B</ReceiveBufferSize>
       <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
-    </Sizing>
+    </Sizing> -->
 
     <Discovery>
       <ParticipantIndex>none</ParticipantIndex>  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
