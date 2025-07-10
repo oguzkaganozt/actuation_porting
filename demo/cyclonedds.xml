@@ -22,8 +22,8 @@
 
     <!-- <Partitioning>
         <NetworkPartitions>
-            <NetworkPartition Name="LOCAL"   Address="172.17.0.1"/>
-            <NetworkPartition Name="NET"     Address="10.11.3.3"/>
+            <NetworkPartition Name="LOCAL"   Address="172.31.41.187"/>
+            <NetworkPartition Name="NET"     Address="10.11.3.2"/>
         </NetworkPartitions>
 
         <PartitionMappings>

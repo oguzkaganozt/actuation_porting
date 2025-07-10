@@ -149,7 +149,7 @@
       </node_container>
 
       <!-- trajectory_follower_node -->
-      <!-- <group if="$(eval &quot;'$(var trajectory_follower_mode)' == 'trajectory_follower_node'&quot;)">
+      <group if="$(eval &quot;'$(var trajectory_follower_mode)' == 'trajectory_follower_node'&quot;)">
         <load_composable_node target="/control/control_container">
           <composable_node pkg="autoware_trajectory_follower_node" plugin="autoware::motion::control::trajectory_follower_node::Controller" name="controller_node_exe" namespace="trajectory_follower">
             <remap from="~/input/reference_trajectory" to="/planning/scenario_planning/trajectory_no_publish"/>
@@ -157,6 +157,7 @@
             <remap from="~/input/current_steering" to="/vehicle/status/steering_status_no_publish"/>
             <remap from="~/input/current_accel" to="/localization/acceleration_no_publish"/>
             <remap from="~/input/current_operation_mode" to="/system/operation_mode/state_no_publish"/>
+            
             <remap from="~/output/predicted_trajectory" to="lateral/predicted_trajectory_no_publish"/>
             <remap from="~/output/lateral_diagnostic" to="lateral/diagnostic_no_publish"/>
             <remap from="~/output/slope_angle" to="longitudinal/slope_angle_no_publish"/>
@@ -176,7 +177,7 @@
             
           </composable_node>
         </load_composable_node>
-      </group> -->
+      </group>
 
       <!-- smart_mpc, under development -->
       <group if="$(eval &quot;'$(var trajectory_follower_mode)' == 'smart_mpc_trajectory_follower'&quot;)">
