@@ -18,15 +18,12 @@
       <ParticipantIndex>none</ParticipantIndex>  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
       <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
       <!-- <ParticipantIndex>auto</ParticipantIndex> -->
-      <!-- <Peers> -->
-          <!-- <Peer Address="10.11.0.1" /> --> <!-- IP of the remote machine, should not be needed if multicast enabled and working on the same network -->
-      <!-- </Peers> -->
     </Discovery>
 
     <!-- <Partitioning>
         <NetworkPartitions>
-            <NetworkPartition Name="LOCAL"   Address="172.17.0.1"/>
-            <NetworkPartition Name="NET"     Address="10.11.3.3"/>
+            <NetworkPartition Name="LOCAL"   Address="172.31.41.187"/>
+            <NetworkPartition Name="NET"     Address="10.11.3.2"/>
         </NetworkPartitions>
 
         <PartitionMappings>

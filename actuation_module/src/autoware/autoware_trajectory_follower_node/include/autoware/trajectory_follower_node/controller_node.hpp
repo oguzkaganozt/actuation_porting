@@ -80,13 +80,22 @@ private:
   OdometryMsg current_odometry_;
   SteeringReportMsg current_steering_;
   AccelWithCovarianceStampedMsg current_accel_;
-  OperationModeStateMsg current_operation_mode_;
+  /*
+    mode: 1,
+    is_autoware_control_enabled: true,
+    is_in_transition: false,
+    is_stop_mode_available: true,
+    is_autonomous_mode_available: true,
+    is_local_mode_available: true,
+    is_remote_mode_available: true
+  */
+  OperationModeStateMsg current_operation_mode_ = {.mode = 1, .is_autoware_control_enabled = true, .is_in_transition = false, .is_stop_mode_available = true, .is_autonomous_mode_available = true, .is_local_mode_available = true, .is_remote_mode_available = true};
 
   bool has_trajectory_ = false;
   bool has_odometry_ = false;
   bool has_steering_ = false;
   bool has_accel_ = false;
-  bool has_operation_mode_ = false;
+  bool has_operation_mode_ = true;
 
   // Publishers
   std::shared_ptr<Publisher<ControlMsg>> control_cmd_pub_;
