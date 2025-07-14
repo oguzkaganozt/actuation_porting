@@ -5,7 +5,7 @@ services:
     volumes:
       - ./map/sample-map-planning:/root/autoware_map
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
-      - ./launch/autoware/control.launch.xml:/opt/autoware/share/tier4_control_launch/launch/control.launch.xml
+      - ./launch/control.launch.xml:/opt/autoware/share/tier4_control_launch/launch/control.launch.xml
       # - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
