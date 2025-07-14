@@ -44,7 +44,7 @@ Clone the repository and its submodules:
 
 .. code-block:: console
 
-  $ git clone <repository_url>
+  $ git clone https://github.com/oguzkaganozt/actuation_porting.git
   $ cd actuation_porting
   $ git submodule update --init --recursive
 
@@ -54,14 +54,14 @@ Launch the development container:
 
   $ ./launch-dev-container.sh
 
-Build the Zephyr application for the AVH target:
+Inside the development container, build the Zephyr application for the AVH target:
 
 .. code-block:: console
 
-  $ ./build.sh -t fvp_baser_aemv8r_smp
+  $ ./build.sh
 
 The resulting Zephyr binary is located at
-``build/actuation_module/zephyr/zephyr.elf``.
+``build/actuation_module/zephyr/zephyr.elf``
 
 ***********************
 Virtual machines launch
