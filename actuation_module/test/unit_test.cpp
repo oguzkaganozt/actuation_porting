@@ -113,7 +113,7 @@ void test_parameters(Node& node) {
 void test_timer_operations(Node& node) {
     TEST_START(Timer Operations)
     
-    node.create_timer(100, handle_timer, &node);  // 10Hz timer
+    node.create_timer(100, std::bind(&handle_timer, &node));   // 10Hz timer
     node.spin();
     
     // Verify timer fires at least twice
@@ -233,7 +233,7 @@ int main() {
         log_info("Time set using SNTP\n");
     }
 
-    Node node("test_node", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
+    Node node("test_node", node_stack, STACK_SIZE);
     
     test_parameters(node);
     test_timer_operations(node);

@@ -51,20 +51,6 @@ static void handle_trajectory(const TrajectoryMsg_Raw* msg, void* arg) {
     log_success("\n------ TRAJECTORY --IDX: %d ------\n", count++);
     log_success("Timestamp: %f\n", Clock::toDouble(trajectory_msg.header.stamp));
     log_success("Trajectory size: %d\n", trajectory_msg.points.size());
-    // auto points = wrap(msg->points);
-    // size_t count = 0;
-    // for (auto point : points) {
-    //     log_info("--------------------------------\n");
-    //     if (count >= 10) break;
-    //     log_info("Long. Velocity: %lf\n", point.longitudinal_velocity_mps);
-    //     log_info("Lat. Velocity: %lf\n", point.lateral_velocity_mps);
-    //     log_info("Accelleration: %lf\n", point.acceleration_mps2);
-    //     log_info("Position: %lf, %lf, %lf\n", point.pose.position.x, point.pose.position.y, point.pose.position.z);
-    //     count++;
-    // }
-    // if (points.size() > 10) {
-    //     log_info("... and %zu more points\n", points.size() - 10);
-    // }
     log_success("-------------------------------\n");
 }
 

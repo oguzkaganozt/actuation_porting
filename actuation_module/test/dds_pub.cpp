@@ -1,6 +1,5 @@
 #include "common/node/node.hpp"
 #include "common/clock/clock.hpp"
-#include "common/dds/sequence.hpp"
 #include "common/logger/logger.hpp"
 using namespace common::logger;
 
@@ -24,7 +23,6 @@ static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
 /*
     This test is used to test the DDS communication between ROS2 and Zephyr
     It is used to validate the message conversion between ROS2 and Zephyr
-    It is used to validate the sequence wrapper    
 */
 int main(void) {
     log_info("--------------------------------\n");
@@ -43,7 +41,7 @@ int main(void) {
     // }
 
     // Create a node and publishers for all the topics the subscriber expects
-    Node node("dds_test_pub", node_stack, STACK_SIZE, timer_stack, STACK_SIZE);
+    Node node("dds_test_pub", node_stack, STACK_SIZE);
     
     // Create publishers for all message types
     auto steering_publisher = node.create_publisher<SteeringReportMsg>("/vehicle/status/steering_status", &autoware_vehicle_msgs_msg_SteeringReport_desc);
