@@ -48,7 +48,7 @@ public:
         // Reliable QoS
         m_dds_qos = dds_create_qos();
         dds_qset_reliability(m_dds_qos, DDS_RELIABILITY_RELIABLE, DDS_MSECS(30));
-        dds_qset_history(m_dds_qos, DDS_HISTORY_KEEP_LAST, 500);    // TODO: TUNE HISTORY BUFFER SIZE IF WE DROP MESSAGES
+        dds_qset_history(m_dds_qos, DDS_HISTORY_KEEP_LAST, 50);    // TODO: TUNE HISTORY BUFFER SIZE IF WE DROP MESSAGES
         log_info("%s -> DDS QoS created\n", node_name_.c_str());
     }
 
