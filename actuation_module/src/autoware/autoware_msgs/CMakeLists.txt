@@ -52,13 +52,18 @@ add_custom_command(
   VERBATIM
 )
 
-add_library(${PROJECT_NAME}
-  ${SOURCES}
-  ${HEADERS}
-)
-set_target_properties(${PROJECT_NAME} PROPERTIES
-  LINKER_LANGUAGE CXX
-)
+# --- ORIGINAL ---
+# add_library(${PROJECT_NAME}
+#   ${SOURCES}
+#   ${HEADERS}
+# )
+# set_target_properties(${PROJECT_NAME} PROPERTIES
+#   LINKER_LANGUAGE CXX
+# )
+
+# --- NEW VERSION (Zephyr-friendly ABI build) ---
+zephyr_library_named(${PROJECT_NAME})
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES} ${HEADERS})
 
 get_target_property(CycloneDDS_INCLUDE_DIR CycloneDDS::ddsc INTERFACE_INCLUDE_DIRECTORIES)
 target_include_directories(${PROJECT_NAME} SYSTEM BEFORE PUBLIC
@@ -68,12 +73,13 @@ target_include_directories(${PROJECT_NAME} SYSTEM BEFORE PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-install(
-  FILES ${HEADERS}
-  DESTINATION include/autoware/autoware_msgs
-)
-install(
-  DIRECTORY include/autoware/
-  DESTINATION include/autoware
-)
+# --- ORIGINAL INSTALL (commented, because Zephyr libs are not getting) ---
+# install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+# install(
+#   FILES ${HEADERS}
+#   DESTINATION include/autoware/autoware_msgs
+# )
+# install(
+#   DIRECTORY include/autoware/
+#   DESTINATION include/autoware
+# )

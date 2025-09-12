@@ -5,12 +5,12 @@
       <AllowMulticast>spdp</AllowMulticast>
       <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
         <Interfaces>
-            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
+            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="enp1s0f0"/>
         </Interfaces>
     </General>
 
     <Sizing>
-      <ReceiveBufferSize>16384B</ReceiveBufferSize>
+      <ReceiveBufferSize>4096B</ReceiveBufferSize>
       <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
     </Sizing>
 
