@@ -38,9 +38,80 @@ MPC::MPC(Node & node)
 {
 }
 
+void MPC::initialize()
+{
+  const int dim_x = m_vehicle_model_ptr->getDimX();
+  const int dim_u = m_vehicle_model_ptr->getDimU();
+  const int dim_y = m_vehicle_model_ptr->getDimY();
+  const int N = m_param.prediction_horizon;
+
+  // MPC matrix
+  m_mpc_matrix.Aex.resize(dim_x * N, dim_x);
+  m_mpc_matrix.Bex.resize(dim_x * N, dim_u * N);
+  m_mpc_matrix.Wex.resize(dim_x * N, 1);
+  m_mpc_matrix.Cex.resize(dim_y * N, dim_x * N);
+  m_mpc_matrix.Qex.resize(dim_y * N, dim_y * N);
+  m_mpc_matrix.R1ex.resize(dim_u * N, dim_u * N);
+  m_mpc_matrix.R2ex.resize(dim_u * N, dim_u * N);
+  m_mpc_matrix.Uref_ex.resize(dim_u * N, 1);
+
+  m_mpc_matrix.Aex.setZero();
+  m_mpc_matrix.Bex.setZero();
+  m_mpc_matrix.Wex.setZero();
+  m_mpc_matrix.Cex.setZero();
+  m_mpc_matrix.Qex.setZero();
+  m_mpc_matrix.R1ex.setZero();
+  m_mpc_matrix.R2ex.setZero();
+  m_mpc_matrix.Uref_ex.setZero();
+
+  // Optimization buffers
+  const int dim_u_n = dim_u * N;
+  m_H.resize(dim_u_n, dim_u_n);
+  m_f.resize(dim_u_n, 1);
+  m_A_qp.resize(dim_u_n, dim_u_n);
+  m_lb.resize(dim_u_n);
+  m_ub.resize(dim_u_n);
+  m_lbA.resize(dim_u_n);
+  m_ubA.resize(dim_u_n);
+
+  m_H.setZero();
+  m_f.setZero();
+  m_A_qp.setIdentity();
+  m_lb.setZero();
+  m_ub.setZero();
+  m_lbA.setZero();
+  m_ubA.setZero();
+
+  // Intermediate matrices
+  m_CB.resize(dim_y * N, dim_u * N);
+  m_QCB.resize(dim_y * N, dim_u * N);
+  m_Ad.resize(dim_x, dim_x);
+  m_Bd.resize(dim_x, dim_u);
+  m_Cd.resize(dim_y, dim_x);
+  m_Wd.resize(dim_x, 1);
+  m_Uref.resize(dim_u, 1);
+  m_Q.resize(dim_y, dim_y);
+  m_R.resize(dim_u, dim_u);
+  m_Q_adaptive.resize(dim_y, dim_y);
+  m_R_adaptive.resize(dim_u, dim_u);
+
+  m_CB.setZero();
+  m_QCB.setZero();
+  m_Ad.setZero();
+  m_Bd.setZero();
+  m_Cd.setZero();
+  m_Wd.setZero();
+  m_Uref.setZero();
+  m_Q.setZero();
+  m_R.setZero();
+  m_Q_adaptive.setZero();
+  m_R_adaptive.setZero();
+}
+
 ResultWithReason MPC::calculateMPC(
-  const SteeringReportMsg & current_steer, const OdometryMsg & current_kinematics, LateralMsg & ctrl_cmd,
-  TrajectoryMsg & predicted_trajectory, LateralHorizon & ctrl_cmd_horizon)
+  const SteeringReportMsg & current_steer, const OdometryMsg & current_kinematics,
+  LateralMsg & ctrl_cmd, TrajectoryMsg & predicted_trajectory,
+  LateralHorizon & ctrl_cmd_horizon)
 {
   log_debug("MPC: Start Calculating");
 
@@ -88,16 +159,21 @@ ResultWithReason MPC::calculateMPC(
   
   log_debug("MPC: Resampled Reference Trajectory Size: %zu", mpc_resampled_ref_trajectory.size());
 
-  // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
-  // generate mpc matrix : predict equation Xec = Aex * x0 + Bex * Uex + Wex
-  const auto mpc_matrix = generateMPCMatrix(mpc_resampled_ref_trajectory, prediction_dt);
+  /* generate MPC matrix : update m_mpc_matrix */
+  generateMPCMatrix(mpc_resampled_ref_trajectory, prediction_dt);
+
+  // check if matrix has nan or inf
+  if (!isValid(m_mpc_matrix)) {
+    log_warn_throttle("model matrix is invalid. stop computation.");
+    return {false, "model matrix is invalid"};
+  }
 
   log_debug("MPC: MPC Matrix Generated");
 
   // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   // solve Optimization problem
   const auto [opt_result, Uex] = executeOptimization(
-    mpc_matrix, x0_delayed, prediction_dt, mpc_resampled_ref_trajectory,
+    m_mpc_matrix, x0_delayed, prediction_dt, mpc_resampled_ref_trajectory,
     current_kinematics.twist.twist.linear.x);
   if (!opt_result.result) {
     return ResultWithReason{false, std::string("optimization failure (") + opt_result.reason + std::string(").")};
@@ -114,7 +190,7 @@ ResultWithReason MPC::calculateMPC(
   // set control command
   ctrl_cmd.steering_tire_angle = static_cast<float>(u_filtered);
   ctrl_cmd.steering_tire_rotation_rate = static_cast<float>(calcDesiredSteeringRate(
-    mpc_matrix, x0_delayed, Uex, u_filtered, current_steer.steering_tire_angle, prediction_dt));
+    m_mpc_matrix, x0_delayed, Uex, u_filtered, current_steer.steering_tire_angle, prediction_dt));
 
   log_debug("MPC: Control Command Set");
 
@@ -439,7 +515,7 @@ MPCTrajectory MPC::applyVelocityDynamicsFilter(
  * cost function: J = Xex' * Qex * Xex + (Uex - Uref)' * R1ex * (Uex - Uref_ex) + Uex' * R2ex * Uex
  * Qex = diag([Q,Q,...]), R1ex = diag([R,R,...])
  */
-MPCMatrix MPC::generateMPCMatrix(
+void MPC::generateMPCMatrix(
   const MPCTrajectory & reference_trajectory, const double prediction_dt)
 {
   const int N = m_param.prediction_horizon;
@@ -545,7 +621,7 @@ MPCMatrix MPC::generateMPCMatrix(
 
   addSteerWeightR(prediction_dt, m.R1ex);
 
-  return m;
+  return;
 }
 
 /*
@@ -585,46 +661,53 @@ std::pair<ResultWithReason, VectorXd> MPC::executeOptimization(
   log_debug("MPC: Model Matrix Valid");
 
   const int DIM_U_N = m_param.prediction_horizon * m_vehicle_model_ptr->getDimU();
+  
+  log_debug("MPC: DIM_U_N: %d", DIM_U_N);
 
   // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   // cost function: 1/2 * Uex' * H * Uex + f' * Uex,  H = B' * C' * Q * C * B + R
-  const MatrixXd CB = m.Cex * m.Bex;
-  const MatrixXd QCB = m.Qex * CB;
+  m_CB.noalias() = m.Cex * m.Bex;
+  m_QCB.noalias() = m.Qex * m_CB;
+
+  log_debug("MPC: CB: %d", m_CB.rows());
   // MatrixXd H = CB.transpose() * QCB + m.R1ex + m.R2ex; // This calculation is heavy. looking for
   // a good way.  //NOLINT
   // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
-  MatrixXd H = MatrixXd::Zero(DIM_U_N, DIM_U_N);
-  H.triangularView<Eigen::Upper>() = CB.transpose() * QCB;
-  H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
-  H.triangularView<Eigen::Lower>() = H.transpose();
-  MatrixXd f = (m.Cex * (m.Aex * x0 + m.Wex)).transpose() * QCB - m.Uref_ex.transpose() * m.R1ex;
-  addSteerWeightF(prediction_dt, f);
+  m_H.triangularView<Eigen::Upper>() = m_CB.transpose() * m_QCB;
+  m_H.triangularView<Eigen::Upper>() += m.R1ex + m.R2ex;
+  m_H.triangularView<Eigen::Lower>() = m_H.transpose();
+  m_f.noalias() = (m.Cex * (m.Aex * x0 + m.Wex)).transpose() * m_QCB - m.Uref_ex.transpose() * m.R1ex;
+  addSteerWeightF(prediction_dt, m_f);
 
-  MatrixXd A = MatrixXd::Identity(DIM_U_N, DIM_U_N);
+  log_debug("MPC: H: %d", m_H.rows());
+
+  m_A_qp.setIdentity();
   for (int i = 1; i < DIM_U_N; i++) {
-    A(i, i - 1) = -1.0;
+    m_A_qp(i, i - 1) = -1.0;
   }
+
+  log_debug("MPC: A_QP: %d", m_A_qp.rows());
 
   log_debug("MPC: Cost Function Set");
 
   // steering angle limit
-  VectorXd lb = VectorXd::Constant(DIM_U_N, -m_steer_lim);  // min steering angle
-  VectorXd ub = VectorXd::Constant(DIM_U_N, m_steer_lim);   // max steering angle
+  m_lb.setConstant(-m_steer_lim);
+  m_ub.setConstant(m_steer_lim);
 
   log_debug("MPC: Steering Angle Limit Set");
 
   // steering angle rate limit
   VectorXd steer_rate_limits = calcSteerRateLimitOnTrajectory(traj, current_velocity);
-  VectorXd ubA = steer_rate_limits * prediction_dt;
-  VectorXd lbA = -steer_rate_limits * prediction_dt;
-  ubA(0) = m_raw_steer_cmd_prev + steer_rate_limits(0) * m_ctrl_period;
-  lbA(0) = m_raw_steer_cmd_prev - steer_rate_limits(0) * m_ctrl_period;
+  m_ubA = steer_rate_limits * prediction_dt;
+  m_lbA = -steer_rate_limits * prediction_dt;
+  m_ubA(0) = m_raw_steer_cmd_prev + steer_rate_limits(0) * m_ctrl_period;
+  m_lbA(0) = m_raw_steer_cmd_prev - steer_rate_limits(0) * m_ctrl_period;
 
   log_debug("MPC: Steering Angle Rate Limit Set");
 
   // TODO: POSSIBLE EIGEN ALIGNMENT PROBLEM
   auto t_start = Clock::now();
-  bool solve_result = m_qpsolver_ptr->solve(H, f.transpose(), A, lb, ub, lbA, ubA, Uex);
+  bool solve_result = m_qpsolver_ptr->solve(m_H, m_f.transpose(), m_A_qp, m_lb, m_ub, m_lbA, m_ubA, Uex);
   auto t_end = Clock::now();
   if (!solve_result) {
     log_error("MPC: QP Solver Error");

@@ -99,6 +99,7 @@ MpcLateralController::MpcLateralController(Node & node)
   auto vehicle_model_ptr =
     createVehicleModel(wheelbase, m_mpc->m_steer_lim, m_mpc->m_param.steer_tau, node);
   m_mpc->setVehicleModel(vehicle_model_ptr);
+  m_mpc->initialize();
 
   /* QP solver setup */
   auto qpsolver_ptr = createQPSolverInterface(node);

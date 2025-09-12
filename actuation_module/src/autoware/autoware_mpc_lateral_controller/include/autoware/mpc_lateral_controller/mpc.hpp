@@ -219,6 +219,30 @@ private:
 
   std::shared_ptr<Publisher<TrajectoryMsg>> m_debug_frenet_predicted_trajectory_pub;
   std::shared_ptr<Publisher<TrajectoryMsg>> m_debug_resampled_reference_trajectory_pub;
+
+  // Buffers for MPC matrix generation and optimization to avoid real-time memory allocation
+  MPCMatrix m_mpc_matrix;
+  Eigen::MatrixXd m_H;
+  Eigen::MatrixXd m_f;
+  Eigen::MatrixXd m_A_qp;
+  Eigen::VectorXd m_lb;
+  Eigen::VectorXd m_ub;
+  Eigen::VectorXd m_lbA;
+  Eigen::VectorXd m_ubA;
+
+  // Intermediate matrices for calculation
+  Eigen::MatrixXd m_CB;
+  Eigen::MatrixXd m_QCB;
+  Eigen::MatrixXd m_Ad;
+  Eigen::MatrixXd m_Bd;
+  Eigen::MatrixXd m_Cd;
+  Eigen::MatrixXd m_Wd;
+  Eigen::MatrixXd m_Uref;
+  Eigen::MatrixXd m_Q;
+  Eigen::MatrixXd m_R;
+  Eigen::MatrixXd m_Q_adaptive;
+  Eigen::MatrixXd m_R_adaptive;
+
   /**
    * @brief Get variables for MPC calculation.
    * @param trajectory The reference trajectory.
@@ -251,10 +275,8 @@ private:
    * @brief Generate the MPC matrix using the reference trajectory and vehicle model.
    * @param reference_trajectory The reference trajectory used for linearization.
    * @param prediction_dt The prediction time step.
-   * @return The generated MPC matrix.
    */
-  MPCMatrix generateMPCMatrix(
-    const MPCTrajectory & reference_trajectory, const double prediction_dt);
+  void generateMPCMatrix(const MPCTrajectory & reference_trajectory, const double prediction_dt);
 
   /**
    * @brief Execute the optimization using the provided MPC matrix, initial state, and prediction
@@ -404,6 +426,11 @@ public:
 
   //!< Constructor.
   explicit MPC(Node & node);
+
+  /**
+   * @brief Initialize MPC matrices and buffers. Must be called after setting vehicle model and params.
+   */
+  void initialize();
 
   /**
    * @brief Calculate control command using the MPC algorithm.
