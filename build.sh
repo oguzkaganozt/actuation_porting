@@ -42,6 +42,10 @@ function parse_args() {
   new_args=()
   for arg in "$@"; do
     case $arg in
+      --help)
+        usage
+        exit 0
+        ;;
       --unit-test)
         BUILD_TEST_FLAG=1
         shift
