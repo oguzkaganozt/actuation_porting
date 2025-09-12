@@ -61,9 +61,10 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 # )
 
 # TODO: we dont have fabsl in zephyr, so we provide a substitute for eigen
-target_compile_options(app PRIVATE 
-  "-Dfabsl(x)=((long double)fabs((double)(x)))"
-)
+# Temporarily commented out due to compilation error
+# target_compile_options(app PRIVATE 
+#   "-Dfabsl(x)=((long double)fabs((double)(x)))"
+# )
 
 target_include_directories(app PRIVATE
   include

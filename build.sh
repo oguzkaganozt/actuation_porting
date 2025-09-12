@@ -22,14 +22,14 @@ set -u
 
 # Build options
 BUILD_TEST_FLAG=0
-ZEPHYR_TARGET_LIST=("fvp_baser_aemv8r_smp" "s32z270dc2_rtu0_r52")
+ZEPHYR_TARGET_LIST=("fvp_baser_aemv8r_smp" "s32z270dc2_rtu0_r52@D")
 ZEPHYR_TARGET=${ZEPHYR_TARGET_LIST[0]} # Default target is FVP
 
 function usage() {
   echo -e "${GREEN}Usage: $0 [OPTIONS]${NC}"
   echo -e "------------------------------------------------"
   echo -e "${GREEN}    -t    ${NC}Zephyr target board: ${ZEPHYR_TARGET_LIST[*]}"
-  echo -e "${GREEN}            default: ${ZEPHYR_TARGET_LIST[0]}.${NC}"
+  echo -e "${GREEN}            default: ${ZEPHYR_TARGET_LIST[0]} (FVP).${NC}"
   echo -e "${GREEN}    -c    ${NC}Clean all builds and exit."
   echo -e "${GREEN}    -h    ${NC}Display the usage and exit."
   echo -e "${GREEN}    Optional arguments to build Zephyr test programs:${NC}"
@@ -115,12 +115,21 @@ function build_actuation_module() {
   typeset CMAKE_PREFIX_PATH=""
   typeset AMENT_PREFIX_PATH=""
 
-  west build -p auto -d build/actuation_module -b "${ZEPHYR_TARGET}" actuation_module/ -- \
-    -DZEPHYR_TARGET="${ZEPHYR_TARGET}" \
-    -DCYCLONEDDS_SRC="${ROOT_DIR}"/cyclonedds \
-    -DEXTRA_CFLAGS="-Wno-error" \
-    -DEXTRA_CXXFLAGS="-Wno-error" \
+  # Build command with common arguments
+  local build_args=(
+    -DZEPHYR_TARGET="${ZEPHYR_TARGET}"
+    -DCYCLONEDDS_SRC="${ROOT_DIR}"/cyclonedds
+    -DEXTRA_CFLAGS="-Wno-error"
+    -DEXTRA_CXXFLAGS="-Wno-error"
     -DBUILD_TEST=${BUILD_TEST_FLAG}
+  )
+
+  # Add device tree overlay only for ARM board variant
+  if [ "${ZEPHYR_TARGET}" = "s32z270dc2_rtu0_r52@D" ]; then
+    build_args+=(-DEXTRA_DTC_OVERLAY_FILE="${ROOT_DIR}"/actuation_module/boards/s32z270dc2_rtu0_r52@D.overlay)
+  fi
+
+  west build -p auto -d build/actuation_module -b "${ZEPHYR_TARGET}" actuation_module/ -- "${build_args[@]}"
 }
 
 ## MAIN ##
