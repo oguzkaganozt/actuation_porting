@@ -30,7 +30,7 @@ public:
         // Create a DDS domain with raw config
         dds_entity_t domain = dds_create_domain_with_rawconfig(CONFIG_DDS_DOMAIN_ID, &dds_cfg);
         if (domain < 0 && domain != DDS_RETCODE_PRECONDITION_NOT_MET) {
-            log_error("%s -> dds_create_domain_with_rawconfig: %s\n", 
+            log_error("%s -> dds_create_domain_with_rawconfig: %s\n",
                 node_name_.c_str(), dds_strretcode(-domain));
             exit(-1);
         }
@@ -39,29 +39,29 @@ public:
         // Create a DDS participant
         m_dds_participant = dds_create_participant(CONFIG_DDS_DOMAIN_ID, NULL, NULL);
         if (m_dds_participant < 0) {
-            log_error("%s -> dds_create_participant: %s\n", 
+            log_error("%s -> dds_create_participant: %s\n",
                 node_name_.c_str(), dds_strretcode(-m_dds_participant));
             exit(-1);
         }
         log_info("%s -> DDS participant created\n", node_name_.c_str());
-        
+
         // Reliable QoS
         m_dds_qos = dds_create_qos();
         dds_qset_reliability(m_dds_qos, DDS_RELIABILITY_RELIABLE, DDS_MSECS(30));
-        dds_qset_history(m_dds_qos, DDS_HISTORY_KEEP_LAST, 50);    // TODO: TUNE HISTORY BUFFER SIZE IF WE DROP MESSAGES
+        dds_qset_history(m_dds_qos, DDS_HISTORY_KEEP_LAST, 500);    // TODO: TUNE HISTORY BUFFER SIZE IF WE DROP MESSAGES
         log_info("%s -> DDS QoS created\n", node_name_.c_str());
     }
 
-    ~DDS() 
+    ~DDS()
     {
         // Delete DDS participant (this will clean up all DDS entities)
         dds_return_t rc = dds_delete(m_dds_participant);
         if (rc != DDS_RETCODE_OK) {
-            log_error("%s -> dds_delete: %s\n", 
+            log_error("%s -> dds_delete: %s\n",
                 node_name_.c_str(), dds_strretcode(-rc));
             exit(-1);
         }
-        
+
         // Delete QoS separately
         dds_delete_qos(m_dds_qos);
     }
@@ -79,8 +79,8 @@ public:
      */
     template<typename MessageT>
     std::shared_ptr<Publisher<MessageT>> create_publisher_dds(
-        const std::string& topic_name, 
-        const dds_topic_descriptor_t* topic_descriptor) 
+        const std::string& topic_name,
+        const dds_topic_descriptor_t* topic_descriptor)
     {
         return std::make_shared<Publisher<MessageT>>(
             node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor);
@@ -95,19 +95,19 @@ public:
      * @return std::shared_ptr<Subscriber<T>> Pointer to the created subscriber
      */
     template<typename T>
-    std::shared_ptr<Subscriber<T>> create_subscription_dds(const std::string& topic_name, 
-                            const dds_topic_descriptor_t* topic_descriptor, 
-                            callback_subscriber<T> callback, void* arg) 
+    std::shared_ptr<Subscriber<T>> create_subscription_dds(const std::string& topic_name,
+                            const dds_topic_descriptor_t* topic_descriptor,
+                            callback_subscriber<T> callback, void* arg)
     {
         try {
             auto subscriber = std::make_shared<Subscriber<T>>(
                 node_name_, topic_name, m_dds_participant, m_dds_qos, topic_descriptor, callback, arg);
-            
+
             // Store as ISubscriptionHandler
             subscriptions_.push_back(std::static_pointer_cast<ISubscriptionHandler>(subscriber));
             return subscriber;
         } catch (const std::exception& e) {
-            log_error("%s -> create_subscription_dds: %s\n", 
+            log_error("%s -> create_subscription_dds: %s\n",
                 node_name_.c_str(), e.what());
             return nullptr;
         }
