@@ -220,6 +220,8 @@ private:
   std::shared_ptr<Publisher<TrajectoryMsg>> m_debug_frenet_predicted_trajectory_pub;
   std::shared_ptr<Publisher<TrajectoryMsg>> m_debug_resampled_reference_trajectory_pub;
 
+  bool m_is_initialized = false;
+
   // Buffers for MPC matrix generation and optimization to avoid real-time memory allocation
   MPCMatrix m_mpc_matrix;
   Eigen::MatrixXd m_H;

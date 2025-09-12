@@ -113,6 +113,16 @@ ResultWithReason MPC::calculateMPC(
   LateralMsg & ctrl_cmd, TrajectoryMsg & predicted_trajectory,
   LateralHorizon & ctrl_cmd_horizon)
 {
+  if (!m_is_initialized) {
+    if (!m_vehicle_model_ptr || m_param.prediction_horizon <= 0) {
+      log_error(
+        "MPC is not initialized. Vehicle model or prediction horizon is not set.");
+      return {false, "MPC is not initialized"};
+    }
+    initialize();
+    m_is_initialized = true;
+  }
+
   log_debug("MPC: Start Calculating");
 
   // since the reference trajectory does not take into account the current velocity of the ego
