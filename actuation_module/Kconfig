@@ -8,14 +8,14 @@ config MAX_PTHREAD_MUTEX_COUNT
 # TODO: FINE TUNE THIS IF THING GOES WRONG
 config THREAD_STACK_SIZE
 	int "Stack size for threads"
-	default 524288
+	default 262144
 	help
 	  This config sets the stack size for threads.
 	  It is used to limit the stack size for threads.
 
 config LOG_LEVEL
 	int "Log level for actuation module"
-	default 2
+	default 1
 	range 0 2
 	help
 	  This config sets the log level for actuation module.
