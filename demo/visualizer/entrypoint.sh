@@ -55,10 +55,6 @@ EOF
     echo "export DISPLAY=:99" >>~/.bashrc
     sleep 2
 
-    # Start NoVNC
-    echo "Starting NoVNC..."
-    websockify --daemon --web=/usr/share/novnc/ --cert=/etc/ssl/certs/novnc.crt --key=/etc/ssl/private/novnc.key 6080 localhost:5999
-
     # Print info
     echo -e "\033[32m-------------------------------------------------------------------------\033[0m"
     echo -e "\033[32mBrowser interface available at local address http://$(hostname -I | cut -d' ' -f1):6080/vnc.html?resize=scale&password=${REMOTE_PASSWORD}&autoconnect=true\033[0m"
@@ -68,6 +64,10 @@ EOF
         echo -e "\033[31mNo internet connection available\033[0m"
     fi
     echo -e "\033[32m-------------------------------------------------------------------------\033[0m"
+
+    # Start NoVNC
+    echo "Starting NoVNC..."
+    websockify --web=/usr/share/novnc/ 6080 localhost:5999
 }
 
 parse_params() {
