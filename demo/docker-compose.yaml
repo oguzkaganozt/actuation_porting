@@ -9,7 +9,7 @@ services:
       # - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-      - ROS_DOMAIN_ID=2
+      - ROS_DOMAIN_ID=1
       - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
       # - DISPLAY=$DISPLAY
     command: >
@@ -18,6 +18,19 @@ services:
       vehicle_model:=sample_vehicle
       sensor_model:=sample_sensor_kit
       rviz:=false
+
+  safety-island-bridge:
+    network_mode: host
+    image: safety-island-bridge:latest
+    volumes:
+      - ./cyclonedds.xml:/autoware/cyclonedds.xml
+      - ./bridge/bridge-config.yaml:/autoware/bridge-config.yaml
+    environment:
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_DOMAIN_ID=1
+      - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
+    command: >
+      ros2 run domain_bridge domain_bridge --wait-for-publisher false /autoware/bridge-config.yaml
   
   safety-island-visualizer:
     network_mode: host
@@ -28,7 +41,7 @@ services:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
     environment:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-      - ROS_DOMAIN_ID=2
+      - ROS_DOMAIN_ID=1
       - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
     ports:
       - 6080:6080
