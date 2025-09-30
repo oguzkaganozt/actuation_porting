@@ -19,7 +19,7 @@ longitudinal:
     sec: 111
     nanosec: 780000000
   control_time:
-    sec: 0İİ
+    sec: 0
     nanosec: 0
   velocity: 0.0
   acceleration: -3.4000000953674316
