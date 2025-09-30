@@ -25,6 +25,26 @@
       <AllowMulticast>spdp</AllowMulticast>
       <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
         <Interfaces>
+            <NetworkInterface autodetermine="true" priority="default" multicast="default" />
+        </Interfaces>
+    </General>
+
+    <Sizing>
+      <ReceiveBufferSize>16384B</ReceiveBufferSize>
+      <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
+    </Sizing>
+
+    <Discovery>
+      <ParticipantIndex>none</ParticipantIndex>  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
+      <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
+      <!-- <ParticipantIndex>auto</ParticipantIndex> -->
+    </Discovery>
+  </Domain>
+  <Domain id="2">
+    <General>
+      <AllowMulticast>spdp</AllowMulticast>
+      <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
+        <Interfaces>
             <NetworkInterface autodetermine="false" priority="default" multicast="default" name="enp1s0f0"/>
         </Interfaces>
     </General>
