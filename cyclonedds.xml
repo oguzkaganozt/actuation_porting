@@ -30,7 +30,7 @@
     </General>
 
     <Sizing>
-      <ReceiveBufferSize>4096B</ReceiveBufferSize>
+      <ReceiveBufferSize>16384B</ReceiveBufferSize>
       <ReceiveBufferChunkSize>2048B</ReceiveBufferChunkSize>
     </Sizing>
 

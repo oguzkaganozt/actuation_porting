@@ -223,15 +223,16 @@ static K_THREAD_STACK_DEFINE(node_stack, CONFIG_THREAD_STACK_SIZE);
 int main() {
     log_info("=== Starting Node Test Suite ===\n");
     log_info("Waiting for Network interface to be ready\n");
-    sleep(5);
+    sleep(CONFIG_NET_DHCPV4_INITIAL_DELAY_MAX);
 
-    // Setting time using SNTP
+#ifdef CONFIG_ENABLE_SNTP
     if (Clock::init_clock_via_sntp() < 0) {
         log_error("Failed to set time using SNTP\n");
     }
     else {
         log_info("Time set using SNTP\n");
     }
+#endif
 
     Node node("test_node", node_stack, STACK_SIZE);
     

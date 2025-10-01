@@ -28,14 +28,15 @@ ZEPHYR_TARGET=${ZEPHYR_TARGET_LIST[0]} # Default target is FVP
 function usage() {
   echo -e "${GREEN}Usage: $0 [OPTIONS]${NC}"
   echo -e "------------------------------------------------"
-  echo -e "${GREEN}    -t    ${NC}Zephyr target board: ${ZEPHYR_TARGET_LIST[*]}"
-  echo -e "${GREEN}            default: ${ZEPHYR_TARGET_LIST[0]} (FVP).${NC}"
-  echo -e "${GREEN}    -c    ${NC}Clean all builds and exit."
-  echo -e "${GREEN}    -h    ${NC}Display the usage and exit."
+  echo -e "${GREEN}    -t                 ${NC}Zephyr target board: ${ZEPHYR_TARGET_LIST[*]}"
+  echo -e "${GREEN}                         default: ${ZEPHYR_TARGET_LIST[0]} (FVP).${NC}"
+  echo -e "${GREEN}    -c                 ${NC}Clean all builds and exit."
+  echo -e "${GREEN}    -h                 ${NC}Display the usage and exit."
+  echo ""
   echo -e "${GREEN}    Optional arguments to build Zephyr test programs:${NC}"
-  echo -e "${GREEN}    --unit-test    ${NC}Build Zephyr unit test program."
+  echo -e "${GREEN}    --unit-test        ${NC}Build Zephyr unit test program."
   echo -e "${GREEN}    --dds-publisher    ${NC}Build Zephyr DDS publisher."
-  echo -e "${GREEN}    --dds-subscriber    ${NC}Build Zephyr DDS subscriber."
+  echo -e "${GREEN}    --dds-subscriber   ${NC}Build Zephyr DDS subscriber."
 }
 
 function parse_args() {

@@ -1,6 +1,26 @@
 # Copyright (c) 2023, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
 
+config ENABLE_SNTP
+	bool "Enable SNTP"
+	default y
+	help
+	  Synchronizes the clock of the system using NTP server.(Requires internet connection)
+	  Disabling means that the timestamps will start from boot up time.
+
+config DDS_DOMAIN_ID
+	int "Domain ID for CycloneDDS"
+	default 2
+	help
+		This config sets the domain ID for CycloneDDS.
+
+config DDS_NETWORK_INTERFACE
+	string "Name of the network interface to be used by CycloneDDS"
+	default ""
+	help
+	  When left undefined, CycloneDDS will automatically select an interface
+	  based on its own criteria.
+
 config LOG_LEVEL
 	int "Log level for actuation module"
 	default 1
@@ -18,19 +38,6 @@ config LOG_THROTTLE_RATE
 	help
 	  This config sets the throttle rate in seconds for rclcpp-like messages.
 	  It is used to limit the rate of messages being published to the console.
-
-config DDS_DOMAIN_ID
-int "Domain ID for CycloneDDS"
-default 2
-help
-	This config sets the domain ID for CycloneDDS.
-
-config DDS_NETWORK_INTERFACE
-	string "Name of the network interface to be used by CycloneDDS"
-	default ""
-	help
-	  When left undefined, CycloneDDS will automatically select an interface
-	  based on its own criteria.
 
 config DDS_LOG_LEVEL
 	int "Log level for CycloneDDS"
