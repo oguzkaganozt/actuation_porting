@@ -28,17 +28,17 @@ int main(void) {
     log_info("--------------------------------\n");
     log_info("Starting DDS publisher\n");
     log_info("--------------------------------\n");
-    log_info("Waiting for Network interface to be ready\n");
-    sleep(5);
+    log_info("Waiting for DHCP to get IP address...\n");
+    sleep(CONFIG_NET_DHCPV4_INITIAL_DELAY_MAX);
 
-    // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
-    // // Setting time using SNTP
-    // if (Clock::init_clock_via_sntp() < 0) {
-    //     log_error("Failed to set time using SNTP\n");
-    // }
-    // else {
-    //     log_info("Time set using SNTP\n");
-    // }
+    // TODO: Enable this if we want to set time using SNTP in order to get correct timestamps
+    // Setting time using SNTP
+    if (Clock::init_clock_via_sntp() < 0) {
+        log_error("Failed to set time using SNTP\n");
+    }
+    else {
+        log_info("Time set using SNTP\n");
+    }
 
     // Create a node and publishers for all the topics the subscriber expects
     Node node("dds_test_pub", node_stack, STACK_SIZE);

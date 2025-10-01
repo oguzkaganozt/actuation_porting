@@ -15,9 +15,9 @@ int main(void)
     log_success("ARM - Autoware: Actuation Safety Island");
     log_success("-----------------------------------------");
     log_info("Waiting for DHCP to get IP address...");
-    sleep(12);
+    sleep(CONFIG_NET_DHCPV4_INITIAL_DELAY_MAX);
 
-    // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
+    // TODO: Enable this if we want to set time using SNTP in order to get correct timestamps
     log_info("Setting time using SNTP...\n");
     if (Clock::init_clock_via_sntp() < 0) {
         log_error("Failed to set time using SNTP\n");
