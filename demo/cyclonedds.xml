@@ -27,7 +27,7 @@
       <AllowMulticast>spdp</AllowMulticast>
       <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
         <Interfaces>
-            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>  <!-- Change to the actual interface name to connect to the safety island -->
+            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>  <!-- TODO: Change to the actual interface name to connect to the safety island -->
         </Interfaces>
     </General>
 
