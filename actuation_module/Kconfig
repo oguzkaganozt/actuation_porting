@@ -1,21 +1,29 @@
 # Copyright (c) 2023, Arm Limited.
 # SPDX-License-Identifier: Apache-2.0
 
-# Override the range of MAX_PTHREAD_MUTEX_COUNT from zephyr/lib/posix/Kconfig
-config MAX_PTHREAD_MUTEX_COUNT
-	range 0 30000
-
-# TODO: FINE TUNE THIS IF THING GOES WRONG
-config THREAD_STACK_SIZE
-	int "Stack size for threads"
-	default 262144
+config ENABLE_SNTP
+	bool "Enable SNTP"
+	default n
 	help
-	  This config sets the stack size for threads.
-	  It is used to limit the stack size for threads.
+	  Synchronizes the clock of the system using NTP server.(Requires internet connection)
+	  Disabling means that the timestamps will start from boot up time.
+
+config DDS_DOMAIN_ID
+	int "Domain ID for CycloneDDS"
+	default 2
+	help
+		This config sets the domain ID for CycloneDDS.
+
+config DDS_NETWORK_INTERFACE
+	string "Name of the network interface to be used by CycloneDDS"
+	default ""
+	help
+	  When left undefined, CycloneDDS will automatically select an interface
+	  based on its own criteria.
 
 config LOG_LEVEL
 	int "Log level for actuation module"
-	default 2
+	default 1
 	range 0 2
 	help
 	  This config sets the log level for actuation module.
@@ -31,19 +39,6 @@ config LOG_THROTTLE_RATE
 	  This config sets the throttle rate in seconds for rclcpp-like messages.
 	  It is used to limit the rate of messages being published to the console.
 
-config DDS_NETWORK_INTERFACE
-	string "Name of the network interface to be used by CycloneDDS"
-	default ""
-	help
-	  When left undefined, CycloneDDS will automatically select an interface
-	  based on its own criteria.
-
-config DDS_DOMAIN_ID
-	int "Domain ID for CycloneDDS"
-	default 2
-	help
-	  This config sets the domain ID for CycloneDDS.
-
 config DDS_LOG_LEVEL
 	int "Log level for CycloneDDS"
 	default 0
@@ -54,6 +49,18 @@ config DDS_LOG_LEVEL
 	  1: Fatal, Error, Warning, Config
 	  2: Debug
 	  It is used to limit the rate of messages being published to the console.
+
+# TODO: Fine tune this if things go wrong with the stack size
+config THREAD_STACK_SIZE
+	int "Stack size for threads"
+	default 262144
+	help
+	  This config sets the stack size for threads.
+	  It is used to limit the stack size for user threads.
+
+# Override the range of MAX_PTHREAD_MUTEX_COUNT from zephyr/lib/posix/Kconfig
+config MAX_PTHREAD_MUTEX_COUNT
+	range 0 30000
 
 config NET_IFACE1_ADDR
 	string "Address for interface 1"

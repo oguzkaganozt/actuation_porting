@@ -6,12 +6,8 @@ services:
       - ./map/sample-map-planning:/root/autoware_map
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
       - ./launch/control.launch.xml:/opt/autoware/share/tier4_control_launch/launch/control.launch.xml
-      # - /tmp/.X11-unix:/tmp/.X11-unix
-    environment:
-      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-      - ROS_DOMAIN_ID=1
-      - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
-      # - DISPLAY=$DISPLAY
+    env_file:
+      - common.env
     command: >
       ros2 launch autoware_launch planning_simulator.launch.xml
       map_path:=/root/autoware_map
@@ -21,27 +17,23 @@ services:
 
   safety-island-bridge:
     network_mode: host
-    image: safety-island-bridge:latest
+    build:
+      context: bridge
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
       - ./bridge/bridge-config.yaml:/autoware/bridge-config.yaml
-    environment:
-      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-      - ROS_DOMAIN_ID=1
-      - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
+    env_file:
+      - common.env
     command: >
       ros2 run domain_bridge domain_bridge --wait-for-publisher false /autoware/bridge-config.yaml
   
   safety-island-visualizer:
     network_mode: host
     build:
-      context: .
-      dockerfile: visualizer/Dockerfile
+      context: visualizer
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
-    environment:
-      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-      - ROS_DOMAIN_ID=1
-      - CYCLONEDDS_URI=file:///autoware/cyclonedds.xml
+    env_file:
+      - common.env
     ports:
       - 6080:6080

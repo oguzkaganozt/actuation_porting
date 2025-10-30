@@ -15,14 +15,16 @@ int main(void)
     log_success("ARM - Autoware: Actuation Safety Island");
     log_success("-----------------------------------------");
     log_info("Waiting for DHCP to get IP address...");
-    sleep(7);
+    sleep(CONFIG_NET_DHCPV4_INITIAL_DELAY_MAX);
 
-    // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
-    // log_info("Setting time using SNTP...\n");
-    // if (Clock::init_clock_via_sntp() < 0) {
-    //     log_error("Failed to set time using SNTP\n");
-    //     std::exit(1);
-    // }
+    // TODO: Disable SNTP if no internet connection is available
+#ifdef CONFIG_ENABLE_SNTP
+    log_info("Setting time using SNTP...\n");
+    if (Clock::init_clock_via_sntp() < 0) {
+        log_error("Failed to set time using SNTP\n");
+        std::exit(1);
+    }
+#endif
 
     log_info("Starting Controller Node...");
     try

@@ -60,10 +60,12 @@ message("App headers: ${APP_INCLUDE_DIRS}")
 #   EIGEN_DONT_ALIGN_STATICALLY
 # )
 
-# TODO: we dont have fabsl in zephyr, so we provide a substitute for eigen
+if(ZEPHYR_TARGET STREQUAL "fvp_baser_aemv8r_smp")
+# NOTE: we dont have fabsl in zephyr for fvp builds, so we provide a substitute
 target_compile_options(app PRIVATE 
   "-Dfabsl(x)=((long double)fabs((double)(x)))"
 )
+endif()
 
 target_include_directories(app PRIVATE
   include

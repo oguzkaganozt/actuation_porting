@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
- <Domain id="1">
+ 
+  <!-- Autoware Domain -->
+  <Domain id="1">
     <General>
       <AllowMulticast>spdp</AllowMulticast>
       <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
@@ -15,17 +17,17 @@
     </Sizing>
 
     <Discovery>
-      <ParticipantIndex>none</ParticipantIndex>  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
-      <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
-      <!-- <ParticipantIndex>auto</ParticipantIndex> -->
+      <ParticipantIndex>none</ParticipantIndex>
     </Discovery>
   </Domain>
+
+  <!-- Safety Island Domain -->
   <Domain id="2">
     <General>
       <AllowMulticast>spdp</AllowMulticast>
       <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
         <Interfaces>
-            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>
+            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>  <!-- TODO: Change to the actual interface name to connect to the safety island -->
         </Interfaces>
     </General>
 
@@ -35,9 +37,7 @@
     </Sizing>
 
     <Discovery>
-      <ParticipantIndex>none</ParticipantIndex>  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
-      <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
-      <!-- <ParticipantIndex>auto</ParticipantIndex> -->
+      <ParticipantIndex>none</ParticipantIndex>
     </Discovery>
   </Domain>
 </CycloneDDS>

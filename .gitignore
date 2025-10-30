@@ -20,5 +20,5 @@ avh.ovpn
 log/
 *.log
 
-TODO.md
 documentation/_build/
+arm-kit-instructions.md

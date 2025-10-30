@@ -160,11 +160,11 @@ void Controller::callbackAcceleration(const AccelWithCovarianceStampedMsg* msg, 
 }
 
 void Controller::callbackTrajectory(const TrajectoryMsg_Raw* msg, void* arg) {
-  static int count = 0;
-  log_debug("-------TRAJECTORY----IDX %d----", count++);
-  log_debug("Timestamp: %f", Clock::toDouble(msg->header.stamp));
-  log_debug("Trajectory size: %u", msg->points._length);
-  log_debug("-------------------------------");
+  // static int count = 0;
+  // log_debug("-------TRAJECTORY----IDX %d----", count++);
+  // log_debug("Timestamp: %f", Clock::toDouble(msg->header.stamp));
+  // log_debug("Trajectory size: %u", msg->points._length);
+  // log_debug("-------------------------------");
 
   // Copy the data instead of storing the pointer
   Controller* controller = static_cast<Controller*>(arg);
