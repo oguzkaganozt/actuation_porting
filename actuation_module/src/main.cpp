@@ -15,7 +15,7 @@ int main(void)
     log_success("ARM - Autoware: Actuation Safety Island");
     log_success("-----------------------------------------");
     log_info("Waiting for DHCP to get IP address...");
-    sleep(7);
+    sleep(12);
 
     // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
     // log_info("Setting time using SNTP...\n");

@@ -29,7 +29,7 @@ int main(void) {
     log_info("Starting DDS publisher\n");
     log_info("--------------------------------\n");
     log_info("Waiting for Network interface to be ready\n");
-    sleep(5);
+    sleep(12);
 
     // TODO: IF WE SET TIME USING SNTP, ROSBAGS ARE NOT WORKING
     // // Setting time using SNTP
