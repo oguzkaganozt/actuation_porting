@@ -12,6 +12,7 @@ else
 fi
 
 docker run --rm -it --name actuation-devcontainer \
+    --privileged \
     --network host \
     -v "$HOME/.ccache:/root/.ccache" \
     -v "$(pwd):/actuation" \
