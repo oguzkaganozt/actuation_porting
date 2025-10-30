@@ -3,7 +3,7 @@
 
 config ENABLE_SNTP
 	bool "Enable SNTP"
-	default y
+	default n
 	help
 	  Synchronizes the clock of the system using NTP server.(Requires internet connection)
 	  Disabling means that the timestamps will start from boot up time.

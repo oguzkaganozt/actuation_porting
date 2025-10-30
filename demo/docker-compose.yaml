@@ -21,7 +21,8 @@ services:
 
   safety-island-bridge:
     network_mode: host
-    image: safety-island-bridge:latest
+    build:
+      context: bridge
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
       - ./bridge/bridge-config.yaml:/autoware/bridge-config.yaml
@@ -35,8 +36,7 @@ services:
   safety-island-visualizer:
     network_mode: host
     build:
-      context: .
-      dockerfile: visualizer/Dockerfile
+      context: visualizer
     volumes:
       - ./cyclonedds.xml:/autoware/cyclonedds.xml
     environment:

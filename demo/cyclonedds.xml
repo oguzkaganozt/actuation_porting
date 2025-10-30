@@ -17,9 +17,7 @@
     </Sizing>
 
     <Discovery>
-      <ParticipantIndex>none</ParticipantIndex>  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
-      <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
-      <!-- <ParticipantIndex>auto</ParticipantIndex> -->
+      <ParticipantIndex>none</ParticipantIndex>
     </Discovery>
   </Domain>
 
@@ -29,7 +27,7 @@
       <AllowMulticast>spdp</AllowMulticast>
       <MaxMessageSize>1400B</MaxMessageSize>  <!--Accommodate for Zephyr's MTU-->
         <Interfaces>
-            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="enp1s0f0"/>  <!-- Change to the actual interface name to connect to the safety island -->
+            <NetworkInterface autodetermine="false" priority="default" multicast="default" name="tap0"/>  <!-- Change to the actual interface name to connect to the safety island -->
         </Interfaces>
     </General>
 
@@ -39,9 +37,7 @@
     </Sizing>
 
     <Discovery>
-      <ParticipantIndex>none</ParticipantIndex>  <!-- TODO: Fix for failed to find participant index https://github.com/ros2/rmw_cyclonedds/issues/458 -->
-      <!-- <MaxAutoParticipantIndex>60</MaxAutoParticipantIndex> -->
-      <!-- <ParticipantIndex>auto</ParticipantIndex> -->
+      <ParticipantIndex>none</ParticipantIndex>
     </Discovery>
   </Domain>
 </CycloneDDS>
