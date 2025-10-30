@@ -67,7 +67,7 @@ The resulting Zephyr binary is located at
 Virtual machines launch
 ***********************
 
-AVH launch
+AVH launch (Safety Island)
 ==========
 
 Deploy and connect to the Zephyr application on the AVH instance:
@@ -106,7 +106,17 @@ device. See the `Upload Firmware in Web UI
 <https://developer.arm.com/documentation/107660/0600/Device-Firmware/Upload-Firmware-in-Web-UI?lang=en>`_
 page for details.
 
-EC2 launch
+Device boot logs
+==================
+
+You should see the logs when the device boots up in the console tab.
+
+.. image:: ../images/run_scene.png
+   :alt: Running scene on AVH
+   :align: center
+
+
+EC2 launch (Autoware Main Compute)
 ==========
 
 If needed, follow the `Create Your AWS Account
@@ -144,16 +154,17 @@ Inside the EC2 instance, install Docker engine. Follow the official
 VPN connection
 ==============
 
-You can use the script to directly connect to the Corellium VPN.
+Inside the devcontainer, you can use the script to directly connect to the Corellium VPN
+by running the following command:
 
 .. code-block:: console
 
   $ ./avh.py --vpn-connect
-
+  
 If you check with ``ip a`` command, you should see the ``tap0`` interface created.
 
 **Or Manually:**
-
+Inside the EC2 instance, you can connect to the Corellium VPN by following the steps below:
 On the AVH website, in the "Connect" tab of the previously created device, use
 the "Download OVPN File" button to download the VPN configuration file.
 
@@ -198,7 +209,17 @@ Docker Compose:
 .. code-block:: console
 
   $ cd ~/actuation_porting/demo
-  $ docker-compose -f autoware.docker-compose.yaml up
+  $ docker compose up
 
 This will start the **Autoware without actuation pipeline**, which will then connect to
 the **ARM Safety Island Actuation Module** running on the AVH instance through DDS over the VPN.
+
+Launching the simulation
+========================
+
+1. After containers are running, you can open the visualizer from the link that is given in the logs OR with the link http://<ec2-instance-public-ip>:6080/vnc.html?resize=scale&password=openadkit&autoconnect=true
+2. Set the initial pose for the ego vehicle by clicking the "2D Pose Estimate" button in the visualizer.
+3. Set the goal pose for the ego vehicle by clicking the "2D Goal Pose" button in the visualizer.
+4. Click the "Auto" button on "Operation Mode" tab in the visualizer.
+
+You can follow the simulation tutorial in the `Autoware documentation <https://autowarefoundation.github.io/autoware-documentation/main/tutorials/ad-hoc-simulation/planning-simulation/>`_.
