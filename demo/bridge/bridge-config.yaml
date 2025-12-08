@@ -5,7 +5,14 @@ topics:
     type: autoware_control_msgs/msg/Control
     from_domain: 2
     to_domain: 1
-    # bidirectional: True
+  /control/trajectory_follower/lateral/debug/processing_time_ms:
+    type: tier4_debug_msgs/msg/Float64Stamped
+    from_domain: 2
+    to_domain: 1
+  /control/trajectory_follower/longitudinal/debug/processing_time_ms:
+    type: tier4_debug_msgs/msg/Float64Stamped
+    from_domain: 2
+    to_domain: 1
   vehicle/status/steering_status:
     type: autoware_vehicle_msgs/msg/SteeringReport
     from_domain: 1
