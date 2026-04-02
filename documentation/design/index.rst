@@ -11,3 +11,10 @@ Solution Design
 
    The detailed design documentation is currently under construction. Please
    refer to the :doc:`/overview` for a high-level overview of the architecture.
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 2
+   :caption: Contents
+
+   freertos_porting_plan
