@@ -10,8 +10,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-// Forward-declare the actuation module main (renamed to actuation_main)
-extern "C" int actuation_main(void);
+// Forward-declare the actuation module main (renamed to actuation_main via -Dmain=actuation_main)
+extern int actuation_main(void);
 
 static void actuation_task(void *pvParameters) {
     (void)pvParameters;
@@ -20,28 +20,32 @@ static void actuation_task(void *pvParameters) {
     vTaskDelete(NULL);
 }
 
-// Static allocation support
+// Static allocation support (C linkage required by FreeRTOS kernel)
 static StaticTask_t xIdleTaskTCBBuffer;
 static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
 
-extern "C" void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
-                                              StackType_t **ppxIdleTaskStackBuffer,
-                                              uint32_t *pulIdleTaskStackSize) {
+static StaticTask_t xTimerTaskTCBBuffer;
+static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
+
+extern "C" {
+
+void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
+                                   StackType_t **ppxIdleTaskStackBuffer,
+                                   configSTACK_DEPTH_TYPE *pulIdleTaskStackSize) {
     *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
     *ppxIdleTaskStackBuffer = xIdleStack;
     *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
 
-static StaticTask_t xTimerTaskTCBBuffer;
-static StackType_t xTimerStack[configTIMER_TASK_STACK_DEPTH];
-
-extern "C" void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
-                                               StackType_t **ppxTimerTaskStackBuffer,
-                                               uint32_t *pulTimerTaskStackSize) {
+void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
+                                    StackType_t **ppxTimerTaskStackBuffer,
+                                    configSTACK_DEPTH_TYPE *pulTimerTaskStackSize) {
     *ppxTimerTaskTCBBuffer = &xTimerTaskTCBBuffer;
     *ppxTimerTaskStackBuffer = xTimerStack;
     *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }
+
+} // extern "C"
 
 int main(int argc, char *argv[]) {
     (void)argc;

@@ -7,7 +7,7 @@
 #if defined(PLATFORM_ZEPHYR)
   #include "platform/zephyr/zephyr_config.h"
 #elif defined(PLATFORM_FREERTOS)
-  #include "platform/freertos/freertos_config_generated.h"
+  #include "freertos_config_generated.h"
 #else
   #error "No platform defined. Define PLATFORM_ZEPHYR or PLATFORM_FREERTOS."
 #endif
